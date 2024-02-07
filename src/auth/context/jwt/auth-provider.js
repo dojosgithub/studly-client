@@ -17,7 +17,6 @@ import { isValidToken, setSession } from './utils';
 const initialState = {
   user: null,
   loading: true,
-  role:"subscriber",
 };
 
 const reducer = (state, action) => {
@@ -25,14 +24,12 @@ const reducer = (state, action) => {
     return {
       loading: false,
       user: action.payload.user,
-      role:"subscriber"
     };
   }
   if (action.type === 'LOGIN') {
     return {
       ...state,
       user: action.payload.user,
-      role:"subscriber"
     };
   }
   if (action.type === 'REGISTER') {
@@ -155,7 +152,6 @@ export function AuthProvider({ children }) {
 
   const status = state.loading ? 'loading' : checkAuthenticated;
 
-
   const memoizedValue = useMemo(
     () => ({
       user: state.user,
@@ -163,13 +159,12 @@ export function AuthProvider({ children }) {
       loading: status === 'loading',
       authenticated: status === 'authenticated',
       unauthenticated: status === 'unauthenticated',
-      role:state.role,
       //
       login,
       register,
       logout,
     }),
-    [login, logout, register, state.user,state.role, status]
+    [login, logout, register, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

@@ -59,18 +59,6 @@ export const dashboardRoutes = [
       { path: 'banking', element: <OverviewBankingPage /> },
       { path: 'booking', element: <OverviewBookingPage /> },
       // { path: 'file', element: <OverviewFilePage /> },
-
-      // company routes
-      {
-        path: 'company',
-        children: [
-          { element: <CompanyListPage />, index: true },
-          { path: 'list', element: <CompanyListPage /> },
-          { path: ':id/edit', element: <CompanyEditPage /> },
-          { path: 'new', element: <CompanyCreatePage /> },
-        ],
-      },
-      
       {
         path: 'user',
         children: [
@@ -94,7 +82,16 @@ export const dashboardRoutes = [
           { path: 'new', element: <BlogNewPostPage /> },
         ],
       },
-
+      // company routes
+      {
+        path: 'company',
+        children: [
+          { element: <CompanyListPage />, index: true },
+          { path: 'list', element: <CompanyListPage /> },
+          { path: ':id/edit', element: <CompanyEditPage /> },
+          { path: 'new', element: <CompanyCreatePage /> },
+        ],
+      },
     ],
   },
 ];

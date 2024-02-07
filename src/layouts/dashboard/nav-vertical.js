@@ -12,24 +12,20 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
-import { useAuthContext } from 'src/auth/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
 //
 import { NAV } from '../config-layout';
-import { useNavData, useNavDataSubscriber } from './config-navigation';
+import { useNavData } from './config-navigation';
 import { NavToggleButton, NavUpgrade } from '../_common';
-
 
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
-  const { role } = useAuthContext();
 
   const lgUp = useResponsive('up', 'lg');
 
   const navData = useNavData();
-  const navDataSubscriber = useNavDataSubscriber();
 
   useEffect(() => {
     if (openNav) {
@@ -53,7 +49,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
     >
       <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
 
-      <NavSectionVertical data={role === "subscriber" ? navDataSubscriber : navData} />
+      <NavSectionVertical data={navData} />
 
       <Box sx={{ flexGrow: 1 }} />
 
