@@ -126,7 +126,7 @@ export default function AuthClassicLayout({ children, image, title }) {
         minHeight: '100vh',
       }}
     >
-      {renderLogo}
+      {/* {renderLogo} */}
 
       {upMd && renderSection}
 

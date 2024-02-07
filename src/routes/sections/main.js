@@ -28,6 +28,8 @@ const MaintenancePage = lazy(() => import('src/pages/maintenance'));
 const PostListPage = lazy(() => import('src/pages/post/list'));
 const PostDetailsPage = lazy(() => import('src/pages/post/details'));
 
+const OnboardingPage = lazy(() => import('src/pages/onboarding'));
+
 // ----------------------------------------------------------------------a
 
 export const mainRoutes = [
@@ -43,15 +45,15 @@ export const mainRoutes = [
       { path: 'about-us', element: <AboutPage /> },
       { path: 'contact-us', element: <ContactPage /> },
       { path: 'faqs', element: <FaqsPage /> },
-      {
-        path: 'product',
-        children: [
-          // { element: <ProductListPage />, index: true },
-          // { path: 'list', element: <ProductListPage /> },
-          // { path: ':id', element: <ProductDetailsPage /> },
-          // { path: 'checkout', element: <ProductCheckoutPage /> },
-        ],
-      },
+      // {
+      //   path: 'product',
+      //   children: [
+      //     { element: <ProductListPage />, index: true },
+      //     { path: 'list', element: <ProductListPage /> },
+      //     { path: ':id', element: <ProductDetailsPage /> },
+      //     { path: 'checkout', element: <ProductCheckoutPage /> },
+      //   ],
+      // },
       {
         path: 'post',
         children: [
@@ -71,10 +73,22 @@ export const mainRoutes = [
       // </SimpleLayout>
     ),
     children: [
-      { path: 'pricing', element: <PricingPage /> },
-      { path: 'payment', element: <PaymentPage /> },
+      { path: 'onboarding', element: <OnboardingPage /> },
     ],
   },
+  // {
+  //   element: (
+  //     // <SimpleLayout>
+  //     <Suspense fallback={<SplashScreen />}>
+  //       <Outlet />
+  //     </Suspense>
+  //     // </SimpleLayout>
+  //   ),
+  //   children: [
+  //     { path: 'pricing', element: <PricingPage /> },
+  //     { path: 'payment', element: <PaymentPage /> },
+  //   ],
+  // },
   {
     element: (
       // <CompactLayout>

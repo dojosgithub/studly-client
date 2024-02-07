@@ -9,6 +9,7 @@ export default function PricingPage() {
     <>
       <Helmet>{/* <title> Pricing</title> */}</Helmet>
 
+<div>Pricing</div>
       {/* <PricingView /> */}
     </>
   );

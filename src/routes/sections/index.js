@@ -17,10 +17,10 @@ import { componentsRoutes } from './components';
 export default function Router() {
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE
-    {
-      path: '/',
-      element: <Navigate to={PATH_AFTER_LOGIN} replace />,
-    },
+    // {
+    //   path: '/',
+    //   element: <Navigate to={PATH_AFTER_LOGIN} replace />,
+    // },
 
     // -------------------------------------------------------------------
 
