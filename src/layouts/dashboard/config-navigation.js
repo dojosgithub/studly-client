@@ -107,3 +107,39 @@ export function useNavData() {
 
   return data;
 }
+
+export function useNavDataSubscriber() {
+  const data = useMemo(
+    () => [
+      // // ----------------------------------------------------------------------
+      // {
+      //   items: [
+      //     {
+      //       title: 'Subscriber',
+      //       path: paths.subscriber.root,
+      //       icon: ICONS.dashboard,
+      //     },
+      //   ],
+      // },
+
+      // Submittals
+      // ----------------------------------------------------------------------
+      {
+        items: [
+          // 
+          {
+            title: 'Submittals',
+            path: paths.subscriber.submittals.list,
+            icon: ICONS.dashboard,
+           
+          },
+         
+
+        ],
+      },
+    ],
+    []
+  );
+
+  return data;
+}
