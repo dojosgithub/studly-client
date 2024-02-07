@@ -6,21 +6,22 @@ import { AuthGuard } from 'src/auth/guard';
 //
 import MainLayout from 'src/layouts/main/layout';
 
+// import { authDemoRoutes } from './auth-demo';
 import { mainRoutes, HomePage } from './main';
 import { authRoutes } from './auth';
-// import { authDemoRoutes } from './auth-demo';
 import { dashboardRoutes } from './dashboard';
 import { componentsRoutes } from './components';
+import { subscriberRoutes } from './subscriber';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE
-    // {
-    //   path: '/',
-    //   element: <Navigate to={PATH_AFTER_LOGIN} replace />,
-    // },
+    {
+      path: '/',
+      element: <Navigate to={PATH_AFTER_LOGIN} replace />,
+    },
 
     // -------------------------------------------------------------------
 
@@ -44,6 +45,9 @@ export default function Router() {
 
     // Main routes
     ...mainRoutes,
+
+    // Subscriber routes
+    ...subscriberRoutes,
 
     // Components routes
     ...componentsRoutes,

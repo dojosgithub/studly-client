@@ -7,6 +7,7 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
+  SUBSCRIBER: '/subscriber',
 };
 
 // ----------------------------------------------------------------------
@@ -113,6 +114,8 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/company/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/company/${id}/edit`,
     },
+   
+    // previous
     product: {
       root: `${ROOTS.DASHBOARD}/product`,
       new: `${ROOTS.DASHBOARD}/product/new`,
@@ -148,4 +151,13 @@ export const paths = {
       edit: (id) => `${ROOTS.DASHBOARD}/tour/${id}/edit`,
     },
   },
+  // SUBSCRIBER
+  subscriber:{
+    root: `${ROOTS.SUBSCRIBER}`,
+    submittals: {
+      new: `${ROOTS.SUBSCRIBER}/submittals/new`,
+      list: `${ROOTS.SUBSCRIBER}/submittals/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/edit`,
+    },
+  }
 };
