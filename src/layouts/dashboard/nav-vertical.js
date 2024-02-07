@@ -42,6 +42,8 @@ export default function NavVertical({ openNav, onCloseNav }) {
           height: 1,
           display: 'flex',
           flexDirection: 'column',
+          backgroundColor: (theme) => theme.palette.background.brandSecondary,
+
         },
       }}
     >
@@ -72,6 +74,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
             position: 'fixed',
             width: NAV.W_VERTICAL,
             borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
+
           }}
         >
           {renderContent}

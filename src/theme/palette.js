@@ -127,6 +127,8 @@ export function palette(mode) {
       paper: '#FFFFFF',
       default: '#FFFFFF',
       neutral: GREY[200],
+      brandPrimary: PRIMARY.main,
+      brandSecondary: SECONDARY.main,
     },
     action: {
       ...COMMON.action,
@@ -146,6 +148,8 @@ export function palette(mode) {
       paper: GREY[800],
       default: GREY[900],
       neutral: alpha(GREY[500], 0.12),
+      brandPrimary: PRIMARY.main,
+      brandSecondary: SECONDARY.main,
     },
     action: {
       ...COMMON.action,

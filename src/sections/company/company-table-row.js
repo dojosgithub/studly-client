@@ -22,7 +22,8 @@ import UserQuickEditForm from './company-quick-edit-form';
 // ----------------------------------------------------------------------
 
 export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { name, companyName,address, adminName, adminEmail, phoneNumber } = row;
 
   const confirm = useBoolean();
 
@@ -51,14 +52,16 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           />
         </TableCell> */}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell> */}
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{companyName}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminEmail}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
 
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
-        <TableCell>
+        {/* <TableCell>
           <Label
             variant="soft"
             color={
@@ -70,14 +73,14 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           >
             {status}
           </Label>
-        </TableCell>
+        </TableCell> */}
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
+          {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
@@ -85,7 +88,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell>
       </TableRow>
 
-      <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
+      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}

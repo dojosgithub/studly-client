@@ -141,18 +141,21 @@ export const _userPlans = [
 
 export const _userList = [...Array(20)].map((_, index) => ({
   id: _mock.id(index),
+  companyName: _mock.companyName(index),
+  adminEmail: _mock.email(index),
+  adminName: _mock.fullName(index),
+  address: '908 Jack Locks',
+  phoneNumber: _mock.phoneNumber(index),
+  email: _mock.email(index),
+  name: _mock.fullName(index),
   zipCode: '85807',
   state: 'Virginia',
   city: 'Rancho Cordova',
   role: _mock.role(index),
-  email: _mock.email(index),
-  address: '908 Jack Locks',
-  name: _mock.fullName(index),
   isVerified: _mock.boolean(index),
   company: _mock.companyName(index),
   country: countries[index + 1].label,
   avatarUrl: _mock.image.avatar(index),
-  phoneNumber: _mock.phoneNumber(index),
   status:
     (index % 2 && 'pending') || (index % 3 && 'banned') || (index % 4 && 'rejected') || 'active',
 }));

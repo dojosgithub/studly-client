@@ -17,24 +17,25 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgGradient } from 'src/theme/css';
 // components
 import Logo from 'src/components/logo';
+import LogoImage from 'src/assets/brand/logo.svg';
 
 // ----------------------------------------------------------------------
 
-const METHODS = [
-  {
-    id: 'jwt',
-    label: 'Jwt',
-    path: paths.auth.jwt.login,
-    icon: '/assets/icons/auth/ic_jwt.svg',
-  },
+// const METHODS = [
+//   {
+//     id: 'jwt',
+//     label: 'Jwt',
+//     path: paths.auth.jwt.login,
+//     icon: '/assets/icons/auth/ic_jwt.svg',
+//   },
 
-  {
-    id: 'auth0',
-    label: 'Auth0',
-    path: paths.auth.auth0.login,
-    icon: '/assets/icons/auth/ic_auth0.svg',
-  },
-];
+//   {
+//     id: 'auth0',
+//     label: 'Auth0',
+//     path: paths.auth.auth0.login,
+//     icon: '/assets/icons/auth/ic_auth0.svg',
+//   },
+// ];
 
 export default function AuthClassicLayout({ children, image, title }) {
   const { method } = useAuthContext();
@@ -76,25 +77,25 @@ export default function AuthClassicLayout({ children, image, title }) {
       sx={{
         ...bgGradient({
           color: alpha(
-            theme.palette.background.default,
+            theme.palette.background.brandSecondary,
             theme.palette.mode === 'light' ? 0.88 : 0.94
           ),
           imgUrl: '/assets/background/overlay_2.jpg',
         }),
       }}
     >
-      <Typography variant="h3" sx={{ maxWidth: 480, textAlign: 'center' }}>
+      {/* <Typography variant="h3" sx={{ maxWidth: 480, textAlign: 'center' }}>
         {title || 'Hi, Welcome back'}
-      </Typography>
+      </Typography> */}
 
       <Box
         component="img"
         alt="auth"
-        src={image || '/assets/illustrations/illustration_dashboard.png'}
+        src={LogoImage || '/assets/brand/logo.png'}
         sx={{ maxWidth: 720 }}
       />
 
-      <Stack direction="row" spacing={2}>
+      {/* <Stack direction="row" spacing={2}>
         {METHODS.map((option) => (
           <Tooltip key={option.label} title={option.label}>
             <Link component={RouterLink} href={option.path}>
@@ -113,7 +114,7 @@ export default function AuthClassicLayout({ children, image, title }) {
             </Link>
           </Tooltip>
         ))}
-      </Stack>
+      </Stack> */}
     </Stack>
   );
 

@@ -23,6 +23,7 @@ export default function NavMini() {
       sx={{
         flexShrink: { lg: 0 },
         width: { lg: NAV.W_MINI },
+        backgroundColor: (theme) => theme.palette.background.brandSecondary,
       }}
     >
       <NavToggleButton

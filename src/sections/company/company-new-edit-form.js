@@ -220,13 +220,15 @@ export default function CompanyNewEditForm({ currentCompany }) {
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
-              }}
+              rowGap={4}
+              // columnGap={2}
+              // gridTemplateColumns={{
+              //   xs: 'repeat(1, 1fr)',
+              //   sm: 'repeat(2, 1fr)',
+              // }}
+              my={3}
+              display="flex"
+              flexDirection="column"
             >
               <RHFTextField name="companyName" label="Company Name" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
@@ -269,7 +271,7 @@ export default function CompanyNewEditForm({ currentCompany }) {
               {/* <RHFTextField name="role" label="Role" /> */}
             </Box>
 
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+            <Stack alignItems="flex-end" sx={{ my: 3 }}>
               <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
                 {!currentCompany ? 'Create New Company' : 'Save Changes'}
               </LoadingButton>

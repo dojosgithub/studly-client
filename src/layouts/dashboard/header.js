@@ -98,6 +98,8 @@ export default function Header({ onOpenNav }) {
         sx={{
           height: 1,
           px: { lg: 5 },
+          backgroundColor:theme.palette.background.brandPrimary,
+
         }}
       >
         {renderContent}

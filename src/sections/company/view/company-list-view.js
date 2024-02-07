@@ -47,11 +47,12 @@ import CompanyTableFiltersResult from '../company-table-filters-result';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name' },
+  { id: 'companyName', label: 'Company Name' },
+  { id: 'address', label: 'Address', width: 250 },
+  { id: 'adminEmail', label: 'Email', width: 220 },
   { id: 'phoneNumber', label: 'Phone Number', width: 180 },
-  { id: 'company', label: 'Company', width: 220 },
-  { id: 'role', label: 'Role', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+  // { id: 'role', label: 'Role', width: 180 },
+  // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -211,12 +212,12 @@ export default function CompanyListView() {
             ))}
           </Tabs> */}
 
-          {/* <CompanyTableToolbar
+          <CompanyTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
             roleOptions={_roles}
-          /> */}
+          />
 
           {canReset && (
             <CompanyTableFiltersResult
