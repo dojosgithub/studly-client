@@ -60,7 +60,7 @@ export default function CustomStepper() {
       </Stepper>
 
       {activeStep === steps.length ? (
-        <Stack>
+        <>
           <Paper
             sx={{
               p: 3,
@@ -76,9 +76,9 @@ export default function CustomStepper() {
             <Box sx={{ flexGrow: 1 }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
-        </Stack>
+        </>
       ) : (
-        <Stack>
+        <>
           <Paper
             sx={{
               p: 3,
@@ -99,7 +99,7 @@ export default function CustomStepper() {
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
-        </Stack>
+        </>
       )}
 
     </>
