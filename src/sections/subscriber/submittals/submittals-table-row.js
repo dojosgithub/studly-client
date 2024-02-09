@@ -23,7 +23,8 @@ import UserQuickEditForm from './submittals-quick-edit-form';
 
 export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
-  const { name, companyName,address, adminName, adminEmail, phoneNumber } = row;
+  // companyName, address, adminName, adminEmail, phoneNumber 
+  const { id, submittalId, name, description, type, submissionDate, returnDate, creator, owner, link, status} = row;
 
   const confirm = useBoolean();
 
@@ -51,29 +52,33 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }}
           />
         </TableCell> */}
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{submittalId}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{description}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth:140}}>{submissionDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap',minWidth:140 }}>{returnDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap',minWidth:'max-content' }}>{link}</TableCell>
 
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{companyName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminEmail}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
-
-        {/* <TableCell>
+        <TableCell>
           <Label
             variant="soft"
             color={
-              (status === 'active' && 'success') ||
+              (status === 'approved' && 'success') ||
               (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
+              (status === 'rejected' && 'error') ||
+              (status === 'mcnr' && 'error') ||
               'default'
             }
           >
             {status}
           </Label>
-        </TableCell> */}
+        </TableCell>
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
+
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/* <Tooltip title="Quick Edit" placement="top" arrow>

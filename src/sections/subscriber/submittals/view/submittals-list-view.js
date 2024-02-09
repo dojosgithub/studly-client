@@ -17,7 +17,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { _userList,_submittalsList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -45,14 +45,20 @@ import SubmittalsTableFiltersResult from '../submittals-table-filters-result';
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
+// const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'companyName', label: 'Company Name' },
-  { id: 'address', label: 'Address', width: 250 },
-  { id: 'adminEmail', label: 'Email', width: 220 },
-  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
+  { id: 'submittalId', label: 'Submittal ID' },
+  { id: 'name', label: 'Name', width: 250 },
+  { id: 'description', label: 'Description', width: 220 },
+  { id: 'type', label: 'Type', width: 180 },
+  { id: 'submissionDate', label: 'Date Submitted', width: 400 },
+  { id: 'returnDate', label: 'Return Date', width: 220 },
+  { id: 'creator', label: 'Creator', width: 180 },
+  { id: 'owner', label: 'Owner Assignee', width: 400 },
+  { id: 'link', label: 'Preview Link', width: 180 },
+  { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
-  // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -73,7 +79,7 @@ export default function CompanyListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(_submittalsList);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -199,16 +205,16 @@ export default function CompanyListView() {
                       'default'
                     }
                   >
-                    {tab.value === 'all' && _userList.length}
+                    {tab.value === 'all' && _submittalsList.length}
                     {tab.value === 'active' &&
-                      _userList.filter((user) => user.status === 'active').length}
+                      _submittalsList.filter((user) => user.status === 'active').length}
 
                     {tab.value === 'pending' &&
-                      _userList.filter((user) => user.status === 'pending').length}
+                      _submittalsList.filter((user) => user.status === 'pending').length}
                     {tab.value === 'banned' &&
-                      _userList.filter((user) => user.status === 'banned').length}
+                      _submittalsList.filter((user) => user.status === 'banned').length}
                     {tab.value === 'rejected' &&
-                      _userList.filter((user) => user.status === 'rejected').length}
+                      _submittalsList.filter((user) => user.status === 'rejected').length}
                   </Label>
                 }
               />

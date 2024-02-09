@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // hooks
@@ -14,6 +15,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { useAuthContext } from 'src/auth/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
+import CustomDrawer from 'src/components/custom/custom-drawer';
 //
 import { NAV } from '../config-layout';
 import { useNavData, useNavDataSubscriber } from './config-navigation';
@@ -24,6 +26,7 @@ import { NavToggleButton, NavUpgrade } from '../_common';
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
+  const [openDrawer, setOpenDrawer] = useState(false);
   const { role } = useAuthContext();
 
   const lgUp = useResponsive('up', 'lg');
@@ -51,8 +54,11 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
-
+      {/* <Logo sx={{ mt: 3, ml: 4, mb: 1 }} /> */}
+      {role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
+        Project
+      </Button>)}
+      {role === "subscriber" && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} />)}
       <NavSectionVertical data={role === "subscriber" ? navDataSubscriber : navData} />
 
       <Box sx={{ flexGrow: 1 }} />
