@@ -15,7 +15,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { useAuthContext } from 'src/auth/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
-import CustomDrawer from 'src/components/custom/custom-drawer';
+import { CustomDrawer } from 'src/components/custom-drawer';
 //
 import { NAV } from '../config-layout';
 import { useNavData, useNavDataSubscriber } from './config-navigation';

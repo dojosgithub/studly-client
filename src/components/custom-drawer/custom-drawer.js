@@ -16,8 +16,8 @@ import { RouterLink } from 'src/routes/components';
 
 // theme
 import { paper } from 'src/theme/css';
-import StepperView from './stepper-view';
 //
+import { ProjectView } from 'src/sections/project/view';
 import Iconify from '../iconify';
 import Scrollbar from '../scrollbar';
 //
@@ -143,7 +143,7 @@ export default function CustomDrawer({ open, onClose }) {
     );
 
     const renderStepper = (
-        <StepperView />
+        <ProjectView />
 
     );
 
@@ -177,8 +177,8 @@ export default function CustomDrawer({ open, onClose }) {
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             <Scrollbar>
-                <Stack spacing={3} sx={{ py: 3, px: 5 }}>
-                    {/* {renderMode}
+                {/* <Stack spacing={3} sx={{ py: 0, px: 5, height: '100%' }}>
+                    {renderMode}
 
                     {renderContrast}
 
@@ -189,10 +189,11 @@ export default function CustomDrawer({ open, onClose }) {
                     {renderStretch}
 
                     {renderPresets}
-                    */}
-                    
-                    {renderStepper}
-                </Stack>
+                   
+
+                </Stack> */}
+                
+                <ProjectView />
             </Scrollbar>
 
         </Drawer>
