@@ -16,7 +16,7 @@ import FormProvider, { RHFSelect, RHFTextField, RHFAutocomplete } from 'src/comp
 
 // ----------------------------------------------------------------------
 
-export default function CustomSelect({onSelect}) {
+export default function CustomSelect({ onSelect }) {
     const { enqueueSnackbar } = useSnackbar();
 
     const NewUserSchema = Yup.object().shape({
@@ -62,10 +62,11 @@ export default function CustomSelect({onSelect}) {
                 rowGap={3}
                 columnGap={2}
                 display="grid"
-            // gridTemplateColumns={{
-            //     xs: 'repeat(1, 1fr)',
-            //     sm: 'repeat(2, 1fr)',
-            // }}
+                // gridTemplateColumns={{
+                //     xs: 'repeat(1, 1fr)',
+                //     sm: 'repeat(2, 1fr)',
+                // }}
+                sx={{ marginBottom: "2rem" }}
             >
                 <RHFSelect name="template" label="Choose Template" sx={{
                     "& .MuiSelect-select": {
@@ -94,13 +95,13 @@ export default function CustomSelect({onSelect}) {
             </Box>
 
 
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ mt: 2 }}>
+            {/* <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ mt: 2 }}>
                 Update
-            </LoadingButton>
+            </LoadingButton> */}
         </FormProvider>
     );
 }
 
 CustomSelect.propTypes = {
-  onSelect: PropTypes.func,
+    onSelect: PropTypes.func,
 };

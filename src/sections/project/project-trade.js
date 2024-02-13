@@ -11,7 +11,7 @@ import { Divider, MenuItem, Typography } from '@mui/material';
 import { CustomTwoFields } from 'src/components/custom-two-fields';
 import { RHFSelect } from 'src/components/hook-form';
 // mock
-import { USER_STATUS_OPTIONS } from 'src/_mock';
+import { PROJECT_DEFAULT_TEMPLATE, USER_STATUS_OPTIONS } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 
 
@@ -39,7 +39,7 @@ export default function ProjectTrade() {
         </TabPanel>
         <TabPanel value={1}>
           <CustomSelect onSelect={handleSelect} />
-          {template && <CustomTwoFields template={template}/>}
+          {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>}
         </TabPanel>
       </Tabs>
     </>

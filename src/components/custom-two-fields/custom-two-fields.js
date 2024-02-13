@@ -31,16 +31,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 
-const currentDefaultValues = {
-    name: '',
-    tradeId: '',
-    _id: uuidv4(),
-}
-const defaultValues = {
-    trades: [
-        { ...currentDefaultValues }
-    ]
-}
+
 
 const NewTradeSchema = Yup.object().shape({
     trades: Yup.array()
@@ -56,10 +47,19 @@ const NewTradeSchema = Yup.object().shape({
 })
 
 
-const CustomTwoFields = ({ template }) => {
-    const [rows, setRows] = useState(defaultValues)
+const CustomTwoFields = ({ template, trades }) => {
+    // const [rows, setRows] = useState(defaultValues)
 
-
+    const currentDefaultValues = {
+        name: '',
+        tradeId: '',
+        _id: uuidv4(),
+    }
+    const defaultValues = {
+        trades: template ? trades : [
+            { ...currentDefaultValues }
+        ]
+    }
     const methods = useForm({
         resolver: yupResolver(NewTradeSchema),
         defaultValues
@@ -115,14 +115,14 @@ const CustomTwoFields = ({ template }) => {
         <>
             <Box sx={{ marginBottom: '2rem' }}>
 
-                <Box
+                {!template && <Box
                     sx={{ display: 'grid', marginBottom: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                 >
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>ID</Typography>
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Name</Typography>
                     <Typography>{" "}</Typography>
 
-                </Box>
+                </Box>}
                 <FormProvider methods={methods} onSubmit={onSubmit}>
                     <Stack gap='1.5rem'>
                         {formValues?.trades?.map(({ _id, name, tradeId }, index) => (
@@ -162,4 +162,5 @@ export default CustomTwoFields
 
 CustomTwoFields.propTypes = {
     template: PropTypes.string,
+    trades:PropTypes.array
 };
