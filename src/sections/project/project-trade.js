@@ -1,3 +1,4 @@
+import { useState } from 'react';
 // @mui
 import { alpha, styled } from '@mui/system';
 import { Tabs } from '@mui/base/Tabs';
@@ -5,17 +6,27 @@ import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { buttonClasses } from '@mui/base/Button';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
-import { Divider, Typography } from '@mui/material';
+import { Divider, MenuItem, Typography } from '@mui/material';
 // components
 import { CustomTwoFields } from 'src/components/custom-two-fields';
+import { RHFSelect } from 'src/components/hook-form';
+// mock
+import { USER_STATUS_OPTIONS } from 'src/_mock';
+import { CustomSelect } from 'src/components/custom-select';
+
 
 export default function ProjectTrade() {
+  const [template, setTemplate] = useState('')
+  const handleSelect = (val) => {
+    setTemplate(val)
+    console.log('val', val)
+  }
   return (
     <>
       <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Trades</Typography>
       <Divider sx={{
         minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-        mb:4
+        mb: 4
       }} />
 
       <Tabs defaultValue={0}>
@@ -24,9 +35,12 @@ export default function ProjectTrade() {
           <Tab value={1}>Use Exisiting Template</Tab>
         </TabsList>
         <TabPanel value={0}>
-          <CustomTwoFields/>
+          <CustomTwoFields />
         </TabPanel>
-        <TabPanel value={1}>Use Existing Template</TabPanel>
+        <TabPanel value={1}>
+          <CustomSelect onSelect={handleSelect} />
+          {template && <CustomTwoFields template={template}/>}
+        </TabPanel>
       </Tabs>
     </>
   );

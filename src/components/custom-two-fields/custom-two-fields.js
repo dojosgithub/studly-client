@@ -5,11 +5,16 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { styled } from '@mui/material/styles';
 // @mui 
-import { IconButton, Grid, alpha, Box, Button } from '@mui/material'
+import { IconButton, Grid, alpha, Box, Button, Stack, Typography } from '@mui/material'
+import { LoadingButton } from '@mui/lab';
+
 // hook-form 
 import FormProvider, {
     RHFTextField,
 } from 'src/components/hook-form';
+// utils
+import uuidv4 from 'src/utils/uuidv4';
+//
 import Iconify from '../iconify';
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -26,30 +31,38 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 
+const currentDefaultValues = {
+    name: '',
+    tradeId: '',
+    _id: uuidv4(),
+}
+const defaultValues = {
+    trades: [
+        { ...currentDefaultValues }
+    ]
+}
 
-const CustomTwoFields = () => {
-    const [rows, setRows] = useState([{ fieldID: 'ID', name: 'name', id: '1' }])
+const NewTradeSchema = Yup.object().shape({
+    trades: Yup.array()
+        .of(
+            Yup.object().shape({
+                tradeId: Yup.string().required('Trade ID is required'),
+                name: Yup.string().required('Trade Name is required'),
+                _id: Yup.string()
+            })
+        )
+        .min(1, 'At least one trade is required'),
+
+})
 
 
-    const NewUserSchema = [Yup.object().shape({
-        fieldID: Yup.string().required('Field ID is required'),
-        name: Yup.string().required('Name is required'),
-        id: Yup.string()
+const CustomTwoFields = ({ template }) => {
+    const [rows, setRows] = useState(defaultValues)
 
-    })];
-
-    const defaultValues = useMemo(
-        () => ({
-            fieldID: '',
-            name: '',
-            id: 1
-        }),
-        []
-    );
 
     const methods = useForm({
-        resolver: yupResolver(NewUserSchema),
-        defaultValues,
+        resolver: yupResolver(NewTradeSchema),
+        defaultValues
     });
 
     const {
@@ -57,56 +70,87 @@ const CustomTwoFields = () => {
         watch,
         control,
         setValue,
+        getValues,
         handleSubmit,
         formState: { isSubmitting },
     } = methods;
 
     const values = watch();
+    const formValues = getValues();
+    console.info('formValues', formValues);
 
     const onSubmit = handleSubmit(async (data) => {
         try {
+            console.info('DATA', data);
+            console.info('values inside', values);
             await new Promise((resolve) => setTimeout(resolve, 500));
             reset();
-            console.info('DATA', data);
         } catch (error) {
             console.error(error);
         }
     });
+
+    const handleDelete = (id) => {
+        console.log('id', id)
+        const filteredTrades = formValues.trades?.filter(row => row._id !== id);
+        console.log('filteredTrades', filteredTrades)
+        // setRows({ trades: filteredTrades })
+
+        setValue("trades", filteredTrades)
+
+
+    }
+    const handleAddField = () => {
+        const updatedTrades = [...formValues.trades, { ...currentDefaultValues, _id: uuidv4() }]
+        console.log('addfield updatedTrades', updatedTrades)
+        // setRows({ trades: updatedTrades })
+
+        setValue("trades", updatedTrades)
+
+    }
 
 
 
     return (
         <>
             <Box sx={{ marginBottom: '2rem' }}>
+
+                <Box
+                    sx={{ display: 'grid', marginBottom: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+                >
+                    <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>ID</Typography>
+                    <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Name</Typography>
+                    <Typography>{" "}</Typography>
+
+                </Box>
                 <FormProvider methods={methods} onSubmit={onSubmit}>
+                    <Stack gap='1.5rem'>
+                        {formValues?.trades?.map(({ _id, name, tradeId }, index) => (
+                            <Box
+                                key={_id}
+                                sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+                            >
+                                <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID' />
+                                <RHFTextField name={`trades[${index}].name`} placeholder='Trade Name' />
+                                <StyledIconButton color="inherit" onClick={() => handleDelete(_id)}>
+                                    <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
+                                </StyledIconButton>
+                            </Box>
 
-                    <Grid container gap="1rem" >
-                        {rows.map(({ id, fieldID, name }) => (
-                            <>
-                                <Grid item xs={12} md={5}>
-                                    <RHFTextField name={fieldID} label={fieldID} />
-                                </Grid>
-                                <Grid item xs={12} md={5}>
-                                    <RHFTextField name={name} label={name} />
-                                </Grid>
-                                <Grid item>
-                                    <StyledIconButton color="inherit" onClick={() => console.log("delete")}>
-                                        <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
-                                    </StyledIconButton>
-                                </Grid>
-                            </>
-                        )
-                        )}
-                    </Grid >
-
+                        ))}
+                    </Stack>
+                    <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ mt: 2 }}>
+                        Submit
+                    </LoadingButton>
                 </FormProvider>
-            </Box>
+            </Box >
 
             <Button
                 component='button'
                 variant="outlined"
                 startIcon={<Iconify icon="mingcute:add-line" />}
                 color='secondary'
+                onClick={handleAddField}
             >
                 Add Another Trade
             </Button>
@@ -115,3 +159,7 @@ const CustomTwoFields = () => {
 }
 
 export default CustomTwoFields
+
+CustomTwoFields.propTypes = {
+    template: PropTypes.string,
+};

@@ -29,22 +29,7 @@ export const _submittalsList = [...Array(20)].map((_, index) => ({
     link: 'www.google.com',
     status:
     (index % 2 && 'pending') || (index % 3 && 'mcnr') || (index % 4 && 'rejected') || 'approved',
-
-
-    // adminEmail: _mock.email(index),
-    // adminName: _mock.fullName(index),
-    // address: '908 Jack Locks',
-    // phoneNumber: _mock.phoneNumber(index),
-    // email: _mock.email(index),
-    // zipCode: '85807',
-    // state: 'Virginia',
-    // city: 'Rancho Cordova',
-    // role: _mock.role(index),
-    // isVerified: _mock.boolean(index),
-    // company: _mock.companyName(index),
-    // country: countries[index + 1].label,
-    // avatarUrl: _mock.image.avatar(index),
-  
+ 
   }));
   
 

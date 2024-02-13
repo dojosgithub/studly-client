@@ -167,8 +167,9 @@ export default function CustomDrawer({ open, onClose }) {
             }}
             sx={{
                 [`& .${drawerClasses.paper}`]: {
-                    ...paper({ theme, bgcolor: theme.palette.background.default }),
+                    // ...paper({ theme, bgcolor: theme.palette.background.default }),
                     width: `calc(100% - ${280}px)`,
+                    'background': 'white'
                 },
             }}
         >
@@ -192,7 +193,7 @@ export default function CustomDrawer({ open, onClose }) {
                    
 
                 </Stack> */}
-                
+
                 <ProjectView />
             </Scrollbar>
 
