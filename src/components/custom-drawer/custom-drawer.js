@@ -177,8 +177,8 @@ export default function CustomDrawer({ open, onClose }) {
 
             <Divider sx={{ borderStyle: 'dashed' }} />
 
-            <Scrollbar>
-                {/* <Stack spacing={3} sx={{ py: 0, px: 5, height: '100%' }}>
+            {/* <Scrollbar>
+                <Stack spacing={3} sx={{ py: 0, px: 5, height: '100%' }}>
                     {renderMode}
 
                     {renderContrast}
@@ -192,10 +192,10 @@ export default function CustomDrawer({ open, onClose }) {
                     {renderPresets}
                    
 
-                </Stack> */}
+                </Stack>
 
+            </Scrollbar> */}
                 <ProjectView />
-            </Scrollbar>
 
         </Drawer>
     );

@@ -7,6 +7,8 @@ import { styled } from '@mui/material/styles';
 // @mui 
 import { IconButton, Grid, alpha, Box, Button, Stack, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab';
+import ProjectTemplateNameDialog from 'src/sections/project/project-template-name-dialog';
+
 
 // hook-form 
 import FormProvider, {
@@ -16,6 +18,7 @@ import FormProvider, {
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from '../iconify';
+
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
     width: 50,
@@ -49,6 +52,7 @@ const NewTradeSchema = Yup.object().shape({
 
 const CustomTwoFields = ({ template, trades }) => {
     // const [rows, setRows] = useState(defaultValues)
+    const [open, setOpen] = useState(false)
 
     const currentDefaultValues = {
         name: '',
@@ -83,6 +87,7 @@ const CustomTwoFields = ({ template, trades }) => {
         try {
             console.info('DATA', data);
             console.info('values inside', values);
+            setOpen(true)
             await new Promise((resolve) => setTimeout(resolve, 500));
             reset();
         } catch (error) {
@@ -154,6 +159,7 @@ const CustomTwoFields = ({ template, trades }) => {
             >
                 Add Another Trade
             </Button>
+            <ProjectTemplateNameDialog title='asvs' open={open} onClose={() => setOpen(false)} />
         </>
     )
 }
@@ -162,5 +168,5 @@ export default CustomTwoFields
 
 CustomTwoFields.propTypes = {
     template: PropTypes.string,
-    trades:PropTypes.array
+    trades: PropTypes.array
 };

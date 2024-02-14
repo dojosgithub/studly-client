@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import PropTypes from 'prop-types';
+
 import * as Yup from 'yup';
 import { useForm, Controller, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -49,13 +51,18 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 // })
 
 
-const ProjectCreateTrade = () => {
-    // const [rows, setRows] = useState(defaultValues)
-    // const { trades } = useFormContext().getValues();
-    // const [open, setOpen] = useState(false)
+const ProjectExistingTrade = () => {
+
+    const [open, setOpen] = useState(false)
     const { getValues, setValue } = useFormContext();
     const { trades } = getValues()
-    console.log('trades:', trades)
+    // console.log('trades:', trades)
+    // useEffect(() => {
+    //   setValue('trades',trades)
+
+    // }, [setValue,trades])
+
+
 
     const currentDefaultValues = {
         name: '',
@@ -162,10 +169,16 @@ const ProjectCreateTrade = () => {
             >
                 Add Another Trade
             </Button>
-            {/* <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} /> */}
+            {/* {isTemplateSelected && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={(val) => console.log("templateName", val)} />} */}
         </>
     )
 }
 
-export default ProjectCreateTrade
+export default ProjectExistingTrade
 
+
+
+// ProjectExistingTrade.propTypes = {
+//     // trades: PropTypes.array
+//     isTemplateSelected: PropTypes.bool
+// };

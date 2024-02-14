@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+
 // @mui
 import { alpha, styled } from '@mui/system';
 import { Tabs } from '@mui/base/Tabs';
@@ -13,14 +15,12 @@ import { RHFSelect } from 'src/components/hook-form';
 // mock
 import { PROJECT_DEFAULT_TEMPLATE, USER_STATUS_OPTIONS } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
+import ProjectCreateTrade from './project-create-trade';
+import ProjectExistingTrade from './project-existing-trade';
 
 
-export default function ProjectTrade() {
-  const [template, setTemplate] = useState('')
-  const handleSelect = (val) => {
-    setTemplate(val)
-    console.log('val', val)
-  }
+export default function ProjectTrade({ onSelect, isDefaultTemplate, onTabChange }) {
+
   return (
     <>
       <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Trades</Typography>
@@ -29,21 +29,31 @@ export default function ProjectTrade() {
         mb: 4
       }} />
 
-      <Tabs defaultValue={0}>
-        <TabsList>
-          <Tab value={0}>Create Trade</Tab>
-          <Tab value={1}>Use Exisiting Template</Tab>
+      <Tabs>
+        <TabsList onClick={(e) => onTabChange(e.target.name)}>
+          <Tab value={0} name="create">Create Trade</Tab>
+          <Tab value={1} name="existing">Use Exisiting Template</Tab>
         </TabsList>
         <TabPanel value={0}>
-          <CustomTwoFields />
+          {/* <CustomTwoFields /> */}
+          <ProjectCreateTrade />
         </TabPanel>
         <TabPanel value={1}>
-          <CustomSelect onSelect={handleSelect} />
-          {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>}
+          {/* {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>} */}
+          <CustomSelect onSelect={onSelect} />
+          {/* this should be changed to template value */}
+          <ProjectExistingTrade isTemplateSelected={isDefaultTemplate}/>
         </TabPanel>
       </Tabs>
     </>
   );
+}
+
+
+ProjectTrade.propTypes = {
+  onSelect: PropTypes.func,
+  onTabChange: PropTypes.func,
+  isDefaultTemplate: PropTypes.bool,
 }
 
 const grey = {

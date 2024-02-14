@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
@@ -16,50 +16,50 @@ import FormProvider, {
 
 
 
-const ProjectName = ({ getData, step }) => {
+const ProjectName = () => {
 
+const [step,setStep]=useState()
 
+  // const ProjectSchema = Yup.object().shape({
+  //   name: Yup.string().required('Company Name is required'),
 
-  const ProjectSchema = Yup.object().shape({
-    name: Yup.string().required('Company Name is required'),
+  // });
+  // const defaultValues = useMemo(
+  //   () => ({
+  //     name: '',
+  //   }),
+  //   []
+  // );
 
-  });
-  const defaultValues = useMemo(
-    () => ({
-      name: '',
-    }),
-    []
-  );
+  // const methods = useForm({
+  //   resolver: yupResolver(ProjectSchema),
+  //   defaultValues,
+  // });
 
-  const methods = useForm({
-    resolver: yupResolver(ProjectSchema),
-    defaultValues,
-  });
+  // const {
+  //   reset,
+  //   watch,
+  //   control,
+  //   setValue,
+  //   handleSubmit,
+  //   formState: { isSubmitting },
+  // } = methods;
 
-  const {
-    reset,
-    watch,
-    control,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
+  // const values = watch();
 
-  const values = watch();
+  // const onSubmit = handleSubmit(async (data) => {
+  //   try {
+  //     await new Promise((resolve) => setTimeout(resolve, 500));
+  //     console.log('step', step);
+  //     console.log('data', data);
+  //     // getData(data)
+  //     reset();
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('step', step);
-      console.log('data', data);
-      // getData(data)
-      reset();
-
-      console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  //     console.info('DATA', data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
 
 
   return (
@@ -69,7 +69,7 @@ const ProjectName = ({ getData, step }) => {
         minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }} />
 
-      <FormProvider methods={methods} onSubmit={onSubmit}>
+      {/* <FormProvider methods={methods} onSubmit={onSubmit}> */}
         {/* <Grid container spacing={3}>
 
           <Grid xs={12} md={12}>
@@ -119,15 +119,10 @@ const ProjectName = ({ getData, step }) => {
             Save Changes
           </LoadingButton>
         </Stack> */}
-      </FormProvider>
+      {/* </FormProvider> */}
 
     </>)
 }
 
 export default ProjectName
 
-
-ProjectName.propTypes = {
-  step: PropTypes.bool,
-  getData: PropTypes.func,
-};
