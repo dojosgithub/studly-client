@@ -55,7 +55,7 @@ export default function ProjectStepperForm() {
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [isDefaultTemplate, setIsDefaultTemplate] = useState(false)
   const [activeTab, setActiveTab] = useState('')
-  
+
   const [open, setOpen] = useState(false)
 
   const ProjectSchema = Yup.object().shape({
@@ -70,14 +70,15 @@ export default function ProjectStepperForm() {
       )
       .min(1, 'At least one trade is required'),
     workflow: Yup.string().required('Workflow is required'),
+    templateName: Yup.string().required('Template Name is required'),
 
 
   });
 
   useEffect(() => {
 
-    console.log("activeTab", activeTab)
-  }, [activeTab])
+    console.log("activeStep", activeStep)
+  }, [activeStep])
 
 
 
@@ -89,7 +90,8 @@ export default function ProjectStepperForm() {
         tradeId: '',
         _id: uuidv4(),
       }],
-      workflow: ''
+      workflow: '',
+      templateName: ''
     }),
     [isDefaultTemplate]
   );
@@ -104,13 +106,15 @@ export default function ProjectStepperForm() {
     watch,
     control,
     setValue,
+    getValues,
     handleSubmit,
     formState: { isSubmitting },
     trigger
   } = methods;
 
   const values = watch();
-  // console.log('values', values)
+  const formValues = getValues();
+  console.log('FormValues', formValues)
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -127,41 +131,59 @@ export default function ProjectStepperForm() {
   });
 
 
-  const handleNext = async () => {
-    console.log('step', activeStep)
+  const getFormValidation = async () => {
     const currentStepValue = steps[activeStep].value
-    if (activeStep === steps.length - 1) return;
     const isFormValid = await trigger(currentStepValue);
+    return isFormValid
+  }
+
+  const handleNext = async () => {
+    if (activeStep === steps.length - 1) return;
+    const isFormValid = await getFormValidation();
     console.log('formValid', isFormValid)
-    console.log('currentStepValue', currentStepValue)
-    // isDefaultTemplate should be removed
-    if (activeTab === "existing" && isDefaultTemplate && selectedTemplate) {
+    console.log('selectedTemplate', selectedTemplate)
+    // // console.log('currentStepValue', currentStepValue)
+
+    // TODO:  isDefaultTemplate should be removed
+    console.log('----', activeStep)
+    if (activeTab === "existing" && isFormValid && isDefaultTemplate && selectedTemplate && !open) {
+      console.log('open', open)
       setOpen(true)
       return
     }
+    console.log('step', activeStep)
+    console.log('----', activeStep)
     if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
-  // const handleNext = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  // };
+  // // const handleNext = () => {
+  // //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  // // };
 
   const handleBack = () => {
+    // TODO: Step2: values should be there when go back
+    if (activeStep === 1) {
+      setIsDefaultTemplate(false);
+      setSelectedTemplate('');
+    }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleReset = () => {
     setActiveStep(0);
+    setIsDefaultTemplate(false);
+    setSelectedTemplate('');
   };
 
   const handleSelect = (val) => {
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
+    // TODO? multiple templates
     setValue('trades', PROJECT_DEFAULT_TEMPLATE)
-    console.log('select', val)
-    console.log('-------------')
+    // // console.log('select', val)
+    // // console.log('-------------')
   }
   const handleTab = (tab) => {
     console.log('tab', tab)
@@ -178,6 +200,12 @@ export default function ProjectStepperForm() {
       setSelectedTemplate('')
     }
     setActiveTab(tab)
+  }
+
+  const handleTemplateName = (val) => {
+    setValue("templateName", val)
+    handleNext()
+    setOpen(false)
   }
 
 
@@ -246,7 +274,7 @@ export default function ProjectStepperForm() {
                   my: 3,
                   minHeight: 120,
                   background: 'transparent'
-                  // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
+                  // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 }}
               >
                 {/* <Typography sx={{ my: 1 }}> Step {activeStep + 1}asdasdasdasd</Typography> */}
@@ -258,9 +286,7 @@ export default function ProjectStepperForm() {
                 </Button>}
                 <Box sx={{ flexGrow: 1 }} />
 
-                {/* <Button variant="contained" onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button> */}
+                
                 {/* <Button variant="contained" type='submit' onClick={handleNext}>
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> */}
@@ -275,7 +301,7 @@ export default function ProjectStepperForm() {
           </>
         )}
       </Stack>
-      {isDefaultTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={(val) => console.log("templateName", val)} />}
+      {isDefaultTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} />}
 
     </>
   );

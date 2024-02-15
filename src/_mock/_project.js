@@ -13,29 +13,36 @@ export const PROJECT_TEMPLATE_OPTIONS = [
 ];
 
 export const PROJECT_DEFAULT_TEMPLATE = [
-   {
+  {
     name: 'Demolition',
     tradeId: uuidv4(),
     _id: uuidv4()
   },
-   {
+  {
     name: 'Construction',
     _id: uuidv4(),
     tradeId: uuidv4(),
   },
-   {
+  {
     name: 'Electrical',
     _id: uuidv4(),
     tradeId: uuidv4(),
   },
-   {
+  {
     name: 'Framing and Drywall',
     _id: uuidv4(),
     tradeId: uuidv4(),
   },
-   {
+  {
     name: 'Flooring',
     _id: uuidv4(),
     tradeId: uuidv4(),
   },
 ];
+
+export const PROJECT_TEMPLATES = [
+  { name: 'default', trades: [...PROJECT_DEFAULT_TEMPLATE] },
+  { name: 'template1', trades: [...PROJECT_DEFAULT_TEMPLATE] },
+  { name: 'template2', trades: [...PROJECT_DEFAULT_TEMPLATE] },
+  { name: 'template3', trades: [...PROJECT_DEFAULT_TEMPLATE] },
+]

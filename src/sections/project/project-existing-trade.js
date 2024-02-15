@@ -106,9 +106,9 @@ const ProjectExistingTrade = () => {
     // });
 
     const handleDelete = (id) => {
-        console.log('id', id)
+        // console.log('id', id)
         const filteredTrades = trades?.filter(row => row._id !== id);
-        console.log('filteredTrades', filteredTrades)
+        // console.log('filteredTrades', filteredTrades)
         // setRows({ trades: filteredTrades })
 
         setValue("trades", filteredTrades)
@@ -117,7 +117,7 @@ const ProjectExistingTrade = () => {
     }
     const handleAddField = () => {
         const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
-        console.log('addfield updatedTrades', updatedTrades)
+        // console.log('addfield updatedTrades', updatedTrades)
         // setRows({ trades: updatedTrades })
 
         setValue("trades", updatedTrades)

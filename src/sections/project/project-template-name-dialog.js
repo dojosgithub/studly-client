@@ -55,7 +55,7 @@ export default function ProjectTemplateName({ open, onClose, getTemplateName }) 
             getTemplateName(data.name)
             await new Promise((resolve) => setTimeout(resolve, 500));
             reset();
-            onClose();
+            // onClose();
             enqueueSnackbar('Update success!');
             console.info('DATA', data);
         } catch (error) {
