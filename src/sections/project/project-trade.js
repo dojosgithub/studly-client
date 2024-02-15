@@ -19,7 +19,7 @@ import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
 
 
-export default function ProjectTrade({ onSelect, isDefaultTemplate, onTabChange }) {
+export default function ProjectTrade({ onSelect,selectedTemplate, isDefaultTemplate, onTabChange }) {
 
   return (
     <>
@@ -40,17 +40,19 @@ export default function ProjectTrade({ onSelect, isDefaultTemplate, onTabChange 
         </TabPanel>
         <TabPanel value={1}>
           {/* {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>} */}
-          <CustomSelect onSelect={onSelect} />
+          <CustomSelect selectedTemplate={selectedTemplate} onSelect={onSelect} />
           {/* this should be changed to template value */}
           {isDefaultTemplate && <ProjectExistingTrade isTemplateSelected={isDefaultTemplate} />}
         </TabPanel>
       </Tabs>
+      
     </>
   );
 }
 
 
 ProjectTrade.propTypes = {
+  selectedTemplate: PropTypes.string,
   onSelect: PropTypes.func,
   onTabChange: PropTypes.func,
   isDefaultTemplate: PropTypes.bool,

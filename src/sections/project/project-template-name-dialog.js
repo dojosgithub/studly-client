@@ -24,17 +24,26 @@ import FormProvider, { RHFSelect, RHFTextField, RHFAutocomplete } from 'src/comp
 
 // ----------------------------------------------------------------------
 
-export default function ProjectTemplateName({ open, onClose, getTemplateName }) {
+export default function ProjectTemplateName({ open, onClose, getTemplateName,trades }) {
     const { enqueueSnackbar } = useSnackbar();
 
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
-
+        // trades: Yup.array()
+        //     .of(
+        //         Yup.object().shape({
+        //             tradeId: Yup.string().required('Trade ID is required'),
+        //             name: Yup.string().required('Trade Name is required'),
+        //             _id: Yup.string()
+        //         })
+        //     )
+        //     .min(1, 'At least one trade is required'),
     });
 
     const defaultValues = useMemo(
         () => ({
             name: '',
+            // trades: trades || [],
         }),
         []
     );
@@ -50,9 +59,10 @@ export default function ProjectTemplateName({ open, onClose, getTemplateName }) 
         formState: { isSubmitting },
     } = methods;
 
-    const onSubmit = handleSubmit(async (data) => {
+    const onSubmit = handleSubmit(async ({ name }) => {
         try {
-            getTemplateName(data.name)
+            getTemplateName(name)
+            const data = { name, trades }
             await new Promise((resolve) => setTimeout(resolve, 500));
             reset();
             // onClose();
@@ -104,4 +114,5 @@ ProjectTemplateName.propTypes = {
     getTemplateName: PropTypes.func,
     onClose: PropTypes.func,
     open: PropTypes.bool,
+    trades: PropTypes.array,
 };

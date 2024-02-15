@@ -14,6 +14,7 @@ import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { useAuthContext } from 'src/auth/hooks';
+import { ProjectView } from 'src/sections/project/view';
 import { NavSectionVertical } from 'src/components/nav-section';
 import { CustomDrawer } from 'src/components/custom-drawer';
 //
@@ -58,7 +59,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
       {role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
         Project
       </Button>)}
-      {role === "subscriber" && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} />)}
+      {role === "subscriber" && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView}/>)}
       <NavSectionVertical data={role === "subscriber" ? navDataSubscriber : navData} />
 
       <Box sx={{ flexGrow: 1 }} />

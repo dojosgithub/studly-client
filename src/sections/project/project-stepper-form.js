@@ -18,14 +18,18 @@ import { Divider, Stack } from '@mui/material';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
-
+// utils
+import uuidv4 from 'src/utils/uuidv4';
+import { PROJECT_DEFAULT_TEMPLATE } from 'src/_mock';
+//
+import { CustomDrawer } from 'src/components/custom-drawer';
 // form
 import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
-import { PROJECT_DEFAULT_TEMPLATE } from 'src/_mock';
-import uuidv4 from 'src/utils/uuidv4';
+import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
+
 
 // ----------------------------------------------------------------------
 
@@ -57,6 +61,8 @@ export default function ProjectStepperForm() {
   const [activeTab, setActiveTab] = useState('')
 
   const [open, setOpen] = useState(false)
+  const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
+
 
   const ProjectSchema = Yup.object().shape({
     name: Yup.string().required('Company Name is required'),
@@ -70,7 +76,6 @@ export default function ProjectStepperForm() {
       )
       .min(1, 'At least one trade is required'),
     workflow: Yup.string().required('Workflow is required'),
-    templateName: Yup.string().required('Template Name is required'),
 
 
   });
@@ -91,7 +96,6 @@ export default function ProjectStepperForm() {
         _id: uuidv4(),
       }],
       workflow: '',
-      templateName: ''
     }),
     [isDefaultTemplate]
   );
@@ -178,6 +182,9 @@ export default function ProjectStepperForm() {
   };
 
   const handleSelect = (val) => {
+    if (val === "create") {
+      setOpenNewTemplateDrawer(true)
+    }
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
     // TODO? multiple templates
@@ -203,7 +210,7 @@ export default function ProjectStepperForm() {
   }
 
   const handleTemplateName = (val) => {
-    setValue("templateName", val)
+    // setValue("templateName", val)
     handleNext()
     setOpen(false)
   }
@@ -216,7 +223,7 @@ export default function ProjectStepperForm() {
         component = <ProjectName />;
         break;
       case 1:
-        component = <ProjectTrade onSelect={handleSelect} isDefaultTemplate={isDefaultTemplate} onTabChange={handleTab} />;
+        component = <ProjectTrade selectedTemplate={selectedTemplate} onSelect={handleSelect} isDefaultTemplate={isDefaultTemplate} onTabChange={handleTab} />;
         break;
       case 2:
         component = <ProjectWorkflow />;
@@ -286,7 +293,7 @@ export default function ProjectStepperForm() {
                 </Button>}
                 <Box sx={{ flexGrow: 1 }} />
 
-                
+
                 {/* <Button variant="contained" type='submit' onClick={handleNext}>
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> */}
@@ -301,8 +308,11 @@ export default function ProjectStepperForm() {
           </>
         )}
       </Stack>
-      {isDefaultTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} />}
-
+      {isDefaultTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} trades={formValues?.trades} />}
+      <CustomDrawer open={openNewTemplateDrawer} onClose={() => {
+        setOpenNewTemplateDrawer(false);
+        handleSelect('')
+      }} Component={ProjectNewTemplateDrawer} type='template' />
     </>
   );
 }
