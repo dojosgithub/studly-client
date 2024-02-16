@@ -42,7 +42,33 @@ export const PROJECT_DEFAULT_TEMPLATE = [
 
 export const PROJECT_TEMPLATES = [
   { name: 'default', trades: [...PROJECT_DEFAULT_TEMPLATE] },
-  { name: 'template1', trades: [...PROJECT_DEFAULT_TEMPLATE] },
-  { name: 'template2', trades: [...PROJECT_DEFAULT_TEMPLATE] },
-  { name: 'template3', trades: [...PROJECT_DEFAULT_TEMPLATE] },
+  {
+    name: 'template1',
+    trades: [{
+      name: 'Construction',
+      _id: uuidv4(),
+      tradeId: uuidv4(),
+    },
+    {
+      name: 'Electrical',
+      _id: uuidv4(),
+      tradeId: uuidv4(),
+    },]
+  },
+  {
+    name: 'template2',
+    trades: [{
+      name: 'Flooring',
+      _id: uuidv4(),
+      tradeId: uuidv4(),
+    },]
+  },
+  {
+    name: 'template3',
+    trades: [{
+      name: 'Electrical',
+      _id: uuidv4(),
+      tradeId: uuidv4(),
+    },]
+  },
 ]

@@ -20,7 +20,7 @@ import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
-import { PROJECT_DEFAULT_TEMPLATE } from 'src/_mock';
+import { PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // form
@@ -63,6 +63,20 @@ export default function ProjectStepperForm() {
   const [open, setOpen] = useState(false)
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
 
+  // const getTemplateTrades=()=>{
+  //   let trades=PROJECT_TEMPLATES.filter(template=>template.name === selectedTemplate);
+  //   trades= trades.length>0?trades[0]?.trades:[]
+  //   return trades
+  // }
+  const getTemplateTrades = useCallback(
+    (val) => {
+      let trades = PROJECT_TEMPLATES.filter(template => template.name === val);
+      trades = trades.length > 0 ? trades[0]?.trades : []
+      return trades
+    },
+    []
+  );
+
 
   const ProjectSchema = Yup.object().shape({
     name: Yup.string().required('Company Name is required'),
@@ -90,14 +104,14 @@ export default function ProjectStepperForm() {
   const defaultValues = useMemo(
     () => ({
       name: '',
-      trades: isDefaultTemplate ? PROJECT_DEFAULT_TEMPLATE : [{
+      trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
         name: '',
         tradeId: '',
         _id: uuidv4(),
       }],
       workflow: '',
     }),
-    [isDefaultTemplate]
+    [selectedTemplate, getTemplateTrades]
   );
 
   const methods = useForm({
@@ -143,7 +157,7 @@ export default function ProjectStepperForm() {
     // // console.log('currentStepValue', currentStepValue)
 
     // TODO:  isDefaultTemplate should be removed
-    if (activeTab === "existing" && isFormValid && isDefaultTemplate && selectedTemplate && !open) {
+    if (activeTab === "existing" && isFormValid && !!selectedTemplate && !open) {
       console.log('open', open)
       setOpen(true)
       return
@@ -153,7 +167,7 @@ export default function ProjectStepperForm() {
     }
   };
 
- 
+
 
   const handleBack = () => {
     // TODO: Step2: values should be there when go back
@@ -174,10 +188,15 @@ export default function ProjectStepperForm() {
     if (val === "create") {
       setOpenNewTemplateDrawer(true)
     }
+    console.log('select',val)
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
+    console.log('formValues',formValues)
+    console.log('selectedTemplate',selectedTemplate)
+    const filteredTrades=getTemplateTrades(val)
+    console.log('filteredTrades',filteredTrades)
     // TODO: multiple templates
-    setValue('trades', PROJECT_DEFAULT_TEMPLATE)
+    setValue('trades', filteredTrades)
   }
   const handleTab = (tab) => {
     const newField = {
@@ -185,10 +204,10 @@ export default function ProjectStepperForm() {
       tradeId: '',
       _id: uuidv4(),
     }
-    const defaultTemplate = isDefaultTemplate ? PROJECT_DEFAULT_TEMPLATE : []
+    const defaultTemplate = selectedTemplate ? getTemplateTrades(selectedTemplate) : []
     const trades = tab === "create" ? [newField] : defaultTemplate;
     setValue('trades', trades)
-    if (tab === "create" && isDefaultTemplate) {
+    if (tab === "create" && !!selectedTemplate) {
       setIsDefaultTemplate(false)
       setSelectedTemplate('')
     }
@@ -290,7 +309,7 @@ export default function ProjectStepperForm() {
           </>
         )}
       </Stack>
-      {isDefaultTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} trades={formValues?.trades} />}
+      {!!selectedTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} trades={formValues?.trades} />}
       <CustomDrawer open={openNewTemplateDrawer} onClose={() => {
         setOpenNewTemplateDrawer(false);
         handleSelect('')

@@ -42,7 +42,7 @@ export default function ProjectTrade({ onSelect,selectedTemplate, isDefaultTempl
           {/* {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>} */}
           <CustomSelect selectedTemplate={selectedTemplate} onSelect={onSelect} />
           {/* this should be changed to template value */}
-          {isDefaultTemplate && <ProjectExistingTrade isTemplateSelected={isDefaultTemplate} />}
+          {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />}
         </TabPanel>
       </Tabs>
       

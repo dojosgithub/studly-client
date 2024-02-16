@@ -56,11 +56,11 @@ const ProjectExistingTrade = () => {
     const [open, setOpen] = useState(false)
     const { getValues, setValue } = useFormContext();
     const { trades } = getValues()
+    const [rows, setRows] = useState(trades)
     // console.log('trades:', trades)
-    // useEffect(() => {
-    //   setValue('trades',trades)
-
-    // }, [setValue,trades])
+    useEffect(() => {
+        console.log('useEffect trades', trades)
+    }, [trades])
 
 
 
@@ -110,6 +110,7 @@ const ProjectExistingTrade = () => {
         const filteredTrades = trades?.filter(row => row._id !== id);
         // console.log('filteredTrades', filteredTrades)
         // setRows({ trades: filteredTrades })
+        setRows(filteredTrades)
 
         setValue("trades", filteredTrades)
 
@@ -118,7 +119,7 @@ const ProjectExistingTrade = () => {
     const handleAddField = () => {
         const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
         // console.log('addfield updatedTrades', updatedTrades)
-        // setRows({ trades: updatedTrades })
+        setRows(updatedTrades)
 
         setValue("trades", updatedTrades)
 
@@ -140,7 +141,7 @@ const ProjectExistingTrade = () => {
                 </Box>
                 {/* <FormProvider methods={methods} onSubmit={onSubmit}> */}
                 <Stack gap='1.5rem'>
-                    {trades && trades?.map(({ _id, name, tradeId }, index) => (
+                    {rows && rows?.map(({ _id, name, tradeId }, index) => (
                         <Box
                             key={_id}
                             sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
