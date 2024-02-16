@@ -1,7 +1,7 @@
 // redux-toolkit
 import { createSlice } from '@reduxjs/toolkit';
 // utils
-import axios from '../../utils/axios';
+import { axiosInstance as axios } from 'src/utils/axios';
 // store
 import { dispatch } from '../store';
 
@@ -50,7 +50,7 @@ const slice = createSlice({
 
     // SET PLAYER TIME TRAVEL
     setTimeTravelPlayer(state, action) {
-      state.timeTravelPlayerCount = state.timeTravelPlayerCount + 1;
+      state.timeTravelPlayerCount += 1;
       state.timeTravelPlayer = action.payload;
     }
   },
@@ -69,11 +69,12 @@ export function getPlayerData(id) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      let asset, comments;
+      let asset;
+      let comments;
       await axios.get(`/api/asset/${id}`).then(async (response) => {
         asset = response.data;
-        await axios.get(`/api/comment/${id}`).then((response) => {
-          comments = response.data
+        await axios.get(`/api/comment/${id}`).then((res) => {
+          comments = res.data
           dispatch(slice.actions.setPlayerData({
             asset: asset.data,
             comments: comments.data
@@ -121,6 +122,6 @@ export function getPlayerComments(id) {
 // For Player Time Travel To Timestamp
 export function getTimeTravelPlayer(timeStamp) {
   return () => {
-      dispatch(slice.actions.setTimeTravelPlayer(timeStamp));
+    dispatch(slice.actions.setTimeTravelPlayer(timeStamp));
   };
 }

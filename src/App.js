@@ -1,5 +1,9 @@
 // i18n
 // import 'src/locales/i18n';
+// redux
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import { store, persistor } from 'src/redux/store';
 
 // scrollbar
 import 'simplebar-react/dist/simplebar.min.css';
@@ -37,6 +41,8 @@ import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
+
+
 // sections
 // import { CheckoutProvider } from 'src/sections/checkout/context';
 // auth
@@ -63,31 +69,35 @@ export default function App() {
   useScrollToTop();
 
   return (
-    <AuthProvider>
-      <SettingsProvider
-        defaultSettings={{
-          themeMode: 'light', // 'light' | 'dark'
-          themeDirection: 'ltr', //  'rtl' | 'ltr'
-          themeContrast: 'default', // 'default' | 'bold'
-          themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-          themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-          themeStretch: false,
-        }}
-      >
-        <ThemeProvider>
-          <MotionLazy>
-            <SnackbarProvider>
-              {/* <CheckoutProvider> */}
-              <SettingsDrawer />
-              <ProgressBar />
-              <AuthConsumer>
-                <Router />
-              </AuthConsumer>
-              {/* </CheckoutProvider> */}
-            </SnackbarProvider>
-          </MotionLazy>
-        </ThemeProvider>
-      </SettingsProvider>
-    </AuthProvider>
+    <ReduxProvider store={store}>
+      <AuthProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <SettingsProvider
+            defaultSettings={{
+              themeMode: 'light', // 'light' | 'dark'
+              themeDirection: 'ltr', //  'rtl' | 'ltr'
+              themeContrast: 'default', // 'default' | 'bold'
+              themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+              themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+              themeStretch: false,
+            }}
+          >
+            <ThemeProvider>
+              <MotionLazy>
+                <SnackbarProvider>
+                  {/* <CheckoutProvider> */}
+                  <SettingsDrawer />
+                  <ProgressBar />
+                  <AuthConsumer>
+                    <Router />
+                  </AuthConsumer>
+                  {/* </CheckoutProvider> */}
+                </SnackbarProvider>
+              </MotionLazy>
+            </ThemeProvider>
+          </SettingsProvider>
+        </PersistGate>
+      </AuthProvider>
+    </ReduxProvider>
   );
 }

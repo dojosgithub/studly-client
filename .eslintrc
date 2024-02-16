@@ -6,7 +6,8 @@
   },
   "plugins": [
     "unused-imports",
-    "prettier"
+    "prettier",
+    "import"
   ],
   "extends": [
     "airbnb",
@@ -106,6 +107,16 @@
         "varsIgnorePattern": "^_",
         "args": "after-used",
         "argsIgnorePattern": "^_"
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "test/**", // Add any other relevant directories here
+          "src/setupTests.js" // Adjust this path if necessary
+        ],
+        "optionalDependencies": false
       }
     ]
   }

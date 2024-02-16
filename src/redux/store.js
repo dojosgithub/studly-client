@@ -1,20 +1,29 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
+import storage from 'redux-persist/lib/storage';
 import { useDispatch as useAppDispatch, useSelector as useAppSelector } from 'react-redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import { rootPersistConfig, rootReducer } from './rootReducer';
+import { persistReducer, persistStore } from 'redux-persist';
+import rootReducer from "./rootReducer";
 
-// ----------------------------------------------------------------------
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
 
 const store = configureStore({
-  reducer: persistReducer(rootPersistConfig, rootReducer),
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-      immutableCheck: false,
-    }),
+  getDefaultMiddleware({
+    serializableCheck: false,
+    immutableCheck: false,
+  }),
+  devTools: window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 });
 
-const persistor = persistStore(store);
+
+const persistor = persistStore(store)
 
 const { dispatch, getState } = store;
 
