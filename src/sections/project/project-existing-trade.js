@@ -1,18 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react'
 
-import * as Yup from 'yup';
-import { useForm, Controller, useFormContext } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 // @mui 
-import { IconButton, Grid, alpha, Box, Button, Stack, Typography } from '@mui/material'
-import { LoadingButton } from '@mui/lab';
-import ProjectTemplateName from 'src/sections/project/project-template-name-dialog';
+import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material'
 
 
 // hook-form 
-import FormProvider, {
+import{
     RHFTextField,
 } from 'src/components/hook-form';
 // utils
@@ -37,29 +32,15 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 
 
-// const NewTradeSchema = Yup.object().shape({
-//     trades: Yup.array()
-//         .of(
-//             Yup.object().shape({
-//                 tradeId: Yup.string().required('Trade ID is required'),
-//                 name: Yup.string().required('Trade Name is required'),
-//                 _id: Yup.string()
-//             })
-//         )
-//         .min(1, 'At least one trade is required'),
-
-// })
-
-
 const ProjectExistingTrade = () => {
 
     const [open, setOpen] = useState(false)
     const { getValues, setValue } = useFormContext();
     const { trades } = getValues()
     const [rows, setRows] = useState(trades)
-    // console.log('trades:', trades)
     useEffect(() => {
         console.log('useEffect trades', trades)
+        setRows(trades)
     }, [trades])
 
 
@@ -69,47 +50,11 @@ const ProjectExistingTrade = () => {
         tradeId: '',
         _id: uuidv4(),
     }
-    // const defaultValues = {
-    //     trades:[
-    //         { ...currentDefaultValues }
-    //     ]
-    // }
-    // const methods = useForm({
-    //     resolver: yupResolver(NewTradeSchema),
-    //     defaultValues
-    // });
-
-    // const {
-    //     reset,
-    //     watch,
-    //     control,
-    //     setValue,
-    //     getValues,
-    //     handleSubmit,
-    //     formState: { isSubmitting },
-    // } = methods;
-
-    // const values = watch();
-    // const formValues = getValues();
-    // console.info('formValues', formValues);
-
-    // const onSubmit = handleSubmit(async (data) => {
-    //     try {
-    //         console.info('DATA', data);
-    //         console.info('values inside', values);
-    //         setOpen(true)
-    //         await new Promise((resolve) => setTimeout(resolve, 500));
-    //         reset();
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // });
 
     const handleDelete = (id) => {
-        // console.log('id', id)
+        console.log('id', id)
         const filteredTrades = trades?.filter(row => row._id !== id);
-        // console.log('filteredTrades', filteredTrades)
-        // setRows({ trades: filteredTrades })
+        console.log('filteredTrades', filteredTrades)
         setRows(filteredTrades)
 
         setValue("trades", filteredTrades)
@@ -118,7 +63,7 @@ const ProjectExistingTrade = () => {
     }
     const handleAddField = () => {
         const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
-        // console.log('addfield updatedTrades', updatedTrades)
+        console.log('addfield updatedTrades', updatedTrades)
         setRows(updatedTrades)
 
         setValue("trades", updatedTrades)
@@ -139,7 +84,6 @@ const ProjectExistingTrade = () => {
                     <Typography>{" "}</Typography>
 
                 </Box>
-                {/* <FormProvider methods={methods} onSubmit={onSubmit}> */}
                 <Stack gap='1.5rem'>
                     {rows && rows?.map(({ _id, name, tradeId }, index) => (
                         <Box
@@ -155,10 +99,7 @@ const ProjectExistingTrade = () => {
 
                     ))}
                 </Stack>
-                {/* <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ mt: 2 }}>
-                        Submit
-                    </LoadingButton> */}
-                {/* </FormProvider> */}
+             
             </Box >
 
             <Button
@@ -170,7 +111,6 @@ const ProjectExistingTrade = () => {
             >
                 Add Another Trade
             </Button>
-            {/* {isTemplateSelected && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={(val) => console.log("templateName", val)} />} */}
         </>
     )
 }
@@ -178,8 +118,3 @@ const ProjectExistingTrade = () => {
 export default ProjectExistingTrade
 
 
-
-// ProjectExistingTrade.propTypes = {
-//     // trades: PropTypes.array
-//     isTemplateSelected: PropTypes.bool
-// };

@@ -5,22 +5,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import LoadingButton from '@mui/lab/LoadingButton';
-import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import MenuItem from '@mui/material/MenuItem';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import { Stack, Typography } from '@mui/material';
-import Label from 'src/components/label';
-// _mock
-import { USER_STATUS_OPTIONS } from 'src/_mock';
 // components
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSelect, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -29,21 +22,12 @@ export default function ProjectTemplateName({ open, onClose, getTemplateName,tra
 
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
-        // trades: Yup.array()
-        //     .of(
-        //         Yup.object().shape({
-        //             tradeId: Yup.string().required('Trade ID is required'),
-        //             name: Yup.string().required('Trade Name is required'),
-        //             _id: Yup.string()
-        //         })
-        //     )
-        //     .min(1, 'At least one trade is required'),
+        
     });
 
     const defaultValues = useMemo(
         () => ({
             name: '',
-            // trades: trades || [],
         }),
         []
     );

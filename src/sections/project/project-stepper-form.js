@@ -63,11 +63,6 @@ export default function ProjectStepperForm() {
   const [open, setOpen] = useState(false)
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
 
-  // const getTemplateTrades=()=>{
-  //   let trades=PROJECT_TEMPLATES.filter(template=>template.name === selectedTemplate);
-  //   trades= trades.length>0?trades[0]?.trades:[]
-  //   return trades
-  // }
   const getTemplateTrades = useCallback(
     (val) => {
       let trades = PROJECT_TEMPLATES.filter(template => template.name === val);
@@ -93,12 +88,6 @@ export default function ProjectStepperForm() {
 
 
   });
-
-  useEffect(() => {
-
-    console.log("activeStep", activeStep)
-  }, [activeStep])
-
 
 
   const defaultValues = useMemo(
@@ -188,13 +177,11 @@ export default function ProjectStepperForm() {
     if (val === "create") {
       setOpenNewTemplateDrawer(true)
     }
-    console.log('select',val)
+   
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
-    console.log('formValues',formValues)
-    console.log('selectedTemplate',selectedTemplate)
+  
     const filteredTrades=getTemplateTrades(val)
-    console.log('filteredTrades',filteredTrades)
     // TODO: multiple templates
     setValue('trades', filteredTrades)
   }

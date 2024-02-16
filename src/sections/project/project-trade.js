@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // @mui
@@ -8,12 +7,8 @@ import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { buttonClasses } from '@mui/base/Button';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
-import { Divider, MenuItem, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 // components
-import { CustomTwoFields } from 'src/components/custom-two-fields';
-import { RHFSelect } from 'src/components/hook-form';
-// mock
-import { PROJECT_DEFAULT_TEMPLATE, USER_STATUS_OPTIONS } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
@@ -35,11 +30,9 @@ export default function ProjectTrade({ onSelect,selectedTemplate, isDefaultTempl
           <Tab value={1} name="existing">Use Exisiting Template</Tab>
         </TabsList>
         <TabPanel value={0}>
-          {/* <CustomTwoFields /> */}
           <ProjectCreateTrade />
         </TabPanel>
         <TabPanel value={1}>
-          {/* {template && <CustomTwoFields template={template} trades={PROJECT_DEFAULT_TEMPLATE}/>} */}
           <CustomSelect selectedTemplate={selectedTemplate} onSelect={onSelect} />
           {/* this should be changed to template value */}
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />}

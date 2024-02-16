@@ -2,7 +2,6 @@
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 
-// import { CustomStepper } from 'src/components/custom-stepper';
 import ProjectStepperForm from '../project-stepper-form';
 
 // ----------------------------------------------------------------------
