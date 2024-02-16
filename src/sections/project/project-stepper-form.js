@@ -116,19 +116,15 @@ export default function ProjectStepperForm() {
     trigger
   } = methods;
 
-  const values = watch();
   const formValues = getValues();
-  console.log('FormValues', formValues)
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       console.log('data', data);
-      // getData(data)
       reset();
 
-      console.info('DATA', data);
     } catch (error) {
       console.error(error);
     }
@@ -144,27 +140,20 @@ export default function ProjectStepperForm() {
   const handleNext = async () => {
     if (activeStep === steps.length - 1) return;
     const isFormValid = await getFormValidation();
-    console.log('formValid', isFormValid)
-    console.log('selectedTemplate', selectedTemplate)
     // // console.log('currentStepValue', currentStepValue)
 
     // TODO:  isDefaultTemplate should be removed
-    console.log('----', activeStep)
     if (activeTab === "existing" && isFormValid && isDefaultTemplate && selectedTemplate && !open) {
       console.log('open', open)
       setOpen(true)
       return
     }
-    console.log('step', activeStep)
-    console.log('----', activeStep)
     if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
-  // // const handleNext = () => {
-  // //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  // // };
+ 
 
   const handleBack = () => {
     // TODO: Step2: values should be there when go back
@@ -187,13 +176,10 @@ export default function ProjectStepperForm() {
     }
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
-    // TODO? multiple templates
+    // TODO: multiple templates
     setValue('trades', PROJECT_DEFAULT_TEMPLATE)
-    // // console.log('select', val)
-    // // console.log('-------------')
   }
   const handleTab = (tab) => {
-    console.log('tab', tab)
     const newField = {
       name: '',
       tradeId: '',
@@ -284,7 +270,6 @@ export default function ProjectStepperForm() {
                   // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 }}
               >
-                {/* <Typography sx={{ my: 1 }}> Step {activeStep + 1}asdasdasdasd</Typography> */}
                 {getComponent()}
               </Paper>
               <Box sx={{ display: 'flex' }}>
@@ -294,11 +279,8 @@ export default function ProjectStepperForm() {
                 <Box sx={{ flexGrow: 1 }} />
 
 
-                {/* <Button variant="contained" type='submit' onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button> */}
                 {activeStep === steps.length - 1 ? (
-                  <Button type="submit" variant="contained">Submit</Button>
+                  <Button type="submit" variant="contained">Finish</Button>
                 ) : (
                   <Button onClick={handleNext} variant="contained">Next</Button>
                 )}
