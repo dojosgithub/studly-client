@@ -45,7 +45,7 @@ export default function OnboardingView() {
                 py: { xs: 5, md: 5 },
             }}
         >
-            {projects?.length < 0 ?
+            {projects?.length > 0 ?
                 <OnboardingProjects projects={projects} /> :
                 <OnboardingWithoutProjects />
             }
