@@ -112,3 +112,24 @@ export const PROJECTS = [
     _id: uuidv4()
   }
 ];
+
+
+export const PROJECT_STATUS_TREE = {
+  name: 'draft',
+  children: [
+    { name: 'Submitted' },
+    {
+      name: 'reviewed',
+      children: [
+        { name: ' Reviewed for record' },
+        { name: 'Approved (APR)' },
+        { name: 'Make Corrections Noted (MCN)' },
+        { name: 'Make Corrections and Resubmit (MCNR)' },
+        { name: 'Rejected (RJT)' },
+        { name: 'Custom' },
+      ]
+
+    },
+    { name: 'Sent to Subcontractor' },
+  ]
+}

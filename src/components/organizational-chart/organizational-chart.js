@@ -21,7 +21,7 @@ export default function OrganizationalChart({ data, variant = 'simple', sx, ...o
       lineBorderRadius="24px"
       lineColor={theme.palette.divider}
       label={
-        (variant === 'simple' && <SimpleNode sx={sx} node={data} />) ||
+        (variant === 'simple' && <SimpleNode sx={sx} node={data} onDelete={(val) => console.info('DELETE', val)} />) ||
         (variant === 'standard' && (
           <StandardNode
             sx={sx}
