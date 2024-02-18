@@ -13,32 +13,29 @@ import { isValidToken, setSession } from './utils';
 // Customer will need to do some extra handling yourself if you want to extend the logic and other features...
 
 // ----------------------------------------------------------------------
-
+const USER_ROLE = 'subscriber'
 const initialState = {
   user: null,
   loading: true,
-  role:"subscriber",
 };
 
 const reducer = (state, action) => {
   if (action.type === 'INITIAL') {
     return {
       loading: false,
-      user: action.payload.user,
-      role:"subscriber"
+      user: { ...action.payload.user, role: USER_ROLE },
     };
   }
   if (action.type === 'LOGIN') {
     return {
       ...state,
-      user: action.payload.user,
-      role:"subscriber"
+      user: { ...action.payload.user, role: USER_ROLE },
     };
   }
   if (action.type === 'REGISTER') {
     return {
       ...state,
-      user: action.payload.user,
+      user: { ...action.payload.user, role: USER_ROLE },
     };
   }
   if (action.type === 'LOGOUT') {
@@ -163,13 +160,12 @@ export function AuthProvider({ children }) {
       loading: status === 'loading',
       authenticated: status === 'authenticated',
       unauthenticated: status === 'unauthenticated',
-      role:state.role,
       //
       login,
       register,
       logout,
     }),
-    [login, logout, register, state.user,state.role, status]
+    [login, logout, register, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

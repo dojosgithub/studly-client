@@ -56,6 +56,7 @@ export function useNavData() {
             title: 'app',
             path: paths.dashboard.root,
             icon: ICONS.dashboard,
+            roles: ['admin'],
           },
         ],
       },
@@ -70,6 +71,7 @@ export function useNavData() {
             title: 'company',
             path: paths.dashboard.company.list,
             icon: ICONS.dashboard,
+            roles: ['admin'],
            
           },
           // USER
@@ -77,6 +79,7 @@ export function useNavData() {
             title: 'user',
             path: paths.dashboard.user.root,
             icon: ICONS.user,
+            roles: ['admin'],
             children: [
               { title: 'profile', path: paths.dashboard.user.root },
               { title: 'cards', path: paths.dashboard.user.cards },
@@ -92,6 +95,7 @@ export function useNavData() {
             title: 'blog',
             path: paths.dashboard.post.root,
             icon: ICONS.blog,
+            roles: ['admin'],
             children: [
               { title: 'list', path: paths.dashboard.post.root },
               // { title: 'details', path: paths.dashboard.post.demo.details },
@@ -99,6 +103,22 @@ export function useNavData() {
               // { title: 'edit', path: paths.dashboard.post.demo.edit },
             ],
           },
+        ],
+      },
+
+      // SUBSCRIBER ROUTES
+
+      {
+        items: [
+          // 
+          {
+            title: 'Submittals',
+            path: paths.subscriber.submittals.list,
+            icon: ICONS.dashboard,
+            roles: ['subscriber'],
+          },
+         
+
         ],
       },
     ],
@@ -131,7 +151,7 @@ export function useNavDataSubscriber() {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
             icon: ICONS.dashboard,
-           
+            roles: ['subscriber'], // hides on admin role
           },
          
 

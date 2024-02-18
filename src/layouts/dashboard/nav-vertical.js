@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 // @mui
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -17,6 +19,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import { ProjectView } from 'src/sections/project/view';
 import { NavSectionVertical } from 'src/components/nav-section';
 import { CustomDrawer } from 'src/components/custom-drawer';
+import { CustomNavCollapseList } from 'src/components/custom-nav-collapse-list';
 //
 import { NAV } from '../config-layout';
 import { useNavData, useNavDataSubscriber } from './config-navigation';
@@ -28,9 +31,9 @@ import { NavToggleButton, NavUpgrade } from '../_common';
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const { role } = useAuthContext();
-
+  const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
+  const projects = useSelector(state => state.project.list)
 
   const navData = useNavData();
   const navDataSubscriber = useNavDataSubscriber();
@@ -56,11 +59,18 @@ export default function NavVertical({ openNav, onCloseNav }) {
       }}
     >
       {/* <Logo sx={{ mt: 3, ml: 4, mb: 1 }} /> */}
-      {role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
+      {/* {user?.role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
         Project
-      </Button>)}
-      {role === "subscriber" && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView}/>)}
-      <NavSectionVertical data={role === "subscriber" ? navDataSubscriber : navData} />
+      </Button>)} */}
+      {user?.role === "subscriber" && (
+        <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} />
+      )}
+      {user?.role === "subscriber" && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
+      <NavSectionVertical data={navData} config={
+        {
+          currentRole: user?.role, // if current role is not allowed
+        }
+      } />
 
       <Box sx={{ flexGrow: 1 }} />
 

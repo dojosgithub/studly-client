@@ -7,6 +7,7 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
+  ADMIN: '/admin',
   SUBSCRIBER: '/subscriber',
 };
 

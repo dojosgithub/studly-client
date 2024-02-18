@@ -4,6 +4,9 @@ import { _mock } from './_mock';
 
 // ----------------------------------------------------------------------
 
+
+
+
 export const PROJECT_TEMPLATE_OPTIONS = [
   { value: 'default', label: 'Studly Default Template', icon: 'mdi:crown-outline' },
   { value: 'template1', label: 'Template 1' },
@@ -72,3 +75,40 @@ export const PROJECT_TEMPLATES = [
     },]
   },
 ]
+
+
+export const PROJECTS = [
+  {
+    name: 'project1',
+    trades: [...PROJECT_DEFAULT_TEMPLATE],
+    workflow: {
+      name: 'project1 workflow',
+      status: ['draft'],
+      returnDate: '1-4-2024',
+    },
+    submittals: [],
+    _id: uuidv4()
+  },
+  {
+    name: 'project2',
+    trades: [...PROJECT_DEFAULT_TEMPLATE],
+    workflow: {
+      name: 'project2 workflow',
+      status: ['draft','submitted'],
+      returnDate: '1-4-2024',
+    },
+    submittals: [],
+    _id: uuidv4()
+  },
+  {
+    name: 'project3',
+    trades: [...PROJECT_DEFAULT_TEMPLATE],
+    workflow: {
+      name: 'project3 workflow',
+      status: ['draft','submitted'],
+      returnDate: '1-4-2024',
+    },
+    submittals: [],
+    _id: uuidv4()
+  }
+];

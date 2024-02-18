@@ -33,49 +33,49 @@ const OnboardingPage = lazy(() => import('src/pages/onboarding'));
 // ----------------------------------------------------------------------a
 
 export const mainRoutes = [
-  {
-    element: (
-      <MainLayout>
-        <Suspense fallback={<SplashScreen />}>
-          <Outlet />
-        </Suspense>
-      </MainLayout>
-    ),
-    children: [
-      { path: 'about-us', element: <AboutPage /> },
-      { path: 'contact-us', element: <ContactPage /> },
-      { path: 'faqs', element: <FaqsPage /> },
-      // {
-      //   path: 'product',
-      //   children: [
-      //     { element: <ProductListPage />, index: true },
-      //     { path: 'list', element: <ProductListPage /> },
-      //     { path: ':id', element: <ProductDetailsPage /> },
-      //     { path: 'checkout', element: <ProductCheckoutPage /> },
-      //   ],
-      // },
-      {
-        path: 'post',
-        children: [
-          { element: <PostListPage />, index: true },
-          { path: 'list', element: <PostListPage /> },
-          { path: ':title', element: <PostDetailsPage /> },
-        ],
-      },
-    ],
-  },
-  {
-    element: (
-      // <SimpleLayout>
-      <Suspense fallback={<SplashScreen />}>
-        <Outlet />
-      </Suspense>
-      // </SimpleLayout>
-    ),
-    children: [
-      { path: 'onboarding', element: <OnboardingPage /> },
-    ],
-  },
+  // {
+  //   element: (
+  //     <MainLayout>
+  //       <Suspense fallback={<SplashScreen />}>
+  //         <Outlet />
+  //       </Suspense>
+  //     </MainLayout>
+  //   ),
+  //   children: [
+  //     { path: 'about-us', element: <AboutPage /> },
+  //     { path: 'contact-us', element: <ContactPage /> },
+  //     { path: 'faqs', element: <FaqsPage /> },
+  //     // {
+  //     //   path: 'product',
+  //     //   children: [
+  //     //     { element: <ProductListPage />, index: true },
+  //     //     { path: 'list', element: <ProductListPage /> },
+  //     //     { path: ':id', element: <ProductDetailsPage /> },
+  //     //     { path: 'checkout', element: <ProductCheckoutPage /> },
+  //     //   ],
+  //     // },
+  //     {
+  //       path: 'post',
+  //       children: [
+  //         { element: <PostListPage />, index: true },
+  //         { path: 'list', element: <PostListPage /> },
+  //         { path: ':title', element: <PostDetailsPage /> },
+  //       ],
+  //     },
+  //   ],
+  // },
+  // {
+  //   element: (
+  //     // <SimpleLayout>
+  //     <Suspense fallback={<SplashScreen />}>
+  //       <Outlet />
+  //     </Suspense>
+  //     // </SimpleLayout>
+  //   ),
+  //   children: [
+  //     { path: 'onboarding', element: <OnboardingPage /> },
+  //   ],
+  // },
   // {
   //   element: (
   //     // <SimpleLayout>

@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+// redux
+import { useSelector } from 'react-redux';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -23,23 +25,14 @@ import OnboardingWithoutProjects from '../onboarding-without-project';
 
 // ----------------------------------------------------------------------
 
-const projects = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5',]
+// const projects = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5',]
 export default function OnboardingView() {
-    const { method } = useAuthContext();
+    const { method, user } = useAuthContext();
+    const projects = useSelector(state => state.project.list);
 
     const theme = useTheme();
 
     const upMd = useResponsive('up', 'md');
-
-    // const renderLogo = (
-    //     <Logo
-    //         sx={{
-    //             zIndex: 9,
-    //             position: 'absolute',
-    //             m: { xs: 2, md: 5 },
-    //         }}
-    //     />
-    // );
 
     const renderContent = (
         <Box
@@ -48,11 +41,11 @@ export default function OnboardingView() {
                 // maxWidth: 800,
                 flexGrow: 1,
                 mx: 'auto',
-                px: { xs: 2, md: 8 },
-                py: { xs: 15, md: 30 },
+                px: { xs: 2, md: 4 },
+                py: { xs: 5, md: 5 },
             }}
         >
-            {projects?.length > 0 ?
+            {projects?.length < 0 ?
                 <OnboardingProjects projects={projects} /> :
                 <OnboardingWithoutProjects />
             }

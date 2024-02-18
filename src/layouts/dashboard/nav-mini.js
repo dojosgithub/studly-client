@@ -17,8 +17,8 @@ import { NavToggleButton } from '../_common';
 
 export default function NavMini() {
   const navData = useNavData();
-  const navDataSubscriber = useNavDataSubscriber();
-  const { role } = useAuthContext();
+  // // const navDataSubscriber = useNavDataSubscriber();
+  const { user } = useAuthContext();
 
   return (
     <Box
@@ -49,10 +49,11 @@ export default function NavMini() {
         <Logo sx={{ mx: 'auto', my: 2 }} />
 
         <NavSectionMini
-         data={role === "subscriber" ? navDataSubscriber : navData}
+        // // data={user?.role === "subscriber" ? navDataSubscriber : navData}
+         data={navData}
           config={
             {
-              // currentRole: user?.role || 'admin',
+              currentRole: user?.role, // if current role is not allowed
             }
           }
         />
