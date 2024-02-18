@@ -34,15 +34,22 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
     const renderHead = (
         <Stack
             direction="row"
-            alignItems="flex-start"
-            justifyContent={type === "template" ? "flex-end" : "space-between"}
+            // alignItems="flex-start"
+            // justifyContent={((type === "template") || (type === "workflow")) ? "flex-end" : "space-between"}
+            alignItems={((type === "template") || (type === "workflow")) ? "center" : "flex-start"}
+            justifyContent="space-between"
             sx={{ py: 2, pr: 2.5, pl: 5 }}
         >
 
-            {type === "template" ?
-                (<IconButton onClick={onClose} >
-                    <Iconify icon="gg:close-o" color="black" height='2rem' width='2rem' />
-                </IconButton>)
+            {((type === "template") || (type === "workflow")) ?
+                (
+                    <>
+                        <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
+                        <IconButton onClick={onClose} >
+                            <Iconify icon="gg:close-o" color="black" height='2rem' width='2rem' />
+                        </IconButton>
+                    </>
+                )
                 : (<CustomBreadcrumbs
                     heading="Create Project"
                     links={[
@@ -93,7 +100,7 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             {/* <ProjectView /> */}
-            <Component type={type} onClose={onClose}/>
+            <Component type={type} onClose={onClose} />
 
         </Drawer>
     );

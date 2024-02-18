@@ -9,6 +9,7 @@ import { buttonClasses } from '@mui/base/Button';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import { Divider, Typography } from '@mui/material';
 // components
+import { PROJECT_TEMPLATES } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
@@ -33,7 +34,7 @@ export default function ProjectTrade({ onSelect,selectedTemplate, isDefaultTempl
           <ProjectCreateTrade />
         </TabPanel>
         <TabPanel value={1}>
-          <CustomSelect selectedTemplate={selectedTemplate} onSelect={onSelect} />
+          <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={PROJECT_TEMPLATES}/>
           {/* this should be changed to template value */}
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />}
         </TabPanel>

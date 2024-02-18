@@ -10,8 +10,8 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CustomSelect({ onSelect, selectedTemplate }) {
-  
+export default function CustomSelect({ onSelect, selectedOption, type = 'template', options }) {
+// for template and workflow
 
     return (
 
@@ -22,15 +22,30 @@ export default function CustomSelect({ onSelect, selectedTemplate }) {
 
             sx={{ marginBottom: "2rem" }}
         >
-            <Select onChange={(e) => onSelect(e.target.value)} name="template" value={selectedTemplate} label="" placeholder='Choose Template' sx={{
+            {/* name='template' */}
+            <Select onChange={(e) => onSelect(e.target.value)} name={type} value={selectedOption} label="" placeholder='Choose Template' sx={{
                 "& .MuiSelect-select": {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.25rem',
                 }
             }}>
-              
-                {PROJECT_TEMPLATES.map(({ name }) => (
+                <MenuItem value='default' sx={{ height: 50, px: 3, borderRadius: 0 }}>
+                    {`Studly Default ${type === "template" ? 'Template' : 'Workflow'}`}
+                    <Iconify
+                        icon='mdi:crown-outline'
+                        width={28}
+                        sx={{ mx: 1 }}
+                    />
+                </MenuItem>
+                {options.map(({ name }) => (
+                    name !== 'default' && (
+                        <MenuItem key={name} value={name} sx={{ height: 50, px: 3, borderRadius: 0 }}>
+                            {name.toUpperCase()}
+                        </MenuItem>
+                    )
+                ))}
+                {/* {PROJECT_TEMPLATES.map(({ name }) => (
                     <MenuItem key={name} value={name} sx={{ height: 50, px: 3, borderRadius: 0 }}>
 
                         {name === 'default' ? 'Studly Default Template' : name.toUpperCase()}
@@ -40,7 +55,7 @@ export default function CustomSelect({ onSelect, selectedTemplate }) {
                             sx={{ mx: 1 }}
                         />}
                     </MenuItem>
-                ))}
+                ))} */}
                 <MenuItem value='create' sx={{ height: 50, px: 3, borderTop: '1px solid black', borderRadius: 0 }}>
                     <Iconify
                         icon='material-symbols:add-circle-outline'
@@ -60,5 +75,7 @@ export default function CustomSelect({ onSelect, selectedTemplate }) {
 
 CustomSelect.propTypes = {
     onSelect: PropTypes.func,
-    selectedTemplate: PropTypes.string,
+    selectedOption: PropTypes.string,
+    type: PropTypes.string,
+    options: PropTypes.array,
 };
