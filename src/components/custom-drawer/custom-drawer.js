@@ -46,7 +46,7 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
                     <>
                         <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
                         <IconButton onClick={onClose} >
-                            <Iconify icon="gg:close-o" color="black" height='2rem' width='2rem' />
+                            <Iconify icon="gg:close-o" color="black" height={32} width={32} />
                         </IconButton>
                     </>
                 )
@@ -63,7 +63,7 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
 
                     action={
                         <IconButton onClick={onClose} >
-                            <Iconify icon="gg:close-o" color="black" height='2rem' width='2rem' />
+                            <Iconify icon="gg:close-o" color="black" height={32} width={32} />
                         </IconButton>
                     }
                     sx={{

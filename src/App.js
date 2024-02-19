@@ -33,7 +33,7 @@ import Router from 'src/routes/sections';
 // theme
 import ThemeProvider from 'src/theme';
 // locales
-// import { LocalizationProvider } from 'src/locales';
+import { LocalizationProvider } from 'src/locales';
 // hooks
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 // components
@@ -71,32 +71,34 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <AuthProvider>
-        <PersistGate loading={null} persistor={persistor}>
-          <SettingsProvider
-            defaultSettings={{
-              themeMode: 'light', // 'light' | 'dark'
-              themeDirection: 'ltr', //  'rtl' | 'ltr'
-              themeContrast: 'default', // 'default' | 'bold'
-              themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-              themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-              themeStretch: false,
-            }}
-          >
-            <ThemeProvider>
-              <MotionLazy>
-                <SnackbarProvider>
-                  {/* <CheckoutProvider> */}
-                  <SettingsDrawer />
-                  <ProgressBar />
-                  <AuthConsumer>
-                    <Router />
-                  </AuthConsumer>
-                  {/* </CheckoutProvider> */}
-                </SnackbarProvider>
-              </MotionLazy>
-            </ThemeProvider>
-          </SettingsProvider>
-        </PersistGate>
+        <LocalizationProvider>
+          <PersistGate loading={null} persistor={persistor}>
+            <SettingsProvider
+              defaultSettings={{
+                themeMode: 'light', // 'light' | 'dark'
+                themeDirection: 'ltr', //  'rtl' | 'ltr'
+                themeContrast: 'default', // 'default' | 'bold'
+                themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                themeStretch: false,
+              }}
+            >
+              <ThemeProvider>
+                <MotionLazy>
+                  <SnackbarProvider>
+                    {/* <CheckoutProvider> */}
+                    <SettingsDrawer />
+                    <ProgressBar />
+                    <AuthConsumer>
+                      <Router />
+                    </AuthConsumer>
+                    {/* </CheckoutProvider> */}
+                  </SnackbarProvider>
+                </MotionLazy>
+              </ThemeProvider>
+            </SettingsProvider>
+          </PersistGate>
+        </LocalizationProvider>
       </AuthProvider>
     </ReduxProvider>
   );
