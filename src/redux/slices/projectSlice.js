@@ -16,6 +16,18 @@ import { PROJECTS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS } from "src/_mock";
 // //     submittals: []
 //   }
 // }
+// const assignSubcontractor ={ _id: '',tradeId:'',subcontractorId:'' }
+// const outsideUser ={ name: '', _id: '', email: '', role: '' }
+const projectObj = {
+  name: '',
+  trades: [],
+  workflow: {
+    name: '',
+    statuses: [],
+    returnDate: '',
+  },
+}
+
 const initialState = {
   list: PROJECTS || [],
   current: null,
@@ -27,6 +39,17 @@ const initialState = {
       statuses: [],
       returnDate: '',
     },
+  },
+  subcontractors: {
+    list: [],
+    assign: []
+  },
+  inviteUsers: {
+    inside: {
+      internal: [],
+      external: [],
+    },
+    outside: [],
   },
   workflows: PROJECT_WORKFLOWS || [],
   templates: PROJECT_TEMPLATES || [],
@@ -48,9 +71,12 @@ const project = createSlice({
     setCurrentProject: (state, action) => {
       state.current = action.payload
     },
+    resetCreateProject: (state) => {
+      state.project = projectObj
+    },
 
   }
 })
 
-export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject } = project.actions
+export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, resetCreateProject } = project.actions
 export default project.reducer

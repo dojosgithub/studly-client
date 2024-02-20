@@ -115,6 +115,11 @@ export const PROJECTS = [
 ];
 export const PROJECT_WORKFLOWS = [
   {
+    name: 'default',
+    statuses: ['draft', 'submitted','reviewed'],
+    returnDate: addDays(new Date(), 7),
+  },
+  {
     name: 'project workflow 1',
     statuses: ['draft', 'submitted'],
     returnDate: addDays(new Date(), 1),
@@ -246,3 +251,9 @@ export const PROJECT_WORKFLOW_BOARD_DATA = {
     ]
   }
 };
+
+export const PROJECT_SUBCONTRACTORS = [
+  { _id: uuidv4(), name: 'John' },
+  { _id: uuidv4(), name: 'Adam' },
+  { _id: uuidv4(), name: 'Joseph' },
+]
