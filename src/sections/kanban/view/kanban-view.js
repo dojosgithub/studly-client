@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+import { useFormContext } from 'react-hook-form';
 // api
 import { useGetBoard, moveColumn, moveTask } from 'src/api/kanban';
 // theme
@@ -23,7 +24,9 @@ import { KanbanColumnSkeleton } from '../kanban-skeleton';
 export default function KanbanView() {
   // const { board, boardLoading, boardEmpty } = useGetBoard();
   const { board: boardAPI } = PROJECT_WORKFLOW_BOARD_DATA;
-  const [board, setBoard] = useState(boardAPI)
+  const [board, setBoard] = useState(boardAPI);
+  const { getValues, setValue } = useFormContext();
+  const formValues = getValues();
 
   const onDragEnd = useCallback(
     async ({ destination, source, draggableId, type }) => {
@@ -77,26 +80,29 @@ export default function KanbanView() {
           //     taskIds: newTaskIds,
           //   },
           // });
-          
+
           const updatedColumns = {
             ...board?.columns,
             [sourceColumn.id]: {
               ...sourceColumn,
               taskIds: newTaskIds,
             },
-          }
+          };
           // update board.columns
           const columns = updatedColumns;
           const obj = {
             ...board,
             columns,
           };
-          setBoard(obj)
-
-
+          setBoard(obj);
+          const statuses = getTaskObjectsFromColumn(obj);
+          setValue('statuses', statuses);
+          // const jsonData = JSON.stringify(obj);
 
           console.info('Moving to same list!');
-          console.log('board', board);
+          console.log('board', obj);
+          console.log('statuses', statuses);
+          console.log('formValues', formValues);
 
           return;
         }
@@ -124,7 +130,6 @@ export default function KanbanView() {
         //   },
         // });
 
-
         const updatedColumns = {
           ...board?.columns,
           [sourceColumn.id]: {
@@ -135,29 +140,50 @@ export default function KanbanView() {
             ...destinationColumn,
             taskIds: destinationTaskIds,
           },
-        }
+        };
         // update board.columns
         const columns = updatedColumns;
         const obj = {
           ...board,
           columns,
         };
-        setBoard(obj)
+        setBoard(obj);
+        const statuses = getTaskObjectsFromColumn(obj);
+        setValue('statuses', statuses);
+        // const jsonData = JSON.stringify(obj);
+        // console.log('jsonData', jsonData);
 
         console.info('Moving to different list!');
-        console.log('board', board);
-
+        console.log('board', obj);
+        console.log('statuses', statuses);
+        console.log('formValues', formValues);
       } catch (error) {
         console.error(error);
       }
     },
     // [board?.columns, board?.ordered, board]
-    [board]
+    [board, formValues, setValue]
   );
 
+  function getTaskObjectsFromColumn(jsonData) {
+    const columnId = '2-column-e99f09a7-dd88-49d5-b1c8-1daf80c2d7b2';
+    const taskIds = jsonData.columns[columnId].taskIds;
+    const tasks = jsonData.tasks;
 
-
-
+    return taskIds
+      .map((taskId) => {
+        const task = tasks[taskId];
+        return task
+          ? {
+              id: task.id,
+              name: task.name,
+              status: task.status,
+              priority: task.priority,
+            }
+          : null;
+      })
+      .filter((task) => task !== null);
+  }
 
   // const renderSkeleton = (
   //   <Stack direction="row" alignItems="flex-start" spacing={3}>
@@ -213,15 +239,17 @@ export default function KanbanView() {
                   ...hideScroll.x,
                 }}
               >
-                {board?.ordered.map((columnId, index) => (
-                  (index <= 1) && (
-                    <KanbanColumn
-                      index={index}
-                      key={columnId}
-                      column={board?.columns[columnId]}
-                      tasks={board?.tasks}
-                    />)
-                ))}
+                {board?.ordered.map(
+                  (columnId, index) =>
+                    index <= 1 && (
+                      <KanbanColumn
+                        index={index}
+                        key={columnId}
+                        column={board?.columns[columnId]}
+                        tasks={board?.tasks}
+                      />
+                    )
+                )}
 
                 {provided.placeholder}
 
