@@ -14,7 +14,9 @@ import Typography from '@mui/material/Typography';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import { Divider, Stack } from '@mui/material';
+import { addDays } from 'date-fns';
 //
+import { useSnackbar } from 'notistack';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -71,6 +73,7 @@ export default function ProjectStepperForm() {
     },
     []
   );
+  const { enqueueSnackbar } = useSnackbar();
 
 
   const ProjectSchema = Yup.object().shape({
@@ -84,7 +87,12 @@ export default function ProjectStepperForm() {
         })
       )
       .min(1, 'At least one trade is required'),
-    workflow: Yup.string().required('Workflow is required'),
+    workflow: Yup.object().shape({
+      name: Yup.string().required('Workflow Name is required'),
+      statuses: Yup.array().min(1, 'At least one status is required'),
+      // returnDate: Yup.date().min(addDays(new Date(), 1)), 
+      returnDate: Yup.string().required('Date is required'), 
+    }),
 
 
   });
@@ -98,7 +106,11 @@ export default function ProjectStepperForm() {
         tradeId: '',
         _id: uuidv4(),
       }],
-      workflow: '',
+      workflow: {
+        name: '',
+        statuses: [],
+        returnDate: null
+      }
     }),
     [selectedTemplate, getTemplateTrades]
   );
@@ -115,7 +127,7 @@ export default function ProjectStepperForm() {
     setValue,
     getValues,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting,isValid },
     trigger
   } = methods;
 
@@ -124,10 +136,11 @@ export default function ProjectStepperForm() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
+      enqueueSnackbar('Update success!');
 
-      console.log('data', data);
+      console.log('data Final', data);
       reset();
-
+      setActiveStep(0)
     } catch (error) {
       console.error(error);
     }
@@ -143,7 +156,6 @@ export default function ProjectStepperForm() {
   const handleNext = async () => {
     if (activeStep === steps.length - 1) return;
     const isFormValid = await getFormValidation();
-    // // console.log('currentStepValue', currentStepValue)
 
     // TODO:  isDefaultTemplate should be removed
     if (activeTab === "existing" && isFormValid && !!selectedTemplate && !open) {
@@ -176,12 +188,14 @@ export default function ProjectStepperForm() {
   const handleSelect = (val) => {
     if (val === "create") {
       setOpenNewTemplateDrawer(true)
+
+      // return
     }
-   
+
     setSelectedTemplate(val)
     setIsDefaultTemplate(val === "default")
-  
-    const filteredTrades=getTemplateTrades(val)
+
+    const filteredTrades = getTemplateTrades(val)
     // TODO: multiple templates
     setValue('trades', filteredTrades)
   }

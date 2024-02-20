@@ -1,4 +1,5 @@
 //
+import { addDays } from 'date-fns';
 import uuidv4 from 'src/utils/uuidv4';
 import { _mock } from './_mock';
 
@@ -82,36 +83,53 @@ export const PROJECTS = [
     name: 'project1',
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
-      name: 'project1 workflow',
-      status: ['draft'],
-      returnDate: '1-4-2024',
+      name: 'project workflow 1',
+      statuses: ['draft'],
+      returnDate: addDays(new Date(), 1),
     },
-    submittals: [],
+    // submittals: [],
     _id: uuidv4()
   },
   {
     name: 'project2',
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
-      name: 'project2 workflow',
-      status: ['draft', 'submitted'],
-      returnDate: '1-4-2024',
+      name: 'project workflow 2',
+      statuses: ['draft', 'submitted'],
+      returnDate: addDays(new Date(), 5),
     },
-    submittals: [],
+    // submittals: [],
     _id: uuidv4()
   },
   {
     name: 'project3',
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
-      name: 'project3 workflow',
-      status: ['draft', 'submitted'],
-      returnDate: '1-4-2024',
+      name: 'project workflow 3',
+      statuses: ['draft', 'submitted'],
+      returnDate: addDays(new Date(), 10),
     },
-    submittals: [],
+    // submittals: [],
     _id: uuidv4()
   }
 ];
+export const PROJECT_WORKFLOWS = [
+  {
+    name: 'project workflow 1',
+    statuses: ['draft', 'submitted'],
+    returnDate: addDays(new Date(), 1),
+  },
+  {
+    name: 'project workflow 2',
+    statuses: ['draft'],
+    returnDate: addDays(new Date(), 5),
+  },
+  {
+    name: 'project workflow 3',
+    statuses: ['submitted'],
+    returnDate: addDays(new Date(), 10),
+  },
+]
 
 
 export const PROJECT_STATUS_TREE = {
@@ -135,7 +153,7 @@ export const PROJECT_STATUS_TREE = {
 }
 
 
-export const PROJECT_WORKFLOW_BOARD_DATA =  {
+export const PROJECT_WORKFLOW_BOARD_DATA = {
   "board": {
     "columns": {
       "1-column-e99f09a7-dd88-49d5-b1c8-1daf80c2d7b1": {

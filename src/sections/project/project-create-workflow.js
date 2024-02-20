@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react'
+import PropTypes from 'prop-types';
+
 // hook-form
 import * as Yup from 'yup';
 import { Controller, useForm } from 'react-hook-form';
@@ -21,8 +23,7 @@ import Scrollbar from 'src/components/scrollbar'
 import { KanbanView } from '../kanban/view'
 
 
-const ProjectCreateWorkflow = () => {
-    const [currentDate, setCurrentDate] = useState(addDays(new Date(), 1));
+const ProjectCreateWorkflow = ({ type, onClose }) => {
 
 
     const ProjectSchema = Yup.object().shape({
@@ -59,13 +60,14 @@ const ProjectCreateWorkflow = () => {
         trigger
     } = methods;
     const formValues = getValues();
-    console.log('formValues',formValues)
-    console.log('isValid',isValid)
+    console.log('formValues', formValues)
+    console.log('isValid', isValid)
     const onSubmit = handleSubmit(async (data) => {
         try {
             await new Promise((resolve) => setTimeout(resolve, 500));
-
+            onClose()
             console.log('data', data);
+            // console.log('JSON DATA', JSON.stringify(data));
             reset();
 
         } catch (error) {
@@ -131,3 +133,8 @@ const ProjectCreateWorkflow = () => {
 }
 
 export default ProjectCreateWorkflow
+
+ProjectCreateWorkflow.propTypes = {
+    onClose: PropTypes.func,
+    type: PropTypes.string,
+};

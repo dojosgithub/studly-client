@@ -1,22 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PROJECTS } from "src/_mock";
+import { PROJECTS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS } from "src/_mock";
 
 // const initialState = {
 //   list: PROJECTS || [],
-//   current: {
+//   current: null,
+//   new: {
 //     name: '',
 //     trades: [],
 //     workflow: {
 //       name: '',
-//       status: [],
+//       statuses: [],
 //       returnDate: '',
 //     },
-//     submittals: []
+//    },
+// //     submittals: []
 //   }
 // }
 const initialState = {
   list: PROJECTS || [],
-  current: null
+  current: null,
+  project: {
+    name: '',
+    trades: [],
+    workflow: {
+      name: '',
+      statuses: [],
+      returnDate: '',
+    },
+  },
+  workflows: PROJECT_WORKFLOWS || [],
+  templates: PROJECT_TEMPLATES || [],
 }
 
 const project = createSlice({
@@ -24,13 +37,13 @@ const project = createSlice({
   initialState,
   reducers: {
     setProjectName: (state, action) => {
-      state.name = action.payload
+      state.project.name = action.payload
     },
     setProjectTrades: (state, action) => {
-      state.trades = action.payload
+      state.project.trades = action.payload
     },
     setProjectWorkflow: (state, action) => {
-      state.workflow = action.payload
+      state.project.workflow = action.payload
     },
     setCurrentProject: (state, action) => {
       state.current = action.payload

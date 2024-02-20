@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 // @mui
 import { Typography } from '@mui/material'
 
+import { useFormContext } from 'react-hook-form'
+import { setProjectWorkflow } from 'src/redux/slices/projectSlice'
 // components
 import { CustomDrawer } from 'src/components/custom-drawer'
 import { CustomSelect } from 'src/components/custom-select'
@@ -9,34 +12,32 @@ import ProjectCreateWorkflow from './project-create-workflow'
 
 
 
-// Draft
-// Submitted
-// Reviewed
-//   Reviewed for record
-//   Approved (APR)
-//   Make Corrections Noted (MCN)
-//   Make Corrections and Resubmit (MCNR)
-//   Rejected (RJT)
-//   Custom [Add Text]
-// Sent to Subcontractor
-
-
 const ProjectWorkflow = () => {
-  const [selectedWorkflow, setSelectedWorkflow] = useState('');
+  const [selected, setSelected] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const workflows = useSelector(state => state.project.workflows)
+  const dispatch = useDispatch()
 
+
+  const { getValues, setValue } = useFormContext();
 
   const handleSelect = (val) => {
-    console.log('val', val);
-    setSelectedWorkflow(val)
     if (val === 'create') {
       setOpenDrawer(true)
+      return
     }
+    console.log('handleSelect-->', val);
+    const selectedWorkflow = workflows.filter(w => w.name === val)[0];
+    console.log('selectedWorkflow', selectedWorkflow);
+
+    dispatch(setProjectWorkflow(selectedWorkflow))
+    setValue('workflow', selectedWorkflow)
+    setSelected(val)
   }
 
   return (<>
     <Typography sx={{ mt: 1, mb: 4 }} fontSize='1.5rem' fontWeight='bold'>Create a Project Workflow</Typography>
-    <CustomSelect selectedOption={selectedWorkflow} onSelect={handleSelect} type="workflow" options={[]} />
+    <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={workflows || []} />
     <CustomDrawer open={openDrawer} onClose={() => {
       setOpenDrawer(false);
       handleSelect('')
