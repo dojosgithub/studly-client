@@ -1,10 +1,14 @@
 import { Box, Container, Divider, MenuItem, Stack, Typography, Select } from '@mui/material'
 import React, { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock'
+import { setProjectTrades } from 'src/redux/slices/projectSlice'
 
 const ProjectSubcontractor = () => {
     // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
+    const { getValues, setValue } = useFormContext();
+    // const { trades } = getValues()
     const subcontractors = useSelector(state => state.project.subcontractors.list)
     const trades = useSelector(state => state.project.create.trades)
     const initialOptions = trades.reduce((acc, { tradeId, }) => {
@@ -25,6 +29,18 @@ const ProjectSubcontractor = () => {
     const handleSelect = (tradeId, subcontractorId) => {
         const data = { tradeId, subcontractorId }
         console.log('handleSelect', data);
+        
+        const modifiedTrades = trades.map(trade => {
+            if (trade.tradeId === tradeId) {
+                return { ...trade, subcontractorId };
+            }
+            return trade;
+        });
+                
+        console.log('modifiedTrades',modifiedTrades)
+        setValue('trades',modifiedTrades)
+        dispatch(setProjectTrades(modifiedTrades))
+
         // setOptions((prevOptions) => (
         //     {
         //         ...prevOptions,
@@ -59,29 +75,30 @@ const ProjectSubcontractor = () => {
         // });
 
         // ? set options
+
         setOptions(prevOptions => {
             const tradeIds = Object.keys(prevOptions);
-        
+
             // Check if the options object is empty or if the tradeId is not present in prevOptions
             if (tradeIds.length === 0 || !prevOptions[tradeId]) {
                 // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
                 return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
             }
-        
+
             // Check if there's already an option with the same tradeId
             const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
-        
+
             if (existingTradeIndex !== -1) {
                 // If an option with the same tradeId exists, update its subcontractorId
                 const updatedOptions = { ...prevOptions };
                 updatedOptions[tradeId].subcontractorId = subcontractorId;
                 return updatedOptions;
             }
-        
+
             // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
             return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
         });
-        
+
 
 
 

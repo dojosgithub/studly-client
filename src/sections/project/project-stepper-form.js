@@ -108,7 +108,8 @@ export default function ProjectStepperForm() {
         Yup.object().shape({
           tradeId: Yup.string().required('Trade ID is required'),
           name: Yup.string().required('Trade Name is required'),
-          _id: Yup.string()
+          _id: Yup.string(),
+          subcontractorId: Yup.string()
         })
       )
       .min(1, 'At least one trade is required'),
