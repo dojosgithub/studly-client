@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PROJECTS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS } from "src/_mock";
+import { PROJECTS, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS } from "src/_mock";
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -31,7 +31,7 @@ const projectObj = {
 const initialState = {
   list: PROJECTS || [],
   current: null,
-  project: {
+  create: {
     name: '',
     trades: [],
     workflow: {
@@ -41,7 +41,7 @@ const initialState = {
     },
   },
   subcontractors: {
-    list: [],
+    list: PROJECT_SUBCONTRACTORS || [],
     assign: []
   },
   inviteUsers: {
@@ -60,19 +60,19 @@ const project = createSlice({
   initialState,
   reducers: {
     setProjectName: (state, action) => {
-      state.project.name = action.payload
+      state.create.name = action.payload
     },
     setProjectTrades: (state, action) => {
-      state.project.trades = action.payload
+      state.create.trades = action.payload
     },
     setProjectWorkflow: (state, action) => {
-      state.project.workflow = action.payload
+      state.create.workflow = action.payload
     },
     setCurrentProject: (state, action) => {
       state.current = action.payload
     },
     resetCreateProject: (state) => {
-      state.project = projectObj
+      state.create = projectObj
     },
 
   }
