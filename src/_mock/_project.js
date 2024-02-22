@@ -116,7 +116,7 @@ export const PROJECTS = [
 export const PROJECT_WORKFLOWS = [
   {
     name: 'default',
-    statuses: ['draft', 'submitted','reviewed'],
+    statuses: ['draft', 'submitted', 'reviewed'],
     returnDate: addDays(new Date(), 7),
   },
   {
@@ -257,3 +257,20 @@ export const PROJECT_SUBCONTRACTORS = [
   { _id: uuidv4(), name: 'Adam' },
   { _id: uuidv4(), name: 'Joseph' },
 ]
+
+export const PROJECT_INVITE_USER_ROLES = [
+  { value: "Power User", label: "Power User", _id: uuidv4() },
+  { value: "Field User", label: "Field User", _id: uuidv4() },
+  { value: "Architect", label: "Architect", _id: uuidv4() },
+  { value: "Engineer", label: "Engineer", _id: uuidv4() },
+  { value: "Sub Contractor", label: "Sub Contractor", _id: uuidv4() },
+  { value: "Construction Manager", label: "Construction Manager", _id: uuidv4() },
+  { value: "Associate", label: "Associate", _id: uuidv4() },
+]
+
+export const PROJECT_INVITE_USERS = [...Array(8)].map((_, index) => ({
+  id: _mock.id(index),
+  name: _mock.role(index),
+  email: _mock.email(index),
+  role: _mock.role(index),
+}));

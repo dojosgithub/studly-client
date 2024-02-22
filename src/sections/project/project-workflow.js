@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // @mui
-import { Typography } from '@mui/material'
+import { Divider, Typography, alpha } from '@mui/material'
 
 import { useFormContext } from 'react-hook-form'
 import { setProjectWorkflow } from 'src/redux/slices/projectSlice'
@@ -37,6 +37,10 @@ const ProjectWorkflow = () => {
 
   return (<>
     <Typography sx={{ mt: 1, mb: 4 }} fontSize='1.5rem' fontWeight='bold'>Create a Project Workflow</Typography>
+    <Divider sx={{
+        minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
+        mb: 4
+      }} />
     <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={workflows || []} />
     <CustomDrawer open={openDrawer} onClose={() => {
       setOpenDrawer(false);

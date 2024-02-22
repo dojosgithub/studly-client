@@ -119,7 +119,21 @@ export default function ProjectStepperForm() {
       // returnDate: Yup.date().min(addDays(new Date(), 1)), 
       returnDate: Yup.string().required('Date is required'),
     }),
-    
+    inviteUsers: Yup.object().shape({
+      inside: Yup.object().shape({
+        internal: Yup.array().min(1, 'At least one internal user is required'),
+        external: Yup.array().min(1, 'At least one external user is required'),
+      }),
+      outside: Yup.array()
+        .of(
+          Yup.object().shape({
+            email: Yup.string().email('Invalid email').required('User email is required'),
+            name: Yup.string().required('User name is required'),
+            role: Yup.string().required('User role is required'),
+            _id: Yup.string(),
+          })
+        )
+    })
 
   });
 
@@ -136,6 +150,18 @@ export default function ProjectStepperForm() {
         name: '',
         statuses: [],
         returnDate: null
+      },
+      inviteUsers: {
+        inside: {
+          internal: [],
+          external: []
+        },
+        outside: [{
+          name: '',
+          email: '',
+          _id: uuidv4()
+        }]
+
       }
     }),
     [selectedTemplate, getTemplateTrades]
@@ -158,6 +184,7 @@ export default function ProjectStepperForm() {
   } = methods;
 
   const formValues = getValues();
+  console.log('isValid',isValid);
 
 
   const onSubmit = handleSubmit(async (data) => {
