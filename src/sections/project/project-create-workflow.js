@@ -5,11 +5,12 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { addDays } from 'date-fns';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers';
 import { Box, Button, Container } from '@mui/material'
-import { addDays } from 'date-fns';
-
+//
+import { useSnackbar } from 'notistack';
 // mock
 import format from 'date-fns/format';
 import { PROJECT_STATUS_TREE } from 'src/_mock'
@@ -24,6 +25,7 @@ import { KanbanView } from '../kanban/view'
 
 
 const ProjectCreateWorkflow = ({ type, onClose }) => {
+    const { enqueueSnackbar } = useSnackbar();
 
 
     const ProjectSchema = Yup.object().shape({
@@ -67,6 +69,8 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
             await new Promise((resolve) => setTimeout(resolve, 500));
             onClose()
             console.log('data', data);
+            enqueueSnackbar('Template Created!', { variant: 'success' });
+
             // console.log('JSON DATA', JSON.stringify(data));
             reset();
 
@@ -88,12 +92,37 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
                         xs: 'repeat(1, 1fr)',
                         sm: 'repeat(2, 1fr)',
                     }}
-                    my={3}
+                    my={2}
                     display="flex"
                     flexDirection="column"
                 >
-                    <RHFTextField name="name" label="Project Name" />
-                    <Scrollbar sx={{ 'py': 4 }}>
+                    <Box sx={{ display: 'flex', gap: 4, px: 2, flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
+                        <RHFTextField name="name" label="Project Name" />
+                        <Controller
+                            name="returnDate"
+                            control={control}
+                            defaultValue={new Date()}
+                            render={({ field, fieldState: { error } }) => (
+                                <DatePicker
+                                    label="Select Return Date"
+                                    views={['day', 'month', 'year']}
+                                    value={field.value || null}
+                                    minDate={addDays(new Date(), 1)}
+                                    onChange={(date) => field.onChange(date)}
+                                    error={!!error}
+                                    helperText={error && error?.message}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            error: !!error,
+                                            helperText: error?.message,
+                                        },
+                                    }}
+                                />
+                            )}
+                        />
+                    </Box>
+                    <Scrollbar sx={{ 'py': 4, maxHeight:360 }}>
                         {/* <OrganizationalChart data={PROJECT_STATUS_TREE} variant='simple' /> */}
                         <KanbanView />
                     </Scrollbar>
@@ -101,29 +130,7 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
 
 
 
-                    <Controller
-                        name="returnDate"
-                        control={control}
-                        defaultValue={new Date()}
-                        render={({ field, fieldState: { error } }) => (
-                            <DatePicker
-                                label="Select Return Date"
-                                views={['day', 'month', 'year']}
-                                value={field.value || null}
-                                minDate={addDays(new Date(), 1)}
-                                onChange={(date) => field.onChange(date)}
-                                error={!!error}
-                                helperText={error && error?.message}
-                                slotProps={{
-                                    textField: {
-                                        fullWidth: true,
-                                        error: !!error,
-                                        helperText: error?.message,
-                                    },
-                                }}
-                            />
-                        )}
-                    />
+
                     <Button type="submit" variant='contained' >Create</Button>
 
                 </Box>

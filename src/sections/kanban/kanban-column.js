@@ -163,6 +163,7 @@ export default function KanbanColumn({ column, tasks, index }) {
             height: index === 1 ? '100%' : 'auto',
             display: index === 1 ? 'grid' : 'initial',
             placeContent: index === 1 ? 'center' : 'start',
+            gridTemplateColumns: index === 1 ? '1fr' : 'none',
           }}
         >
           <Stack {...provided.dragHandleProps}>
