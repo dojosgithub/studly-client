@@ -184,7 +184,7 @@ export default function ProjectStepperForm() {
   } = methods;
 
   const formValues = getValues();
-  console.log('isValid',isValid);
+  console.log('isValid', isValid);
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -271,6 +271,8 @@ export default function ProjectStepperForm() {
     setActiveStep(0);
     setIsDefaultTemplate(false);
     setSelectedTemplate('');
+    reset();
+    dispatch(resetCreateProject())
   };
 
   const handleSelect = (val) => {
@@ -362,7 +364,7 @@ export default function ProjectStepperForm() {
 
       <Divider sx={{ width: '1px', background: "rgb(145 158 171 / 20%)" }} />
 
-      <Stack flex={1}>
+      <Stack flex={1} position='relative'>
 
         {activeStep === steps.length ? (
           <>
@@ -386,7 +388,7 @@ export default function ProjectStepperForm() {
           <FormProvider methods={methods} onSubmit={onSubmit}>
             <Paper
               sx={{
-                py: 3,
+                // py: 3,
                 my: 3,
                 minHeight: 120,
                 background: 'transparent'
@@ -395,7 +397,7 @@ export default function ProjectStepperForm() {
             >
               {getComponent()}
             </Paper>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
               {activeStep !== 0 && <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                 Back
               </Button>}

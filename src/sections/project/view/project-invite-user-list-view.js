@@ -1,5 +1,7 @@
-import isEqual from 'lodash/isEqual';
+import PropTypes from 'prop-types';
 import { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 // @mui
 // // import { alpha } from '@mui/material/styles';
 // // import Tab from '@mui/material/Tab';
@@ -38,6 +40,8 @@ import {
     TablePaginationCustom,
 } from 'src/components/table';
 //
+import { setExternalUsers, setInternalUsers } from 'src/redux/slices/projectSlice';
+//
 import ProjectUserTableRow from '../project-user-table-row';
 import ProjectUserTableToolbar from '../project-user-table-toolbar';
 import ProjectUserTableFiltersResult from '../project-user-table-filters-result';
@@ -63,8 +67,15 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function ProjectInviteUserListView() {
+export default function ProjectInviteUserListView({ type }) {
     const table = useTable();
+    const dispatch = useDispatch();
+    const internal = useSelector(state => state?.project?.inviteUsers?.inside?.internal);
+    const external = useSelector(state => state?.project?.inviteUsers?.inside?.external);
+    const inviteUsers = useSelector(state => state?.project?.inviteUsers);
+    console.log('inviteUsers', inviteUsers)
+    console.log('internal', internal)
+    console.log('external', external)
 
     const settings = useSettingsContext();
 
@@ -124,6 +135,35 @@ export default function ProjectInviteUserListView() {
         },
         [router]
     );
+
+    function handleCheckedChange(checked) {
+        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
+        if (checked) {
+            const rowSelected = tableData.map(row => row.id);
+            dispatch(setUsersAction(rowSelected));
+        } else {
+            dispatch(setUsersAction([]));
+        }
+    }
+    function handleUserUpdate(rowId) {
+        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
+        const updatedUsers = type === 'internal' ? [...internal] : [...external];
+        const userIndex = updatedUsers.indexOf(rowId);
+
+        if (userIndex !== -1) {
+            // Remove the rowId if it exists
+            const updatedUsersFiltered = updatedUsers.filter(id => id !== rowId);
+            dispatch(setUsersAction(updatedUsersFiltered));
+        } else {
+            // Add the rowId if it doesn't exist
+            const updatedUsersConcat = [...updatedUsers, rowId];
+            dispatch(setUsersAction(updatedUsersConcat));
+        }
+    }
+
+
+
+
 
     // //   const handleDeleteRows = useCallback(() => {
     // //     const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
@@ -238,11 +278,18 @@ export default function ProjectInviteUserListView() {
                             dense={table.dense}
                             numSelected={table.selected.length}
                             rowCount={tableData.length}
-                            onSelectAllRows={(checked) =>
+                            onSelectAllRows={(checked) => {
+
                                 table.onSelectAllRows(
                                     checked,
                                     tableData.map((row) => row.id)
                                 )
+                                console.log("checked", checked)
+
+                                handleCheckedChange(checked);
+
+
+                            }
                             }
                         // // action={
                         // //     <Tooltip title="Delete">
@@ -262,11 +309,12 @@ export default function ProjectInviteUserListView() {
                                     rowCount={tableData.length}
                                     numSelected={table.selected.length}
                                     onSort={table.onSort}
-                                    onSelectAllRows={(checked) =>
+                                    onSelectAllRows={(checked) => {
                                         table.onSelectAllRows(
                                             checked,
                                             tableData.map((row) => row.id)
                                         )
+                                    }
                                     }
                                 />
 
@@ -281,7 +329,12 @@ export default function ProjectInviteUserListView() {
                                                 key={row.id}
                                                 row={row}
                                                 selected={table.selected.includes(row.id)}
-                                                onSelectRow={() => table.onSelectRow(row.id)}
+                                                onSelectRow={() => {
+                                                    table.onSelectRow(row.id)
+
+                                                    handleUserUpdate(row.id);
+                                                    console.log('row-selected', row.id)
+                                                }}
                                                 onDeleteRow={() => handleDeleteRow(row.id)}
                                                 onEditRow={() => handleEditRow(row.id)}
                                             />
@@ -368,3 +421,8 @@ function applyFilter({ inputData, comparator, filters }) {
 
     return inputData;
 }
+
+
+ProjectInviteUserListView.propTypes = {
+    type: PropTypes.string,
+};

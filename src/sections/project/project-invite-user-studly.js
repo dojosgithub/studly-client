@@ -15,7 +15,7 @@ const ProjectInviteUserStudly = () => {
                         sx={{ mb: 1, "& .MuiFormControlLabel-label": { fontSize: '1rem', fontWeight: 'semiBold' } }}
                     />
                     <Typography sx={{ mb: 4, maxWidth: 300, mx: 'auto', color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of internal team members can vary depending on their role</Typography>
-                    <ProjectInviteUserListView />
+                    <ProjectInviteUserListView type='internal'/>
                 </Box>
                 <Box>
                     <FormControlLabel
@@ -24,7 +24,7 @@ const ProjectInviteUserStudly = () => {
                         sx={{ mb: 1, "& .MuiFormControlLabel-label": { fontSize: '1rem', fontWeight: 'semiBold' } }}
                     />
                     <Typography sx={{ mb: 4, maxWidth: 300, mx: 'auto', color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of external team members can vary depending on their role</Typography>
-                    <ProjectInviteUserListView />
+                    <ProjectInviteUserListView type='external'/>
                 </Box>
             </Stack>
     )

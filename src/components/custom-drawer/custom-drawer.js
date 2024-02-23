@@ -34,14 +34,22 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
     const renderHead = (
         <Stack
             direction="row"
-            // alignItems="flex-start"
-            // justifyContent={((type === "template") || (type === "workflow")) ? "flex-end" : "space-between"}
-            alignItems={((type === "template") || (type === "workflow")) ? "center" : "flex-start"}
+            // // alignItems="flex-start"
+            // // justifyContent={((type === "template") || (type === "workflow")) ? "flex-end" : "space-between"}
+            // sx={{ py: 2, pr: 2.5, pl: 5 }}
+            // alignItems={((type === "template") || (type === "workflow")) ? "center" : "flex-start"}
+            alignItems="center"
             justifyContent="space-between"
             sx={{ py: 2, pr: 2.5, pl: 5 }}
         >
 
-            {((type === "template") || (type === "workflow")) ?
+            <>
+                <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
+                <IconButton onClick={onClose} >
+                    <Iconify icon="gg:close-o" color="black" height={32} width={32} />
+                </IconButton>
+            </>
+            {/* {((type === "template") || (type === "workflow")) ?
                 (
                     <>
                         <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
@@ -71,7 +79,7 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
                         mt: { xs: 3, md: 5 },
                         flexGrow: 1
                     }}
-                />)}
+                />)} */}
 
 
 

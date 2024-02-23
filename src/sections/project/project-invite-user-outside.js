@@ -70,7 +70,7 @@ const ProjectInviteUserOutside = () => {
 
     const handleSelectRole = useCallback(
         (index, option) => {
-            console.log('option',option)
+            console.log('option', option)
             setValue(
                 `inviteUsers.outside[${index}].role`,
                 outside?.find((user) => user.role === option)?.role
@@ -100,7 +100,7 @@ const ProjectInviteUserOutside = () => {
     // }
     return (
         <Stack gap={2} rowGap={7} textAlign='center'>
-            <Typography sx={{ mb: 4, }} fontSize='1.5rem' fontWeight='bold'>Invite users from outside</Typography>
+            {/* <Typography sx={{ mb: 4, }} fontSize='1.5rem' fontWeight='bold'>Invite users from outside</Typography> */}
             {/* <Typography sx={{ mb: 4, maxWidth: 300, mx: 'auto', color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of internal team members can vary depending on their role</Typography> */}
             <Stack gap='1.5rem'>
                 {fields.length > 0 && fields?.map(({ _id }, index) => (
@@ -130,7 +130,7 @@ const ProjectInviteUserOutside = () => {
                 startIcon={<Iconify icon="mingcute:add-line" />}
                 color='secondary'
                 onClick={handleAdd}
-                sx={{ flexShrink: 0 }}
+                sx={{ flexShrink: 0, maxWidth: 'max-content' }}
             >
                 Add Another Trade
             </Button>

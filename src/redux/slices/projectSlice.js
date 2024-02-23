@@ -71,12 +71,25 @@ const project = createSlice({
     setCurrentProject: (state, action) => {
       state.current = action.payload
     },
-    resetCreateProject: (state) => {
-      state.create = projectObj
+    setInternalUsers: (state, action) => {
+      state.inviteUsers.inside.internal = action.payload
     },
-
+    setExternalUsers: (state, action) => {
+      state.inviteUsers.inside.external = action.payload
+    },
+    resetCreateProject: (state) => {
+      state.create = projectObj;
+      state.inviteUsers = {
+        inside: {
+          internal: [],
+          external: [],
+        },
+        outside: [],
+      };
+    },
+    resetProjectState: () => initialState,
   }
 })
 
-export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, resetCreateProject } = project.actions
+export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject,setInternalUsers,setExternalUsers, resetCreateProject, resetProjectState } = project.actions
 export default project.reducer
