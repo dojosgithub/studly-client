@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 // mui
 import { Box, Divider, FormControlLabel, Radio, Stack, Typography, alpha } from '@mui/material'
 // components
-import ProjectInviteUserListView from './view/project-invite-user-list-view'
+import ProjectInviteUserListView from './project-invite-user-list-view'
 
 const ProjectInviteUserStudly = () => {
     const [arr, setArr] = useState()

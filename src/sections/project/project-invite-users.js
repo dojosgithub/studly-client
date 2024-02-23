@@ -8,7 +8,7 @@ import ProjectInviteUserOutside from './project-invite-user-outside'
 import ProjectInviteUserStudly from './project-invite-user-studly'
 
 const ProjectInviteUsers = () => {
-    const [selectedOption, setSelectedOption] = useState('Studly'); // Default selected option
+    const [selectedOption, setSelectedOption] = useState('Outside'); // Default selected option
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);

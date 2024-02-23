@@ -36,6 +36,7 @@ import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
 import ProjectSubcontractor from './project-subcontractor';
 import ProjectInviteUsers from './project-invite-users';
+import ProjectFinal from './project-final';
 
 
 // ----------------------------------------------------------------------
@@ -184,7 +185,9 @@ export default function ProjectStepperForm() {
   } = methods;
 
   const formValues = getValues();
+  const watchValues = watch();
   console.log('isValid', isValid);
+  console.log('watchValues', watchValues);
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -368,16 +371,7 @@ export default function ProjectStepperForm() {
 
         {activeStep === steps.length ? (
           <>
-            <Paper
-              sx={{
-                p: 3,
-                my: 3,
-                minHeight: 120,
-                bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-              }}
-            >
-              <Typography sx={{ my: 1 }}>All steps completed - you&apos;re finished</Typography>
-            </Paper>
+            <ProjectFinal />
 
             <Box sx={{ display: 'flex' }}>
               <Box sx={{ flexGrow: 1 }} />

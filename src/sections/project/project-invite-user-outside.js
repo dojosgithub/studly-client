@@ -45,6 +45,7 @@ const ProjectInviteUserOutside = () => {
     });
     const values = watch();
     console.log('values', values.inviteUsers.outside)
+    console.log('fields', fields)
 
     const handleAdd = () => {
         append({

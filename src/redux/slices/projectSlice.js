@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PROJECTS, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS } from "src/_mock";
+import { PROJECTS, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -53,6 +53,7 @@ const initialState = {
   },
   workflows: PROJECT_WORKFLOWS || [],
   templates: PROJECT_TEMPLATES || [],
+  users: _userList || [],
 }
 
 const project = createSlice({

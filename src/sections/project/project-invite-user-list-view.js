@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
+import { useFormContext } from 'react-hook-form';
 // @mui
 // // import { alpha } from '@mui/material/styles';
 // // import Tab from '@mui/material/Tab';
@@ -42,9 +43,9 @@ import {
 //
 import { setExternalUsers, setInternalUsers } from 'src/redux/slices/projectSlice';
 //
-import ProjectUserTableRow from '../project-user-table-row';
-import ProjectUserTableToolbar from '../project-user-table-toolbar';
-import ProjectUserTableFiltersResult from '../project-user-table-filters-result';
+import ProjectUserTableRow from './project-user-table-row';
+import ProjectUserTableToolbar from './project-user-table-toolbar';
+import ProjectUserTableFiltersResult from './project-user-table-filters-result';
 
 // ----------------------------------------------------------------------
 
@@ -70,9 +71,13 @@ const defaultFilters = {
 export default function ProjectInviteUserListView({ type }) {
     const table = useTable();
     const dispatch = useDispatch();
+    const { control, setValue, getValues, watch, resetField } = useFormContext();
+    const { inviteUsers: { outside } } = getValues()
+
     const internal = useSelector(state => state?.project?.inviteUsers?.inside?.internal);
     const external = useSelector(state => state?.project?.inviteUsers?.inside?.external);
     const inviteUsers = useSelector(state => state?.project?.inviteUsers);
+    const userList = useSelector(state => state?.project?.users);
     console.log('inviteUsers', inviteUsers)
     console.log('internal', internal)
     console.log('external', external)
@@ -83,7 +88,7 @@ export default function ProjectInviteUserListView({ type }) {
 
     const confirm = useBoolean();
 
-    const [tableData, setTableData] = useState(_userList);
+    const [tableData, setTableData] = useState(userList);
 
     const [filters, setFilters] = useState(defaultFilters);
 
@@ -140,8 +145,10 @@ export default function ProjectInviteUserListView({ type }) {
         const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
         if (checked) {
             const rowSelected = tableData.map(row => row.id);
+            setValue(`inviteUsers.inside[${type}]`, rowSelected)
             dispatch(setUsersAction(rowSelected));
         } else {
+            setValue(`inviteUsers.inside[${type}]`, [])
             dispatch(setUsersAction([]));
         }
     }
@@ -153,10 +160,12 @@ export default function ProjectInviteUserListView({ type }) {
         if (userIndex !== -1) {
             // Remove the rowId if it exists
             const updatedUsersFiltered = updatedUsers.filter(id => id !== rowId);
+            setValue(`inviteUsers.inside[${type}]`, updatedUsersFiltered)
             dispatch(setUsersAction(updatedUsersFiltered));
         } else {
             // Add the rowId if it doesn't exist
             const updatedUsersConcat = [...updatedUsers, rowId];
+            setValue(`inviteUsers.inside[${type}]`, updatedUsersConcat)
             dispatch(setUsersAction(updatedUsersConcat));
         }
     }
