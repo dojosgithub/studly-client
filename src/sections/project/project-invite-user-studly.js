@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Box, Divider, FormControlLabel, Radio, Stack, Typography, alpha } from '@mui/material'
 // components
 import ProjectInviteUserListView from './project-invite-user-list-view'
+import ProjectInviteUserOutside from './project-invite-user-outside'
 
 const ProjectInviteUserStudly = () => {
     const [arr, setArr] = useState()

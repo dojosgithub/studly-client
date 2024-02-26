@@ -1,4 +1,8 @@
 import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+
+
 // mui
 import { styled } from '@mui/material/styles';
 import { Box, Button, IconButton, MenuItem, Stack, Typography, alpha } from '@mui/material'
@@ -29,7 +33,7 @@ const currentDefaultValues = {
     email: '',
     _id: uuidv4(),
 }
-const ProjectInviteUserOutside = () => {
+const ProjectInviteUserOutside = ({ type }) => {
     // const { getValues, setValue } = useFormContext();
     // const formValues = getValues()
     // console.log('formValues-->', formValues)
@@ -37,15 +41,18 @@ const ProjectInviteUserOutside = () => {
     // const { inviteUsers: { outside } } = getValues()
     // const [rows, setRows] = useState([currentDefaultValues])
     const { control, setValue, getValues, watch, resetField } = useFormContext();
-    const { inviteUsers: { outside } } = getValues()
+    // const { inviteUsers: { internal, external } } = getValues()
+    const { internal, external } = useSelector(state => state.project.inviteUsers)
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'inviteUsers.outside',
+        name: `inviteUsers.internal`,
     });
-    const values = watch();
-    console.log('values', values.inviteUsers.outside)
-    console.log('fields', fields)
+    // const values = watch();
+    // console.log('values', values.inviteUsers[type])
+    // console.log('fields', fields)
+    console.log('internal', internal)
+    console.log('external', external)
 
     const handleAdd = () => {
         append({
@@ -62,9 +69,9 @@ const ProjectInviteUserOutside = () => {
 
     const handleClearService = useCallback(
         (index) => {
-            resetField(`inviteUsers.outside[${index}].name`);
-            resetField(`inviteUsers.outside[${index}].email`);
-            resetField(`inviteUsers.outside[${index}].role`);
+            resetField(`inviteUsers.internal[${index}].name`);
+            resetField(`inviteUsers.internal[${index}].email`);
+            resetField(`inviteUsers.internal[${index}].role`);
         },
         [resetField]
     );
@@ -72,12 +79,13 @@ const ProjectInviteUserOutside = () => {
     const handleSelectRole = useCallback(
         (index, option) => {
             console.log('option', option)
+            const keyName = type === "internal" ? internal : external
             setValue(
-                `inviteUsers.outside[${index}].role`,
-                outside?.find((user) => user.role === option)?.role
+                `inviteUsers.internal[${index}].role`,
+                keyName?.find((user) => user.role === option)?.role
             );
         },
-        [setValue, outside]
+        [setValue, type, internal, external]
     );
 
     // const handleDelete = (id) => {
@@ -101,17 +109,16 @@ const ProjectInviteUserOutside = () => {
     // }
     return (
         <Stack gap={2} rowGap={7} textAlign='center'>
-            {/* <Typography sx={{ mb: 4, }} fontSize='1.5rem' fontWeight='bold'>Invite users from outside</Typography> */}
-            {/* <Typography sx={{ mb: 4, maxWidth: 300, mx: 'auto', color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of internal team members can vary depending on their role</Typography> */}
+
             <Stack gap='1.5rem'>
                 {fields.length > 0 && fields?.map(({ _id }, index) => (
                     <Box
                         key={_id}
                         sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(3, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                     >
-                        <RHFTextField name={`inviteUsers.outside[${index}].name`} label="Name" InputLabelProps={{ shrink: true }} />
-                        <RHFTextField name={`inviteUsers.outside[${index}].email`} label="Email" InputLabelProps={{ shrink: true }} />
-                        <RHFSelect name={`inviteUsers.outside[${index}].role`} label="Role" InputLabelProps={{ shrink: true }}>
+                        <RHFTextField name={`inviteUsers.internal[${index}].name`} label="Name" InputLabelProps={{ shrink: true }} />
+                        <RHFTextField name={`inviteUsers.internal[${index}].email`} label="Email" InputLabelProps={{ shrink: true }} />
+                        <RHFSelect name={`inviteUsers.internal[${index}].role`} label="Role" InputLabelProps={{ shrink: true }}>
                             {PROJECT_INVITE_USER_ROLES.map((role) => (
                                 <MenuItem key={role.value} value={role.value} onClick={() => handleSelectRole(index, role.value)}>
                                     {role.label}
@@ -140,3 +147,7 @@ const ProjectInviteUserOutside = () => {
 }
 
 export default ProjectInviteUserOutside
+ProjectInviteUserOutside.propTypes = {
+    type: PropTypes.string,
+
+}

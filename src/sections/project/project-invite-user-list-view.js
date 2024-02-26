@@ -52,9 +52,10 @@ import ProjectUserTableFiltersResult from './project-user-table-filters-result';
 // // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-    { id: '', width: 50 },
+    // { id: '', width: 50 },
     { id: 'name', label: 'Name', },
     { id: 'role', label: 'Role' },
+    { id: '', },
     // //  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
     // //  { id: 'company', label: 'Company', width: 220 },
     // //  { id: 'status', label: 'Status', width: 100 },
@@ -72,15 +73,10 @@ export default function ProjectInviteUserListView({ type }) {
     const table = useTable();
     const dispatch = useDispatch();
     const { control, setValue, getValues, watch, resetField } = useFormContext();
-    const { inviteUsers: { outside } } = getValues()
 
-    const internal = useSelector(state => state?.project?.inviteUsers?.inside?.internal);
-    const external = useSelector(state => state?.project?.inviteUsers?.inside?.external);
-    const inviteUsers = useSelector(state => state?.project?.inviteUsers);
+    const internal = useSelector(state => state?.project?.inviteUsers?.internal);
+    const external = useSelector(state => state?.project?.inviteUsers?.external);
     const userList = useSelector(state => state?.project?.users);
-    console.log('inviteUsers', inviteUsers)
-    console.log('internal', internal)
-    console.log('external', external)
 
     const settings = useSettingsContext();
 
@@ -196,73 +192,11 @@ export default function ProjectInviteUserListView({ type }) {
 
 
     return (
-        <>
-            <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-                {/* <CustomBreadcrumbs
-                    heading="List"
-                    links={[
-                        { name: 'Dashboard', href: paths.dashboard.root },
-                        { name: 'User', href: paths.dashboard.user.root },
-                        { name: 'List' },
-                    ]}
-                    action={
-                        <Button
-                        component={RouterLink}
-                        href={paths.dashboard.user.new}
-                        variant="contained"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        >
-                        New User
-                        </Button>
-                    }
-                    sx={{
-                        mb: { xs: 3, md: 5 },
-                    }}
-                    /> */}
+        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
 
-                <Card>
-                    {/* <Tabs
-                            value={filters.status}
-                            onChange={handleFilterStatus}
-                            sx={{
-                            px: 2.5,
-                            boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-                            }}
-                        >
-                            {STATUS_OPTIONS.map((tab) => (
-                            <Tab
-                                key={tab.value}
-                                iconPosition="end"
-                                value={tab.value}
-                                label={tab.label}
-                                icon={
-                                <Label
-                                    variant={
-                                    ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                                    }
-                                    color={
-                                    (tab.value === 'active' && 'success') ||
-                                    (tab.value === 'pending' && 'warning') ||
-                                    (tab.value === 'banned' && 'error') ||
-                                    'default'
-                                    }
-                                >
-                                    {tab.value === 'all' && _userList.length}
-                                    {tab.value === 'active' &&
-                                    _userList.filter((user) => user.status === 'active').length}
 
-                                    {tab.value === 'pending' &&
-                                    _userList.filter((user) => user.status === 'pending').length}
-                                    {tab.value === 'banned' &&
-                                    _userList.filter((user) => user.status === 'banned').length}
-                                    {tab.value === 'rejected' &&
-                                    _userList.filter((user) => user.status === 'rejected').length}
-                                </Label>
-                                }
-                            />
-                            ))}
-                        </Tabs> */}
-
+            <Card>
+                {/* 
                     <ProjectUserTableToolbar
                         filters={filters}
                         onFilters={handleFilters}
@@ -280,10 +214,10 @@ export default function ProjectInviteUserListView({ type }) {
                             results={dataFiltered.length}
                             sx={{ p: 2.5, pt: 0 }}
                         />
-                    )}
+                    )} */}
 
-                    <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-                        <TableSelectedAction
+                <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                    {/* <TableSelectedAction
                             dense={table.dense}
                             numSelected={table.selected.length}
                             rowCount={tableData.length}
@@ -300,102 +234,79 @@ export default function ProjectInviteUserListView({ type }) {
 
                             }
                             }
-                        // // action={
-                        // //     <Tooltip title="Delete">
-                        // //         <IconButton color="primary" onClick={confirm.onTrue}>
-                        // //             <Iconify icon="solar:trash-bin-trash-bold" />
-                        // //         </IconButton>
-                        // //     </Tooltip>
-                        // // }
-                        />
+                        // action={
+                        //     <Tooltip title="Delete">
+                        //         <IconButton color="primary" onClick={confirm.onTrue}>
+                        //             <Iconify icon="solar:trash-bin-trash-bold" />
+                        //         </IconButton>
+                        //     </Tooltip>
+                        // }
+                        /> */}
 
-                        <Scrollbar>
-                            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 540 }}>
-                                <TableHeadCustom
-                                    order={table.order}
-                                    orderBy={table.orderBy}
-                                    headLabel={TABLE_HEAD}
-                                    rowCount={tableData.length}
-                                    numSelected={table.selected.length}
-                                    onSort={table.onSort}
-                                    onSelectAllRows={(checked) => {
-                                        table.onSelectAllRows(
-                                            checked,
-                                            tableData.map((row) => row.id)
-                                        )
-                                    }
-                                    }
+                    <Scrollbar>
+                        <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 540 }}>
+                            <TableHeadCustom
+                                order={table.order}
+                                orderBy={table.orderBy}
+                                headLabel={TABLE_HEAD}
+                                rowCount={tableData.length}
+                                numSelected={table.selected.length}
+                                onSort={table.onSort}
+                                onSelectAllRows={(checked) => {
+                                    table.onSelectAllRows(
+                                        checked,
+                                        tableData.map((row) => row.id)
+                                    )
+                                }
+                                }
+                            />
+
+                            <TableBody>
+                                {dataFiltered
+                                    .slice(
+                                        table.page * table.rowsPerPage,
+                                        table.page * table.rowsPerPage + table.rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <ProjectUserTableRow
+                                            key={row.id}
+                                            row={row}
+                                            selected={table.selected.includes(row.id)}
+                                            // onSelectRow={() => {
+                                            //     table.onSelectRow(row.id)
+
+                                            //     handleUserUpdate(row.id);
+                                            //     console.log('row-selected', row.id)
+                                            // }}
+                                            // onDeleteRow={() => handleDeleteRow(row.id)}
+                                            // onEditRow={() => handleEditRow(row.id)}
+                                        />
+                                    ))}
+
+                                <TableEmptyRows
+                                    height={denseHeight}
+                                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
                                 />
 
-                                <TableBody>
-                                    {dataFiltered
-                                        .slice(
-                                            table.page * table.rowsPerPage,
-                                            table.page * table.rowsPerPage + table.rowsPerPage
-                                        )
-                                        .map((row) => (
-                                            <ProjectUserTableRow
-                                                key={row.id}
-                                                row={row}
-                                                selected={table.selected.includes(row.id)}
-                                                onSelectRow={() => {
-                                                    table.onSelectRow(row.id)
+                                <TableNoData notFound={notFound} />
+                            </TableBody>
+                        </Table>
+                    </Scrollbar>
+                </TableContainer>
 
-                                                    handleUserUpdate(row.id);
-                                                    console.log('row-selected', row.id)
-                                                }}
-                                                onDeleteRow={() => handleDeleteRow(row.id)}
-                                                onEditRow={() => handleEditRow(row.id)}
-                                            />
-                                        ))}
+                <TablePaginationCustom
+                    count={dataFiltered.length}
+                    page={table.page}
+                    rowsPerPage={table.rowsPerPage}
+                    onPageChange={table.onChangePage}
+                    onRowsPerPageChange={table.onChangeRowsPerPage}
+                    //
+                    dense={table.dense}
+                    onChangeDense={table.onChangeDense}
+                />
+            </Card>
+        </Container>
 
-                                    <TableEmptyRows
-                                        height={denseHeight}
-                                        emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                                    />
-
-                                    <TableNoData notFound={notFound} />
-                                </TableBody>
-                            </Table>
-                        </Scrollbar>
-                    </TableContainer>
-
-                    <TablePaginationCustom
-                        count={dataFiltered.length}
-                        page={table.page}
-                        rowsPerPage={table.rowsPerPage}
-                        onPageChange={table.onChangePage}
-                        onRowsPerPageChange={table.onChangeRowsPerPage}
-                        //
-                        dense={table.dense}
-                        onChangeDense={table.onChangeDense}
-                    />
-                </Card>
-            </Container>
-
-            {/* <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleDeleteRows();
-              confirm.onFalse();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      /> */}
-        </>
     );
 }
 

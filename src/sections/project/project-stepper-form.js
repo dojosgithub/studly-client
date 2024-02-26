@@ -66,13 +66,13 @@ const steps = [
   {
     label: 'Invite Users',
     description: `Invite users to project`,
-    value: 'users',
+    value: 'invite-users',
   },
 ];
 
 
 export default function ProjectStepperForm() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(3);
 
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [isDefaultTemplate, setIsDefaultTemplate] = useState(false)
@@ -120,27 +120,50 @@ export default function ProjectStepperForm() {
       // returnDate: Yup.date().min(addDays(new Date(), 1)), 
       returnDate: Yup.string().required('Date is required'),
     }),
-    inviteUsers: Yup.object().shape({
-      inside: Yup.object().shape({
-        internal: Yup.array().min(1, 'At least one internal user is required'),
-        external: Yup.array().min(1, 'At least one external user is required'),
-      }),
-      outside: Yup.array()
-        .of(
-          Yup.object().shape({
-            email: Yup.string().email('Invalid email').required('User email is required'),
-            name: Yup.string().required('User name is required'),
-            role: Yup.string().required('User role is required'),
-            _id: Yup.string(),
-          })
-        )
-    })
+    // inviteUsers: Yup.lazy((value) => (
+    //   value ? Yup.object().shape({
+    //     inside: Yup.object().shape({
+    //       internal: Yup.array(),
+    //       external: Yup.array(),
+    //     }).nullable(), // Make inside object optional
+    //     outside: Yup.array()
+    //       .of(
+    //         Yup.object().shape({
+    //           email: Yup.string().email('Invalid email').required('User email is required'),
+    //           name: Yup.string().required('User name is required'),
+    //           role: Yup.string().required('User role is required'),
+    //           _id: Yup.string(),
+    //         })
+    //       )
+    //       .nullable() // Make outside array optional
+    //       .default([]) // Provide a default empty array
+    //   })
+    //     : Yup.object().nullable()
+    // ))
+    // inviteUsers: Yup.object().shape({
+    //   inside: Yup.object().shape({
+    //     internal: Yup.array(),
+    //     external: Yup.array(),
+    //   }),
+    //   outside: Yup.array()
+    //     .of(
+    //       Yup.object().shape({
+    //         email: Yup.string().email('Invalid email').required('User email is required'),
+    //         name: Yup.string().required('User name is required'),
+    //         role: Yup.string().required('User role is required'),
+    //         _id: Yup.string(),
+    //       })
+    //     ).min(1,"1 value")
+    // })
 
   });
 
+  const defaultValues = useMemo(() => {
+    // Check if form is being edited or a new entry is being created
+    // For example, check if selectedTemplate is present or not
+    const isNewEntry = activeStep === 3 || activeStep === 4;
 
-  const defaultValues = useMemo(
-    () => ({
+    return {
       name: '',
       trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
         name: '',
@@ -152,21 +175,19 @@ export default function ProjectStepperForm() {
         statuses: [],
         returnDate: null
       },
-      inviteUsers: {
-        inside: {
-          internal: [],
-          external: []
-        },
-        outside: [{
-          name: '',
-          email: '',
-          _id: uuidv4()
-        }]
-
-      }
-    }),
-    [selectedTemplate, getTemplateTrades]
-  );
+      // inviteUsers: {
+      //   inside: {
+      //     internal: [],
+      //     external: []
+      //   },
+      //   outside: isNewEntry ? [{
+      //     name: '',
+      //     email: '',
+      //     _id: uuidv4()
+      //   }] : [] // Provide default value conditionally
+      // }
+    };
+  }, [selectedTemplate, getTemplateTrades, activeStep]);
 
   const methods = useForm({
     resolver: yupResolver(ProjectSchema),
@@ -186,19 +207,22 @@ export default function ProjectStepperForm() {
 
   const formValues = getValues();
   const watchValues = watch();
-  console.log('isValid', isValid);
   console.log('watchValues', watchValues);
+  console.log('isValid', isValid);
+  console.log('activeStep', activeStep);
 
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data, e) => {
+    e.preventDefault()
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar('Update success!');
 
       console.log('data Final', data);
-      reset();
-      setActiveStep(0)
-      dispatch(resetCreateProject())
+      handleReset()
+      // reset();
+      // setActiveStep(0)
+      // dispatch(resetCreateProject())
     } catch (error) {
       console.error(error);
     }
@@ -212,15 +236,19 @@ export default function ProjectStepperForm() {
   }
 
   const handleNext = async () => {
-    if (activeStep === steps.length - 1) return;
+    // new change
+    if (activeStep === steps.length) return;
 
     let newSkipped = skipped;
+    console.log('newSkipped Before', newSkipped)
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
+    console.log('newSkipped After', newSkipped)
 
     const { isFormValid, currentStepValue } = await getFormValidation();
+    console.log('isFormValid', { isFormValid, currentStepValue })
 
     // ?  setting name to redux
     if ((currentStepValue === 'name') && isFormValid) {
@@ -258,13 +286,12 @@ export default function ProjectStepperForm() {
       // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.");
     }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    console.log('skipped', skipped)
     setSkipped((prevSkipped) => {
       console.log('prevSkipped', prevSkipped)
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
+      console.log('newSkipped', newSkipped)
       return newSkipped;
     });
   };
@@ -368,48 +395,54 @@ export default function ProjectStepperForm() {
       <Divider sx={{ width: '1px', background: "rgb(145 158 171 / 20%)" }} />
 
       <Stack flex={1} position='relative'>
+        <FormProvider methods={methods} onSubmit={onSubmit}>
 
-        {activeStep === steps.length ? (
-          <>
-            <ProjectFinal />
+          {activeStep === steps.length ? (
+            <>
+              <ProjectFinal />
 
-            <Box sx={{ display: 'flex' }}>
-              <Box sx={{ flexGrow: 1 }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </>
-        ) : (
-          <FormProvider methods={methods} onSubmit={onSubmit}>
-            <Paper
-              sx={{
-                // py: 3,
-                my: 3,
-                minHeight: 120,
-                background: 'transparent'
-                // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-              }}
-            >
-              {getComponent()}
-            </Paper>
-            <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
-              {activeStep !== 0 && <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-                Back
-              </Button>}
-              <Box sx={{ flexGrow: 1 }} />
-
-              {isStepOptional(activeStep) && (
-                <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                  Skip
-                </Button>
-              )}
-              {activeStep === steps.length - 1 ? (
+              <Box sx={{ display: 'flex', gap: 5 }}>
+                <Box sx={{ flexGrow: 1 }} />
+                <Button onClick={handleReset}>Reset</Button>
                 <Button type="submit" variant="contained">Finish</Button>
-              ) : (
-                <Button onClick={handleNext} variant="contained">Next</Button>
-              )}
-            </Box>
-          </FormProvider>
-        )}
+              </Box>
+            </>
+          ) : (
+            // <FormProvider methods={methods} onSubmit={onSubmit}>
+            <>
+              <Paper
+                sx={{
+                  // py: 3,
+                  my: 3,
+                  minHeight: 120,
+                  background: 'transparent'
+                  // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
+                }}
+              >
+                {getComponent()}
+              </Paper>
+              <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
+                {activeStep !== 0 && <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+                  Back
+                </Button>}
+                <Box sx={{ flexGrow: 1 }} />
+
+                {isStepOptional(activeStep) && (
+                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                    Skip
+                  </Button>
+                )}
+                {/* steps.length - 1 new change */}
+                {activeStep === steps.length ? (
+                  <Button type="submit" variant="contained">Finish</Button>
+                ) : (
+                  <Button onClick={handleNext} variant="contained">Next</Button>
+                )}
+              </Box>
+            </>
+            // </FormProvider>
+          )}
+        </FormProvider>
       </Stack>
       {!!selectedTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} trades={formValues?.trades} />}
       <CustomDrawer open={openNewTemplateDrawer} onClose={() => {

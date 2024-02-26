@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PROJECTS, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
+import { PROJECTS, PROJECT_INVITE_USERS_EXTERNAL, PROJECT_INVITE_USERS_INTERNAL, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -31,25 +31,14 @@ const projectObj = {
 const initialState = {
   list: PROJECTS || [],
   current: null,
-  create: {
-    name: '',
-    trades: [],
-    workflow: {
-      name: '',
-      statuses: [],
-      returnDate: '',
-    },
-  },
+  create: { ...projectObj },
   subcontractors: {
     list: PROJECT_SUBCONTRACTORS || [],
     assign: []
   },
   inviteUsers: {
-    inside: {
-      internal: [],
-      external: [],
-    },
-    outside: [],
+    internal: PROJECT_INVITE_USERS_INTERNAL || [],
+    external: PROJECT_INVITE_USERS_EXTERNAL || [],
   },
   workflows: PROJECT_WORKFLOWS || [],
   templates: PROJECT_TEMPLATES || [],
@@ -73,24 +62,21 @@ const project = createSlice({
       state.current = action.payload
     },
     setInternalUsers: (state, action) => {
-      state.inviteUsers.inside.internal = action.payload
+      state.inviteUsers.internal = action.payload
     },
     setExternalUsers: (state, action) => {
-      state.inviteUsers.inside.external = action.payload
+      state.inviteUsers.external = action.payload
     },
     resetCreateProject: (state) => {
       state.create = projectObj;
       state.inviteUsers = {
-        inside: {
-          internal: [],
-          external: [],
-        },
-        outside: [],
+        internal: [],
+        external: [],
       };
     },
     resetProjectState: () => initialState,
   }
 })
 
-export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject,setInternalUsers,setExternalUsers, resetCreateProject, resetProjectState } = project.actions
+export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, resetCreateProject, resetProjectState } = project.actions
 export default project.reducer

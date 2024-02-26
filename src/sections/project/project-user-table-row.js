@@ -5,6 +5,7 @@ import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import ListItemText from '@mui/material/ListItemText';
+import Label from 'src/components/label';
 // // import Button from '@mui/material/Button';
 // // import Tooltip from '@mui/material/Tooltip';
 // // import MenuItem from '@mui/material/MenuItem';
@@ -12,7 +13,6 @@ import ListItemText from '@mui/material/ListItemText';
 // // hooks
 // // import { useBoolean } from 'src/hooks/use-boolean';
 // // components
-// // import Label from 'src/components/label';
 // // import Iconify from 'src/components/iconify';
 // // import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // // import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -22,7 +22,7 @@ import ListItemText from '@mui/material/ListItemText';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, selected, onSelectRow }) {
-  const { name, avatarUrl, role, email } = row;
+  const { name, avatarUrl, role, email, status } = row;
 
   // // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
 
@@ -35,9 +35,9 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
+        </TableCell> */}
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
@@ -54,12 +54,6 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
-
-
         <TableCell>
           <Label
             variant="soft"
@@ -73,6 +67,13 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
             {status}
           </Label>
         </TableCell>
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+
+
+       
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>

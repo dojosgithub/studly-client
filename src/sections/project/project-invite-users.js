@@ -6,13 +6,14 @@ import { RHFRadioGroup } from 'src/components/hook-form'
 // components
 import ProjectInviteUserOutside from './project-invite-user-outside'
 import ProjectInviteUserStudly from './project-invite-user-studly'
+import ProjectInviteNewUser from './project-invite-new-user'
 
 const ProjectInviteUsers = () => {
     const [selectedOption, setSelectedOption] = useState('Outside'); // Default selected option
 
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
+    // const handleOptionChange = (event) => {
+    //     setSelectedOption(event.target.value);
+    // };
 
     return (
         <>
@@ -21,7 +22,7 @@ const ProjectInviteUsers = () => {
                 minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 mb: 7
             }} />
-            <Box sx={{ display: 'flex', justifyContent: "center", mb: 4 }}>
+            {/* <Box sx={{ display: 'flex', justifyContent: "center", mb: 4 }}>
                 <FormControlLabel
                     control={<Radio color="primary" checked={selectedOption === 'Studly'} onChange={handleOptionChange} value="Studly" />}
                     label="Invite users from Studly"
@@ -32,8 +33,9 @@ const ProjectInviteUsers = () => {
                     label="Invite users from Outside"
                     sx={{ mb: 1, "& .MuiFormControlLabel-label": { fontSize: '1rem', fontWeight: 'semiBold' } }}
                 />
-            </Box>
-            {selectedOption === 'Studly' ? <ProjectInviteUserStudly /> : <ProjectInviteUserOutside />}
+            </Box> */}
+            <ProjectInviteNewUser type='internal'/>
+            <ProjectInviteUserStudly /> 
         </>
     )
 }

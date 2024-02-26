@@ -268,9 +268,30 @@ export const PROJECT_INVITE_USER_ROLES = [
   { value: "Associate", label: "Associate", _id: uuidv4() },
 ]
 
-export const PROJECT_INVITE_USERS = [...Array(8)].map((_, index) => ({
+export const PROJECT_INVITE_USERS_INTERNAL = [...Array(8)].map((_, index) => {
+  const status = ['Joined', 'Invited'][index % 2 === 0 || index % 3 === 1];
+  return {
+    id: _mock.id(index),
+    name: _mock.role(index),
+    email: _mock.email(index),
+    role: _mock.role(index),
+    status
+  }
+
+}
+);
+
+export const PROJECT_INVITE_USERS_EXTERNAL = [...Array(16)].slice(7).map((_, index) => ({
   id: _mock.id(index),
   name: _mock.role(index),
   email: _mock.email(index),
   role: _mock.role(index),
+}));
+
+export const PROJECT_SHARED_PERSONS = [...Array(20)].map((_, index) => ({
+  id: _mock.id(index),
+  name: _mock.fullName(index),
+  email: _mock.email(index),
+  avatarUrl: _mock.image.avatar(index),
+  permission: index % 2 ? 'view' : 'edit',
 }));
