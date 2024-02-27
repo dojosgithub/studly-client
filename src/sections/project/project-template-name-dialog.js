@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,15 +15,17 @@ import { Stack, Typography } from '@mui/material';
 // components
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { setCreateTemplate } from 'src/redux/slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
-export default function ProjectTemplateName({ open, onClose, getTemplateName,trades }) {
+export default function ProjectTemplateName({ open, onClose,setSelectedTemplate, onTemplateCreation, trades }) {
     const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch()
 
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
-        
+
     });
 
     const defaultValues = useMemo(
@@ -45,13 +48,15 @@ export default function ProjectTemplateName({ open, onClose, getTemplateName,tra
 
     const onSubmit = handleSubmit(async ({ name }) => {
         try {
-            getTemplateName(name)
             const data = { name, trades }
+            onTemplateCreation(data)
+            console.info('DATA', data);
+            setSelectedTemplate('')
+            dispatch(setCreateTemplate(data))
             await new Promise((resolve) => setTimeout(resolve, 500));
             reset();
-            // onClose();
+            onClose();
             enqueueSnackbar('Update success!');
-            console.info('DATA', data);
         } catch (error) {
             console.error(error);
         }
@@ -95,8 +100,9 @@ export default function ProjectTemplateName({ open, onClose, getTemplateName,tra
 }
 
 ProjectTemplateName.propTypes = {
-    getTemplateName: PropTypes.func,
+    onTemplateCreation: PropTypes.func,
     onClose: PropTypes.func,
     open: PropTypes.bool,
     trades: PropTypes.array,
+    setSelectedTemplate: PropTypes.func,
 };

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -19,7 +19,7 @@ import { Divider, Stack } from '@mui/material';
 import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 //
-import { resetCreateProject, setProjectName, setProjectTrades } from 'src/redux/slices/projectSlice';
+import { resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -75,7 +75,6 @@ export default function ProjectStepperForm() {
   const [activeStep, setActiveStep] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState('')
-  const [isDefaultTemplate, setIsDefaultTemplate] = useState(false)
   const [activeTab, setActiveTab] = useState('')
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3, 4]));
 
@@ -83,6 +82,7 @@ export default function ProjectStepperForm() {
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const newTemplate = useSelector(state => state.project.template);
 
 
   const isStepOptional = (step) => (step === 3 || step === 4);
@@ -261,7 +261,7 @@ export default function ProjectStepperForm() {
     }
 
     // TODO:  isDefaultTemplate should be removed
-    if (activeTab === "existing" && isFormValid && !!selectedTemplate && !open) {
+    if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
       setOpen(true)
       return
     }
@@ -274,7 +274,6 @@ export default function ProjectStepperForm() {
   const handleBack = () => {
     // TODO: Step2: values should be there when go back
     if (activeStep === 1) {
-      setIsDefaultTemplate(false);
       setSelectedTemplate('');
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -299,7 +298,6 @@ export default function ProjectStepperForm() {
 
   const handleReset = () => {
     setActiveStep(0);
-    setIsDefaultTemplate(false);
     setSelectedTemplate('');
     reset();
     dispatch(resetCreateProject())
@@ -313,7 +311,6 @@ export default function ProjectStepperForm() {
     }
 
     setSelectedTemplate(val)
-    setIsDefaultTemplate(val === "default")
 
     const filteredTrades = getTemplateTrades(val)
     // TODO: multiple templates
@@ -329,16 +326,19 @@ export default function ProjectStepperForm() {
     const trades = tab === "create" ? [newField] : defaultTemplate;
     setValue('trades', trades)
     if (tab === "create" && !!selectedTemplate) {
-      setIsDefaultTemplate(false)
       setSelectedTemplate('')
     }
     setActiveTab(tab)
   }
 
-  const handleTemplateName = (val) => {
+  const handleTemplateCreation = (val) => {
     // setValue("templateName", val)
-    handleNext()
+
     setOpen(false)
+    if (newTemplate?.create) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+    // setSelectedTemplate('')
   }
 
 
@@ -349,7 +349,7 @@ export default function ProjectStepperForm() {
         component = <ProjectName />;
         break;
       case 1:
-        component = <ProjectTrade selectedTemplate={selectedTemplate} onSelect={handleSelect} isDefaultTemplate={isDefaultTemplate} onTabChange={handleTab} />;
+        component = <ProjectTrade selectedTemplate={selectedTemplate} onSelect={handleSelect} onTabChange={handleTab} />;
         break;
       case 2:
         component = <ProjectWorkflow />;
@@ -382,6 +382,7 @@ export default function ProjectStepperForm() {
           return (
             <Step key={step.label} {...stepProps}>
               <StepLabel
+                // onClick={() => handleBack(index)}
                 {...labelProps}
                 optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
               >
@@ -444,7 +445,7 @@ export default function ProjectStepperForm() {
           )}
         </FormProvider>
       </Stack>
-      {!!selectedTemplate && <ProjectTemplateName title='asvs' open={open} onClose={() => setOpen(false)} getTemplateName={handleTemplateName} trades={formValues?.trades} />}
+      {selectedTemplate === "default" && <ProjectTemplateName open={open} onClose={() => setOpen(false)} setSelectedTemplate={setSelectedTemplate} onTemplateCreation={handleTemplateCreation} trades={formValues?.trades} />}
       <CustomDrawer open={openNewTemplateDrawer} onClose={() => {
         setOpenNewTemplateDrawer(false);
         handleSelect('')

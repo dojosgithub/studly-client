@@ -15,7 +15,7 @@ import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
 
 
-export default function ProjectTrade({ onSelect,selectedTemplate, isDefaultTemplate, onTabChange }) {
+export default function ProjectTrade({ onSelect,selectedTemplate, onTabChange }) {
 
   return (
     <>
@@ -49,7 +49,6 @@ ProjectTrade.propTypes = {
   selectedTemplate: PropTypes.string,
   onSelect: PropTypes.func,
   onTabChange: PropTypes.func,
-  isDefaultTemplate: PropTypes.bool,
 }
 
 const grey = {

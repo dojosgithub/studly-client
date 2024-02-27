@@ -1,4 +1,4 @@
-import { Box, Container, Divider, MenuItem, Stack, Typography, Select } from '@mui/material'
+import { Box, Container, Divider, MenuItem, Stack, Typography, Select, Card } from '@mui/material'
 import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,16 +29,16 @@ const ProjectSubcontractor = () => {
     const handleSelect = (tradeId, subcontractorId) => {
         const data = { tradeId, subcontractorId }
         console.log('handleSelect', data);
-        
+
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
                 return { ...trade, subcontractorId };
             }
             return trade;
         });
-                
-        console.log('modifiedTrades',modifiedTrades)
-        setValue('trades',modifiedTrades)
+
+        console.log('modifiedTrades', modifiedTrades)
+        setValue('trades', modifiedTrades)
         dispatch(setProjectTrades(modifiedTrades))
 
         // setOptions((prevOptions) => (
@@ -207,17 +207,22 @@ const ProjectSubcontractor = () => {
             <Divider sx={{ mb: 5 }} />
             <Container>
                 <Stack rowGap={5} alignItems='center'>
+                    <Box sx={{ maxWidth: '500px', width: '100%', pb: '1rem', borderBottom: (theme) => `2px solid ${theme.palette.secondary.main}`, display: 'flex', alignItems: "center", gap: 2, justifyContent: "space-between" }}>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '1rem', color: (theme) => theme.palette.secondary.main }}>Trade </Typography>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '1rem', color: (theme) => theme.palette.secondary.main }}>Subcontractor</Typography>
+
+                    </Box>
                     {
                         trades.map(({ tradeId, name }) => (
-                            <Box sx={{ maxWidth: '500px', width: '100%', borderBottom: '1px solid lightgrey', display: 'flex', alignItems: "center", gap: 2, justifyContent: "space-between" }}>
+                            <Card sx={{ maxWidth: '500px', width: '100%', p: '1rem', display: 'flex', alignItems: "center", gap: 2, justifyContent: "space-between" }}>
                                 <Typography>{name}</Typography>
                                 <Box width='100%' maxWidth="200px">
                                     <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].subcontractorId} label="" placeholder="Choose Subcontractor" sx={{
                                         width: '100%',
-                                        "&.MuiInputBase-root ": {
-                                            borderBottomRightRadius: 0,
-                                            borderBottomLeftRadius: 0,
-                                        },
+                                        // "&.MuiInputBase-root ": {
+                                        //     borderBottomRightRadius: 0,
+                                        //     borderBottomLeftRadius: 0,
+                                        // },
                                         "& .MuiSelect-select": {
                                             display: 'flex',
                                             alignItems: 'center',
@@ -231,7 +236,7 @@ const ProjectSubcontractor = () => {
                                         ))}
                                     </Select>
                                 </Box>
-                            </Box>
+                            </Card>
                         )
                         )
                     }

@@ -40,15 +40,12 @@ const initialState = {
   inviteUsers: {
     internal: [],
     external: [],
-    // new: {
-    //   email: '',
-    //   role: '',
-    //   status: 'invited',
-    //   _id: uuidv4()
-    // }
   },
   workflows: PROJECT_WORKFLOWS || [],
-  templates: PROJECT_TEMPLATES || [],
+  template: {
+    create: { name: '', trades: [] },
+    list: PROJECT_TEMPLATES || [],
+  },
   users: _userList || [],
 }
 
@@ -80,8 +77,12 @@ const project = createSlice({
     setAddExternalUser: (state, action) => {
       state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
     },
+    setCreateTemplate: (state, action) => {
+      state.template.create = action.payload;
+    },
     resetCreateProject: (state) => {
       state.create = projectObj;
+      state.template.create = { name: '', trades: [] };
       state.inviteUsers = {
         internal: [],
         external: [],
@@ -91,5 +92,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, resetProjectState } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, resetProjectState } = project.actions
 export default project.reducer
