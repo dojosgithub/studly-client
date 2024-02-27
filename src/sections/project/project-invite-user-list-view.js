@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { useFormContext } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { useFormContext } from 'react-hook-form';
 // // import Button from '@mui/material/Button';
 // // import Tooltip from '@mui/material/Tooltip';
 // // import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Container from '@mui/material/Container';
@@ -46,6 +47,7 @@ import { setExternalUsers, setInternalUsers } from 'src/redux/slices/projectSlic
 import ProjectUserTableRow from './project-user-table-row';
 import ProjectUserTableToolbar from './project-user-table-toolbar';
 import ProjectUserTableFiltersResult from './project-user-table-filters-result';
+import ProjectInviteNewUser from './project-invite-new-user';
 
 // ----------------------------------------------------------------------
 
@@ -76,7 +78,8 @@ export default function ProjectInviteUserListView({ type }) {
 
     const internal = useSelector(state => state?.project?.inviteUsers?.internal);
     const external = useSelector(state => state?.project?.inviteUsers?.external);
-    const userList = useSelector(state => state?.project?.users);
+    // const userList = useSelector(state => state?.project?.users);
+    const userList = type === 'internal' ? internal : external;
 
     const settings = useSettingsContext();
 
@@ -166,6 +169,11 @@ export default function ProjectInviteUserListView({ type }) {
         }
     }
 
+    useEffect(() => {
+        setTableData(userList)
+        console.log('userList')
+    }, [userList, internal, external])
+
 
 
 
@@ -193,7 +201,9 @@ export default function ProjectInviteUserListView({ type }) {
 
     return (
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
+            {/* <Box mb={5}>
+                <ProjectInviteNewUser type={type} />
+            </Box> */}
 
             <Card>
                 {/* 
@@ -272,17 +282,18 @@ export default function ProjectInviteUserListView({ type }) {
                                             key={row.id}
                                             row={row}
                                             selected={table.selected.includes(row.id)}
-                                            // onSelectRow={() => {
-                                            //     table.onSelectRow(row.id)
+                                        // onSelectRow={() => {
+                                        //     table.onSelectRow(row.id)
 
-                                            //     handleUserUpdate(row.id);
-                                            //     console.log('row-selected', row.id)
-                                            // }}
-                                            // onDeleteRow={() => handleDeleteRow(row.id)}
-                                            // onEditRow={() => handleEditRow(row.id)}
+                                        //     handleUserUpdate(row.id);
+                                        //     console.log('row-selected', row.id)
+                                        // }}
+                                        // onDeleteRow={() => handleDeleteRow(row.id)}
+                                        // onEditRow={() => handleEditRow(row.id)}
                                         />
                                     ))}
-
+                                <ProjectInviteNewUser type={type} />
+                                
                                 <TableEmptyRows
                                     height={denseHeight}
                                     emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
@@ -294,7 +305,7 @@ export default function ProjectInviteUserListView({ type }) {
                     </Scrollbar>
                 </TableContainer>
 
-                <TablePaginationCustom
+                {/* <TablePaginationCustom
                     count={dataFiltered.length}
                     page={table.page}
                     rowsPerPage={table.rowsPerPage}
@@ -303,7 +314,7 @@ export default function ProjectInviteUserListView({ type }) {
                     //
                     dense={table.dense}
                     onChangeDense={table.onChangeDense}
-                />
+                /> */}
             </Card>
         </Container>
 

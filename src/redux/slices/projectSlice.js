@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PROJECTS, PROJECT_INVITE_USERS_EXTERNAL, PROJECT_INVITE_USERS_INTERNAL, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
+import uuidv4 from "src/utils/uuidv4";
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -37,8 +38,14 @@ const initialState = {
     assign: []
   },
   inviteUsers: {
-    internal: PROJECT_INVITE_USERS_INTERNAL || [],
-    external: PROJECT_INVITE_USERS_EXTERNAL || [],
+    internal: [],
+    external: [],
+    // new: {
+    //   email: '',
+    //   role: '',
+    //   status: 'invited',
+    //   _id: uuidv4()
+    // }
   },
   workflows: PROJECT_WORKFLOWS || [],
   templates: PROJECT_TEMPLATES || [],
@@ -67,6 +74,12 @@ const project = createSlice({
     setExternalUsers: (state, action) => {
       state.inviteUsers.external = action.payload
     },
+    setAddInternalUser: (state, action) => {
+      state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
+    },
+    setAddExternalUser: (state, action) => {
+      state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
+    },
     resetCreateProject: (state) => {
       state.create = projectObj;
       state.inviteUsers = {
@@ -78,5 +91,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, resetCreateProject, resetProjectState } = project.actions
+export const { setProjectName, setProjectTrades, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, resetProjectState } = project.actions
 export default project.reducer

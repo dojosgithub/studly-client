@@ -72,7 +72,7 @@ const steps = [
 
 
 export default function ProjectStepperForm() {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [isDefaultTemplate, setIsDefaultTemplate] = useState(false)

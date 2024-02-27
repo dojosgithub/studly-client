@@ -58,7 +58,7 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
           <Label
             variant="soft"
             color={
-              (status === 'active' && 'success') ||
+              (status === 'joined' && 'success') ||
               (status === 'pending' && 'warning') ||
               (status === 'banned' && 'error') ||
               'default'
