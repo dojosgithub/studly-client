@@ -5,7 +5,6 @@ import { Box, Button, Divider, FormControlLabel, Radio, Stack, Typography, alpha
 import Iconify from 'src/components/iconify'
 import ProjectInviteUserListView from './project-invite-user-list-view'
 import ProjectInviteUserDialog from './project-invite-user-dialog'
-import ProjectInviteUserOutside from './project-invite-user-outside'
 
 const ProjectInviteUserStudly = () => {
     const [openInviteUser, setOpenInviteUser] = useState(false)

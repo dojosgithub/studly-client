@@ -44,9 +44,9 @@ import {
 //
 import { setExternalUsers, setInternalUsers } from 'src/redux/slices/projectSlice';
 //
-import ProjectUserTableRow from './project-user-table-row';
-import ProjectUserTableToolbar from './project-user-table-toolbar';
-import ProjectUserTableFiltersResult from './project-user-table-filters-result';
+import ProjectTableRow from './project-table-row';
+import ProjectTableToolbar from './project-table-toolbar';
+import ProjectTableFiltersResult from './project-table-filters-result';
 import ProjectInviteNewUser from './project-invite-new-user';
 
 // ----------------------------------------------------------------------
@@ -207,7 +207,7 @@ export default function ProjectInviteUserListView({ type }) {
 
             <Card>
                 {/* 
-                    <ProjectUserTableToolbar
+                    <ProjectTableToolbar
                         filters={filters}
                         onFilters={handleFilters}
                         //
@@ -215,7 +215,7 @@ export default function ProjectInviteUserListView({ type }) {
                     />
 
                     {canReset && (
-                        <ProjectUserTableFiltersResult
+                        <ProjectTableFiltersResult
                             filters={filters}
                             onFilters={handleFilters}
                             //
@@ -278,7 +278,7 @@ export default function ProjectInviteUserListView({ type }) {
                                         table.page * table.rowsPerPage + table.rowsPerPage
                                     )
                                     .map((row) => (
-                                        <ProjectUserTableRow
+                                        <ProjectTableRow
                                             key={row.id}
                                             row={row}
                                             selected={table.selected.includes(row.id)}

@@ -17,7 +17,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableToolbar({
+export default function ProjectTableToolbar({
   filters,
   onFilters,
   //
@@ -143,7 +143,7 @@ export default function UserTableToolbar({
   );
 }
 
-UserTableToolbar.propTypes = {
+ProjectTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,
