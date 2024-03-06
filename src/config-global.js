@@ -4,7 +4,8 @@ import { paths } from 'src/routes/paths';
 // API
 // ----------------------------------------------------------------------
 
-export const HOST_API = process.env.REACT_APP_HOST_API;
+// export const HOST_API = process.env.REACT_APP_HOST_API;
+export const HOST_API = process.env.REACT_APP_HOST_API_LOCAL;
 export const ASSETS_API = process.env.REACT_APP_ASSETS_API;
 
 // export const FIREBASE_API = {
@@ -33,5 +34,8 @@ export const MAPBOX_API = process.env.REACT_APP_MAPBOX_API;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 // export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
-export const PATH_AFTER_LOGIN = paths.onboarding; // as '/onboarding'
+export const PATH_AFTER_LOGIN = "/";
+export const PATH_LOGIN_PAGE = paths.auth.jwt.login;
+export const PATH_AFTER_LOGIN_ONBOARDING = paths.onboarding; // as '/onboarding'
 export const PATH_AFTER_LOGIN_SUBSCRIBER = paths.subscriber.submittals.list; // as '/subscriber/submittals/list'
+export const PATH_AFTER_LOGIN_SYSTEM_ADMIN = paths.admin.company.list; // as '/admin/company/list'

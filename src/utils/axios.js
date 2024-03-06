@@ -29,11 +29,6 @@ export const endpoints = {
   chat: '/api/chat',
   kanban: '/api/kanban',
   calendar: '/api/calendar',
-  auth: {
-    me: '/api/auth/me',
-    login: '/api/auth/login',
-    register: '/api/auth/register',
-  },
   mail: {
     list: '/api/mail/list',
     details: '/api/mail/details',
@@ -49,5 +44,20 @@ export const endpoints = {
     list: '/api/product/list',
     details: '/api/product/details',
     search: '/api/product/search',
+  },
+  // auth: {
+  //   me: '/api/auth/me',
+  //   login: '/api/auth/login',
+  //   register: '/api/auth/register',
+  // },
+  auth: {
+    profile: '/api/user/profile',
+    login: '/api/user/login',
+    register: '/api/auth/register',
+  },
+  company: {
+    list: '/api/user/company',
+    create: '/api/user/admin/register',
+ 
   },
 };

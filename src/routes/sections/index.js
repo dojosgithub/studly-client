@@ -1,8 +1,10 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 
 // config
-import { PATH_AFTER_LOGIN, PATH_AFTER_LOGIN_SUBSCRIBER } from 'src/config-global';
+import { PATH_AFTER_LOGIN_ONBOARDING, PATH_AFTER_LOGIN_SYSTEM_ADMIN, PATH_AFTER_LOGIN_SUBSCRIBER, PATH_LOGIN_PAGE } from 'src/config-global';
 import { AuthGuard } from 'src/auth/guard';
 //
 import MainLayout from 'src/layouts/main/layout';
@@ -15,6 +17,7 @@ import { authRoutes } from './auth';
 import { dashboardRoutes } from './dashboard';
 import { componentsRoutes } from './components';
 import { subscriberRoutes } from './subscriber';
+import { adminRoutes } from './admin';
 
 //
 const OnboardingPage = lazy(() => import('src/pages/onboarding'));
@@ -23,20 +26,35 @@ const OnboardingPage = lazy(() => import('src/pages/onboarding'));
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  return useRoutes([
-    // SET INDEX PAGE WITH SKIP HOME PAGE
-    {
-      path: '/',
-      element: <Navigate to={PATH_AFTER_LOGIN} replace />,
-    },
-    {
-      path: '/subscriber',
-      element: <Navigate to={PATH_AFTER_LOGIN_SUBSCRIBER} replace />,
-    },
+  const userType = useSelector(state => state.user?.user?.userType);
+  const user = useSelector(state => state.user?.user);
+  let destinationPath;
 
-    // -------------------------------------------------------------------
+  if (isEmpty(user)) {
+    destinationPath = PATH_LOGIN_PAGE;
+  } else if (userType === 'System') {
+    destinationPath = PATH_AFTER_LOGIN_SYSTEM_ADMIN;
+  } else {
+    destinationPath = PATH_AFTER_LOGIN_ONBOARDING;
+  }
+  
+  let routes = [];
 
-    {
+  // Define base routes
+  routes = [
+    ...authRoutes,
+    ...mainRoutes,
+    ...componentsRoutes,
+  ];
+
+  // Add admin routes if userType is 'System'
+  if (userType === 'System') {
+    routes.push(...adminRoutes);
+  }
+
+  // Add onboarding route if userType is 'Subscriber'
+  if (userType === 'Subscriber') {
+    routes.push({
       path: '/onboarding',
       element: (
         <AuthGuard>
@@ -47,35 +65,60 @@ export default function Router() {
           </SimpleLayout>
         </AuthGuard>
       ),
+    });
+  }
+  return useRoutes([
+    // SET INDEX PAGE WITH SKIP HOME PAGE
+    {
+      path: '/',
+      element: <Navigate to={destinationPath} replace />,
     },
 
+
+
     // // {
-    // //   path: '/',
+    // //   path: '/subscriber',
+    // //   element: <Navigate to={PATH_AFTER_LOGIN_SUBSCRIBER} replace />,
+    // // },
+
+    // // -------------------------------------------------------------------
+
+    // // {
+    // //   path: '/onboarding',
     // //   element: (
     // //     <AuthGuard>
-    // //       <MainLayout>
-    // //         <HomePage />
-    // //       </MainLayout>
+    // //       <SimpleLayout>
+    // //         <Suspense fallback={<LoadingScreen />}>
+    // //           <OnboardingPage />
+    // //         </Suspense>
+    // //       </SimpleLayout>
     // //     </AuthGuard>
     // //   ),
     // // },
 
+    // Render dynamic routes
+    ...routes,
 
-    // Auth routes
-    ...authRoutes,
-    // ...authDemoRoutes,
 
-    // // Dashboard routes
-    // // ...dashboardRoutes,
 
-    // Main routes
-    ...mainRoutes,
+    // // Auth routes
+    // // ...authRoutes,
 
-    // Subscriber routes
-    ...subscriberRoutes,
 
-    // Components routes
-    ...componentsRoutes,
+    // // // Dashboard routes
+    // // // ...dashboardRoutes,
+
+    // // Main routes
+    // // ...mainRoutes,
+
+    // // Main routes
+    // // ...adminRoutes,
+
+    // // Subscriber routes
+    // // ...subscriberRoutes,
+
+    // // Components routes
+    // // ...componentsRoutes,
 
     // No match 404
     { path: '*', element: <Navigate to="/404" replace /> },

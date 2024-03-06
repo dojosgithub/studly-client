@@ -115,7 +115,7 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/company/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/company/${id}/edit`,
     },
-   
+
     // previous
     product: {
       root: `${ROOTS.DASHBOARD}/product`,
@@ -152,8 +152,19 @@ export const paths = {
       edit: (id) => `${ROOTS.DASHBOARD}/tour/${id}/edit`,
     },
   },
+
+  // ADMIN
+  admin: {
+    // root: `${ROOTS.ADMIN}`,
+    company: {
+      // root: `${ROOTS.DASHBOARD}/company`,
+      new: `${ROOTS.ADMIN}/company/new`,
+      list: `${ROOTS.ADMIN}/company/list`,
+      edit: (id) => `${ROOTS.ADMIN}/company/${id}/edit`,
+    },
+  },
   // SUBSCRIBER
-  subscriber:{
+  subscriber: {
     root: `${ROOTS.SUBSCRIBER}`,
     submittals: {
       new: `${ROOTS.SUBSCRIBER}/submittals/new`,
