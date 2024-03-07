@@ -38,4 +38,5 @@ export const PATH_AFTER_LOGIN = "/";
 export const PATH_LOGIN_PAGE = paths.auth.jwt.login;
 export const PATH_AFTER_LOGIN_ONBOARDING = paths.onboarding; // as '/onboarding'
 export const PATH_AFTER_LOGIN_SUBSCRIBER = paths.subscriber.submittals.list; // as '/subscriber/submittals/list'
+export const PATH_AFTER_LOGIN_FIRST_SIGNIN = paths.subscriber.updatePassword; // as '/admin/company/list'
 export const PATH_AFTER_LOGIN_SYSTEM_ADMIN = paths.admin.company.list; // as '/admin/company/list'

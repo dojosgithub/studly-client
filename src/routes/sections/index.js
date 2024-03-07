@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 // config
-import { PATH_AFTER_LOGIN_ONBOARDING, PATH_AFTER_LOGIN_SYSTEM_ADMIN, PATH_AFTER_LOGIN_SUBSCRIBER, PATH_LOGIN_PAGE } from 'src/config-global';
+import { PATH_AFTER_LOGIN_ONBOARDING, PATH_AFTER_LOGIN_SYSTEM_ADMIN, PATH_AFTER_LOGIN_SUBSCRIBER, PATH_LOGIN_PAGE, PATH_AFTER_LOGIN_FIRST_SIGNIN } from 'src/config-global';
 import { AuthGuard } from 'src/auth/guard';
 //
 import MainLayout from 'src/layouts/main/layout';
@@ -21,12 +21,14 @@ import { adminRoutes } from './admin';
 
 //
 const OnboardingPage = lazy(() => import('src/pages/onboarding'));
+const UpdatePasswordPage = lazy(() => import('src/pages/update-password'));
 
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const userType = useSelector(state => state.user?.user?.userType);
+  const isTempPassword = useSelector(state => state.user?.user?.isTempPassword);
   const user = useSelector(state => state.user?.user);
   let destinationPath;
 
@@ -34,7 +36,10 @@ export default function Router() {
     destinationPath = PATH_LOGIN_PAGE;
   } else if (userType === 'System') {
     destinationPath = PATH_AFTER_LOGIN_SYSTEM_ADMIN;
-  } else {
+  } else if (userType === 'Subscriber' && isTempPassword) {
+    destinationPath = PATH_AFTER_LOGIN_FIRST_SIGNIN;
+  }
+  else {
     destinationPath = PATH_AFTER_LOGIN_ONBOARDING;
   }
 
@@ -54,20 +59,32 @@ export default function Router() {
 
   // Add onboarding route if userType is 'Subscriber'
   if (userType === 'Subscriber') {
-    routes.push({
-      path: '/onboarding',
-      element: (
-        <AuthGuard>
-          <SimpleLayout>
-            <Suspense fallback={<LoadingScreen />}>
-              <OnboardingPage />
-            </Suspense>
-          </SimpleLayout>
-        </AuthGuard>
-      ),
-    });
-    routes.push(...subscriberRoutes);
-
+    if (isTempPassword) {
+      routes.push({
+        path: '/update-password',
+        element: (
+          <AuthGuard>
+              <Suspense fallback={<LoadingScreen />}>
+                <UpdatePasswordPage />
+              </Suspense>
+          </AuthGuard>
+        ),
+      });
+    } else {
+      routes.push({
+        path: '/onboarding',
+        element: (
+          <AuthGuard>
+            <SimpleLayout>
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingPage />
+              </Suspense>
+            </SimpleLayout>
+          </AuthGuard>
+        ),
+      });
+      routes.push(...subscriberRoutes);
+    }
   }
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE
