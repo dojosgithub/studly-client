@@ -17,7 +17,7 @@ import { StyledItem, StyledIcon } from './styles';
 const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, ...other }, ref) => {
   const theme = useTheme();
 
-  const { title, path, icon, children, disabled, caption, roles } = item;
+  const { title, path, icon, children, disabled, caption, roles,types } = item;
 
   const subItem = depth !== 1;
 
@@ -106,6 +106,11 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
   if (roles && !roles.includes(`${config.currentRole}`)) {
     return null;
   }
+
+  // // Hidden item by userType
+  // // if (types && !types.includes(`${config.currentUserType}`)) {
+  // //   return null;
+  // // }
 
   // External link
   if (externalLink)

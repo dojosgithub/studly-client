@@ -43,3 +43,80 @@ const company = createSlice({
 
 export const { resetCompanyState, setCompanyList, setCreateCompany } = company.actions
 export default company.reducer
+
+
+// // ----------------------------------------------------------------------
+
+// export function getContacts() {
+//   return async () => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await axios.get('/api/chat/contacts');
+//       dispatch(slice.actions.getContactsSuccess(response.data.contacts));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
+
+// // ----------------------------------------------------------------------
+
+// export function getConversations() {
+//   return async () => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await axios.get('/api/chat/conversations');
+//       dispatch(slice.actions.getConversationsSuccess(response.data.conversations));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
+
+// // ----------------------------------------------------------------------
+
+// export function getConversation(conversationKey) {
+//   return async () => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await axios.get('/api/chat/conversation', {
+//         params: { conversationKey },
+//       });
+//       dispatch(slice.actions.getConversationSuccess(response.data.conversation));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
+
+// // ----------------------------------------------------------------------
+
+// export function markConversationAsRead(conversationId) {
+//   return async () => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       await axios.get('/api/chat/conversation/mark-as-seen', {
+//         params: { conversationId },
+//       });
+//       dispatch(slice.actions.markConversationAsReadSuccess({ conversationId }));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
+
+// // ----------------------------------------------------------------------
+
+// export function getParticipants(conversationKey) {
+//   return async () => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await axios.get('/api/chat/participants', {
+//         params: { conversationKey },
+//       });
+//       dispatch(slice.actions.getParticipantsSuccess(response.data.participants));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }

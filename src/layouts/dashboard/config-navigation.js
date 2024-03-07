@@ -49,60 +49,61 @@ export function useNavData() {
     () => [
       // // OVERVIEW
       // // ----------------------------------------------------------------------
-      {
-        //   subheader: 'oveerview',
-        items: [
-          {
-            title: 'app',
-            path: paths.dashboard.root,
-            icon: ICONS.dashboard,
-            roles: ['admin'],
-          },
-        ],
-      },
+      // // {
+      // //   items: [
+      // //     {
+      // //       title: 'app',
+      // //       path: paths.dashboard.root,
+      // //       icon: ICONS.dashboard,
+      // //       roles: ['admin'],
+      // //     },
+      // //   ],
+      // // },
 
-      // MANAGEMENT
+      // COMPANY
       // ----------------------------------------------------------------------
       {
-        // subheader: 'management',
+        // subheader: 'company',
         items: [
           // Company
           {
             title: 'company',
-            path: paths.dashboard.company.list,
+            path: paths.admin.company.list,
             icon: ICONS.dashboard,
-            roles: ['admin'],
-           
-          },
-          // USER
-          {
-            title: 'user',
-            path: paths.dashboard.user.root,
-            icon: ICONS.user,
-            roles: ['admin'],
-            children: [
-              { title: 'profile', path: paths.dashboard.user.root },
-              { title: 'cards', path: paths.dashboard.user.cards },
-              { title: 'list', path: paths.dashboard.user.list },
-              { title: 'create', path: paths.dashboard.user.new },
+            roles: ['System Admin'], // user.role:"System Admin"
+            // // types: ['System'], // userType:"System"
 
-              { title: 'account', path: paths.dashboard.user.account },
-            ],
           },
 
-          // BLOG
-          {
-            title: 'blog',
-            path: paths.dashboard.post.root,
-            icon: ICONS.blog,
-            roles: ['admin'],
-            children: [
-              { title: 'list', path: paths.dashboard.post.root },
-              // { title: 'details', path: paths.dashboard.post.demo.details },
-              { title: 'create', path: paths.dashboard.post.new },
-              // { title: 'edit', path: paths.dashboard.post.demo.edit },
-            ],
-          },
+          // // USER
+          // // {
+          // //   title: 'user',
+          // //   path: paths.dashboard.user.root,
+          // //   icon: ICONS.user,
+          // //   roles: ['System'], // userType:"System"
+          // //   children: [
+          // //     { title: 'profile', path: paths.dashboard.user.root },
+          // //     { title: 'cards', path: paths.dashboard.user.cards },
+          // //     { title: 'list', path: paths.dashboard.user.list },
+          // //     { title: 'create', path: paths.dashboard.user.new },
+
+          // //     { title: 'account', path: paths.dashboard.user.account },
+          // //   ],
+          // // },
+
+          // // BLOG
+          // // {
+          // //   title: 'blog',
+          // //   path: paths.dashboard.post.root,
+          // //   icon: ICONS.blog,
+          // //   roles: ['System'], // userType:"System"
+          // //   children: [
+          // //     { title: 'list', path: paths.dashboard.post.root },
+          // //     { title: 'details', path: paths.dashboard.post.demo.details },
+          // //     { title: 'create', path: paths.dashboard.post.new },
+          // //     { title: 'edit', path: paths.dashboard.post.demo.edit },
+          // //   ],
+          // // },
         ],
       },
 
@@ -115,12 +116,14 @@ export function useNavData() {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
             icon: ICONS.dashboard,
-            roles: ['subscriber'],
+            roles: ['Company Admin'], // role.name:"Company Admin"
+            // // types: ['Subscriber'], // userType:"Subscriber"
           },
-         
+
 
         ],
       },
+     
     ],
     []
   );
@@ -153,7 +156,7 @@ export function useNavDataSubscriber() {
             icon: ICONS.dashboard,
             roles: ['subscriber'], // hides on admin role
           },
-         
+
 
         ],
       },
