@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
@@ -16,6 +17,8 @@ import TableContainer from '@mui/material/TableContainer';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+// Redux API Functions
+import { fetchCompanyList } from 'src/redux/slices/companySlice';
 // _mock
 import { _userList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
@@ -48,11 +51,12 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'companyName', label: 'Company Name' },
-  { id: 'address', label: 'Address', width: 250 },
+  { id: 'adminName', label: 'Admin Name', },
   { id: 'adminEmail', label: 'Email', width: 220 },
   { id: 'phoneNumber', label: 'Phone Number', width: 180 },
+  { id: 'address', label: 'Address', width: 220 },
+  { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
-  // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -65,6 +69,9 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function CompanyListView() {
+
+  const dispatch = useDispatch()
+
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -73,7 +80,9 @@ export default function CompanyListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const companyList = useSelector(state => state?.company?.list)
+
+  const [tableData, setTableData] = useState(companyList || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -144,20 +153,36 @@ export default function CompanyListView() {
     setFilters(defaultFilters);
   }, []);
 
+
+  useEffect(() => {
+    // Fetch company list data
+    dispatch(fetchCompanyList())
+    .then((response) => {
+      // Update table data state using functional update to ensure the latest companyList value is used
+      console.log("companydata-->",response);
+      setTableData((prevTableData) => response.payload);
+    })
+    .catch(error => {
+      console.error('Error fetching company list:', error);
+    });
+  }, [dispatch]);
+
+
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Company"
           links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
+            // { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Companies', href: paths.dashboard.company.root },
             { name: 'List' },
           ]}
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.company.new}
+              href={paths.admin.company.new}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
@@ -165,7 +190,7 @@ export default function CompanyListView() {
             </Button>
           }
           sx={{
-            mb: { xs: 3, md: 5 },
+            my: { xs: 3 },
           }}
         />
 

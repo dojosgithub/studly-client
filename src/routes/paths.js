@@ -165,7 +165,7 @@ export const paths = {
   },
   // SUBSCRIBER
   subscriber: {
-    root: `${ROOTS.SUBSCRIBER}`,
+    // root: `${ROOTS.SUBSCRIBER}`,
     submittals: {
       new: `${ROOTS.SUBSCRIBER}/submittals/new`,
       list: `${ROOTS.SUBSCRIBER}/submittals/list`,

@@ -23,7 +23,7 @@ import UserQuickEditForm from './company-quick-edit-form';
 
 export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
-  const { name, companyName,address, adminName, adminEmail, phoneNumber } = row;
+  const { name, address, adminName,status, adminEmail, phoneNumber } = row;
 
   const confirm = useBoolean();
 
@@ -52,16 +52,16 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           />
         </TableCell> */}
 
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{companyName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminName}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminEmail}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
 
 
         {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
-        {/* <TableCell>
+        <TableCell>
           <Label
             variant="soft"
             color={
@@ -73,7 +73,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           >
             {status}
           </Label>
-        </TableCell> */}
+        </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/* <Tooltip title="Quick Edit" placement="top" arrow>

@@ -19,17 +19,13 @@ export default function CompanyCreateView() {
         heading="Create a new company"
         links={[
           {
-            name: 'Dashboard',
-            href: paths.dashboard.root,
-          },
-          {
             name: 'Companies',
             href: paths.dashboard.company.list,
           },
-          { name: 'New company' },
+          { name: 'Create' },
         ]}
         sx={{
-          mb: { xs: 3, md: 5 },
+          my: { xs: 3 },
         }}
       />
 

@@ -37,7 +37,7 @@ export default function Router() {
   } else {
     destinationPath = PATH_AFTER_LOGIN_ONBOARDING;
   }
-  
+
   let routes = [];
 
   // Define base routes
@@ -66,6 +66,8 @@ export default function Router() {
         </AuthGuard>
       ),
     });
+    routes.push(...subscriberRoutes);
+
   }
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE
@@ -74,12 +76,12 @@ export default function Router() {
       element: <Navigate to={destinationPath} replace />,
     },
 
+    {
+      path: '/subscriber',
+      element: <Navigate to={PATH_AFTER_LOGIN_SUBSCRIBER} replace />,
+    },
 
 
-    // // {
-    // //   path: '/subscriber',
-    // //   element: <Navigate to={PATH_AFTER_LOGIN_SUBSCRIBER} replace />,
-    // // },
 
     // // -------------------------------------------------------------------
 
