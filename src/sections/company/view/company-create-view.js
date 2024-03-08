@@ -20,7 +20,7 @@ export default function CompanyCreateView() {
         links={[
           {
             name: 'Companies',
-            href: paths.dashboard.company.list,
+            href: paths.admin.company.list,
           },
           { name: 'Create' },
         ]}

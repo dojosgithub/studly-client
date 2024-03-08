@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import { startCase } from 'lodash';
 
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
@@ -30,6 +32,7 @@ import { ProjectView } from '../project/view';
 export default function OnboardingWithoutProjects() {
 
   const navigate = useNavigate()
+  const user = useSelector(state=>state?.user?.user);
   const [openDrawer,setOpenDrawer] = useState(false)
 
 
@@ -47,7 +50,7 @@ export default function OnboardingWithoutProjects() {
         }}
       >
         <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
-          Hello Mr. John
+          Hello Mr. {startCase(user?.firstName)}
         </Typography>
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
           Create a new project to get started with Studly
@@ -65,8 +68,8 @@ export default function OnboardingWithoutProjects() {
             variant="contained"
             color="secondary"
             size='large'
-            // onClick={() => setOpenDrawer(true)}
-            onClick={() => navigate('/subscriber')}
+            onClick={() => setOpenDrawer(true)}
+            // onClick={() => navigate(paths.subscriber.submittals.list)}
           >
             Create a new Project
           </Button>
@@ -74,7 +77,9 @@ export default function OnboardingWithoutProjects() {
         </Stack>
 
       </Stack>
-      <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />
+      {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}
+      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
+
     </>
   );
 }

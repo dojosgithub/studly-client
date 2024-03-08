@@ -258,6 +258,7 @@ export default function CompanyNewEditForm({ currentCompany }) {
             >
               {/* <RHFTextField name="adminName" label="Admin Name" /> */}
               <RHFTextField name="name" label="Company Name" />
+              <RHFTextField name="address" label="Company Address" />
               <Box
                 rowGap={3}
                 columnGap={2}
@@ -270,9 +271,8 @@ export default function CompanyNewEditForm({ currentCompany }) {
                 <RHFTextField name="firstName" label="First Name" />
                 <RHFTextField name="lastName" label="Last Name" />
               </Box>
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-              <RHFTextField name="address" label="Company Address" />
               <RHFTextField name="email" label="Admin Email Address" />
+              <RHFTextField name="phoneNumber" label="Phone Number" />
 
               {/* <RHFAutocomplete
                 name="country"

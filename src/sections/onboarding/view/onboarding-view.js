@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 // redux
 import { useSelector } from 'react-redux';
+import { startCase } from 'lodash';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -90,7 +91,7 @@ export default function OnboardingView() {
         >
 
             <Typography variant="h3" my={2} sx={{ textAlign: 'center', height: '10rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                Hi Bryan!  Which project would you <br /> like to start working on today?
+                Hi Mr. {startCase(user?.firstName)}!  Which project would you <br /> like to start working on today?
             </Typography>
             <Stack
                 component="div"

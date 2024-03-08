@@ -28,6 +28,7 @@ const UpdatePasswordPage = lazy(() => import('src/pages/update-password'));
 
 export default function Router() {
   const userType = useSelector(state => state.user?.user?.userType);
+  const projects = useSelector(state => state.project?.list);
   const isTempPassword = useSelector(state => state.user?.user?.isTempPassword);
   const user = useSelector(state => state.user?.user);
   let destinationPath;
@@ -64,9 +65,9 @@ export default function Router() {
         path: '/update-password',
         element: (
           <AuthGuard>
-              <Suspense fallback={<LoadingScreen />}>
-                <UpdatePasswordPage />
-              </Suspense>
+            <Suspense fallback={<LoadingScreen />}>
+              <UpdatePasswordPage />
+            </Suspense>
           </AuthGuard>
         ),
       });
@@ -83,7 +84,11 @@ export default function Router() {
           </AuthGuard>
         ),
       });
-      routes.push(...subscriberRoutes);
+      // if user role is Company Admin and there are projects available=> can view submittals screen
+      if (user?.role?.name === 'Company Admin' && (projects && projects?.length > 0)) {
+
+        routes.push(...subscriberRoutes);
+      }
     }
   }
   return useRoutes([

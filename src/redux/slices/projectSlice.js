@@ -28,9 +28,10 @@ const projectObj = {
     returnDate: '',
   },
 }
-
+// PROJECTS ||
 const initialState = {
-  list: PROJECTS || [],
+  list: [],
+
   current: null,
   create: { ...projectObj },
   subcontractors: {

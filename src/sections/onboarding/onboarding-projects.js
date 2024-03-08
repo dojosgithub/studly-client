@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 //
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 // @mui
@@ -28,11 +28,12 @@ import { setCurrentProject } from 'src/redux/slices/projectSlice';
 
 export default function OnboardingProjects({ projects }) {
   const dispatch = useDispatch();
+  const email = useSelector(state=>state?.user?.user?.email);
   const navigate = useNavigate();
 
   const handleProject = (project) => {
     dispatch(setCurrentProject(project))
-    navigate('/subscriber')
+    navigate(paths.subscriber.submittals.list)
   }
 
   return (
@@ -52,7 +53,7 @@ export default function OnboardingProjects({ projects }) {
       </Typography>
 
       <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
-        1234@email.com is part of multiple projects
+        {email} is part of multiple projects
       </Typography>
 
 
