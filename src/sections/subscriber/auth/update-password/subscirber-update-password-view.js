@@ -17,10 +17,11 @@ export default function SubscriberUpdatePasswordView() {
 
 
     return (
-        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Container sx={{ height: "100%" }} maxWidth={settings.themeStretch ? false : 'lg'}>
             <Box sx={{
-                display:"grid",
-                placeItems:"center"
+                display: "grid",
+                placeItems: "center",
+                height:"100%"
             }}>
                 <SubscriberUpdatePassword />
             </Box>

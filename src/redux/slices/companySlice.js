@@ -70,39 +70,33 @@ const company = createSlice({
     resetCompanyState: () => initialState,
   },
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
+    // * Fetch Company List
     builder.addCase(fetchCompanyList.pending, (state) => {
-      // Set isLoading to true while the fetch is pending
       state.isLoading = true;
-      state.error = null; // Reset error state
+      state.error = null; 
     });
     builder.addCase(fetchCompanyList.fulfilled, (state, action) => {
-      // Add user to the state array
       state.list = action.payload;
-      state.isLoading = false; // Reset isLoading state
-      state.error = null; // Reset error state
+      state.isLoading = false; 
+      state.error = null; 
     });
     builder.addCase(fetchCompanyList.rejected, (state, action) => {
-      // Set error state if the fetch is rejected
-      state.isLoading = false; // Reset isLoading state
+      state.isLoading = false; 
       state.error = action.error.message;
     });
 
     // * Create New Company
     builder.addCase(createNewCompany.pending, (state) => {
-      // Set isLoading to true while the fetch is pending
       state.isLoading = true;
-      state.error = null; // Reset error state
+      state.error = null; 
     });
     builder.addCase(createNewCompany.fulfilled, (state, action) => {
-      // Add user to the state array
       state.create = action.payload;
-      state.isLoading = false; // Reset isLoading state
-      state.error = null; // Reset error state
+      state.isLoading = false; 
+      state.error = null; 
     });
     builder.addCase(createNewCompany.rejected, (state, action) => {
-      // Set error state if the fetch is rejected
-      state.isLoading = false; // Reset isLoading state
+      state.isLoading = false; 
       state.error = action.error.message
     });
   },

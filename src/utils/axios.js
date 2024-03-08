@@ -54,6 +54,7 @@ export const endpoints = {
     profile: '/api/user/profile',
     login: '/api/user/login',
     register: '/api/auth/register',
+    updatePassword:'/api/user/update-password',
   },
   company: {
     list: '/api/user/company',
