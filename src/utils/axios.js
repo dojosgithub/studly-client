@@ -61,4 +61,9 @@ export const endpoints = {
     create: '/api/user/admin/register',
  
   },
+  project: {
+    list: '/api/user/project/list',
+    create: '/api/user/project',
+ 
+  },
 };

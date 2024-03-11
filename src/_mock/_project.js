@@ -6,6 +6,39 @@ import { _mock } from './_mock';
 // ----------------------------------------------------------------------
 
 
+export const USER_TYPE = [
+  'System',
+  'Subscriber',
+]
+
+export const SYSTEM_ROLES = [
+  'System Admin',
+  'Manager',
+]
+export const SUBSCRIBER_ROLES = [
+  "Company Admin",
+  "Power User",
+  "Field User",
+  "Architect",
+  "Engineer",
+  "Sub Contractor",
+  "Construction Manager",
+  "Associate"
+]
+
+
+export const STATUS_WORKFLOW_STUDLY = [
+  "Draft",
+  "Submitted",
+  "Reviewed",
+  "Reviewed for record",
+  "Approved (APR)",
+  "Make Corrections Noted (MCN)",
+  "Make Corrections and Resubmit (MCNR)",
+  "Rejected (RJT)",
+  "Custom",
+  "Sent to Subcontractor"
+];
 
 
 export const PROJECT_TEMPLATE_OPTIONS = [
@@ -84,7 +117,7 @@ export const PROJECTS = [
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
       name: 'project workflow 1',
-      statuses: ['draft'],
+      statuses: ['Draft'],
       returnDate: addDays(new Date(), 1),
     },
     // submittals: [],
@@ -95,7 +128,7 @@ export const PROJECTS = [
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
       name: 'project workflow 2',
-      statuses: ['draft', 'submitted'],
+      statuses: ['Draft', 'Submitted'],
       returnDate: addDays(new Date(), 5),
     },
     // submittals: [],
@@ -106,7 +139,7 @@ export const PROJECTS = [
     trades: [...PROJECT_DEFAULT_TEMPLATE],
     workflow: {
       name: 'project workflow 3',
-      statuses: ['draft', 'submitted'],
+      statuses: ['Draft', 'Submitted'],
       returnDate: addDays(new Date(), 10),
     },
     // submittals: [],
@@ -116,35 +149,35 @@ export const PROJECTS = [
 export const PROJECT_WORKFLOWS = [
   {
     name: 'default',
-    statuses: ['draft', 'submitted', 'reviewed'],
+    statuses: ['Draft', 'Submitted', 'reviewed'],
     returnDate: addDays(new Date(), 7),
   },
   {
     name: 'project workflow 1',
-    statuses: ['draft', 'submitted'],
+    statuses: ['Draft', 'Submitted'],
     returnDate: addDays(new Date(), 1),
   },
   {
     name: 'project workflow 2',
-    statuses: ['draft'],
+    statuses: ['Draft'],
     returnDate: addDays(new Date(), 5),
   },
   {
     name: 'project workflow 3',
-    statuses: ['submitted'],
+    statuses: ['Submitted'],
     returnDate: addDays(new Date(), 10),
   },
 ]
 
 
 export const PROJECT_STATUS_TREE = {
-  name: 'draft',
+  name: 'Draft',
   children: [
     { name: 'Submitted' },
     {
-      name: 'reviewed',
+      name: 'Reviewed',
       children: [
-        { name: ' Reviewed for record' },
+        { name: 'Reviewed for record' },
         { name: 'Approved (APR)' },
         { name: 'Make Corrections Noted (MCN)' },
         { name: 'Make Corrections and Resubmit (MCNR)' },

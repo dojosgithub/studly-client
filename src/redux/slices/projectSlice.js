@@ -1,6 +1,55 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PROJECTS, PROJECT_INVITE_USERS_EXTERNAL, PROJECT_INVITE_USERS_INTERNAL, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
+import axiosInstance, { endpoints } from "src/utils/axios";
 import uuidv4 from "src/utils/uuidv4";
+
+
+export const createNewProject = createAsyncThunk(
+  'project/create',
+  async (projectData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(endpoints.project.create, projectData);
+
+      return response.data.data
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the project.'
+      );
+    }
+  },
+)
+
+export const getProjectList = createAsyncThunk(
+  'project/list',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const email = getState()?.user?.user?.email; // Access the current state
+      console.log(email);
+      const response = await axiosInstance.get(endpoints.project.list);
+
+      return response.data.data.project
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while fetching project list.'
+      );
+    }
+  },
+)
+
+
+
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -48,6 +97,8 @@ const initialState = {
     list: PROJECT_TEMPLATES || [],
   },
   users: _userList || [],
+  isLoading: false,
+  error: null
 }
 
 const project = createSlice({
@@ -90,6 +141,44 @@ const project = createSlice({
       };
     },
     resetProjectState: () => initialState,
+  },
+  extraReducers: (builder) => {
+    // * Create New Project
+    builder.addCase(createNewProject.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(createNewProject.fulfilled, (state, action) => {
+      // const index = state.list?.findIndex(item => item?._id === action?.payload?._id);
+
+      // if (index !== -1) {
+      //   // If a project with the same _id exists, replace it
+      //   state.list[index] = action.payload;
+      // } else {
+      //   // Otherwise, add the new project to the list
+      //   state.list = [...state.list, action.payload];
+      // }
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(createNewProject.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message
+    });
+    builder.addCase(getProjectList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getProjectList.fulfilled, (state, action) => {
+      state.list = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getProjectList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message
+    });
   }
 })
 

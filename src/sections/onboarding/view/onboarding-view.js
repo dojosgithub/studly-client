@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 // redux
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { startCase } from 'lodash';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
@@ -20,6 +21,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgGradient } from 'src/theme/css';
 // components
 import Logo from 'src/components/logo';
+import { getProjectList } from 'src/redux/slices/projectSlice';
 import SearchIllustration from 'src/assets/illustrations/search-illustration.svg';
 import OnboardingProjects from '../onboarding-projects';
 import OnboardingWithoutProjects from '../onboarding-without-project';
@@ -30,8 +32,12 @@ import OnboardingWithoutProjects from '../onboarding-without-project';
 export default function OnboardingView() {
     const { method, user } = useAuthContext();
     const projects = useSelector(state => state.project.list);
-
     const theme = useTheme();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getProjectList())
+    }, [dispatch])
+
 
     const upMd = useResponsive('up', 'md');
 

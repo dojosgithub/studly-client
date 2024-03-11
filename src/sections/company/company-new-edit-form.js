@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useCallback, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -31,13 +32,13 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
-import { dispatch } from 'src/redux/store';
 import { createNewCompany } from 'src/redux/slices/companySlice';
 
 // ----------------------------------------------------------------------
 
 export default function CompanyNewEditForm({ currentCompany }) {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { enqueueSnackbar } = useSnackbar();
 

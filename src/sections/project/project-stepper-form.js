@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -18,8 +19,9 @@ import { Divider, Stack } from '@mui/material';
 //
 import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
+import { useRouter } from 'src/routes/hooks';
 //
-import { resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades } from 'src/redux/slices/projectSlice';
+import { createNewProject, getProjectList, resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -32,6 +34,7 @@ import { CustomDrawer } from 'src/components/custom-drawer';
 import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
+import { paths } from 'src/routes/paths';
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
 import ProjectSubcontractor from './project-subcontractor';
@@ -81,9 +84,14 @@ export default function ProjectStepperForm() {
   const [open, setOpen] = useState(false)
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
-  const newTemplate = useSelector(state => state.project.template);
+  const router = useRouter();
 
+  const dispatch = useDispatch();
+  const projectList = useSelector(state => state.project.list);
+  const newTemplate = useSelector(state => state.project.template);
+  const inviteUsers = useSelector(state => state.project.inviteUsers);
+  const companies = useSelector(state => state.user.user.companies);
+  console.log("inviteUsers", inviteUsers)
 
   const isStepOptional = (step) => (step === 3 || step === 4);
 
@@ -211,20 +219,43 @@ export default function ProjectStepperForm() {
   console.log('isValid', isValid);
   console.log('activeStep', activeStep);
 
-
   const onSubmit = handleSubmit(async (data, e) => {
     e.preventDefault()
+    
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar('Update success!');
-
       console.log('data Final', data);
+      if (!companies) {
+        return
+      }
+      // dispatch(getProjectList())
+      const filteredData = data?.trades?.map(({ _id, ...rest }) => rest);
+      // , companyId: companies[0]?.companyId
+
+      const finalData = { teams: { ...inviteUsers }, ...data, trades: filteredData }
+      console.log("finalData", finalData)
+      console.log("filteredData", filteredData)
+      
+      
+      const { error, payload } = await dispatch(createNewProject(finalData))
+      console.log('e-p', { error, payload });
+      if (!isEmpty(error)) {
+        enqueueSnackbar(error.message, { variant: "error" });
+        return
+      }
       handleReset()
-      // reset();
-      // setActiveStep(0)
-      // dispatch(resetCreateProject())
+      enqueueSnackbar('Project created successfully!' , { variant: 'success' });
+      await dispatch(getProjectList())
+      // if(isEmpty(projectList)){
+      //   router.push(paths.subscriber.onboarding);
+      //   return
+      // }
+      router.push(paths.subscriber.submittals.list);
+
+
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      console.log('error-->', error);
+      enqueueSnackbar(`Error Updating Password`, { variant: "error" });
     }
   });
 
