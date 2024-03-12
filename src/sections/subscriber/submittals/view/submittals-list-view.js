@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
@@ -12,6 +13,7 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
+import { isEmpty } from 'lodash';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -38,6 +40,7 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
+import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 import SubmittalsTableRow from '../submittals-table-row';
 import SubmittalsTableToolbar from '../submittals-table-toolbar';
 import SubmittalsTableFiltersResult from '../submittals-table-filters-result';
@@ -48,11 +51,11 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'submittalId', label: 'Submittal ID' },
+  { id: '_id', label: 'Submittal ID' },
   { id: 'name', label: 'Name', width: 250 },
   { id: 'description', label: 'Description', width: 220 },
   { id: 'type', label: 'Type', width: 180 },
-  { id: 'submissionDate', label: 'Date Submitted', width: 400 },
+  { id: 'submittedDate', label: 'Date Submitted', width: 400 },
   { id: 'returnDate', label: 'Return Date', width: 220 },
   { id: 'creator', label: 'Creator', width: 180 },
   { id: 'owner', label: 'Owner Assignee', width: 400 },
@@ -72,14 +75,30 @@ const defaultFilters = {
 
 export default function CompanyListView() {
   const table = useTable();
+  const submittalList = useSelector(state=>state.submittal.list);
 
   const settings = useSettingsContext();
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_submittalsList);
+  useEffect(() => {
+    const getList=async()=>{
+      const { error, payload } = await dispatch(getSubmittalList())
+      console.log('e-p', { error, payload });
+      if (!isEmpty(error)) {
+        console.log('error')
+        return
+      }
+      setTableData(payload)
+    }
+    getList()
+  }, [dispatch])
+  
+  // _submittalsList 
+  const [tableData, setTableData] = useState(submittalList);
 
   const [filters, setFilters] = useState(defaultFilters);
 

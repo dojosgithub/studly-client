@@ -62,8 +62,23 @@ export const endpoints = {
  
   },
   project: {
-    list: '/api/user/project/list',
+    list: '/api/user/project',
     create: '/api/user/project',
  
+  },
+  submittal: {
+    list: '/api/user/submittal',
+    create: '/api/user/submittal',
+ 
+  },
+  template: {
+    list: '/api/user/template',
+    create: '/api/user/template',
+
+  },
+  workflow: {
+    list: '/api/user/workflow',
+    create: '/api/user/workflow',
+
   },
 };

@@ -19,10 +19,6 @@ const ProjectSubcontractor = () => {
     const [options, setOptions] = useState(initialOptions)
     const [assignedSubcontractors, setAssignedSubcontractors] = useState([])
     const dispatch = useDispatch()
-    // console.log('options', options);
-    // console.log('subcontractors', subcontractors);
-    // console.log('trades', trades);
-    // console.log('assignedSubcontractors', assignedSubcontractors);
 
 
 

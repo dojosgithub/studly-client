@@ -61,7 +61,7 @@ export default function OnboardingProjects({ projects }) {
         p={5}
         gap={2}
       >
-        {projects.map(project => (
+        {projects.slice(0, 4).map(project => (
 
           <Button
             sx={{
@@ -72,6 +72,7 @@ export default function OnboardingProjects({ projects }) {
               cursor: 'pointer'
             }}
             onClick={() => handleProject(project)}
+            key={project?._id}
           >
             {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
             </RouterLink> */}

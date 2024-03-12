@@ -6,6 +6,62 @@ import { _mock } from './_mock';
 // ----------------------------------------------------------------------
 
 
+
+// Studly Utils
+
+export const USER_TYPES_STUDLY = {
+  SYS: 'System',
+  SUB: 'Subscriber',
+}
+
+export const SYSTEM_STAFF_ROLE_STUDLY = {
+  SSA: 'System Admin',
+  SMA: 'Manager',
+}
+
+
+
+export const SUBSCRIBER_USER_ROLE_STUDLY = {
+  CAD: "Company Admin",
+  PWU: "Power User",
+  FIU: "Field User",
+  ARC: "Architect",
+  ENG: "Engineer",
+  SCO: "Sub Contractor",
+  COM: "Construction Manager",
+  ASC: "Associate"
+};
+
+export const STATUS_WORKFLOW_STUDLY = {
+  DRF: "Draft",
+  SUB: "Submitted",
+  REV: "Reviewed",
+  RFR: "Reviewed for record",
+  APR: "Approved (APR)",
+  MCN: "Make Corrections Noted (MCN)",
+  MCNR: "Make Corrections and Resubmit (MCNR)",
+  RJT: "Rejected (RJT)",
+  CST: "Custom",
+  SSC: "Sent to Subcontractor"
+};
+
+export const getKeyByValue = (object, value) => Object.keys(object).find((key) => object[key] === value)
+export const getValueByKey = (object, key) => object[key];
+
+// get Key by value "Submitted"=>SUB
+export const getStatusKeyByValue = (value) => getKeyByValue(STATUS_WORKFLOW_STUDLY, value)
+// get Key by value "Sub Contractor"=>SCO
+export const getRoleKeyByValue = (value) => getKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY, value)
+
+
+// get value by Key "SUB"=>"Submitted"
+export const getStatusValueByKey = (value) => getValueByKey(STATUS_WORKFLOW_STUDLY, value)
+// get value by Key "Sub Contractor"=>"SCO"
+export const getRoleValueByKey = (value) => getValueByKey(SUBSCRIBER_USER_ROLE_STUDLY, value)
+
+
+
+
 export const USER_TYPE = [
   'System',
   'Subscriber',
@@ -27,7 +83,7 @@ export const SUBSCRIBER_ROLES = [
 ]
 
 
-export const STATUS_WORKFLOW_STUDLY = [
+export const STATUS_WORKFLOW = [
   "Draft",
   "Submitted",
   "Reviewed",

@@ -24,7 +24,7 @@ import UserQuickEditForm from './submittals-quick-edit-form';
 export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   // companyName, address, adminName, adminEmail, phoneNumber 
-  const { id, submittalId, name, description, type, submissionDate, returnDate, creator, owner, link, status} = row;
+  const { _id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status} = row;
 
   const confirm = useBoolean();
 
@@ -52,11 +52,11 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }}
           />
         </TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{submittalId}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{_id}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{description}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth:140}}>{submissionDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth:140}}>{submittedDate}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap',minWidth:140 }}>{returnDate}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>

@@ -2,8 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance, { endpoints } from "src/utils/axios";
 
 const initialState = {
-    list: [], // PROJECT_TEMPLATES
-    create: { name: '', trades: [] },
+    list: [], // PROJECT_WORKFLOWS
+    create: {
+        name: '',
+        statuses: [],
+        returnDate: ""
+    },
     current: null,
     isLoading: false,
     error: null
@@ -11,11 +15,11 @@ const initialState = {
 
 
 
-export const createNewTemplate = createAsyncThunk(
-    'template/create',
-    async (templateData, { rejectWithValue }) => {
+export const createNewWorkflow = createAsyncThunk(
+    'workflow/create',
+    async (workflowData, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.template.create, templateData);
+            const response = await axiosInstance.post(endpoints.workflow.create, workflowData);
 
             return response.data.data
         } catch (err) {
@@ -26,17 +30,17 @@ export const createNewTemplate = createAsyncThunk(
                 );
             }
             throw Error(
-                'An error occurred while creating the template.'
+                'An error occurred while creating the workflow.'
             );
         }
     },
 )
 
-export const getTemplateList = createAsyncThunk(
-    'template/list',
+export const getWorkflowList = createAsyncThunk(
+    'workflow/list',
     async (_, { getState, rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.template.list);
+            const response = await axiosInstance.get(endpoints.workflow.list);
 
             return response.data.data
         } catch (err) {
@@ -47,7 +51,7 @@ export const getTemplateList = createAsyncThunk(
                 );
             }
             throw Error(
-                'An error occurred while fetching template list.'
+                'An error occurred while fetching workflow list.'
             );
         }
     },
@@ -55,59 +59,50 @@ export const getTemplateList = createAsyncThunk(
 
 
 
-const template = createSlice({
-    name: 'template',
+const workflow = createSlice({
+    name: 'workflow',
     initialState,
     reducers: {
-        setTemplates: (state, action) => {
+        setWorkflowList: (state, action) => {
             state.list = action.payload
         },
-        setCreateTemplate: (state, action) => {
+        setCreateWorkflow: (state, action) => {
             state.create = action.payload
         },
-        setCurrentTemplate: (state, action) => {
+        setCurrentWorkflow: (state, action) => {
             state.current = action.payload
         },
     },
     extraReducers: (builder) => {
         // * Create New Project
-        builder.addCase(createNewTemplate.pending, (state) => {
+        builder.addCase(createNewWorkflow.pending, (state) => {
             state.isLoading = true;
             state.error = null;
         });
-        builder.addCase(createNewTemplate.fulfilled, (state, action) => {
-            // const index = state.list?.findIndex(item => item?._id === action?.payload?._id);
-
-            // if (index !== -1) {
-            //   // If a project with the same _id exists, replace it
-            //   state.list[index] = action.payload;
-            // } else {
-            //   // Otherwise, add the new project to the list
-            //   state.list = [...state.list, action.payload];
-            // }
+        builder.addCase(createNewWorkflow.fulfilled, (state, action) => {
             state.current = action.payload;
             state.isLoading = false;
             state.error = null;
         });
-        builder.addCase(createNewTemplate.rejected, (state, action) => {
+        builder.addCase(createNewWorkflow.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message
         });
-        builder.addCase(getTemplateList.pending, (state) => {
+        builder.addCase(getWorkflowList.pending, (state) => {
             state.isLoading = true;
             state.error = null;
         });
-        builder.addCase(getTemplateList.fulfilled, (state, action) => {
+        builder.addCase(getWorkflowList.fulfilled, (state, action) => {
             state.list = action.payload;
             state.isLoading = false;
             state.error = null;
         });
-        builder.addCase(getTemplateList.rejected, (state, action) => {
+        builder.addCase(getWorkflowList.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message
         });
     }
 })
 
-export const { setTemplates, setCreateTemplate, setCurrentTemplate } = template.actions
-export default template.reducer
+export const { setWorkflowList, setCreateWorkflow, setCurrentWorkflow } = workflow.actions
+export default workflow.reducer

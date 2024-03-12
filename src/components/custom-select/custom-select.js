@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // @mui
 import Box from '@mui/material/Box';
@@ -11,8 +12,10 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function CustomSelect({ onSelect, selectedOption, type = 'template', options }) {
-// for template and workflow
-
+    // for template and workflow
+    const templateList = useSelector(state => state.template.list);
+    const workflowList = useSelector(state => state.workflow.list);
+    const renderList = type === "template" ? templateList : workflowList
     return (
 
         <Box
@@ -38,7 +41,7 @@ export default function CustomSelect({ onSelect, selectedOption, type = 'templat
                         sx={{ mx: 1 }}
                     />
                 </MenuItem>
-                {options.map(({ name }) => (
+                {renderList.map(({ name }) => (
                     name !== 'default' && (
                         <MenuItem key={name} value={name} sx={{ height: 50, px: 3, borderRadius: 0 }}>
                             {name.toUpperCase()}
@@ -62,7 +65,7 @@ export default function CustomSelect({ onSelect, selectedOption, type = 'templat
                         width={20}
                         sx={{ mr: 1 }}
                     />
-                    Create New Template
+                    Create New {type === "template" ? 'Template' : 'Workflow'}
                 </MenuItem>
             </Select>
 

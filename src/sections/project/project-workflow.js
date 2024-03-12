@@ -15,7 +15,8 @@ import ProjectCreateWorkflow from './project-create-workflow'
 const ProjectWorkflow = () => {
   const [selected, setSelected] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const workflows = useSelector(state => state.project.workflows)
+  // const workflows = useSelector(state => state.project.workflows)
+  const workflows = useSelector(state => state.workflow.list)
   const dispatch = useDispatch()
 
 
@@ -41,7 +42,7 @@ const ProjectWorkflow = () => {
         minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
         mb: 4
       }} />
-    <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={workflows || []} />
+    <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={[]} />
     <CustomDrawer open={openDrawer} onClose={() => {
       setOpenDrawer(false);
       handleSelect('')

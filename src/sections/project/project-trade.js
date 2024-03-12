@@ -15,7 +15,8 @@ import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
 
 
-export default function ProjectTrade({ onSelect,selectedTemplate, onTabChange }) {
+export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
+
 
   return (
     <>
@@ -34,12 +35,13 @@ export default function ProjectTrade({ onSelect,selectedTemplate, onTabChange })
           <ProjectCreateTrade />
         </TabPanel>
         <TabPanel value={1}>
-          <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={PROJECT_TEMPLATES}/>
+          {/* PROJECT_TEMPLATES */}
+          <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
           {/* this should be changed to template value */}
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />}
         </TabPanel>
       </Tabs>
-      
+
     </>
   );
 }

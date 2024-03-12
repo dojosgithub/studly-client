@@ -35,6 +35,9 @@ import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
+import { getTemplateList } from 'src/redux/slices/templateSlice';
+import { getWorkflowList } from 'src/redux/slices/workflowSlice';
+
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
 import ProjectSubcontractor from './project-subcontractor';
@@ -91,22 +94,32 @@ export default function ProjectStepperForm() {
   const newTemplate = useSelector(state => state.project.template);
   const inviteUsers = useSelector(state => state.project.inviteUsers);
   const companies = useSelector(state => state.user.user.companies);
-  console.log("inviteUsers", inviteUsers)
+
+  const templateList = useSelector(state => state.template.list);
+  const workflowList = useSelector(state => state.workflow.list);
 
   const isStepOptional = (step) => (step === 3 || step === 4);
 
   const isStepSkipped = (step) => skipped?.has(step);
 
+  console.log('projectList', projectList)
+  console.log('workflowList', workflowList)
+  useEffect(() => {
+    dispatch(getTemplateList())
+    dispatch(getWorkflowList())
+
+  }, [dispatch])
 
 
 
   const getTemplateTrades = useCallback(
+    // templates
     (val) => {
-      let trades = PROJECT_TEMPLATES.filter(template => template.name === val);
+      let trades = templateList.filter(template => template.name === val);
       trades = trades.length > 0 ? trades[0]?.trades : []
       return trades
     },
-    []
+    [templateList]
   );
 
 
@@ -215,13 +228,10 @@ export default function ProjectStepperForm() {
 
   const formValues = getValues();
   const watchValues = watch();
-  console.log('watchValues', watchValues);
-  console.log('isValid', isValid);
-  console.log('activeStep', activeStep);
 
   const onSubmit = handleSubmit(async (data, e) => {
     e.preventDefault()
-    
+
     try {
       console.log('data Final', data);
       if (!companies) {
@@ -234,8 +244,8 @@ export default function ProjectStepperForm() {
       const finalData = { teams: { ...inviteUsers }, ...data, trades: filteredData }
       console.log("finalData", finalData)
       console.log("filteredData", filteredData)
-      
-      
+
+
       const { error, payload } = await dispatch(createNewProject(finalData))
       console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
@@ -243,7 +253,7 @@ export default function ProjectStepperForm() {
         return
       }
       handleReset()
-      enqueueSnackbar('Project created successfully!' , { variant: 'success' });
+      enqueueSnackbar('Project created successfully!', { variant: 'success' });
       await dispatch(getProjectList())
       // if(isEmpty(projectList)){
       //   router.push(paths.subscriber.onboarding);

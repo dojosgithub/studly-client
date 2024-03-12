@@ -30,7 +30,6 @@ export const getProjectList = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const email = getState()?.user?.user?.email; // Access the current state
-      console.log(email);
       const response = await axiosInstance.get(endpoints.project.list);
 
       return response.data.data.project
@@ -84,19 +83,19 @@ const initialState = {
   current: null,
   create: { ...projectObj },
   subcontractors: {
-    list: PROJECT_SUBCONTRACTORS || [],
-    assign: []
+    list: [], // PROJECT_SUBCONTRACTORS
   },
   inviteUsers: {
     internal: [],
     external: [],
   },
-  workflows: PROJECT_WORKFLOWS || [],
-  template: {
-    create: { name: '', trades: [] },
-    list: PROJECT_TEMPLATES || [],
-  },
-  users: _userList || [],
+  // workflows: [], // PROJECT_WORKFLOWS
+  // template: {
+  //   create: { name: '', trades: [] },
+  //   list: [], // PROJECT_TEMPLATES
+  // },
+  users: [], // _userList 
+  submittals:[],
   isLoading: false,
   error: null
 }
@@ -149,15 +148,6 @@ const project = createSlice({
       state.error = null;
     });
     builder.addCase(createNewProject.fulfilled, (state, action) => {
-      // const index = state.list?.findIndex(item => item?._id === action?.payload?._id);
-
-      // if (index !== -1) {
-      //   // If a project with the same _id exists, replace it
-      //   state.list[index] = action.payload;
-      // } else {
-      //   // Otherwise, add the new project to the list
-      //   state.list = [...state.list, action.payload];
-      // }
       state.current = action.payload;
       state.isLoading = false;
       state.error = null;
