@@ -33,50 +33,41 @@ import FormProvider, {
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsNewEditForm({ currentCompany }) {
+export default function SubmittalsNewEditForm({ currentProject }) {
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewUserSchema = Yup.object().shape({
-    companyName: Yup.string().required('Company Name is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    adminName: Yup.string().required('Admin Name is required'),
-    adminEmail: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    // country: Yup.string().required('Country is required'),
-    // company: Yup.string().required('Company is required'),
-    // state: Yup.string().required('State is required'),
-    // city: Yup.string().required('City is required'),
-    // role: Yup.string().required('Role is required'),
-    // zipCode: Yup.string().required('Zip code is required'),
-    // avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    // status: Yup.string(),
-    // isVerified: Yup.boolean(),
+  const NewSubmittalSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    description: Yup.string().required('Description is required'),
+    creator: Yup.string().required('Creator is required'),
+    owner: Yup.string().required('Owner is required'),
+    status: Yup.string().required('Status is required'),
+    link: Yup.string().required('link is required'),
+    returnDate: Yup.date().required('Return Date is required'),
+    submittedDate: Yup.date().required('Submitted Date is required'),
+
+
   });
 
   const defaultValues = useMemo(
     () => ({
-      companyName: currentCompany?.name || '',
-      phoneNumber: currentCompany?.phoneNumber || '',
-      address: currentCompany?.address || '',
-      adminName: currentCompany?.adminName || '',
-      adminEmail: currentCompany?.adminEmail || '',
-      // city: currentCompany?.city || '',
-      // role: currentCompany?.role || '',
-      // state: currentCompany?.state || '',
-      // status: currentCompany?.status || '',
-      // country: currentCompany?.country || '',
-      // zipCode: currentCompany?.zipCode || '',
-      // avatarUrl: currentCompany?.avatarUrl || null,
-      // isVerified: currentCompany?.isVerified || true,
+      companyName: currentProject?.name || '',
+      phoneNumber: currentProject?.description || '',
+      creator: currentProject?.creator || '',
+      owner: currentProject?.owner || '',
+      status: currentProject?.status || '',
+      link: currentProject?.link || '',
+      returnDate: currentProject?.returnDate || '',
+      submittedDate: currentProject?.submittedDate || '',
+
     }),
-    [currentCompany]
+    [currentProject]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(NewSubmittalSchema),
     defaultValues,
   });
 
@@ -95,8 +86,8 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
-      enqueueSnackbar(currentCompany ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
+      enqueueSnackbar(currentProject ? 'Update success!' : 'Create success!');
+      router.push(paths.subscriber.submittals.list);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);
@@ -123,7 +114,7 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
       <Grid container spacing={3}>
         {/* <Grid xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentCompany && (
+            {currentProject && (
               <Label
                 color={
                   (values.status === 'active' && 'success') ||
@@ -159,7 +150,7 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
               />
             </Box>
 
-            {currentCompany && (
+            {currentProject && (
               <FormControlLabel
                 labelPlacement="start"
                 control={
@@ -207,7 +198,7 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
               sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
             />
 
-            {currentCompany && (
+            {currentProject && (
               <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
                 <Button variant="soft" color="error">
                   Delete User
@@ -273,7 +264,7 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
               <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-                {!currentCompany ? 'Create New Submittals' : 'Save Changes'}
+                {!currentProject ? 'Create New Submittal' : 'Save Changes'}
               </LoadingButton>
             </Stack>
           </Card>
@@ -284,5 +275,5 @@ export default function SubmittalsNewEditForm({ currentCompany }) {
 }
 
 SubmittalsNewEditForm.propTypes = {
-  currentCompany: PropTypes.object,
+  currentProject: PropTypes.object,
 };

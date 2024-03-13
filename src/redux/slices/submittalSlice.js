@@ -28,7 +28,10 @@ export const getSubmittalList = createAsyncThunk(
     'submittal/list',
     async (_, { getState, rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.submittal.list);
+            const projectId = getState().project.current._id
+            console.log("projectId", projectId)
+            const fullURL=`${endpoints.submittal.list}/${projectId}`
+            const response = await axiosInstance.get(fullURL);
 
             return response.data.data
         } catch (err) {
@@ -67,33 +70,33 @@ const submittal = createSlice({
         },
     },
     extraReducers: (builder) => {
-         // * Create New Project
-    builder.addCase(createNewSubmittal.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
-      builder.addCase(createNewSubmittal.fulfilled, (state, action) => {
-        state.create = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      });
-      builder.addCase(createNewSubmittal.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message
-      });
-      builder.addCase(getSubmittalList.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      });
-      builder.addCase(getSubmittalList.fulfilled, (state, action) => {
-        state.list = action.payload;
-        state.isLoading = false;
-        state.error = null;
-      });
-      builder.addCase(getSubmittalList.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message
-      });
+        // * Create New Project
+        builder.addCase(createNewSubmittal.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(createNewSubmittal.fulfilled, (state, action) => {
+            state.create = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(createNewSubmittal.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
+        builder.addCase(getSubmittalList.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalList.fulfilled, (state, action) => {
+            state.list = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalList.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
     }
 })
 

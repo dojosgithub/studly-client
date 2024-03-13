@@ -19,7 +19,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList,_submittalsList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -51,14 +51,14 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: '_id', label: 'Submittal ID' },
+  { id: 'id', label: 'Submittal ID' },
   { id: 'name', label: 'Name', width: 250 },
   { id: 'description', label: 'Description', width: 220 },
   { id: 'type', label: 'Type', width: 180 },
-  { id: 'submittedDate', label: 'Date Submitted', width: 400 },
+  { id: 'submittedDate', label: 'Date Submitted', width: 450 },
   { id: 'returnDate', label: 'Return Date', width: 220 },
   { id: 'creator', label: 'Creator', width: 180 },
-  { id: 'owner', label: 'Owner Assignee', width: 400 },
+  { id: 'owner', label: 'Owner / Assignee', width: 400 },
   { id: 'link', label: 'Preview Link', width: 180 },
   { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
@@ -75,7 +75,8 @@ const defaultFilters = {
 
 export default function CompanyListView() {
   const table = useTable();
-  const submittalList = useSelector(state=>state.submittal.list);
+  const submittalList = useSelector(state => state.submittal.list);
+
 
   const settings = useSettingsContext();
 
@@ -85,7 +86,7 @@ export default function CompanyListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    const getList=async()=>{
+    const getList = async () => {
       const { error, payload } = await dispatch(getSubmittalList())
       console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
@@ -96,7 +97,7 @@ export default function CompanyListView() {
     }
     getList()
   }, [dispatch])
-  
+
   // _submittalsList 
   const [tableData, setTableData] = useState(submittalList);
 

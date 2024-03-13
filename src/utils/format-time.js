@@ -1,6 +1,12 @@
-import { format, getTime, formatDistanceToNow } from 'date-fns';
+import { format, getTime, formatDistanceToNow,parseISO } from 'date-fns';
 
 // ----------------------------------------------------------------------
+
+export function fDateISO(date) {
+  const dateParsed = parseISO(date);
+  const formattedDate = format(dateParsed, 'dd/MM/yyyy');
+  return formattedDate 
+}
 
 export function fDate(date, newFormat) {
   const fm = newFormat || 'dd MMM yyyy';
