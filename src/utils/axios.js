@@ -69,6 +69,7 @@ export const endpoints = {
   submittal: {
     list: '/api/user/submittal',
     create: '/api/user/submittal',
+    edit:(id)=> `/api/user/submittal/${id}`,
  
   },
   template: {

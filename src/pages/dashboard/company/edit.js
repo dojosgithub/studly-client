@@ -6,7 +6,7 @@ import { CompanyEditView } from 'src/sections/company/view';
 
 // ----------------------------------------------------------------------
 
-export default function UserEditPage() {
+export default function CompanyEditPage() {
   const params = useParams();
 
   const { id } = params;
@@ -14,7 +14,7 @@ export default function UserEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: User Edit</title>
+        <title> Company Edit</title>
       </Helmet>
 
       <CompanyEditView id={`${id}`} />

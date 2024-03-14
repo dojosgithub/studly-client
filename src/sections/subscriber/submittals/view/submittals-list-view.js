@@ -154,7 +154,7 @@ export default function CompanyListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.subscriber.submittals.edit(id));
     },
     [router]
   );

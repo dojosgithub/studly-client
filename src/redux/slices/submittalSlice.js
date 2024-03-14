@@ -5,9 +5,38 @@ import axiosInstance, { endpoints } from "src/utils/axios";
 // * Submittal
 export const createNewSubmittal = createAsyncThunk(
     'submittal/create',
-    async (submittalData, { rejectWithValue }) => {
+    async (submittalData, { getState, rejectWithValue }) => {
         try {
+            // const projectId = getState().project.current._id
+            // console.log("projectId", projectId)
+            // { ...submittalData, projectId }
             const response = await axiosInstance.post(endpoints.submittal.create, submittalData);
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while creating the submittal.'
+            );
+        }
+    },
+)
+
+export const editSubmittal = createAsyncThunk(
+    'submittal/create',
+    async (submittalData, { getState, rejectWithValue }) => {
+        try {
+          
+            const {id,formData}=submittalData;
+            console.log("submittalId", id)
+            console.log("formData", formData)
+
+            const response = await axiosInstance.put(endpoints.submittal.edit(id), formData);
 
             return response.data.data
         } catch (err) {
@@ -30,7 +59,7 @@ export const getSubmittalList = createAsyncThunk(
         try {
             const projectId = getState().project.current._id
             console.log("projectId", projectId)
-            const fullURL=`${endpoints.submittal.list}/${projectId}`
+            const fullURL = `${endpoints.submittal.list}/${projectId}`
             const response = await axiosInstance.get(fullURL);
 
             return response.data.data
@@ -51,6 +80,7 @@ export const getSubmittalList = createAsyncThunk(
 const initialState = {
     list: [],
     create: {},
+    current: {},
     isLoading: false,
     error: null
 }
@@ -59,14 +89,14 @@ const submittal = createSlice({
     name: 'submittal',
     initialState,
     reducers: {
-        setSubmittal: (state, action) => {
+        setSubmittalList: (state, action) => {
             state.list = action.payload
         },
         setCurrentSubmittal: (state, action) => {
             state.current = action.payload
         },
         setCreateSubmittal: (state, action) => {
-            state.current = action.payload
+            state.create = action.payload
         },
     },
     extraReducers: (builder) => {
@@ -81,6 +111,19 @@ const submittal = createSlice({
             state.error = null;
         });
         builder.addCase(createNewSubmittal.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
+        builder.addCase(editSubmittal.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(editSubmittal.fulfilled, (state, action) => {
+            state.create = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(editSubmittal.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message
         });

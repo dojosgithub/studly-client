@@ -10,7 +10,7 @@ export default function SubmittalsEditPage() {
   const params = useParams();
 
   const { id } = params;
-
+  console.log('edit', id)
   return (
     <>
       <Helmet>

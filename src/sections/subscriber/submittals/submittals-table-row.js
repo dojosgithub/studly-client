@@ -53,13 +53,13 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }}
           />
         </TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{id}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{submittalId}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{description}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth:140}}>{fDateISO(submittedDate)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap',minWidth:140 }}>{fDateISO(returnDate)}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap',minWidth:'max-content' }}>{link}</TableCell>
 

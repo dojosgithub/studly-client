@@ -95,7 +95,6 @@ const initialState = {
   //   list: [], // PROJECT_TEMPLATES
   // },
   users: [], // _userList 
-  submittals:[],
   isLoading: false,
   error: null
 }
@@ -128,12 +127,8 @@ const project = createSlice({
     setAddExternalUser: (state, action) => {
       state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
     },
-    setCreateTemplate: (state, action) => {
-      state.template.create = action.payload;
-    },
     resetCreateProject: (state) => {
       state.create = projectObj;
-      state.template.create = { name: '', trades: [] };
       state.inviteUsers = {
         internal: [],
         external: [],

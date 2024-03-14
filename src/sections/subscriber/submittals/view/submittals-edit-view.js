@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+//
+import { useSelector } from 'react-redux';
 // @mui
 import Container from '@mui/material/Container';
 // routes
@@ -16,29 +18,32 @@ import SubmittalsNewEditForm from '../submittals-new-edit-form';
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
 
-  const currentUser = _userList.find((user) => user.id === id);
+  const submittalList = useSelector(state => state.submittal.list)
+  const currentSubmittal = submittalList?.find(item => item.id === id)
+  console.log("currentSubmittal", currentSubmittal)
+  console.log("sumittalId", id)
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit Submittal"
+        heading="Create a new Submittals"
         links={[
           {
             name: 'Dashboard',
-            // href: paths.dashboard.root,
+            // href: paths.subscriber.root,
           },
           {
             name: 'Submittals',
-            href: paths.dashboard.company.list,
+            href: paths.subscriber.submittals.list,
           },
-          { name: currentUser?.name },
+          { name: 'Update Submittal' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <SubmittalsNewEditForm currentUser={currentUser} />
+      <SubmittalsNewEditForm currentSubmittal={currentSubmittal} id={id} />
     </Container>
   );
 }
