@@ -54,23 +54,23 @@ export const endpoints = {
     profile: '/api/user/profile',
     login: '/api/user/login',
     register: '/api/auth/register',
-    updatePassword:'/api/user/update-password',
+    updatePassword: '/api/user/update-password',
   },
   company: {
     list: '/api/user/company',
     create: '/api/user/admin/register',
- 
+
   },
   project: {
     list: '/api/user/project',
     create: '/api/user/project',
- 
+
   },
   submittal: {
-    list: '/api/user/submittal',
+    list: (id) => `/api/user/submittal/${id}`,
     create: '/api/user/submittal',
-    edit:(id)=> `/api/user/submittal/${id}`,
- 
+    edit: (id) => `/api/user/submittal/${id}`,
+
   },
   template: {
     list: '/api/user/template',

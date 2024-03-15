@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 //
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Container from '@mui/material/Container';
 // routes
@@ -11,6 +12,7 @@ import { _userList } from 'src/_mock';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
+import { setCurrentSubmittal } from 'src/redux/slices/submittalSlice';
 import SubmittalsNewEditForm from '../submittals-new-edit-form';
 
 // ----------------------------------------------------------------------
@@ -19,9 +21,17 @@ export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
 
   const submittalList = useSelector(state => state.submittal.list)
+  const dispatch = useDispatch()
   const currentSubmittal = submittalList?.find(item => item.id === id)
   console.log("currentSubmittal", currentSubmittal)
   console.log("sumittalId", id)
+  useEffect(() => {
+    if (id) {
+      dispatch(setCurrentSubmittal(currentSubmittal))
+    }
+
+  }, [dispatch, id, currentSubmittal])
+
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

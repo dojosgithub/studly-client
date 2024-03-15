@@ -52,6 +52,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const [files, setFiles] = useState(existingAttachments)
   const user = useSelector(state => state.user.user)
   const projectId = useSelector(state => state.project.current._id)
+  const trades = useSelector(state => state.project?.current?.trades)
   const { enqueueSnackbar } = useSnackbar();
 
   const NewSubmittalSchema = Yup.object().shape({
@@ -114,19 +115,21 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const { _id, firstName, lastName, email } = user
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('DATA', data);
-      const submittedDate = new Date()
-      const creator = { _id, name: `${firstName} ${lastName}`, email }
-      const link = 'www.google.com'
-      const finalData = { ...data, creator, submittedDate, link, projectId }
-      console.log('Final DATA', finalData);
-      console.log('files ', files)
+      let finalData;
+      if (isEmpty(currentSubmittal)) {
+        const { _id, firstName, lastName, email } = user
+        const submittedDate = new Date()
+        const creator = { _id, name: `${firstName} ${lastName}`, email }
+        const link = 'www.google.com'
+        finalData = { ...data, creator, submittedDate, link, projectId }
+      } else {
+        finalData = { ...currentSubmittal, ...data }
+      }
+
+
 
       const formData = new FormData();
       const attachments = [];
-      formData.append('body', JSON.stringify(finalData));
       for (let index = 0; index < files.length; index += 1) {
         const file = files[index];
         if (file instanceof File) {
@@ -135,7 +138,13 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           attachments.push(file);
         }
       }
-      console.log("formData", formData)
+      finalData.attachments = attachments
+      formData.append('body', JSON.stringify(finalData));
+
+      console.log('Final DATA', finalData);
+      console.log('files ', files)
+      console.log('formData ', formData)
+
       let error;
       let payload;
       if (!isEmpty(currentSubmittal) && id) {
@@ -215,9 +224,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   name="trade"
                   label="Trade"
                 >
-                  <MenuItem value="trade1">trade 1</MenuItem>
-                  <MenuItem value="trade1">trade 2</MenuItem>
-                  <MenuItem value="trade1">trade 3</MenuItem>
+                  {trades.map(trade => (
+                    <MenuItem key={trade.tradeId} value={trade?.tradeId}>{trade?.name}</MenuItem>
+                  )
+                  )}
                 </RHFSelect>
                 <RHFTextField name="submittalId" label="Submittal ID" type='number' />
               </Box>

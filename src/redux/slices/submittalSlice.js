@@ -28,7 +28,7 @@ export const createNewSubmittal = createAsyncThunk(
 )
 
 export const editSubmittal = createAsyncThunk(
-    'submittal/create',
+    'submittal/edit',
     async (submittalData, { getState, rejectWithValue }) => {
         try {
           
@@ -59,8 +59,7 @@ export const getSubmittalList = createAsyncThunk(
         try {
             const projectId = getState().project.current._id
             console.log("projectId", projectId)
-            const fullURL = `${endpoints.submittal.list}/${projectId}`
-            const response = await axiosInstance.get(fullURL);
+            const response = await axiosInstance.get(endpoints.submittal.list(projectId));
 
             return response.data.data
         } catch (err) {
