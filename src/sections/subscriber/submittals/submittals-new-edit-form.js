@@ -78,7 +78,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const defaultValues = useMemo(
     () => ({
-      trade: currentSubmittal?.trade || '',
+      trade: currentSubmittal?.trade?.tradeId || '',
       submittalId: currentSubmittal?.submittalId || 0,
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
@@ -115,18 +115,25 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
+      const tradeObj = trades.find(t => t.tradeId === data.trade);
+      const trade = { ...tradeObj }
+      delete trade._id
+      if(!trade){
+        return
+      }
+
       let finalData;
       if (isEmpty(currentSubmittal)) {
         const { _id, firstName, lastName, email } = user
         const submittedDate = new Date()
         const creator = { _id, name: `${firstName} ${lastName}`, email }
         const link = 'www.google.com'
-        finalData = { ...data, creator, submittedDate, link, projectId }
+        finalData = { ...data, creator, submittedDate, link, projectId,trade }
       } else {
-        finalData = { ...currentSubmittal, ...data }
+        finalData = { ...currentSubmittal, ...data ,trade}
       }
 
-
+      
 
       const formData = new FormData();
       const attachments = [];
@@ -172,31 +179,25 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
+  // const handleDrop = useCallback(
+  //   (acceptedFiles) => {
+  //     const file = acceptedFiles[0];
 
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
+  //     const newFile = Object.assign(file, {
+  //       preview: URL.createObjectURL(file),
+  //     });
 
-      if (file) {
-        console.log("newFile", newFile)
-        setValue('attachment', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
+  //     if (file) {
+  //       console.log("newFile", newFile)
+  //       setValue('attachment', newFile, { shouldValidate: true });
+  //     }
+  //   },
+  //   [setValue]
+  // );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-
-
-
-
-
-
 
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
