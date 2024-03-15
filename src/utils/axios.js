@@ -70,6 +70,7 @@ export const endpoints = {
     list: (id) => `/api/user/submittal/${id}`,
     create: '/api/user/submittal',
     edit: (id) => `/api/user/submittal/${id}`,
+    details: (id) => `/api/user/submittal/${id}/details`,
 
   },
   template: {

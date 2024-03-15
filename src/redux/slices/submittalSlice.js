@@ -52,6 +52,29 @@ export const editSubmittal = createAsyncThunk(
         }
     },
 )
+export const getSubmittalDetails = createAsyncThunk(
+    'submittal/details',
+    async (id, { getState, rejectWithValue }) => {
+        try {
+          
+            console.log("submittalId", id)
+
+            const response = await axiosInstance.get(endpoints.submittal.details(id));
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while fetching submittal details.'
+            );
+        }
+    },
+)
 
 export const getSubmittalList = createAsyncThunk(
     'submittal/list',
@@ -99,7 +122,7 @@ const submittal = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // * Create New Project
+        // * Create New Submittal
         builder.addCase(createNewSubmittal.pending, (state) => {
             state.isLoading = true;
             state.error = null;
@@ -113,6 +136,7 @@ const submittal = createSlice({
             state.isLoading = false;
             state.error = action.error.message
         });
+        // * Edit Submittal
         builder.addCase(editSubmittal.pending, (state) => {
             state.isLoading = true;
             state.error = null;
@@ -126,6 +150,7 @@ const submittal = createSlice({
             state.isLoading = false;
             state.error = action.error.message
         });
+        // * Get Submittal List
         builder.addCase(getSubmittalList.pending, (state) => {
             state.isLoading = true;
             state.error = null;
@@ -136,6 +161,20 @@ const submittal = createSlice({
             state.error = null;
         });
         builder.addCase(getSubmittalList.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
+        // Get Submittal Details
+        builder.addCase(getSubmittalDetails.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalDetails.fulfilled, (state, action) => {
+            state.current = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalDetails.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message
         });

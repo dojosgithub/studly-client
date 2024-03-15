@@ -158,6 +158,12 @@ export default function CompanyListView() {
     },
     [router]
   );
+  const handleViewRow = useCallback(
+    (id) => {
+      router.push(paths.subscriber.submittals.details(id));
+    },
+    [router]
+  );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -311,6 +317,7 @@ export default function CompanyListView() {
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
+                        onViewRow={() => handleViewRow(row.id)}
                       />
                     ))}
 

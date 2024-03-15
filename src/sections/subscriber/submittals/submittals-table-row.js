@@ -22,10 +22,10 @@ import UserQuickEditForm from './submittals-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   // companyName, address, adminName, adminEmail, phoneNumber 
-  const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status} = row;
+  const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status } = row;
 
   const confirm = useBoolean();
 
@@ -57,11 +57,11 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{description}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth:140}}>{fDateISO(submittedDate)}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap',minWidth:140 }}>{fDateISO(returnDate)}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(returnDate)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap',minWidth:'max-content' }}>{link}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>
 
         <TableCell>
           <Label
@@ -122,6 +122,16 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            onViewRow();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="ion:eye" style={{ color: "grey" }} />
+          View
+        </MenuItem>
       </CustomPopover>
 
       <ConfirmDialog
@@ -142,6 +152,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
 SubmittalsTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
+  onViewRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,

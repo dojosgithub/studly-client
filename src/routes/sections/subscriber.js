@@ -17,13 +17,14 @@ const IndexPage = lazy(() => import('src/pages/dashboard/app'));
 const SubmittalsListPage = lazy(() => import('src/pages/subscriber/submittals/list'));
 const SubmittalsCreatePage = lazy(() => import('src/pages/subscriber/submittals/new'));
 const SubmittalsEditPage = lazy(() => import('src/pages/subscriber/submittals/edit'));
-// USER
-const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
-const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
-const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
-const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
-const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
-const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
+const SubmittalsDetailsPage = lazy(() => import('src/pages/subscriber/submittals/details'));
+// // USER
+// const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
+// const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
+// const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
+// const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
+// const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
+// const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
 
 
 // TEST RENDER PAGE BY ROLE
@@ -59,8 +60,9 @@ export const subscriberRoutes = [
         children: [
           { element: <SubmittalsListPage />, index: true },
           { path: 'list', element: <SubmittalsListPage /> },
-          { path: ':id/edit', element: <SubmittalsEditPage /> },
           { path: 'new', element: <SubmittalsCreatePage /> },
+          { path: ':id/edit', element: <SubmittalsEditPage /> },
+          { path: ':id', element: <SubmittalsDetailsPage /> },
         ],
       },
       
