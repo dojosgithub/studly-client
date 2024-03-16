@@ -10,6 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import { setCurrentProject } from 'src/redux/slices/projectSlice';
+import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 // components
 import Iconify from 'src/components/iconify';
 import Scrollbar from '../scrollbar';
@@ -25,6 +26,8 @@ export default function CustomNavCollapseList({ onOpen }) {
     };
     const handleProject = (project) => {
         dispatch(setCurrentProject(project))
+        dispatch(getSubmittalList())
+
     };
 
     return (

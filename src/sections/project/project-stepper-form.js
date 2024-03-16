@@ -35,8 +35,8 @@ import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
-import { getTemplateList } from 'src/redux/slices/templateSlice';
-import { getWorkflowList } from 'src/redux/slices/workflowSlice';
+import { getTemplateList, resetTemplate } from 'src/redux/slices/templateSlice';
+import { getWorkflowList, resetWorkflow } from 'src/redux/slices/workflowSlice';
 
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
@@ -181,7 +181,7 @@ export default function ProjectStepperForm() {
     // Check if form is being edited or a new entry is being created
     // For example, check if selectedTemplate is present or not
     const isNewEntry = activeStep === 3 || activeStep === 4;
-
+    // TODO: currentSelectedTemplate from redux 
     return {
       name: '',
       trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
@@ -253,6 +253,8 @@ export default function ProjectStepperForm() {
       handleReset()
       enqueueSnackbar('Project created successfully!', { variant: 'success' });
       await dispatch(getProjectList())
+      dispatch(resetTemplate())
+      dispatch(resetWorkflow())
       // if(isEmpty(projectList)){
       //   router.push(paths.subscriber.onboarding);
       //   return

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // @mui
 import Box from '@mui/material/Box';
@@ -21,6 +21,10 @@ import { NavSectionVertical } from 'src/components/nav-section';
 import { CustomDrawer } from 'src/components/custom-drawer';
 import { CustomNavCollapseList } from 'src/components/custom-nav-collapse-list';
 //
+import { resetCreateProject } from 'src/redux/slices/projectSlice';
+import { resetWorkflow } from 'src/redux/slices/workflowSlice';
+import { resetTemplate } from 'src/redux/slices/templateSlice';
+//
 import { NAV } from '../config-layout';
 import { useNavData, useNavDataSubscriber } from './config-navigation';
 import { NavToggleButton, NavUpgrade } from '../_common';
@@ -30,6 +34,7 @@ import { NavToggleButton, NavUpgrade } from '../_common';
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
+  const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
@@ -65,7 +70,15 @@ export default function NavVertical({ openNav, onCloseNav }) {
       {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (
         <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} />
       )}
-      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
+      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (
+        <CustomDrawer open={openDrawer} onClose={() => {
+          setOpenDrawer(false)
+          dispatch(resetCreateProject())
+          dispatch(resetWorkflow())
+          dispatch(resetTemplate())
+        }
+        } Component={ProjectView} />
+      )}
       <NavSectionVertical data={navData} config={
         {
           currentRole: user?.role?.name, // if current role is not allowed

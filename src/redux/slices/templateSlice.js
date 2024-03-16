@@ -68,6 +68,16 @@ const template = createSlice({
         setCurrentTemplate: (state, action) => {
             state.current = action.payload
         },
+        resetTemplate: (state) => {
+            // Keep the 'list' from the current state
+            const currentList = state.list;
+
+            // Reset the state to initialState
+            Object.assign(state, initialState);
+
+            // Restore 'list' to its current value before the reset
+            state.list = currentList;
+        }
     },
     extraReducers: (builder) => {
         // * Create New Project
@@ -109,5 +119,5 @@ const template = createSlice({
     }
 })
 
-export const { setTemplates, setCreateTemplate, setCurrentTemplate } = template.actions
+export const { setTemplates, setCreateTemplate, setCurrentTemplate, resetTemplate } = template.actions
 export default template.reducer

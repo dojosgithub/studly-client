@@ -77,6 +77,11 @@ export default function CompanyListView() {
   const table = useTable();
   const submittalList = useSelector(state => state.submittal.list);
 
+  useEffect(() => {
+
+    setTableData(submittalList)
+    console.log('submittalList', submittalList)
+  }, [submittalList])
 
   const settings = useSettingsContext();
 
