@@ -73,7 +73,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function CompanyListView() {
+export default function SubmittalsListView() {
   const table = useTable();
   const submittalList = useSelector(state => state.submittal.list);
 

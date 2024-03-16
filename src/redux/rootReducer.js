@@ -13,13 +13,21 @@ const userPersistConfig = {
   key: 'user',
   storage,
 };
+const companyPersistConfig = {
+  key: 'company',
+  storage,
+};
+const projectPersistConfig = {
+  key: 'project',
+  storage,
+};
 
 
 const rootReducer = combineReducers({
   // Define a top-level state field named `todos`, handled by `userReducer`
   user: persistReducer(userPersistConfig, userReducer),
-  company: companyReducer,
-  project: projectReducer,
+  company: persistReducer(companyPersistConfig, companyReducer),
+  project: persistReducer(projectPersistConfig, projectReducer),
   submittal: submittalReducer,
   template: templateReducer,
   workflow: workflowReducer,
