@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
+import { isEmpty } from 'lodash';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -16,13 +17,16 @@ import { Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { setCreateTemplate } from 'src/redux/slices/projectSlice';
+import { createNewTemplate } from 'src/redux/slices/templateSlice';
 
 // ----------------------------------------------------------------------
 
-export default function ProjectTemplateName({ open, onClose,setSelectedTemplate, onTemplateCreation, trades }) {
+export default function ProjectTemplateName({ open, onClose, setSelectedTemplate, onTemplateCreation }) {
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch()
-
+    const { getValues } = useFormContext()
+    const { trades } = getValues()
+    console.log('trades',trades)
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
 
@@ -48,15 +52,22 @@ export default function ProjectTemplateName({ open, onClose,setSelectedTemplate,
 
     const onSubmit = handleSubmit(async ({ name }) => {
         try {
-            const data = { name, trades }
+            const updatedTrades = trades?.map(({ _id, ...rest }) => rest);
+
+            const data = { name, trades: updatedTrades }
             onTemplateCreation(data)
             console.info('DATA', data);
             setSelectedTemplate('')
-            dispatch(setCreateTemplate(data))
-            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            const { error, payload } = await dispatch(createNewTemplate(data))
+            console.log('e-p', { error, payload });
+            if (!isEmpty(error)) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return
+            }
+            enqueueSnackbar('Template created successfully!', { variant: 'success' });
             reset();
             onClose();
-            enqueueSnackbar('Update success!');
         } catch (error) {
             console.error(error);
         }
@@ -103,6 +114,6 @@ ProjectTemplateName.propTypes = {
     onTemplateCreation: PropTypes.func,
     onClose: PropTypes.func,
     open: PropTypes.bool,
-    trades: PropTypes.array,
+    // trades: PropTypes.array,
     setSelectedTemplate: PropTypes.func,
 };

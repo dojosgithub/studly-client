@@ -21,7 +21,7 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getProjectList, resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades } from 'src/redux/slices/projectSlice';
+import { createNewProject, getProjectList, resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -102,8 +102,6 @@ export default function ProjectStepperForm() {
 
   const isStepSkipped = (step) => skipped?.has(step);
 
-  console.log('projectList', projectList)
-  console.log('workflowList', workflowList)
   useEffect(() => {
     dispatch(getTemplateList())
     dispatch(getWorkflowList())
@@ -233,17 +231,17 @@ export default function ProjectStepperForm() {
     e.preventDefault()
 
     try {
-      console.log('data Final', data);
+      console.log('data->', data);
       if (!companies) {
         return
       }
       // dispatch(getProjectList())
-      const filteredData = data?.trades?.map(({ _id, ...rest }) => rest);
+      const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
       // , companyId: companies[0]?.companyId
 
-      const finalData = { teams: { ...inviteUsers }, ...data, trades: filteredData }
+      const finalData = { teams: { ...inviteUsers }, ...data, trades: updatedTrades }
       console.log("finalData", finalData)
-      console.log("filteredData", filteredData)
+      console.log("updatedTrades", updatedTrades)
 
 
       const { error, payload } = await dispatch(createNewProject(finalData))
@@ -281,24 +279,28 @@ export default function ProjectStepperForm() {
     if (activeStep === steps.length) return;
 
     let newSkipped = skipped;
-    console.log('newSkipped Before', newSkipped)
+    // console.log('newSkipped Before', newSkipped)
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-    console.log('newSkipped After', newSkipped)
+    // console.log('newSkipped After', newSkipped)
 
     const { isFormValid, currentStepValue } = await getFormValidation();
-    console.log('isFormValid', { isFormValid, currentStepValue })
+    // console.log('isFormValid', { isFormValid, currentStepValue })
 
     // ?  setting name to redux
     if ((currentStepValue === 'name') && isFormValid) {
-      console.log('formValues.name', formValues?.name);
+      // console.log('formValues.name', formValues?.name);
       dispatch(setProjectName(formValues.name))
     }
     // ?  setting trades to redux
     if ((currentStepValue === 'trades') && isFormValid) {
       dispatch(setProjectTrades(formValues.trades))
+    }
+
+    if ((currentStepValue === 'workflow') && isFormValid) {
+      dispatch(setProjectWorkflow(formValues.workflow))
     }
 
     // TODO:  isDefaultTemplate should be removed

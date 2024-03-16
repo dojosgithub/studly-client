@@ -46,9 +46,9 @@ const ProjectExistingTrade = () => {
         control,
         name: 'trades',
     });
-    const { trades } = getValues()
+    // const { trades } = getValues()
     // const [rows, setRows] = useState(trades)
-    console.log("trades==>", trades)
+    // console.log("trades==>", trades)
 
 
     const values = watch();

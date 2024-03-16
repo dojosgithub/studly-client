@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
+import { isEmpty } from 'lodash';
 import { styled } from '@mui/material/styles';
 import { IconButton, Grid, alpha, Box, Button, Stack, Typography, Container } from '@mui/material'
 import { LoadingButton } from '@mui/lab';
@@ -18,6 +20,7 @@ import FormProvider, {
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
+import { createNewTemplate, getTemplateList } from 'src/redux/slices/templateSlice';
 
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -47,30 +50,35 @@ const NewTemplateSchema = Yup.object().shape({
 
 
 });
+
 const tradesDefaultVal = [{
     name: '',
     tradeId: '',
     _id: uuidv4(),
 }]
-const ProjectNewTemplateDrawer = ({onClose}) => {
+
+
+const ProjectNewTemplateDrawer = ({ onClose }) => {
 
     const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch();
     const defaultValues = useMemo(
         () => ({
             name: '',
-            trades:tradesDefaultVal,
+            trades: tradesDefaultVal,
         }),
         []
     );
-    const [rows, setRows] = useState(tradesDefaultVal)
+    // const [rows, setRows] = useState(tradesDefaultVal)
+    // const values = watch();
 
 
-    const currentDefaultValues = {
-        name: '',
-        tradeId: '',
-        _id: uuidv4(),
-    }
 
+    // const currentDefaultValues = {
+    //     name: '',
+    //     tradeId: '',
+    //     // _id: uuidv4(),
+    // }
 
     const methods = useForm({
         resolver: yupResolver(NewTemplateSchema),
@@ -84,47 +92,82 @@ const ProjectNewTemplateDrawer = ({onClose}) => {
         setValue,
         getValues,
         handleSubmit,
+        resetField,
         formState: { isSubmitting },
         trigger
     } = methods;
     const { trades } = getValues()
 
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'trades',
+    });
+
+    const handleAdd = () => {
+        append({
+            name: '',
+            tradeId: '',
+            _id: uuidv4(),
+        });
+    };
+
+    const handleRemove = (index) => {
+        remove(index);
+    };
+
+
+    const handleClearService = useCallback(
+        (index) => {
+            resetField(`trades[${index}].name`);
+            resetField(`trades[${index}].tradeId`);
+        },
+        [resetField]
+    );
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            enqueueSnackbar('Update success!');
-
-            console.log('data', data);
-            // getData(data)
-            setRows(tradesDefaultVal)
+            // setRows(tradesDefaultVal)
+            console.info('DATA', data);
+            const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
+            console.info('updatedTrades', updatedTrades);
+            const { error, payload } = await dispatch(createNewTemplate({ ...data, trades: updatedTrades }))
+            console.log('e-p', { error, payload });
+            if (!isEmpty(error)) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return
+            }
+            enqueueSnackbar('Template created successfully!', { variant: 'success' });
+            dispatch(getTemplateList())
             reset();
             onClose()
-            console.info('DATA', data);
         } catch (error) {
             console.error(error);
+            enqueueSnackbar('Error creating Template!', { variant: 'error' });
+
         }
     });
 
 
-    const handleDelete = (id) => {
-        console.log('id', id)
-        const filteredTrades = trades?.filter(row => row._id !== id);
-        console.log('filteredTrades', filteredTrades)
-        setRows(filteredTrades)
+    // const handleDelete = (id) => {
+    //     console.log('id', id)
+    //     const filteredTrades = trades?.filter(row => row._id !== id);
+    //     console.log('filteredTrades', filteredTrades)
+    //     setRows(filteredTrades)
 
-        setValue("trades", filteredTrades)
+    //     setValue("trades", filteredTrades)
 
 
-    }
-    const handleAddField = () => {
-        const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
-        console.log('addfield updatedTrades', updatedTrades)
-        setRows(updatedTrades)
+    // }
+    // const handleAddField = () => {
+    //     const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
+    //     console.log('addfield updatedTrades', updatedTrades)
+    //     setRows(updatedTrades)
 
-        setValue("trades", updatedTrades)
+    //     setValue("trades", updatedTrades)
 
-    }
+    // }
+
+
     return (
         <Container>
             <Box sx={{ paddingBlock: '2rem' }}>
@@ -142,14 +185,14 @@ const ProjectNewTemplateDrawer = ({onClose}) => {
                             <Typography>{" "}</Typography>
 
                         </Box>
-                        {rows && rows?.map(({ _id, name, tradeId }, index) => (
+                        {fields && fields?.map(({ _id, name, tradeId }, index) => (
                             <Box
                                 key={_id}
                                 sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                             >
                                 <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID' />
                                 <RHFTextField name={`trades[${index}].name`} placeholder='Trade Name' />
-                                <StyledIconButton color="inherit" onClick={() => handleDelete(_id)}>
+                                <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                     <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
                                 </StyledIconButton>
                             </Box>
@@ -161,7 +204,7 @@ const ProjectNewTemplateDrawer = ({onClose}) => {
                                 variant="outlined"
                                 startIcon={<Iconify icon="mingcute:add-line" />}
                                 color='secondary'
-                                onClick={handleAddField}
+                                onClick={handleAdd}
                             >
                                 Add Another Trade
                             </Button>
@@ -184,5 +227,5 @@ export default ProjectNewTemplateDrawer
 
 ProjectNewTemplateDrawer.propTypes = {
     onClose: PropTypes.func,
-   
+
 };
