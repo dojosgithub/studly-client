@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
@@ -39,6 +40,8 @@ const ProjectExistingTrade = () => {
     // const { trades } = getValues()
     // const [rows, setRows] = useState(trades)
 
+    const currentTemplate = useSelector(state => state.template.current);
+    const currentProjectTrades = useSelector(state => state.project?.create?.trades);
 
     const { control, setValue, getValues, watch, resetField } = useFormContext();
 
@@ -48,7 +51,12 @@ const ProjectExistingTrade = () => {
     });
     // const { trades } = getValues()
     // const [rows, setRows] = useState(trades)
-    // console.log("trades==>", trades)
+   
+    useEffect(() => {
+        console.log("template changed->", currentProjectTrades)
+        setValue('trades', currentProjectTrades)
+    }, [currentProjectTrades, setValue])
+
 
 
     const values = watch();
@@ -128,8 +136,8 @@ const ProjectExistingTrade = () => {
                             key={_id}
                             sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                         >
-                            <RHFTextField name={`trades[${index}].tradeId`} label="Trade Id" InputLabelProps={{ shrink: true }}  />
-                            <RHFTextField name={`trades[${index}].name`}  label="Trade Name" InputLabelProps={{ shrink: true }}  />
+                            <RHFTextField name={`trades[${index}].tradeId`} label="Trade Id" InputLabelProps={{ shrink: true }} />
+                            <RHFTextField name={`trades[${index}].name`} label="Trade Name" InputLabelProps={{ shrink: true }} />
                             <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                 <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
                             </StyledIconButton>

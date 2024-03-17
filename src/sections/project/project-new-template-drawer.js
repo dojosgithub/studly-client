@@ -20,7 +20,7 @@ import FormProvider, {
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
-import { createNewTemplate, getTemplateList } from 'src/redux/slices/templateSlice';
+import { createNewTemplate, getTemplateList, setCurrentTemplate } from 'src/redux/slices/templateSlice';
 
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -138,6 +138,7 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
             }
             enqueueSnackbar('Template created successfully!', { variant: 'success' });
             dispatch(getTemplateList())
+            dispatch(setCurrentTemplate(payload))
             reset();
             onClose()
         } catch (error) {

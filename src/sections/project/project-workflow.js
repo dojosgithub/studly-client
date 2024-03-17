@@ -9,12 +9,13 @@ import { setProjectWorkflow } from 'src/redux/slices/projectSlice'
 import { CustomDrawer } from 'src/components/custom-drawer'
 import { CustomSelect } from 'src/components/custom-select'
 import ProjectCreateWorkflow from './project-create-workflow'
+import ProjectWorkflowSelect from './project-workflow-select'
 
 
 
 const ProjectWorkflow = () => {
   const [selected, setSelected] = useState(null);
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [open, setOpen] = useState(false);
   // const workflows = useSelector(state => state.project.workflows)
   const workflows = useSelector(state => state.workflow.list)
   const dispatch = useDispatch()
@@ -24,7 +25,7 @@ const ProjectWorkflow = () => {
 
   const handleSelect = (val) => {
     if (val === 'create') {
-      setOpenDrawer(true)
+      setOpen(true)
       return
     }
     console.log('handleSelect-->', val);
@@ -42,12 +43,14 @@ const ProjectWorkflow = () => {
         minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
         mb: 4
       }} />
-    <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={[]} />
-    <CustomDrawer open={openDrawer} onClose={() => {
-      setOpenDrawer(false);
-      handleSelect('')
-    }} Component={ProjectCreateWorkflow} type='workflow' />
+    <ProjectWorkflowSelect />
   </>)
+  //   <CustomSelect selectedOption={selected} onSelect={handleSelect} type="workflow" options={[]} />
+  //   <CustomDrawer open={openDrawer} onClose={() => {
+  //     setOpenDrawer(false);
+  //     handleSelect('')
+  //   }} Component={ProjectCreateWorkflow} type='workflow' />
+  // </>)
 }
 
 

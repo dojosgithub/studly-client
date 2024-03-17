@@ -80,6 +80,7 @@ export const getSubmittalList = createAsyncThunk(
     'submittal/list',
     async (_, { getState, rejectWithValue }) => {
         try {
+            // const projectId = getState().projectId.id
             const projectId = getState().project.current._id
             console.log("projectId", projectId)
             const response = await axiosInstance.get(endpoints.submittal.list(projectId));

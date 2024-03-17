@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 // @mui 
@@ -38,6 +39,14 @@ const ProjectCreateTrade = () => {
         name: 'trades',
     });
     // const [rows, setRows] = useState(trades)
+    const currentTrades = useSelector(state => state.project?.create?.trades);
+    useEffect(() => {
+        console.log("currentTrades->", currentTrades)
+        if (currentTrades && currentTrades?.length > 1) {
+            console.log("template changed->", currentTrades)
+            setValue('trades', currentTrades)
+        }
+    }, [currentTrades, setValue])
 
 
     const values = watch();

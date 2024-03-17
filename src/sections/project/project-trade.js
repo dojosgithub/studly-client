@@ -15,6 +15,7 @@ import { PROJECT_TEMPLATES } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
+import ProjectTradeSelect from './project-trade-select';
 
 
 export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
@@ -38,9 +39,11 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
         </TabPanel>
         <TabPanel value={1}>
           {/* PROJECT_TEMPLATES */}
-          <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
-          {/* this should be changed to template value */}
-          {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />}
+          <ProjectTradeSelect/>
+          <ProjectExistingTrade />
+
+          {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
+          {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}
         </TabPanel>
       </Tabs>
 

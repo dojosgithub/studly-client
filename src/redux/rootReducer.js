@@ -8,26 +8,28 @@ import companyReducer from './slices/companySlice'
 import submittalReducer from './slices/submittalSlice'
 import templateReducer from './slices/templateSlice'
 import workflowReducer from './slices/workflowSlice'
+import { projectTransform } from './projectTransform';
 
 const userPersistConfig = {
   key: 'user',
   storage,
 };
-const companyPersistConfig = {
-  key: 'company',
-  storage,
-};
+
 const projectPersistConfig = {
   key: 'project',
   storage,
+  transforms: [projectTransform], // Include the transform here
 };
 
 
 const rootReducer = combineReducers({
   // Define a top-level state field named `todos`, handled by `userReducer`
   user: persistReducer(userPersistConfig, userReducer),
-  company: persistReducer(companyPersistConfig, companyReducer),
   project: persistReducer(projectPersistConfig, projectReducer),
+ 
+  // company: persistReducer(companyPersistConfig, companyReducer),
+  // project: projectReducer,
+  company: companyReducer,
   submittal: submittalReducer,
   template: templateReducer,
   workflow: workflowReducer,

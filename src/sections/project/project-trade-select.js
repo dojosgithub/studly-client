@@ -1,0 +1,111 @@
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+// @mui
+import { useFormContext } from 'react-hook-form';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import { Select } from '@mui/material';
+// _mock
+import { PROJECT_TEMPLATES, PROJECT_TEMPLATE_OPTIONS } from 'src/_mock';
+// components
+import Iconify from 'src/components/iconify';
+import { setCurrentTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded, setSelectedTemplate } from 'src/redux/slices/templateSlice';
+import { setCurrentWorkflow } from 'src/redux/slices/workflowSlice';
+import { setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+
+// ----------------------------------------------------------------------
+
+export default function ProjectTradeSelect() {
+    // for template and workflow
+    const dispatch = useDispatch()
+    const { setValue } = useFormContext()
+    const templates = useSelector(state => state.template.list);
+    const cTemplate = useSelector(state => state.template.current);
+    const [selectedTemplateName, setSelectedTemplateName] = useState(cTemplate?.name)
+    const [templateList, setTemplateList] = useState(templates)
+
+    useEffect(() => {
+        console.log("currentTemplate->", cTemplate)
+        console.log("templates->", templates)
+        setSelectedTemplateName(cTemplate?.name)
+        setTemplateList(templates)
+
+    }, [cTemplate, templates])
+    const handleSelect = (value) => {
+        console.log('handleSelect', value)
+        // Find the selected item based on the value
+        if (value !== 'create') {
+            const selectedItem = templateList.find(item => item.name === value || value === 'default');
+            handleSelectTemplate(selectedItem);
+            setValue('trades', selectedItem?.trades)
+            dispatch(setProjectTrades(selectedItem?.trades))
+            dispatch(setSelectedTemplate(value))
+        }
+        if (value === 'default') {
+            dispatch(setIsDefaultTemplate(!!value))
+        }
+
+        if (value === 'create') {
+            dispatch(setIsNewTemplate(!!value))
+        }
+    };
+
+    const handleSelectTemplate = (value) => {
+        console.log("Selected template:", value);
+        dispatch(setCurrentTemplate(value))
+        // Additional logic for selected item
+    };
+    return (
+
+        <Box
+            rowGap={3}
+            columnGap={2}
+            display="grid"
+
+            sx={{ marginBottom: "2rem" }}
+        >
+            <Select
+                onChange={(e) => handleSelect(e.target.value)}
+                name='template'
+                value={selectedTemplateName}
+                label=""
+                displayEmpty
+                sx={{
+                    "& .MuiSelect-select": {
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                    }
+                }}
+            >
+                {templateList.map((item) => (
+                    <MenuItem
+                        key={item.id}
+                        value={item.name === 'default' ? 'default' : item.name}
+                        sx={{ height: 50, px: 3, borderRadius: 0 }}
+                    >
+                        {item.name === 'default' ? `Studly Default Template` : item.name.toUpperCase()}
+                        {item.name === 'default' && (
+                            <Iconify
+                                icon='mdi:crown-outline'
+                                width={28}
+                                sx={{ mx: 1 }}
+                            />
+                        )}
+                    </MenuItem>
+                ))}
+                <MenuItem value='create' sx={{ height: 50, px: 3, borderTop: '1px solid black', borderRadius: 0 }}>
+                    <Iconify
+                        icon='material-symbols:add-circle-outline'
+                        width={20}
+                        sx={{ mr: 1 }}
+                    />
+                    Create New Template
+                </MenuItem>
+            </Select>
+        </Box>
+
+
+    );
+}

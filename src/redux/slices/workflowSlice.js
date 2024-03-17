@@ -9,6 +9,10 @@ const initialState = {
         returnDate: ""
     },
     current: null,
+    selectedWorkflow: '',
+    isNewWorkflow: false,
+    // isDefaultWorkflow: false,
+    // isWorkflowNameAdded: false,
     isLoading: false,
     error: null
 }
@@ -72,6 +76,12 @@ const workflow = createSlice({
         setCurrentWorkflow: (state, action) => {
             state.current = action.payload
         },
+        setSelectedWorkflow: (state, action) => {
+            state.selectedWorkflow = action.payload
+        },
+        setIsNewWorkflow: (state, action) => {
+            state.isNewWorkflow = action.payload
+        },
         resetWorkflow: (state) => {
             // Keep the 'list' from the current state
             const currentList = state.list;
@@ -114,5 +124,5 @@ const workflow = createSlice({
     }
 })
 
-export const { setWorkflowList, setCreateWorkflow, setCurrentWorkflow, resetWorkflow } = workflow.actions
+export const { setWorkflowList, setCreateWorkflow, setCurrentWorkflow, resetWorkflow, setSelectedWorkflow, setIsNewWorkflow } = workflow.actions
 export default workflow.reducer

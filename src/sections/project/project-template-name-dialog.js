@@ -17,15 +17,15 @@ import { Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { setCreateTemplate } from 'src/redux/slices/projectSlice';
-import { createNewTemplate } from 'src/redux/slices/templateSlice';
+import { createNewTemplate, getTemplateList, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
 
 // ----------------------------------------------------------------------
 
-export default function ProjectTemplateName({ open, onClose, setSelectedTemplate, onTemplateCreation }) {
+export default function ProjectTemplateName({ open, onClose, setSelectedTemplate, onTemplateCreation, trades }) {
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch()
-    const { getValues } = useFormContext()
-    const { trades } = getValues()
+    // const { getValues } = useFormContext()
+    // const { trades } = getValues()
     console.log('trades',trades)
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
@@ -66,6 +66,8 @@ export default function ProjectTemplateName({ open, onClose, setSelectedTemplate
                 return
             }
             enqueueSnackbar('Template created successfully!', { variant: 'success' });
+            dispatch(setIsTemplateNameAdded(true))
+            dispatch(getTemplateList())
             reset();
             onClose();
         } catch (error) {
@@ -114,6 +116,6 @@ ProjectTemplateName.propTypes = {
     onTemplateCreation: PropTypes.func,
     onClose: PropTypes.func,
     open: PropTypes.bool,
-    // trades: PropTypes.array,
+    trades: PropTypes.array,
     setSelectedTemplate: PropTypes.func,
 };

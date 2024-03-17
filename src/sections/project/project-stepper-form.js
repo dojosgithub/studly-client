@@ -35,14 +35,15 @@ import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
-import { getTemplateList, resetTemplate } from 'src/redux/slices/templateSlice';
-import { getWorkflowList, resetWorkflow } from 'src/redux/slices/workflowSlice';
+import { getTemplateList, resetTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
+import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
 
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
 import ProjectSubcontractor from './project-subcontractor';
 import ProjectInviteUsers from './project-invite-users';
 import ProjectFinal from './project-final';
+import ProjectCreateWorkflow from './project-create-workflow';
 
 
 // ----------------------------------------------------------------------
@@ -97,6 +98,15 @@ export default function ProjectStepperForm() {
 
   const templateList = useSelector(state => state.template.list);
   const workflowList = useSelector(state => state.workflow.list);
+
+  // creating new trade template
+  const isDefaultTemplate = useSelector(state => state.template.isDefaultTemplate);
+  const isTemplateNameAdded = useSelector(state => state.template.isTemplateNameAdded);
+  const isNewTemplate = useSelector(state => state.template.isNewTemplate);
+
+  // creating new workflow template
+  const isNewWorkflow = useSelector(state => state.workflow.isNewWorkflow);
+
 
   const isStepOptional = (step) => (step === 3 || step === 4);
 
@@ -237,11 +247,14 @@ export default function ProjectStepperForm() {
       }
       // dispatch(getProjectList())
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
+      const { id, ...rest } = data.workflow;
+      const updatedWorkflow = rest;
       // , companyId: companies[0]?.companyId
 
-      const finalData = { teams: { ...inviteUsers }, ...data, trades: updatedTrades }
+      const finalData = { teams: { ...inviteUsers }, ...data, trades: updatedTrades, workflow: updatedWorkflow }
       console.log("finalData", finalData)
       console.log("updatedTrades", updatedTrades)
+      console.log("updatedWorkflow", updatedWorkflow)
 
 
       const { error, payload } = await dispatch(createNewProject(finalData))
@@ -294,18 +307,26 @@ export default function ProjectStepperForm() {
     // ?  setting name to redux
     if ((currentStepValue === 'name') && isFormValid) {
       // console.log('formValues.name', formValues?.name);
-      dispatch(setProjectName(formValues.name))
+      dispatch(setProjectName(formValues?.name))
     }
     // ?  setting trades to redux
     if ((currentStepValue === 'trades') && isFormValid) {
-      dispatch(setProjectTrades(formValues.trades))
+      dispatch(setProjectTrades(formValues?.trades))
     }
 
     if ((currentStepValue === 'workflow') && isFormValid) {
-      dispatch(setProjectWorkflow(formValues.workflow))
+      dispatch(setProjectWorkflow(formValues?.workflow))
     }
+    // TODO:  NEW CODE
+    if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+      setOpen(true)
+      return
+    }
+    // TODO:  NEW CODE END
 
-    // TODO:  isDefaultTemplate should be removed
+
+
+
     if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
       setOpen(true)
       return
@@ -490,11 +511,34 @@ export default function ProjectStepperForm() {
           )}
         </FormProvider>
       </Stack>
-      {selectedTemplate === "default" && <ProjectTemplateName open={open} onClose={() => setOpen(false)} setSelectedTemplate={setSelectedTemplate} onTemplateCreation={handleTemplateCreation} trades={formValues?.trades} />}
+
+      {(open) &&
+        <ProjectTemplateName
+          open={open}
+          onClose={() => setOpen(!open)}
+          setSelectedTemplate={setSelectedTemplate}
+          onTemplateCreation={handleTemplateCreation}
+          trades={formValues?.trades}
+        />
+      }
+      <CustomDrawer
+        open={isNewTemplate} onClose={() => dispatch(setIsNewTemplate(false))}
+        Component={ProjectNewTemplateDrawer}
+        type='template'
+      />
+      <CustomDrawer
+        open={isNewWorkflow}
+        onClose={() => dispatch(setIsNewWorkflow(false))}
+        Component={ProjectCreateWorkflow}
+        type='workflow'
+      />
+
+
+      {/* {selectedTemplate === "default" && <ProjectTemplateName open={open} onClose={() => setOpen(false)} setSelectedTemplate={setSelectedTemplate} onTemplateCreation={handleTemplateCreation} trades={formValues?.trades} />}
       <CustomDrawer open={openNewTemplateDrawer} onClose={() => {
         setOpenNewTemplateDrawer(false);
         handleSelect('')
-      }} Component={ProjectNewTemplateDrawer} type='template' />
+      }} Component={ProjectNewTemplateDrawer} type='template' /> */}
     </>
   );
 }

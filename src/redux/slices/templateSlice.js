@@ -5,6 +5,10 @@ const initialState = {
     list: [], // PROJECT_TEMPLATES
     create: { name: '', trades: [] },
     current: null,
+    selectedTemplate: '',
+    isNewTemplate: false,
+    isDefaultTemplate: false,
+    isTemplateNameAdded: false,
     isLoading: false,
     error: null
 }
@@ -68,6 +72,18 @@ const template = createSlice({
         setCurrentTemplate: (state, action) => {
             state.current = action.payload
         },
+        setSelectedTemplate: (state, action) => {
+            state.selectedTemplate = action.payload
+        },
+        setIsNewTemplate: (state, action) => {
+            state.isNewTemplate = action.payload
+        },
+        setIsTemplateNameAdded: (state, action) => {
+            state.isTemplateNameAdded = action.payload
+        },
+        setIsDefaultTemplate: (state, action) => {
+            state.isDefaultTemplate = action.payload
+        },
         resetTemplate: (state) => {
             // Keep the 'list' from the current state
             const currentList = state.list;
@@ -119,5 +135,5 @@ const template = createSlice({
     }
 })
 
-export const { setTemplates, setCreateTemplate, setCurrentTemplate, resetTemplate } = template.actions
+export const { setTemplates, setCreateTemplate, setCurrentTemplate, setSelectedTemplate, setIsNewTemplate, setIsTemplateNameAdded, setIsDefaultTemplate, resetTemplate } = template.actions
 export default template.reducer

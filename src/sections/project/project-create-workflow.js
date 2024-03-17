@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
+import { useDispatch } from 'react-redux';
 
 // hook-form
 import * as Yup from 'yup';
@@ -20,12 +22,14 @@ import FormProvider, {
 } from 'src/components/hook-form';
 //
 import OrganizationalChart from 'src/components/organizational-chart/organizational-chart'
+import { createNewWorkflow, getWorkflowList, setCurrentWorkflow } from 'src/redux/slices/workflowSlice';
 import Scrollbar from 'src/components/scrollbar'
 import { KanbanView } from '../kanban/view'
 
 
 const ProjectCreateWorkflow = ({ type, onClose }) => {
     const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch();
 
 
     const ProjectSchema = Yup.object().shape({
@@ -61,17 +65,23 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
         formState: { isSubmitting, isValid },
         trigger
     } = methods;
-    const formValues = getValues();
-    console.log('formValues', formValues)
-    console.log('isValid', isValid)
     const onSubmit = handleSubmit(async (data) => {
         try {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            onClose()
             console.log('data', data);
-            enqueueSnackbar('Template Created!', { variant: 'success' });
+            const statuses = data?.statuses?.map(object => object.name);
+            console.log('statuses', statuses);
+            const { error, payload } = await dispatch(createNewWorkflow({ ...data, statuses }))
+            console.log('e-p', { error, payload });
+            if (!isEmpty(error)) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return
+            }
+            console.log('payload', payload);
+            enqueueSnackbar('Workflow created successfully!', { variant: 'success' });
+            dispatch(getWorkflowList())
+            dispatch(setCurrentWorkflow(payload))
 
-            // console.log('JSON DATA', JSON.stringify(data));
+            onClose()
             reset();
 
         } catch (error) {
@@ -97,7 +107,7 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
                     flexDirection="column"
                 >
                     <Box sx={{ display: 'flex', gap: 4, px: 2, flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-                        <RHFTextField name="name" label="Project Name" />
+                        <RHFTextField name="name" label="Workflow Name" />
                         <Controller
                             name="returnDate"
                             control={control}
@@ -122,7 +132,7 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
                             )}
                         />
                     </Box>
-                    <Scrollbar sx={{ 'py': 4, maxHeight:360 }}>
+                    <Scrollbar sx={{ 'py': 4, maxHeight: 360 }}>
                         {/* <OrganizationalChart data={PROJECT_STATUS_TREE} variant='simple' /> */}
                         <KanbanView />
                     </Scrollbar>
