@@ -23,7 +23,7 @@ import UserQuickEditForm from './company-quick-edit-form';
 
 export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
-  const { name, address, adminName,status, adminEmail, phoneNumber } = row;
+  const { name, address, company_admin, adminName, adminEmail, status, phoneNumber } = row;
 
   const confirm = useBoolean();
 
@@ -53,8 +53,8 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell> */}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{adminEmail}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.firstName}{" "}{company_admin?.lastName}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.email}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
 
