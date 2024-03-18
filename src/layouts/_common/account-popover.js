@@ -94,17 +94,17 @@ export default function AccountPopover() {
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
-        <Box sx={{ p: 2, pb: 1.5 }}>
-          {/* <Typography variant="subtitle2" noWrap>
+        {/* <Box sx={{ p: 2, pb: 1.5 }}>
+          <Typography variant="subtitle2" noWrap>
             {user?.displayName}
-          </Typography> */}
+          </Typography>
 
-          {/* <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {user?.email}
-          </Typography> */}
-        </Box>
+          </Typography>
+        </Box> */}
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        {/* <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
           {OPTIONS.map((option) => (
@@ -114,7 +114,7 @@ export default function AccountPopover() {
           ))}
         </Stack>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
         <MenuItem
           onClick={handleLogout}

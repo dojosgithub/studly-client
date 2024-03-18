@@ -63,7 +63,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      {user?.userType !== "Subscriber" && <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />}
+      {user?.userType !== "Subscriber" && <Logo sx={{ my: 3, mx: "auto" }} />}
       {/* {user?.role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
         Project
       </Button>)} */}

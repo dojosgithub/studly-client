@@ -100,22 +100,22 @@ export default function CustomNavCollapseList({ onOpen }) {
                     open={open}
                     onClose={handleClose}
                     onClick={handleClose}
+                    transformOrigin={{ horizontal: "center", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                     slotProps={{
                         elevation: 0,
                         paper: {
                             sx: {
-                                // width: '20ch',
-                                // maxHeight: 48 * 4.5,
-                                position: "relative",
-                                top: 58,
-                                left: 0,
-                                width: 280,
-                                borderRadius: 0,
+                                position: 'fixed',
+                                top: "0 !important", 
+                                left: "0 !important",
+                                width: 280, 
+                                maxWidth: '100%',
+                                minHeight: '100%', 
+                                borderRadius: 0, 
                             },
                         },
                     }}
-                    transformOrigin={{ horizontal: "center", vertical: "top" }}
-                    anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 >
                     {projects && projects.map((project) => (
                         <MenuItem sx={{ pl: 4 }} key={project._id} onClick={() => handleProject(project)}>{project?.name}</MenuItem>
@@ -126,7 +126,7 @@ export default function CustomNavCollapseList({ onOpen }) {
                         bottom: 0,
                         left: 0,
                         backgroundColor: (theme) => theme.palette.background.paper,
-                        
+
                     }}>
                         {/* <ListItemButton onClick={onOpen}> */}
                         <ListItemIcon sx={{ m: 0 }}>

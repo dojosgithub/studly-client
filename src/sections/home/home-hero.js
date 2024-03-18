@@ -197,14 +197,13 @@ export default function HomeHero() {
             repeat: Infinity,
           }}
         >
-          Minimal
+          Studly
         </StyledTextGradient>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          The starting point for your next project is based on MUI.Easy customization Helps you
-          build apps faster and better.
+          The starting point for your next project.
         </Typography>
       </m.div>
 
