@@ -104,9 +104,13 @@ export default function CustomNavCollapseList({ onOpen }) {
                         elevation: 0,
                         paper: {
                             sx: {
-                                width: '20ch',
-                                maxHeight: 48 * 4.5,
-                                position: "relative"
+                                // width: '20ch',
+                                // maxHeight: 48 * 4.5,
+                                position: "relative",
+                                top: 58,
+                                left: 0,
+                                width: 280,
+                                borderRadius: 0,
                             },
                         },
                     }}
