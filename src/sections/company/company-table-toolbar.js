@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { debounce } from 'lodash';
 // @mui
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,23 +26,48 @@ export default function CompanyTableToolbar({
 }) {
   const popover = usePopover();
 
-  const handleFilterName = useCallback(
-    (event) => {
-      onFilters('name', event.target.value);
-    },
-    [onFilters]
-  );
+  // const handleFilterName = useCallback(
+  //   (event) => {
+  //     onFilters('name', event.target.value);
+  //   },
+  //   [onFilters]
+  // );
 
-  const handleFilterRole = useCallback(
-    (event) => {
-      onFilters(
-        'role',
-        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
-      );
-    },
-    [onFilters]
-  );
+  // const handleFilterRole = useCallback(
+  //   (event) => {
+  //     onFilters(
+  //       'role',
+  //       typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
+  //     );
+  //   },
+  //   [onFilters]
+  // );
 
+  // const handleFilterName = debounce((event) => {
+  //   onFilters('query', event.target.value);
+  // }, 1000);
+
+  const [inputValue, setInputValue] = useState('');
+
+  // Debounce the call to onFilters
+  const debouncedOnFilters = debounce((query) => {
+    onFilters('query', query);
+  }, 1000);
+
+  useEffect(() => {
+    // Call the debounced function in the effect whenever inputValue changes
+    debouncedOnFilters(inputValue);
+
+    // Cleanup function to cancel the debounce on component unmount or before re-running the effect
+    return () => debouncedOnFilters.cancel();
+  }, [inputValue, debouncedOnFilters]);
+
+  // Event handler for input change
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  
   return (
     <>
       <Stack
@@ -88,8 +114,10 @@ export default function CompanyTableToolbar({
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
-            value={filters.name}
-            onChange={handleFilterName}
+            value={inputValue}
+            onChange={handleInputChange }
+            // value={filters.query}
+            // onChange={handleFilterName}
             placeholder="Search..."
             InputProps={{
               endAdornment: (

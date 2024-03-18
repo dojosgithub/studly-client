@@ -64,6 +64,7 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  query: ''
 };
 
 // ----------------------------------------------------------------------
@@ -82,58 +83,41 @@ export default function CompanyListView() {
 
   const companyList = useSelector(state => state?.company?.list)
 
-  const [tableData, setTableData] = useState(companyList || []);
+  const [tableData, setTableData] = useState(companyList?.docs || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-    comparator: getComparator(table.order, table.orderBy),
-    filters,
-  });
+  const [page, setPage] = useState(1);
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // const dataFiltered = applyFilter({
+  //   inputData: tableData,
+  //   comparator: getComparator(table.order, table.orderBy),
+  //   filters,
+  // });
 
+  // const dataInPage = dataFiltered.slice(
+  //   table.page * table.rowsPerPage,
+  //   table.page * table.rowsPerPage + table.rowsPerPage
+  // );
+
+  console.log(tableData)
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = companyList?.totalDocs === 0
 
   const handleFilters = useCallback(
     (name, value) => {
-      table.onResetPage();
+      // table.onResetPage();
       setFilters((prevState) => ({
         ...prevState,
         [name]: value,
       }));
     },
-    [table]
+    []
   );
 
-  const handleDeleteRow = useCallback(
-    (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
-    },
-    [dataInPage.length, table, tableData]
-  );
-
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRows: tableData.length,
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -156,18 +140,20 @@ export default function CompanyListView() {
 
   useEffect(() => {
     // Fetch company list data
-    dispatch(fetchCompanyList())
-    .then((response) => {
-      // Update table data state using functional update to ensure the latest companyList value is used
-      console.log("companydata-->",response);
-      setTableData((prevTableData) => response.payload);
-    })
-    .catch(error => {
-      console.error('Error fetching company list:', error);
-    });
-  }, [dispatch]);
+    dispatch(fetchCompanyList({ search: filters.query, page }))
+      // .then((response) => {
+      //   // Update table data state using functional update to ensure the latest companyList value is used
+      //   console.log("companydata-->", response);
+      //   setTableData((prevTableData) => response.payload);
+      // })
+      // .catch(error => {
+      //   console.error('Error fetching company list:', error);
+      // });
+  }, [dispatch, filters.query, page]);
 
-
+  const handlePageChange = (e, pg) => {
+    setPage(pg + 1);
+  }
 
   return (
     <>
@@ -244,17 +230,6 @@ export default function CompanyListView() {
             roleOptions={_roles}
           />
 
-          {canReset && (
-            <CompanyTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
@@ -294,21 +269,16 @@ export default function CompanyListView() {
                 />
 
                 <TableBody>
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row) => (
-                      <CompanyTableRow
-                        key={row.id}
-                        row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
-                      />
-                    ))}
+                  {companyList?.docs?.map((row) => (
+                    <CompanyTableRow
+                      key={row.id}
+                      row={row}
+                      selected={table.selected.includes(row.id)}
+                      onSelectRow={() => table.onSelectRow(row.id)}
+                      // onDeleteRow={() => handleDeleteRow(row.id)}
+                      onEditRow={() => handleEditRow(row.id)}
+                    />
+                  ))}
 
                   <TableEmptyRows
                     height={denseHeight}
@@ -322,6 +292,13 @@ export default function CompanyListView() {
           </TableContainer>
 
           <TablePaginationCustom
+            count={companyList?.totalDocs}
+            page={page - 1}
+            rowsPerPage={10}
+            rowsPerPageOptions={[10]}
+            onPageChange={handlePageChange}
+          />
+          {/* <TablePaginationCustom
             count={dataFiltered.length}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
@@ -330,7 +307,10 @@ export default function CompanyListView() {
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
-          />
+          /> */}
+
+
+
         </Card>
       </Container>
 
@@ -348,7 +328,7 @@ export default function CompanyListView() {
             variant="contained"
             color="error"
             onClick={() => {
-              handleDeleteRows();
+              // handleDeleteRows();
               confirm.onFalse();
             }}
           >

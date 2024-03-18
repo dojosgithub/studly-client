@@ -6,11 +6,13 @@ import uuidv4 from "src/utils/uuidv4";
 
 export const fetchCompanyList = createAsyncThunk(
   'company/list',
-  async (_, { rejectWithValue }) => {
+  async (listOptions, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(endpoints.company.list);
+      const response = await axiosInstance.get(endpoints.company.list, {
+        params: listOptions
+      });
 
-      return response.data.data.company
+      return response.data.data
     } catch (err) {
       console.error("errSlice", err)
       if (err && err.message) {
@@ -73,30 +75,30 @@ const company = createSlice({
     // * Fetch Company List
     builder.addCase(fetchCompanyList.pending, (state) => {
       state.isLoading = true;
-      state.error = null; 
+      state.error = null;
     });
     builder.addCase(fetchCompanyList.fulfilled, (state, action) => {
       state.list = action.payload;
-      state.isLoading = false; 
-      state.error = null; 
+      state.isLoading = false;
+      state.error = null;
     });
     builder.addCase(fetchCompanyList.rejected, (state, action) => {
-      state.isLoading = false; 
+      state.isLoading = false;
       state.error = action.error.message;
     });
 
     // * Create New Company
     builder.addCase(createNewCompany.pending, (state) => {
       state.isLoading = true;
-      state.error = null; 
+      state.error = null;
     });
     builder.addCase(createNewCompany.fulfilled, (state, action) => {
       state.create = action.payload;
-      state.isLoading = false; 
-      state.error = null; 
+      state.isLoading = false;
+      state.error = null;
     });
     builder.addCase(createNewCompany.rejected, (state, action) => {
-      state.isLoading = false; 
+      state.isLoading = false;
       state.error = action.error.message
     });
   },
