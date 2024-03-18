@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { m } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -45,6 +46,7 @@ export default function AccountPopover() {
   const { logout } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
+  const user = useSelector(state=>state.user.user);
 
   const popover = usePopover();
 
@@ -94,15 +96,17 @@ export default function AccountPopover() {
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
-        {/* <Box sx={{ p: 2, pb: 1.5 }}>
+        <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {user?.firstName}
+            {" "}
+            {user?.lastName}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {user?.email}
           </Typography>
-        </Box> */}
+        </Box>
 
         {/* <Divider sx={{ borderStyle: 'dashed' }} />
 
