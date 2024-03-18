@@ -125,8 +125,9 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       let finalData;
       if (isEmpty(currentSubmittal)) {
         const { _id, firstName, lastName, email } = user
+        // const creator = { _id, name: `${firstName} ${lastName}`, email }
         const submittedDate = new Date()
-        const creator = { _id, name: `${firstName} ${lastName}`, email }
+        const creator = _id
         const link = 'www.google.com'
         finalData = { ...data, creator, submittedDate, link, projectId,trade }
       } else {

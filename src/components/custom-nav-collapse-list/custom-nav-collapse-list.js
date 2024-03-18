@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-import ListSubheader from '@mui/material/ListSubheader';
+import { Box, Divider, IconButton, ListItem, Menu, MenuItem } from '@mui/material';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
 import Collapse from '@mui/material/Collapse';
 import { setCurrentProject } from 'src/redux/slices/projectSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
@@ -16,19 +17,32 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from '../scrollbar';
 
 export default function CustomNavCollapseList({ onOpen }) {
-    const [open, setOpen] = React.useState(true);
+    // const [open, setOpen] = React.useState(true);
     const projects = useSelector(state => state.project.list);
     const currentProject = useSelector(state => state.project.current);
     const dispatch = useDispatch();
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
+    // const handleClose = () => {
+    //     setOpen(!open);
+    // };
     const handleProject = (project) => {
         dispatch(setCurrentProject(project))
         dispatch(getSubmittalList())
-
+        handleClose()
     };
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const handleCreateNewProject = () => {
+        onOpen();
+        handleClose()
+    };
+
 
     return (
         <List
@@ -42,14 +56,13 @@ export default function CustomNavCollapseList({ onOpen }) {
         // }
         >
 
-            <ListItemButton onClick={handleClick}>
+            {/* <ListItemButton onClick={handleClose}>
                 <ListItemText primary={currentProject ? currentProject?.name : "Project"} sx={{ "& .MuiListItemText-primary": { fontSize: "1.25rem" } }} />
                 {open ? <Iconify width={24}
                     icon="ion:chevron-down" /> : <Iconify width={24}
                         icon="ion:chevron-up" />}
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                {/* SERACHBAR */}
                 <List component="div" disablePadding sx={{ borderBottom: '1px solid lightgrey', fontWeight: 'semi-bold', pb: 1 }}>
                     <Scrollbar>
                         {projects && projects.map((project) => (
@@ -60,7 +73,6 @@ export default function CustomNavCollapseList({ onOpen }) {
                         )}
                     </Scrollbar>
                 </List>
-                {/* Add New Project */}
                 <ListItemButton sx={{ pl: 2 }} onClick={onOpen}>
                     <ListItemIcon>
                         <Iconify width={24}
@@ -68,8 +80,62 @@ export default function CustomNavCollapseList({ onOpen }) {
                     </ListItemIcon>
                     <ListItemText primary="Add New Project" />
                 </ListItemButton>
-            </Collapse>
-        </List>
+            </Collapse> */}
+
+
+            <ListItem id="nested-list-subheader" onClick={handleClick}
+                size="small"
+                sx={{ justifyContent: "center", cursor: "pointer", fontWeight: "bold", borderBottom: "0px 0px 1px 0px solid grey" }}
+                aria-controls={open ? "project-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+            >
+                {currentProject?.name}
+            </ListItem>
+            <Scrollbar>
+
+                <Menu
+                    anchorEl={anchorEl}
+                    id="project-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    slotProps={{
+                        elevation: 0,
+                        paper: {
+                            sx: {
+                                width: '20ch',
+                                maxHeight: 48 * 4.5,
+                                position: "relative"
+                            },
+                        },
+                    }}
+                    transformOrigin={{ horizontal: "center", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+                >
+                    {projects && projects.map((project) => (
+                        <MenuItem sx={{ pl: 4 }} key={project._id} onClick={() => handleProject(project)}>{project?.name}</MenuItem>
+                    ))}
+                    <Divider />
+                    <MenuItem onClick={handleCreateNewProject} sx={{
+                        position: "sticky",
+                        bottom: 0,
+                        left: 0,
+                        backgroundColor: (theme) => theme.palette.background.paper,
+                        
+                    }}>
+                        {/* <ListItemButton onClick={onOpen}> */}
+                        <ListItemIcon sx={{ m: 0 }}>
+                            <Iconify width={24}
+                                icon="mi:circle-add" />
+                        </ListItemIcon>
+                        <ListItemText primary="Add New Project" />
+                        {/* </ListItemButton> */}
+                    </MenuItem>
+                </Menu>
+            </Scrollbar>
+
+        </List >
     );
 }
 
