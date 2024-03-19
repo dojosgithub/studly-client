@@ -85,12 +85,20 @@ export default function CustomNavCollapseList({ onOpen }) {
 
             <ListItem id="nested-list-subheader" onClick={handleClick}
                 size="small"
-                sx={{ justifyContent: "center", cursor: "pointer", fontWeight: "bold", borderBottom: "0px 0px 1px 0px solid grey" }}
+                sx={{
+                    justifyContent: "center", cursor: "pointer", fontWeight: "bold",
+                    borderBottom: "1px solid grey",
+                    mb: 2,
+                    "&:hover": {
+                        bgcolor: (theme) => theme.palette.secondary.dark,
+                        transition: 'ease-in-out .3s'
+                    }
+                }}
                 aria-controls={open ? "project-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
             >
-                {currentProject?.name}
+                {currentProject?.name || 'Create New Project'}
             </ListItem>
             <Scrollbar>
 
@@ -107,26 +115,29 @@ export default function CustomNavCollapseList({ onOpen }) {
                         paper: {
                             sx: {
                                 position: 'fixed',
-                                top: "0 !important", 
+                                top: "0 !important",
                                 left: "0 !important",
-                                width: 280, 
+                                width: 280,
                                 maxWidth: '100%',
-                                minHeight: '100%', 
-                                borderRadius: 0, 
+                                minHeight: '100%',
+                                borderRadius: 0,
                             },
                         },
                     }}
                 >
-                    {projects && projects.map((project) => (
-                        <MenuItem sx={{ pl: 4 }} key={project._id} onClick={() => handleProject(project)}>{project?.name}</MenuItem>
-                    ))}
-                    <Divider />
                     <MenuItem onClick={handleCreateNewProject} sx={{
-                        position: "sticky",
-                        bottom: 0,
-                        left: 0,
+                        // position: "sticky",
+                        // bottom: 0,
+                        // left: 0,
                         backgroundColor: (theme) => theme.palette.background.paper,
-
+                        "&.MuiMenuItem-root": {
+                            marginBottom: "1rem",
+                            padding: "1rem",
+                        },
+                        "&:hover": {
+                            opacity: .75,
+                            bgcolor: 'white'
+                        }
                     }}>
                         {/* <ListItemButton onClick={onOpen}> */}
                         <ListItemIcon sx={{ m: 0 }}>
@@ -136,6 +147,10 @@ export default function CustomNavCollapseList({ onOpen }) {
                         <ListItemText primary="Add New Project" />
                         {/* </ListItemButton> */}
                     </MenuItem>
+                    <Divider sx={{ ".MuiDivider-root": { marginBottom: "1rem" }, border: "1px solid white" }} />
+                    {projects && projects.map((project) => (
+                        <MenuItem sx={{ justifyContent: "center", border: "1px solid grey" }} key={project._id} onClick={() => handleProject(project)}>{project?.name}</MenuItem>
+                    ))}
                 </Menu>
             </Scrollbar>
 

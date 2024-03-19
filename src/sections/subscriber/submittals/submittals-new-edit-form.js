@@ -66,7 +66,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     description: Yup.string().required('Description is required'),
     owner: Yup.string().required('Owner is required'),
     type: Yup.string().required('Type is required'),
-    status: Yup.array().required('Status is required'),
+    status: Yup.string().required('Status is required'),
     ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     returnDate: Yup.date().required('Return Date is required'),
     // attachments: Yup.array().min(1),
@@ -85,7 +85,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       owner: currentSubmittal?.owner || '',
       type: currentSubmittal?.type || '',
       ccList: currentSubmittal?.ccList || [],
-      status: currentSubmittal?.status || ['Draft'], // Set default values here
+      status: currentSubmittal?.status || 'Draft', // Set default values here
       returnDate: new Date(currentSubmittal?.returnDate) || '',
       // attachments: currentSubmittal?.attachments || [],
       // submittedDate: currentSubmittal?.submittedDate || '',
@@ -118,7 +118,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       const tradeObj = trades.find(t => t.tradeId === data.trade);
       const trade = { ...tradeObj }
       delete trade._id
-      if(!trade){
+      if (!trade) {
         return
       }
 
@@ -129,12 +129,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         const submittedDate = new Date()
         const creator = _id
         const link = 'www.google.com'
-        finalData = { ...data, creator, submittedDate, link, projectId,trade }
+        finalData = { ...data, creator, submittedDate, link, projectId, trade }
       } else {
-        finalData = { ...currentSubmittal, ...data ,trade}
+        finalData = { ...currentSubmittal, ...data, trade }
       }
 
-      
+
 
       const formData = new FormData();
       const attachments = [];
@@ -268,7 +268,16 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   )}
                 /> */}
 
-                <RHFMultiSelectChip
+                {/* // TODO: SHOW CHIP */}
+                <RHFSelect
+                  name="status"
+                  label="Status"
+                  disabled
+                >
+                  <MenuItem selected value="Draft">Draft</MenuItem>
+                </RHFSelect>
+
+                {/* <RHFMultiSelectChip
                   name="status"
                   label="Status"
                   options={[
@@ -277,7 +286,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     // Add more options here
                   ]}
                   disabled
-                />
+                /> */}
                 <Controller
                   name="returnDate"
                   control={control}

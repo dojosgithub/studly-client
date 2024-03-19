@@ -3,7 +3,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { TextField, Chip, MenuItem } from '@mui/material';
 import PropTypes from 'prop-types';
 
-export default function RHFMultiSelectChip({ name, label, options, disabled, ...other }) {
+export default function RHFMultiSelectChip({ name, label, options, disabled, multiple, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -15,7 +15,7 @@ export default function RHFMultiSelectChip({ name, label, options, disabled, ...
           {...fieldProps}
           select
           SelectProps={{
-            multiple: true,
+            ...(multiple && { multiple: true }),
             value: renderVal || [], // Ensure the value is always an array
             onChange: (event) => {
               onChange(event.target.value);
@@ -67,4 +67,5 @@ RHFMultiSelectChip.propTypes = {
     })
   ).isRequired,
   disabled: PropTypes.bool,
+  multiple: PropTypes.bool,
 };

@@ -19,7 +19,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -68,20 +68,23 @@ const TABLE_HEAD = [
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
+  status: [],
+  // status: 'all',
+  query: ''
 };
 
 // ----------------------------------------------------------------------
 
 export default function SubmittalsListView() {
   const table = useTable();
-  const submittalList = useSelector(state => state.submittal.list);
+  const listData = useSelector(state => state?.submittal?.list)
+  const [tableData, setTableData] = useState(listData?.docs || []);
+  const [filters, setFilters] = useState(defaultFilters);
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-
-    setTableData(submittalList)
-    console.log('submittalList', submittalList)
-  }, [submittalList])
+  const handlePageChange = (e, pg) => {
+    setPage(pg + 1);
+  }
 
   const settings = useSettingsContext();
 
@@ -91,71 +94,60 @@ export default function SubmittalsListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    const getList = async () => {
-      const { error, payload } = await dispatch(getSubmittalList())
-      console.log('e-p', { error, payload });
-      if (!isEmpty(error)) {
-        console.log('error')
-        return
-      }
-      setTableData(payload)
-    }
-    getList()
-  }, [dispatch])
+    console.log('filters.status',filters.status);
+    dispatch(getSubmittalList({ search: filters.query, page, status: filters.status }))
+  }, [dispatch, filters.query, filters.status, page])
 
-  // _submittalsList 
-  const [tableData, setTableData] = useState(submittalList);
 
-  const [filters, setFilters] = useState(defaultFilters);
 
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-    comparator: getComparator(table.order, table.orderBy),
-    filters,
-  });
+  // const dataFiltered = applyFilter({
+  //   inputData: tableData,
+  //   comparator: getComparator(table.order, table.orderBy),
+  //   filters,
+  // });
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // const dataInPage = dataFiltered.slice(
+  //   table.page * table.rowsPerPage,
+  //   table.page * table.rowsPerPage + table.rowsPerPage
+  // );
 
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = listData?.totalDocs === 0
 
   const handleFilters = useCallback(
     (name, value) => {
-      table.onResetPage();
+      // table.onResetPage();
       setFilters((prevState) => ({
         ...prevState,
         [name]: value,
       }));
     },
-    [table]
+    []
   );
 
-  const handleDeleteRow = useCallback(
-    (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
+  // const handleDeleteRow = useCallback(
+  //   (id) => {
+  //     const deleteRow = tableData.filter((row) => row.id !== id);
+  //     setTableData(deleteRow);
 
-      table.onUpdatePageDeleteRow(dataInPage.length);
-    },
-    [dataInPage.length, table, tableData]
-  );
+  //     table.onUpdatePageDeleteRow(dataInPage.length);
+  //   },
+  //   [dataInPage.length, table, tableData]
+  // );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    setTableData(deleteRows);
+  // const handleDeleteRows = useCallback(() => {
+  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+  //   setTableData(deleteRows);
 
-    table.onUpdatePageDeleteRows({
-      totalRows: tableData.length,
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, table, tableData]);
+  //   table.onUpdatePageDeleteRows({
+  //     totalRows: tableData.length,
+  //     totalRowsInPage: dataInPage.length,
+  //     totalRowsFiltered: listData?.docs?.length,
+  //   });
+  // }, [listData?.docs?.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -170,16 +162,16 @@ export default function SubmittalsListView() {
     [router]
   );
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
+  // const handleFilterStatus = useCallback(
+  //   (event, newValue) => {
+  //     handleFilters('status', newValue);
+  //   },
+  //   [handleFilters]
+  // );
 
-  const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
-  }, []);
+  // const handleResetFilters = useCallback(() => {
+  //   setFilters(defaultFilters);
+  // }, []);
 
   return (
     <>
@@ -256,20 +248,21 @@ export default function SubmittalsListView() {
             filters={filters}
             onFilters={handleFilters}
             //
-            roleOptions={_roles}
+            // roleOptions={_roles}
+            roleOptions={STATUS_WORKFLOW}
           />
 
-          {canReset && (
+          {/* {canReset && (
             <SubmittalsTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               //
               onResetFilters={handleResetFilters}
               //
-              results={dataFiltered.length}
+              results={listData?.docs?.length}
               sx={{ p: 2.5, pt: 0 }}
             />
-          )}
+          )} */}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
@@ -309,18 +302,17 @@ export default function SubmittalsListView() {
                 />
 
                 <TableBody>
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
+                  {listData?.docs?.slice(
+                    table.page * table.rowsPerPage,
+                    table.page * table.rowsPerPage + table.rowsPerPage
+                  )
                     .map((row) => (
                       <SubmittalsTableRow
                         key={row.id}
                         row={row}
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        // onDeleteRow={() => handleDeleteRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                       />
@@ -338,7 +330,14 @@ export default function SubmittalsListView() {
           </TableContainer>
 
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={listData?.totalDocs}
+            page={page - 1}
+            rowsPerPage={10}
+            rowsPerPageOptions={[10]}
+            onPageChange={handlePageChange}
+          />
+          {/* <TablePaginationCustom
+            count={listData?.docs?.length}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
             onPageChange={table.onChangePage}
@@ -346,7 +345,7 @@ export default function SubmittalsListView() {
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
-          />
+          /> */}
         </Card>
       </Container>
 
@@ -364,7 +363,7 @@ export default function SubmittalsListView() {
             variant="contained"
             color="error"
             onClick={() => {
-              handleDeleteRows();
+              // handleDeleteRows();
               confirm.onFalse();
             }}
           >

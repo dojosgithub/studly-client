@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { isEmpty } from "lodash";
 import axiosInstance, { endpoints } from "src/utils/axios";
 
 
@@ -31,8 +32,8 @@ export const editSubmittal = createAsyncThunk(
     'submittal/edit',
     async (submittalData, { getState, rejectWithValue }) => {
         try {
-          
-            const {id,formData}=submittalData;
+
+            const { id, formData } = submittalData;
             console.log("submittalId", id)
             console.log("formData", formData)
 
@@ -56,7 +57,7 @@ export const getSubmittalDetails = createAsyncThunk(
     'submittal/details',
     async (id, { getState, rejectWithValue }) => {
         try {
-          
+
             console.log("submittalId", id)
 
             const response = await axiosInstance.get(endpoints.submittal.details(id));
@@ -78,12 +79,18 @@ export const getSubmittalDetails = createAsyncThunk(
 
 export const getSubmittalList = createAsyncThunk(
     'submittal/list',
-    async (_, { getState, rejectWithValue }) => {
+    async (listOptions, { getState, rejectWithValue }) => {
         try {
-            // const projectId = getState().projectId.id
             const projectId = getState().project.current._id
             console.log("projectId", projectId)
-            const response = await axiosInstance.get(endpoints.submittal.list(projectId));
+
+            const { status, ...data } = listOptions
+            console.log('status', status)
+            console.log('data', data)
+            // const projectId = getState().projectId.id
+            const response = await axiosInstance.post(endpoints.submittal.list(projectId), { status }, {
+                params: data
+            });
 
             return response.data.data
         } catch (err) {

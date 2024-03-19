@@ -81,9 +81,9 @@ export default function CompanyListView() {
 
   const confirm = useBoolean();
 
-  const companyList = useSelector(state => state?.company?.list)
+  const listData = useSelector(state => state?.company?.list)
 
-  const [tableData, setTableData] = useState(companyList?.docs || []);
+  const [tableData, setTableData] = useState(listData?.docs || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -100,12 +100,11 @@ export default function CompanyListView() {
   //   table.page * table.rowsPerPage + table.rowsPerPage
   // );
 
-  console.log(tableData)
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = companyList?.totalDocs === 0
+  const notFound = listData?.totalDocs === 0
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -269,7 +268,7 @@ export default function CompanyListView() {
                 />
 
                 <TableBody>
-                  {companyList?.docs?.map((row) => (
+                  {listData?.docs?.map((row) => (
                     <CompanyTableRow
                       key={row.id}
                       row={row}
@@ -292,7 +291,7 @@ export default function CompanyListView() {
           </TableContainer>
 
           <TablePaginationCustom
-            count={companyList?.totalDocs}
+            count={listData?.totalDocs}
             page={page - 1}
             rowsPerPage={10}
             rowsPerPageOptions={[10]}
