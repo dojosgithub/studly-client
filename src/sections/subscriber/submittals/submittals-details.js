@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
 
-import { Avatar, Box, Card, Chip, Divider, ListItemText, Paper, Stack, Typography, alpha, styled } from '@mui/material'
+import { isEmpty } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
+import { Alert, Avatar, Box, Button, Card, Chip, Divider, ListItemText, Paper, Stack, Typography, alpha, styled } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { useSnackbar } from 'notistack'
+//
 import Scrollbar from 'src/components/scrollbar'
 import { paths } from 'src/routes/paths'
 import { fDateISO } from 'src/utils/format-time'
+import { getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice'
 
 
 const StyledCard = styled(Card, {
@@ -22,13 +28,41 @@ const StyledCard = styled(Card, {
     }),
 
 }));
-const SubmittalsDetails = () => {
+const SubmittalsDetails = ({ id }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const { trade, submittalId, name, description, type, status, submittedDate, returnDate, creator, owner, attachments, ccList } = useSelector(state => state.submittal.current)
-    const handleClick = () => {
-        setIsSubmitting(!isSubmitting);
-        setTimeout(() => (setIsSubmitting(false)), 3000);
+    const { enqueueSnackbar } = useSnackbar();
+    const currentUser = useSelector(state => state.user?.user)
+    const currentSubmittal = useSelector(state => state.submittal.current)
+    const { isResponseSubmitted, trade, submittalId, name, description, type, status, submittedDate, returnDate, creator, owner, attachments, ccList } = currentSubmittal
+
+    useEffect(() => {
+        console.log('currentSubmittal', currentSubmittal)
+    }, [currentSubmittal])
+
+    const handleSubmitToArchitect = async () => {
+        console.log("SubmittalId", id)
+        setIsSubmitting(true);
+        const { error, payload } = await dispatch(submitSubmittalToArchitect(id))
+        console.log('e-p', { error, payload });
+        setIsSubmitting(false);
+        if (!isEmpty(error)) {
+            enqueueSnackbar(error.message, { variant: "error" });
+            return
+        }
+        enqueueSnackbar('Submittal submitted to architect successfully', { variant: "success" });
+        await dispatch(getSubmittalDetails(id))
+
     }
+
+
+    const handleSubmittalResponse = () => {
+        console.log('handleSubmittalResponse', handleSubmittalResponse)
+        navigate(paths.subscriber.submittals.review(id))
+
+    }
+
 
     return (
         <>
@@ -39,6 +73,29 @@ const SubmittalsDetails = () => {
                     gap: 2
                 }}
             >
+                {/* // ? If General Contractor has submitted Submittal to the (Architect || Engineer || Sub Contractor) */}
+                {status === "Submitted" && (currentUser?.role?.name === "Company Admin") && <Alert severity="success">Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.</Alert>}
+
+                {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
+                {status === "Submitted" && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") &&
+                    <Alert severity="warning" sx={{ gap: ".5rem", alignItems: "center", "& .MuiAlert-message": { display: "flex", alignItems: "center", width: "100%" } }}>
+                        (architect/engineer/subcontractor name) already submitted a response to this submittal.
+                        <Box display='flex' flex={1} gap={1} mr={2} justifyContent="flex-end">
+                            <Button variant="outlined">View Response</Button>
+                            <Button >Dismiss</Button>
+                        </Box>
+                    </Alert>
+                }
+
+                {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
+                {!isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button variant='contained' onClick={handleSubmittalResponse}>
+                            Add Submittal Response
+                        </Button>
+                    </Box>
+                )}
+
                 <StyledCard>
                     <Typography className='submittalTitle' >Trade</Typography>
                     <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{trade?.name}</Typography>
@@ -112,7 +169,7 @@ const SubmittalsDetails = () => {
 
             </Stack>
             {status === "Draft" && <Box width="100%" display='flex' justifyContent='end'>
-                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleClick}>
+                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
                     Submit to Architect
                 </LoadingButton >
             </Box>}
@@ -121,3 +178,7 @@ const SubmittalsDetails = () => {
 }
 
 export default SubmittalsDetails
+
+SubmittalsDetails.propTypes = {
+    id: PropTypes.string,
+};

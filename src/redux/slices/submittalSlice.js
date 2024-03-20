@@ -77,6 +77,7 @@ export const getSubmittalDetails = createAsyncThunk(
     },
 )
 
+
 export const getSubmittalList = createAsyncThunk(
     'submittal/list',
     async (listOptions, { getState, rejectWithValue }) => {
@@ -102,6 +103,30 @@ export const getSubmittalList = createAsyncThunk(
             }
             throw Error(
                 'An error occurred while fetching submittal list.'
+            );
+        }
+    },
+)
+
+export const submitSubmittalToArchitect = createAsyncThunk(
+    'submittal/submitToArchitect',
+    async (id, { getState, rejectWithValue }) => {
+        try {
+
+            console.log("submittalId", id)
+
+            const response = await axiosInstance.post(endpoints.submittal.submit(id));
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while fetching submittal details.'
             );
         }
     },

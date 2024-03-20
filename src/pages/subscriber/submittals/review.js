@@ -5,7 +5,7 @@ import { getSubmittalDetails } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
-import { SubmittalsDetailsView } from 'src/sections/subscriber/submittals/view';
+import { SubmittalsReviewRespondView } from 'src/sections/subscriber/submittals/view';
 
 // ----------------------------------------------------------------------
 
@@ -15,17 +15,17 @@ export default function SubmittalsDetailsPage() {
 
     const { id } = params;
     console.log('details', id)
-    useEffect(() => {
-        dispatch(getSubmittalDetails(id))
-    }, [dispatch, id])
+    // useEffect(() => {
+    //     dispatch(getSubmittalDetails(id))
+    // }, [dispatch, id])
 
     return (
         <>
             <Helmet>
-                <title> Submittals Details</title>
+                <title> Submittals Review</title>
             </Helmet>
 
-            <SubmittalsDetailsView id={`${id}`} />
+            <SubmittalsReviewRespondView id={`${id}`} />
         </>
     );
 }

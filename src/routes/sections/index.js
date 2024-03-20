@@ -90,6 +90,7 @@ export default function Router() {
 
         routes.push(...subscriberRoutes);
       }
+
     }
   }
   return useRoutes([

@@ -165,6 +165,7 @@ export const paths = {
       list: `${ROOTS.SUBSCRIBER}/submittals/list`,
       edit: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/edit`,
       details: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/review`,
     },
     updatePassword: `/update-password`
   }

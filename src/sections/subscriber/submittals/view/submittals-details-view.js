@@ -31,7 +31,7 @@ export default function SubmittalsDetailsView({ id }) {
         }}
       />
 
-      <SubmittalsDetails />
+      <SubmittalsDetails id={id}/>
     </Container>
   );
 }

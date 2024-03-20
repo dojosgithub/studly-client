@@ -18,6 +18,7 @@ const SubmittalsListPage = lazy(() => import('src/pages/subscriber/submittals/li
 const SubmittalsCreatePage = lazy(() => import('src/pages/subscriber/submittals/new'));
 const SubmittalsEditPage = lazy(() => import('src/pages/subscriber/submittals/edit'));
 const SubmittalsDetailsPage = lazy(() => import('src/pages/subscriber/submittals/details'));
+const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
 // // USER
 // const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
 // const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
@@ -63,6 +64,7 @@ export const subscriberRoutes = [
           { path: 'new', element: <SubmittalsCreatePage /> },
           { path: ':id/edit', element: <SubmittalsEditPage /> },
           { path: ':id', element: <SubmittalsDetailsPage /> },
+          { path: ':id/review', element: <SubmittalsReviewPage /> },
         ],
       },
       
