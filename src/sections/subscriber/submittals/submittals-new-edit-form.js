@@ -38,7 +38,8 @@ import FormProvider, {
   RHFUpload,
   RHFSelect,
   RHFMultiSelect,
-  RHFMultiSelectChip
+  RHFMultiSelectChip,
+  RHFSelectChip
 } from 'src/components/hook-form';
 import { createNewSubmittal, editSubmittal } from 'src/redux/slices/submittalSlice';
 import SubmittalAttachments from './submittals-attachment';
@@ -123,17 +124,17 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       }
 
       let finalData;
+      const { _id, firstName, lastName, email } = user
+      const creator = _id
       if (isEmpty(currentSubmittal)) {
-        const { _id, firstName, lastName, email } = user
         // const creator = { _id, name: `${firstName} ${lastName}`, email }
         const submittedDate = new Date()
-        const creator = _id
         const link = 'www.google.com'
         finalData = { ...data, creator, submittedDate, link, projectId, trade }
       } else {
-        finalData = { ...currentSubmittal, ...data, trade }
+        finalData = { ...currentSubmittal, ...data, creator, trade }
       }
-
+      console.log('finalData', finalData)
 
 
       const formData = new FormData();
@@ -272,6 +273,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFSelect
                   name="status"
                   label="Status"
+                  chip
                   disabled
                 >
                   <MenuItem selected value="Draft">Draft</MenuItem>

@@ -21,9 +21,26 @@ export function RHFSelect({
   helperText,
   children,
   PaperPropsSx,
+  chip = false,
+  disabled = false,
   ...other
 }) {
   const { control } = useFormContext();
+
+  const renderSelectedValue = (selected, chipProp) => {
+    if (chipProp) {
+      // Render selected options as chips
+      return (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+          {Array.isArray(selected)
+            ? selected.map(value => <Chip key={value} disabled={disabled} label={value} sx={{ bgcolor: 'lightgrey' }} />)
+            : <Chip label={selected} disabled={disabled} sx={{ bgcolor: 'lightgrey' }} />}
+        </div>
+      );
+    }
+    // Otherwise, return the selected value(s) as a string
+    return Array.isArray(selected) ? selected.join(', ') : selected;
+  };
 
   return (
     <Controller
@@ -47,9 +64,11 @@ export function RHFSelect({
               },
             },
             sx: { textTransform: 'capitalize' },
+            renderValue: selected => renderSelectedValue(selected, chip),
           }}
           error={!!error}
           helperText={error ? error?.message : helperText}
+          disabled={disabled}
           {...other}
         >
           {children}
@@ -66,6 +85,8 @@ RHFSelect.propTypes = {
   maxHeight: PropTypes.number,
   name: PropTypes.string,
   native: PropTypes.bool,
+  chip: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 // ----------------------------------------------------------------------
@@ -161,4 +182,70 @@ RHFMultiSelect.propTypes = {
   options: PropTypes.array,
   placeholder: PropTypes.string,
   sx: PropTypes.object,
+};
+
+
+// ----------------------------------------------------------------------
+
+
+export function RHFSelectChip({
+  name,
+  chip,
+  children,
+  helperText,
+  PaperPropsSx,
+  ...other
+}) {
+  const { control } = useFormContext();
+
+  const renderChipsOrString = (selectedValue) => {
+    if (!selectedValue) return null;
+
+    if (chip) {
+      return (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          <Chip size="small" label={selectedValue} />
+        </Box>
+      );
+    }
+    console.log('selectedValue', selectedValue)
+    console.log('chip', chip)
+    return selectedValue;
+  };
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState: { error } }) => (
+        <TextField
+          {...field}
+          select={!chip} // Render select if chip prop is not true
+          fullWidth
+          SelectProps={{
+            MenuProps: {
+              PaperProps: {
+                sx: {
+                  ...(!chip && PaperPropsSx),
+                },
+              },
+            },
+            sx: { textTransform: 'capitalize' },
+            renderValue: () => renderChipsOrString(field.value),
+          }}
+          error={!!error}
+          helperText={error ? error?.message : helperText}
+          {...other}
+        >{children}</TextField>
+      )}
+    />
+  );
+}
+
+RHFSelectChip.propTypes = {
+  children: PropTypes.node,
+  PaperPropsSx: PropTypes.object,
+  helperText: PropTypes.object,
+  name: PropTypes.string,
+  chip: PropTypes.bool, // New prop for rendering chips instead of select dropdown
 };

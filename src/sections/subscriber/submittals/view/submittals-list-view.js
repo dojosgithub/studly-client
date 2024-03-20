@@ -302,11 +302,7 @@ export default function SubmittalsListView() {
                 />
 
                 <TableBody>
-                  {listData?.docs?.slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                    .map((row) => (
+                  {listData?.docs?.map((row) => (
                       <SubmittalsTableRow
                         key={row.id}
                         row={row}

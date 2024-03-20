@@ -20,7 +20,7 @@ import SubmittalsNewEditForm from '../submittals-new-edit-form';
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
 
-  const submittalList = useSelector(state => state.submittal.list)
+  const submittalList = useSelector(state => state.submittal?.list?.docs)
   const dispatch = useDispatch()
   const currentSubmittal = submittalList?.find(item => item.id === id)
   console.log("currentSubmittal", currentSubmittal)

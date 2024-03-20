@@ -60,27 +60,28 @@ const SubmittalsDetails = () => {
                     <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{type}</Typography>
                 </StyledCard>
                 <StyledCard>
-                    <Typography className='submittalTitle' >Project Trades</Typography>
+                    <Typography className='submittalTitle' >Status</Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: .75, px: 2 }}>
-                        {status?.length > 0 && status?.slice(0, 4).map((item) => (
+                        <Chip size="medium" variant='contained' label={status} />
+                        {/* {status?.length > 0 && status?.slice(0, 4).map((item) => (
                             <Chip key={item} size="small" variant='outlined' label={item} />
                         ))}
                         {status?.length > 4 && (
                             <Chip size="small" variant='outlined' label={`${status.length - 4} +`} />
-                        )}
+                        )} */}
                     </Box>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Submitted Date</Typography>
-                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{fDateISO(submittedDate || '')}</Typography>
+                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{submittedDate && fDateISO(submittedDate)}</Typography>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Requested Return Date</Typography>
-                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{fDateISO(returnDate || '')}</Typography>
+                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{returnDate && fDateISO(returnDate)}</Typography>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Creator</Typography>
-                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{creator?.name}</Typography>
+                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{creator?.firstName}{" "}{creator?.lastName}</Typography>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Attachments</Typography>
@@ -110,11 +111,11 @@ const SubmittalsDetails = () => {
                 </StyledCard>
 
             </Stack>
-            <Box width="100%" display='flex' justifyContent='end'>
+            {status === "Draft" && <Box width="100%" display='flex' justifyContent='end'>
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleClick}>
                     Submit to Architect
                 </LoadingButton >
-            </Box>
+            </Box>}
         </>
     )
 }
