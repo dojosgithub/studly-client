@@ -9,6 +9,17 @@ import { _mock } from './_mock';
 
 // Studly Utils
 
+export const STUDLY_ROLES = {
+company:["SSA"],
+submittals:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+rfis:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+meetingMinutes:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+planRoom:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+documents:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+projectSetting:["CAD",],
+  
+}
+
 export const USER_TYPES_STUDLY = {
   SYS: 'System',
   SUB: 'Subscriber',
@@ -356,6 +367,41 @@ export const PROJECT_INVITE_USER_ROLES = [
   { value: "Construction Manager", label: "Construction Manager", _id: uuidv4() },
   { value: "Associate", label: "Associate", _id: uuidv4() },
 ]
+export const PROJECT_INVITE_INTERNAL_USER_ROLES = [
+  { value: "Power User", label: "Power User", _id: uuidv4() },
+  { value: "Field User", label: "Field User", _id: uuidv4() },
+]
+export const PROJECT_INVITE_EXTERNAL_USER_ROLES = [
+  { value: "Architect", label: "Architect", _id: uuidv4() },
+  { value: "Engineer", label: "Engineer", _id: uuidv4() },
+  { value: "Construction Manager", label: "Construction Manager", _id: uuidv4() },
+  { value: "Associate", label: "Associate", _id: uuidv4() },
+]
+
+export const USER_LIST_OPTIONS = [
+  {
+      firstName: "test",
+      lastName: "user",
+      email: "testuser@mailinator.com",
+      id: "65f96494034a59d2de77d7c2",
+  },
+  {
+      firstName: "test",
+      lastName: "user1",
+      email: "testuser1@mailinator.com",
+      id: "65f96493334a59d2def7d7c2",
+  },
+  {
+      firstName: "test",
+      lastName: "user2",
+      email: "testuser2@mailinator.com",
+      id: "65f96494032229d2def7d7c2",
+  },
+];
+
+
+
+
 
 export const PROJECT_INVITE_USERS_INTERNAL = [...Array(8)].map((_, index) => {
   const status = ['Joined', 'Invited'][index % 2 === 0 || index % 3 === 1];

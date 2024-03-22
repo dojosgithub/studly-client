@@ -127,6 +127,12 @@ const project = createSlice({
     setAddExternalUser: (state, action) => {
       state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
     },
+    setRemoveInternalUser: (state, action) => {
+      state.inviteUsers.internal = state.inviteUsers.internal.filter((row) => row.id !== action.payload);
+    },
+    setRemoveExternalUser: (state, action) => {
+      state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.id !== action.payload);
+    },
     resetCreateProject: (state) => {
       state.create = projectObj;
       state.inviteUsers = {
@@ -164,8 +170,9 @@ const project = createSlice({
       state.isLoading = false;
       state.error = action.error.message
     });
+  
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, resetProjectState } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject,setRemoveInternalUser,setRemoveExternalUser, resetProjectState } = project.actions
 export default project.reducer

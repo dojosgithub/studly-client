@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { isEmpty } from 'lodash';
 
 // mui
 import { styled } from '@mui/material/styles';
@@ -17,7 +18,8 @@ import FormProvider, { RHFSelect } from 'src/components/hook-form'
 // components
 import Iconify from 'src/components/iconify'
 import uuidv4 from 'src/utils/uuidv4';
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES } from 'src/_mock';
+import { PROJECT_INVITE_EXTERNAL_USER_ROLES, PROJECT_INVITE_INTERNAL_USER_ROLES, PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, USER_LIST_OPTIONS } from 'src/_mock';
+import CustomAutoComplete from 'src/components/custom-automcomplete';
 
 
 const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
@@ -37,7 +39,7 @@ const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
 
 const ProjectInviteNewUser = ({ type = 'internal' }) => {
     const dispatch = useDispatch()
-
+    const userRoles = type === "external" ? PROJECT_INVITE_EXTERNAL_USER_ROLES : PROJECT_INVITE_INTERNAL_USER_ROLES
 
     const InviteUserSchema = Yup.object().shape({
         // inviteUser: Yup.object().shape({
@@ -68,8 +70,11 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         reset,
         setValue,
         handleSubmit,
+        getValues,
         formState: { isSubmitting, isValid },
     } = methods;
+
+    const { email } = getValues;
 
     const handleSelectRole = useCallback(
         (index, option) => {
@@ -82,12 +87,14 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         [setValue]
     );
     const handleSelectEmail = useCallback(
-        (index, option) => {
-            console.log('email', option)
-            setValue(
-                `email`,
-                option
-            );
+        (option) => {
+            console.log("autocomplete option", option)
+            if (isEmpty(option)) {
+                setValue('email', '')
+                return
+            }
+            setValue('email', option.email)
+
         },
         [setValue]
     );
@@ -96,10 +103,10 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
     const onSubmit = handleSubmit(async (data) => {
         try {
             const setUsersActions = type === "internal" ? setAddInternalUser : setAddExternalUser
-            await new Promise((resolve) => setTimeout(resolve, 500));
             enqueueSnackbar('User added in the team successfully!');
             const updatedData = { ...data, _id: uuidv4(), }
             console.log('updatedData Final', updatedData);
+            setValue('email', '')
             reset();
             dispatch(setUsersActions(updatedData))
         } catch (e) {
@@ -146,24 +153,24 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
 
         //     <Stack gap='1.5rem'>
         <TableRow>
-            <TableCell colSpan="3"  variant='footer'>
+            <TableCell colSpan="3" variant='footer'>
 
                 <FormProvider methods={methods} onSubmit={onSubmit}>
                     <Box
                         sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                     >
-                        {/* <TableCell> */}
-                        <RHFSelect name='email' label="Email" InputLabelProps={{ shrink: true }}>
+                        {/* <RHFSelect name='email' label="Email" InputLabelProps={{ shrink: true }}>
                             {PROJECT_INVITE_USERS_INTERNAL.map((user, index) => (
                                 <MenuItem key={user.email} value={user.email} onClick={() => handleSelectEmail(index, user.email)}>
                                     {user.email}
                                 </MenuItem>
                             ))}
-                        </RHFSelect>
-                        {/* </TableCell>
-                <TableCell> */}
+                        </RHFSelect> */}
+
+                        <CustomAutoComplete listOptions={USER_LIST_OPTIONS} value={email} setValue={(val) => handleSelectEmail(val)} />
+
                         <RHFSelect name='role' label="Role" InputLabelProps={{ shrink: true }}>
-                            {PROJECT_INVITE_USER_ROLES.map((role, index) => (
+                            {userRoles.map((role, index) => (
                                 <MenuItem key={role.value} value={role.value} onClick={() => handleSelectRole(index, role.value)}>
                                     {role.label}
                                 </MenuItem>

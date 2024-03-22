@@ -53,7 +53,7 @@ export default function NavMini() {
          data={navData}
           config={
             {
-              currentRole: user?.role?.name, // if current role is not allowed
+              currentRole: user?.role?.shortName, // if current role is not allowed
               // // currentUserType: user?.userType, // if current userType is not allowed
             }
           }

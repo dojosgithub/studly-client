@@ -6,6 +6,7 @@ import { paths } from 'src/routes/paths';
 // // components
 // import Label from 'src/components/label';
 // import Iconify from 'src/components/iconify';
+import { STUDLY_ROLES } from 'src/_mock';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -70,40 +71,11 @@ export function useNavData() {
             title: 'company',
             path: paths.admin.company.list,
             icon: ICONS.dashboard,
-            roles: ['System Admin'], // user.role:"System Admin"
-            // // types: ['System'], // userType:"System"
-
+            roles: STUDLY_ROLES.company,
+            // roles: ['System Admin'],
           },
 
-          // // USER
-          // // {
-          // //   title: 'user',
-          // //   path: paths.dashboard.user.root,
-          // //   icon: ICONS.user,
-          // //   roles: ['System'], // userType:"System"
-          // //   children: [
-          // //     { title: 'profile', path: paths.dashboard.user.root },
-          // //     { title: 'cards', path: paths.dashboard.user.cards },
-          // //     { title: 'list', path: paths.dashboard.user.list },
-          // //     { title: 'create', path: paths.dashboard.user.new },
-
-          // //     { title: 'account', path: paths.dashboard.user.account },
-          // //   ],
-          // // },
-
-          // // BLOG
-          // // {
-          // //   title: 'blog',
-          // //   path: paths.dashboard.post.root,
-          // //   icon: ICONS.blog,
-          // //   roles: ['System'], // userType:"System"
-          // //   children: [
-          // //     { title: 'list', path: paths.dashboard.post.root },
-          // //     { title: 'details', path: paths.dashboard.post.demo.details },
-          // //     { title: 'create', path: paths.dashboard.post.new },
-          // //     { title: 'edit', path: paths.dashboard.post.demo.edit },
-          // //   ],
-          // // },
+          
         ],
       },
 
@@ -115,9 +87,41 @@ export function useNavData() {
           {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
+            icon: ICONS.file,
+            roles: STUDLY_ROLES.submittals,
+          },
+          {
+            title: 'RFIs',
+            path: paths.subscriber.rfis.list,
+            icon: ICONS.analytics,
+            roles: STUDLY_ROLES.rfis,
+          },
+          {
+            title: 'Meeting Minutes',
+            path: paths.subscriber.meetingMinutes.list,
             icon: ICONS.dashboard,
-            roles: ['Company Admin'], // role.name:"Company Admin"
-            // // types: ['Subscriber'], // userType:"Subscriber"
+            roles: STUDLY_ROLES.meetingMinutes,
+
+          },
+          {
+            title: 'Plan Room',
+            path: paths.subscriber.planRoom.list,
+            icon: ICONS.booking,
+            roles: STUDLY_ROLES.planRoom,
+
+          },
+          {
+            title: 'Documents',
+            path: paths.subscriber.documents.list,
+            icon: ICONS.folder,
+            roles: STUDLY_ROLES.documents,
+
+          },
+          {
+            title: 'Project Settings',
+            path: paths.subscriber.projectSettings.list,
+            icon: ICONS.dashboard,
+            roles: STUDLY_ROLES.projectSetting,
           },
 
 

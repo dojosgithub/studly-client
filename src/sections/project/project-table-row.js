@@ -5,32 +5,32 @@ import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import ListItemText from '@mui/material/ListItemText';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
 import Label from 'src/components/label';
-// // import Button from '@mui/material/Button';
-// // import Tooltip from '@mui/material/Tooltip';
-// // import MenuItem from '@mui/material/MenuItem';
-// // import IconButton from '@mui/material/IconButton';
-// // hooks
-// // import { useBoolean } from 'src/hooks/use-boolean';
-// // components
-// // import Iconify from 'src/components/iconify';
-// // import CustomPopover, { usePopover } from 'src/components/custom-popover';
+// hooks
+import { useBoolean } from 'src/hooks/use-boolean';
+// components
+import Iconify from 'src/components/iconify';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // // import { ConfirmDialog } from 'src/components/custom-dialog';
 //
 // // import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({ row, selected, onSelectRow }) {
+export default function UserTableRow({ row, selected, onSelectRow,onDeleteRow }) {
   const { name, avatarUrl, role, email, status } = row;
 
   // // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
 
-  // // const confirm = useBoolean();
+  const confirm = useBoolean();
 
-  // // const quickEdit = useBoolean();
+  // const quickEdit = useBoolean();
 
-  // // const popover = usePopover();
+  const popover = usePopover();
 
   return (
     <>
@@ -68,27 +68,22 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
           </Label>
         </TableCell>
 
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
-
-
-       
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
+          {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell> */}
+        </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
+      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}
@@ -100,6 +95,7 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
+            onDeleteRow()
           }}
           sx={{ color: 'error.main' }}
         >
@@ -107,7 +103,7 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
           Delete
         </MenuItem>
 
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -115,10 +111,10 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
         >
           <Iconify icon="solar:pen-bold" />
           Edit
-        </MenuItem>
+        </MenuItem> */}
       </CustomPopover>
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
@@ -134,8 +130,8 @@ export default function UserTableRow({ row, selected, onSelectRow }) {
 }
 
 UserTableRow.propTypes = {
-  // // onDeleteRow: PropTypes.func,
   // // onEditRow: PropTypes.func,
+  onDeleteRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,

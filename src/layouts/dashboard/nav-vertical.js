@@ -67,10 +67,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
       {/* {user?.role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
         Project
       </Button>)} */}
-      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (
+      {(user?.userType === "Subscriber" && user?.role?.shortName === "CAD") && (
         <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} />
       )}
-      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (
+      {(user?.userType === "Subscriber" && user?.role?.shortName === "CAD") && (
         <CustomDrawer open={openDrawer} onClose={() => {
           setOpenDrawer(false)
           dispatch(resetCreateProject())
@@ -81,7 +81,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
       )}
       <NavSectionVertical data={navData} config={
         {
-          currentRole: user?.role?.name, // if current role is not allowed
+          currentRole: user?.role?.shortName, // if current role is not allowed
           // // currentUserType: user?.userType, // if current userType is not allowed
         }
       } />

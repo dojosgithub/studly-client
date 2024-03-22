@@ -78,7 +78,7 @@ export default function OnboardingWithoutProjects() {
 
       </Stack>
       {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}
-      {(user?.userType === "Subscriber" && user?.role?.name === "Company Admin") && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
+      {(user?.userType === "Subscriber" && user?.role?.shortName === "CAD") && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
 
     </>
   );

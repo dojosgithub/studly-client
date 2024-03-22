@@ -114,7 +114,7 @@ export function AuthProvider({ children }) {
       password,
     };
 
-    const response = await axios.post(endpoints.auth.login, data);
+    const response = await axios.get(endpoints.auth.login, { params: data });
 
     const { data: { accessToken, user, refreshToken } } = response.data;
     setSession(accessToken);

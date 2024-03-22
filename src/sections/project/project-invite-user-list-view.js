@@ -42,7 +42,7 @@ import {
     TablePaginationCustom,
 } from 'src/components/table';
 //
-import { setExternalUsers, setInternalUsers } from 'src/redux/slices/projectSlice';
+import { setExternalUsers, setInternalUsers, setRemoveExternalUser, setRemoveInternalUser } from 'src/redux/slices/projectSlice';
 //
 import ProjectTableRow from './project-table-row';
 import ProjectTableToolbar from './project-table-toolbar';
@@ -57,6 +57,7 @@ const TABLE_HEAD = [
     // { id: '', width: 50 },
     { id: 'name', label: 'Name', },
     { id: 'role', label: 'Role' },
+    { id: '', },
     { id: '', },
     // //  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
     // //  { id: 'company', label: 'Company', width: 220 },
@@ -121,12 +122,16 @@ export default function ProjectInviteUserListView({ type }) {
 
     const handleDeleteRow = useCallback(
         (id) => {
+            console.log('tableData', tableData)
+            console.log('id', id)
             const deleteRow = tableData.filter((row) => row.id !== id);
+            const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
+            // enqueueSnackbar('User removed from the team successfully!');
+            dispatch(setUsersActions(id))
             setTableData(deleteRow);
-
             table.onUpdatePageDeleteRow(dataInPage.length);
         },
-        [dataInPage.length, table, tableData]
+        [dataInPage.length, table, tableData, dispatch, type]
     );
 
     const handleResetFilters = useCallback(() => {
@@ -282,18 +287,18 @@ export default function ProjectInviteUserListView({ type }) {
                                             key={row.id}
                                             row={row}
                                             selected={table.selected.includes(row.id)}
+                                            onDeleteRow={() => handleDeleteRow(row.id)}
                                         // onSelectRow={() => {
                                         //     table.onSelectRow(row.id)
 
                                         //     handleUserUpdate(row.id);
                                         //     console.log('row-selected', row.id)
                                         // }}
-                                        // onDeleteRow={() => handleDeleteRow(row.id)}
                                         // onEditRow={() => handleEditRow(row.id)}
                                         />
                                     ))}
                                 <ProjectInviteNewUser type={type} />
-                                
+
                                 <TableEmptyRows
                                     height={denseHeight}
                                     emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}

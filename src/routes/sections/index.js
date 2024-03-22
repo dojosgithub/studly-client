@@ -86,7 +86,7 @@ export default function Router() {
       });
       // if user role is Company Admin and there are projects available=> can view submittals screen
       // && (projects && projects?.length > 0)
-      if (user?.role?.name === 'Company Admin' && (projects && projects?.length > 0)) {
+      if (user?.role?.shortName === 'CAD' && (projects && projects?.length > 0)) {
 
         routes.push(...subscriberRoutes);
       }

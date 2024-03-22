@@ -88,7 +88,7 @@ const SubmittalsDetails = ({ id }) => {
                 }
 
                 {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                {!isResponseSubmitted && !(currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant='contained' onClick={handleSubmittalResponse}>
                             Add Submittal Response

@@ -237,6 +237,27 @@ export default function ProjectStepperForm() {
   const formValues = getValues();
   const watchValues = watch();
 
+  function processInviteUsers() {
+    // Check if both internal and external arrays are not empty
+    const hasInternal = inviteUsers.internal && inviteUsers.internal.length > 0;
+    const hasExternal = inviteUsers.external && inviteUsers.external.length > 0;
+
+    // Process internal array if not empty, otherwise return as-is
+    const updatedInternalTeams = hasInternal
+      ? inviteUsers.internal.map(({ _id, ...rest }) => rest)
+      : inviteUsers.internal;
+
+    // Process external array if not empty, otherwise return as-is
+    const updatedExternalTeams = hasExternal
+      ? inviteUsers.external.map(({ _id, ...rest }) => rest)
+      : inviteUsers.external;
+
+    return {
+      internal: updatedInternalTeams,
+      external: updatedExternalTeams,
+    };
+  }
+
   const onSubmit = handleSubmit(async (data, e) => {
     e.preventDefault()
 
@@ -245,13 +266,15 @@ export default function ProjectStepperForm() {
       if (!companies) {
         return
       }
+
       // dispatch(getProjectList())
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
+      const teams = processInviteUsers(inviteUsers);
       const { id, ...rest } = data.workflow;
       const updatedWorkflow = rest;
       // , companyId: companies[0]?.companyId
-
-      const finalData = { teams: { ...inviteUsers }, ...data, trades: updatedTrades, workflow: updatedWorkflow }
+      // { ...inviteUsers }
+      const finalData = { teams, ...data, trades: updatedTrades, workflow: updatedWorkflow }
       console.log("finalData", finalData)
       console.log("updatedTrades", updatedTrades)
       console.log("updatedWorkflow", updatedWorkflow)

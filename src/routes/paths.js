@@ -167,6 +167,41 @@ export const paths = {
       details: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}`,
       review: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/review`,
     },
+    rfis: {
+      new: `${ROOTS.SUBSCRIBER}/rfis/new`,
+      list: `${ROOTS.SUBSCRIBER}/rfis/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}/review`,
+    },
+    meetingMinutes: {
+      new: `${ROOTS.SUBSCRIBER}/meetingMinutes/new`,
+      list: `${ROOTS.SUBSCRIBER}/meetingMinutes/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/meetingMinutes/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/meetingMinutes/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/meetingMinutes/${id}/review`,
+    },
+    planRoom: {
+      new: `${ROOTS.SUBSCRIBER}/planRoom/new`,
+      list: `${ROOTS.SUBSCRIBER}/planRoom/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/planRoom/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/planRoom/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/planRoom/${id}/review`,
+    },
+    documents: {
+      new: `${ROOTS.SUBSCRIBER}/documents/new`,
+      list: `${ROOTS.SUBSCRIBER}/documents/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/review`,
+    },
+    projectSettings: {
+      new: `${ROOTS.SUBSCRIBER}/projectSettings/new`,
+      list: `${ROOTS.SUBSCRIBER}/projectSettings/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}/review`,
+    },
     updatePassword: `/update-password`
   }
 };
