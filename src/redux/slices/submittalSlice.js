@@ -82,7 +82,7 @@ export const getSubmittalList = createAsyncThunk(
     'submittal/list',
     async (listOptions, { getState, rejectWithValue }) => {
         try {
-            const projectId = getState().project.current._id
+            const projectId = getState().project?.current?.id
             console.log("projectId", projectId)
 
             const { status, ...data } = listOptions

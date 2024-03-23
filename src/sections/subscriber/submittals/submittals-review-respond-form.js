@@ -24,7 +24,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 // assets
 import { countries } from 'src/assets/data';
 // components
@@ -48,6 +48,7 @@ import SubmittalAttachments from './submittals-attachment';
 
 export default function SubmittalsReviewRespondForm({ id }) {
   const router = useRouter();
+  const params = useParams();
   const dispatch = useDispatch();
   const existingAttachments = []
   const [files, setFiles] = useState(existingAttachments)
@@ -66,7 +67,7 @@ export default function SubmittalsReviewRespondForm({ id }) {
   const defaultValues = useMemo(
     () => ({
       comment: '',
-      status:  '',
+      status: '',
 
     }),
     []
@@ -88,19 +89,19 @@ export default function SubmittalsReviewRespondForm({ id }) {
 
   const values = watch();
   console.log("values", values)
+  console.log("params", params)
+  console.log("user", user)
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const tradeObj = trades.find(t => t.tradeId === data.trade);
-      const trade = { ...tradeObj }
-      delete trade._id
-      if (!trade) {
+      if (isEmpty(params)) {
+        enqueueSnackbar('Submittal Id not Found', { variant: "error" });
         return
       }
+      console.log("data", data)
 
-      let finalData;
-      const { _id, firstName, lastName, email } = user
-      const creator = _id
+      const finalData = { submittalId: params?.id, ...data };
+
       // if (isEmpty(currentSubmittal)) {
       //   // const creator = { _id, name: `${firstName} ${lastName}`, email }
       //   const submittedDate = new Date()
@@ -129,24 +130,24 @@ export default function SubmittalsReviewRespondForm({ id }) {
       console.log('files ', files)
       console.log('formData ', formData)
 
-      let error;
-      let payload;
-      // if (!isEmpty(currentSubmittal) && id) {
-      //   const res = await dispatch(editSubmittal({ formData, id }))
-      //   error = res.error
-      //   payload = res.payload
-      // } else {
-      //   const res = await dispatch(createNewSubmittal(formData))
-      //   error = res.error
-      //   payload = res.payload
+      // let error;
+      // let payload;
+      // // if (!isEmpty(currentSubmittal) && id) {
+      // //   const res = await dispatch(editSubmittal({ formData, id }))
+      // //   error = res.error
+      // //   payload = res.payload
+      // // } else {
+      // //   const res = await dispatch(createNewSubmittal(formData))
+      // //   error = res.error
+      // //   payload = res.payload
+      // // }
+      // if (!isEmpty(error)) {
+      //   enqueueSnackbar(error.message, { variant: "error" });
+      //   return
       // }
-      if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
-      }
-      reset();
-      // enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
-      router.push(paths.subscriber.submittals.list);
+      // reset();
+      // // enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
+      // router.push(paths.subscriber.submittals.list);
 
 
     } catch (error) {

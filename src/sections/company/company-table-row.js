@@ -65,13 +65,13 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           <Label
             variant="soft"
             color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
+              (status === "1" && 'success') ||
+              (status === "2" && 'warning') ||
+              (status === "3" && 'error') ||
               'default'
             }
           >
-            {status}
+            {(status === "1" && 'active') || (status === "3" && 'inactive') || (status === "3" && 'blocked') || ('disabled')}
           </Label>
         </TableCell>
 

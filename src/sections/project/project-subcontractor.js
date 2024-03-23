@@ -3,12 +3,16 @@ import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock'
+import CustomAutoComplete from 'src/components/custom-automcomplete'
 import { setProjectTrades } from 'src/redux/slices/projectSlice'
+import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog'
 
 const ProjectSubcontractor = () => {
     // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
     const { getValues, setValue } = useFormContext();
     // const { trades } = getValues()
+    const [subcontractor, setSubcontractor] = useState(null)
+    const [open, setOpen] = useState(false)
     const subcontractors = useSelector(state => state.project.subcontractors.list)
     const trades = useSelector(state => state.project.create.trades)
     const initialOptions = trades.reduce((acc, { tradeId, }) => {
@@ -23,6 +27,12 @@ const ProjectSubcontractor = () => {
 
 
     const handleSelect = (tradeId, subcontractorId) => {
+        console.log('subcontractorId', subcontractorId)
+        if (!subcontractorId) {
+            setOpen(true)
+            return
+        }
+
         const data = { tradeId, subcontractorId }
         console.log('handleSelect', data);
 
@@ -196,6 +206,9 @@ const ProjectSubcontractor = () => {
         // });
     }
 
+    const handleAddNew = () => {
+        setOpen(true)
+    }
 
     return (
         <>
@@ -225,11 +238,17 @@ const ProjectSubcontractor = () => {
                                             gap: '0.25rem',
                                         }
                                     }}>
-                                        {subcontractors.map((sub) => (
+                                        {subcontractors?.length > 0 && subcontractors?.map((sub) => (
                                             <MenuItem key={sub._id} value={sub._id} sx={{ height: 50, px: 3, borderRadius: 0 }}>
                                                 {sub.name.toUpperCase()}
                                             </MenuItem>
                                         ))}
+                                        {(subcontractors?.length === 0) && (
+                                            //  onClick={handleAddNew}
+                                            <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="" onClick={() => setOpen(true)}>
+                                                Add New Subcontractor
+                                            </MenuItem>
+                                        )}
                                     </Select>
                                 </Box>
                             </Card>
@@ -239,6 +258,12 @@ const ProjectSubcontractor = () => {
                 </Stack>
 
 
+                {(open) && (
+                    <ProjectInviteSubcontractorDialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                    />
+                )}
             </Container>
         </>
     )

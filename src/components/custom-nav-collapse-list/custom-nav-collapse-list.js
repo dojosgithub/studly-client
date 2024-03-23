@@ -27,7 +27,8 @@ export default function CustomNavCollapseList({ onOpen }) {
     // };
     const handleProject = (project) => {
         dispatch(setCurrentProject(project))
-        dispatch(getSubmittalList())
+        // dispatch(getSubmittalList())
+        dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
         handleClose()
     };
     const [anchorEl, setAnchorEl] = React.useState(null);

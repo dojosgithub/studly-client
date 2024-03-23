@@ -39,7 +39,8 @@ const SubmittalsDetails = ({ id }) => {
 
     useEffect(() => {
         console.log('currentSubmittal', currentSubmittal)
-    }, [currentSubmittal])
+        console.log('id', id)
+    }, [currentSubmittal, id])
 
     const handleSubmitToArchitect = async () => {
         console.log("SubmittalId", id)
@@ -88,12 +89,19 @@ const SubmittalsDetails = ({ id }) => {
                 }
 
                 {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isResponseSubmitted && !(currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                {!isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant='contained' onClick={handleSubmittalResponse}>
                             Add Submittal Response
                         </Button>
                     </Box>
+                )}
+
+                {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
+                {isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                    <Alert severity="success" >
+                        Your response to the submittal was submitted. Thankyou!
+                    </Alert>
                 )}
 
                 <StyledCard>

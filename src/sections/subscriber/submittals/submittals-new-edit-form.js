@@ -52,10 +52,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : []
   const [files, setFiles] = useState(existingAttachments)
   const user = useSelector(state => state.user.user)
-  const projectId = useSelector(state => state.project.current._id)
+  const projectId = useSelector(state => state.project?.current?.id)
   const trades = useSelector(state => state.project?.current?.trades)
   const { enqueueSnackbar } = useSnackbar();
-
+  console.log("projectId", projectId)
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
     submittalId: Yup.number()

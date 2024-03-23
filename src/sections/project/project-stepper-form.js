@@ -274,7 +274,7 @@ export default function ProjectStepperForm() {
       const updatedWorkflow = rest;
       // , companyId: companies[0]?.companyId
       // { ...inviteUsers }
-      const finalData = { teams, ...data, trades: updatedTrades, workflow: updatedWorkflow }
+      const finalData = {  ...data, trades: updatedTrades, workflow: updatedWorkflow }
       console.log("finalData", finalData)
       console.log("updatedTrades", updatedTrades)
       console.log("updatedWorkflow", updatedWorkflow)
