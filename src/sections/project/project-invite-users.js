@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { Box, Divider, Typography, alpha } from '@mui/material'
 // components
-import { getCompanyUserList } from 'src/redux/slices/companySlice'
+import { getCompanyUserList } from 'src/redux/slices/projectSlice'
 import ProjectInviteUserStudly from './project-invite-user-studly'
 
 const ProjectInviteUsers = () => {

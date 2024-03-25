@@ -21,7 +21,7 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getProjectList, resetCreateProject, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import { createNewProject, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -94,6 +94,7 @@ export default function ProjectStepperForm() {
   const projectList = useSelector(state => state.project.list);
   const newTemplate = useSelector(state => state.project.template);
   const inviteUsers = useSelector(state => state.project.inviteUsers);
+  const members = useSelector(state => state.project.members);
   const companies = useSelector(state => state.user.user.companies);
 
   const templateList = useSelector(state => state.template.list);
@@ -267,17 +268,16 @@ export default function ProjectStepperForm() {
         return
       }
 
-      // dispatch(getProjectList())
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
-      const teams = processInviteUsers(inviteUsers);
+      console.log("updatedTrades", updatedTrades)
+      // const teams = processInviteUsers(inviteUsers);
+      // const members = teamMembers?.map(({ _id, ...rest }) => rest);
       const { id, ...rest } = data.workflow;
       const updatedWorkflow = rest;
-      // , companyId: companies[0]?.companyId
-      // { ...inviteUsers }
-      const finalData = {  ...data, trades: updatedTrades, workflow: updatedWorkflow }
-      console.log("finalData", finalData)
-      console.log("updatedTrades", updatedTrades)
       console.log("updatedWorkflow", updatedWorkflow)
+
+      const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members }
+      console.log("finalData", finalData)
 
 
       const { error, payload } = await dispatch(createNewProject(finalData))
@@ -291,6 +291,7 @@ export default function ProjectStepperForm() {
       await dispatch(getProjectList())
       dispatch(resetTemplate())
       dispatch(resetWorkflow())
+      dispatch(resetCreateProject())
       // if(isEmpty(projectList)){
       //   router.push(paths.subscriber.onboarding);
       //   return

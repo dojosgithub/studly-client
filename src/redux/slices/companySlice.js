@@ -48,31 +48,10 @@ export const createNewCompany = createAsyncThunk(
   },
 )
 
-export const getCompanyUserList = createAsyncThunk(
-  'company/user/list',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.company.userList);
-
-      return response.data.data
-    } catch (err) {
-      console.error("errSlice", err)
-      if (err && err.message) {
-        throw Error(
-          err.message
-        );
-      }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
-    }
-  },
-)
 
 
 const initialState = {
   list: [],
-  users: [],
   current: null,
   create: null,
   isLoading: false,
@@ -94,20 +73,7 @@ const company = createSlice({
     resetCompanyState: () => initialState,
   },
   extraReducers: (builder) => {
-    // * Get Company User List
-    builder.addCase(getCompanyUserList.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getCompanyUserList.fulfilled, (state, action) => {
-      state.users = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getCompanyUserList.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
+   
     // * Fetch Company List
     builder.addCase(fetchCompanyList.pending, (state) => {
       state.isLoading = true;

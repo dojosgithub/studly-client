@@ -55,7 +55,7 @@ import ProjectInviteNewUser from './project-invite-new-user';
 
 const TABLE_HEAD = [
     // { id: '', width: 50 },
-    { id: 'name', label: 'Name', },
+    { id: 'email', label: 'Email', },
     { id: 'role', label: 'Role' },
     { id: '', },
     { id: '', },
@@ -79,16 +79,25 @@ export default function ProjectInviteUserListView({ type }) {
 
     const internal = useSelector(state => state?.project?.inviteUsers?.internal);
     const external = useSelector(state => state?.project?.inviteUsers?.external);
-    // const userList = useSelector(state => state?.project?.users);
-    const userList = type === 'internal' ? internal : external;
+    // const userList = type === 'internal' ? internal : external;
+    const members = useSelector(state => state?.project?.members);
 
+    useEffect(() => {
+        const userList = members.filter(member => member.team === type);
+        setTableData(userList);
+        console.log('userList updated:', userList);
+      }, [members, type]);
+
+    
+    
+    
     const settings = useSettingsContext();
 
     const router = useRouter();
 
     const confirm = useBoolean();
 
-    const [tableData, setTableData] = useState(userList);
+    const [tableData, setTableData] = useState([]);
 
     const [filters, setFilters] = useState(defaultFilters);
 
@@ -174,11 +183,7 @@ export default function ProjectInviteUserListView({ type }) {
         }
     }
 
-    useEffect(() => {
-        setTableData(userList)
-        console.log('userList')
-    }, [userList, internal, external])
-
+    
 
 
 

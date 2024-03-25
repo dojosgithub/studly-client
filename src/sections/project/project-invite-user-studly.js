@@ -26,7 +26,7 @@ const ProjectInviteUserStudly = () => {
                             />
                             <Typography sx={{ mb: 4, maxWidth: 300, color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of internal team members can vary depending on their role</Typography>
                         </Box>
-                        <Button
+                        {/* <Button
                             component='button'
                             variant="outlined"
                             startIcon={<Iconify icon="mdi:invite" />}
@@ -36,7 +36,7 @@ const ProjectInviteUserStudly = () => {
                             sx={{ flexShrink: 0, maxWidth: 'max-content', mt: '2px' }}
                         >
                             Invite User
-                        </Button>
+                        </Button> */}
                     </Box>
                     <ProjectInviteUserListView type='internal' />
                 </Stack>
@@ -51,7 +51,7 @@ const ProjectInviteUserStudly = () => {
                             />
                             <Typography sx={{ mb: 4, maxWidth: 300, color: (theme) => alpha(theme.palette.grey[500], 0.7) }} fontSize='1rem' fontWeight='normal'>Permissions of external team members can vary depending on their role</Typography>
                         </Box>
-                        <Button
+                        {/* <Button
                             component='button'
                             variant="outlined"
                             startIcon={<Iconify icon="mdi:invite" />}
@@ -61,16 +61,16 @@ const ProjectInviteUserStudly = () => {
                             sx={{ flexShrink: 0, maxWidth: 'max-content', mt: '2px' }}
                         >
                             Invite User
-                        </Button>
+                        </Button> */}
                     </Box>
                     <ProjectInviteUserListView type='external' />
                 </Stack>
             </Stack>
-            <ProjectInviteUserDialog
+            {/* <ProjectInviteUserDialog
                 open={openInviteUser}
                 onClose={() => setOpenInviteUser(false)}
                 type={type}
-            />
+            /> */}
         </>
     )
 }

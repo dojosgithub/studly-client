@@ -11,6 +11,7 @@ const ProjectFinal = () => {
     const [first, setfirst] = useState('second')
     const { name, trades, workflow } = useSelector(state => state.project.create)
     const { internal, external } = useSelector(state => state.project.inviteUsers)
+    const members = useSelector(state => state.project.members)
     const filteredTrades = trades.filter(item => "subcontractorId" in item);
 
     const StyledCard = styled(Card, {
@@ -97,32 +98,57 @@ const ProjectFinal = () => {
                         </Scrollbar>
                     </Stack>
                 </StyledCard>}
-                {((external?.length > 0) || (internal?.length > 0)) && <StyledCard>
-                    <Typography className='projectTitle'>Invited Users</Typography>
-                    <Stack spacing={3} sx={{ flex: .75 }}>
-                        <Scrollbar>
-                            <Stack spacing={3} maxHeight={300}>
-                                {/* _bankingContacts.slice(-5) */}
-                                {(internal?.length > 0) && internal.map((user, index) => (
-                                    <Stack direction="row" alignItems="center" key={user._id}>
-                                        <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
+                {((members?.length > 0)) &&
+                    (<StyledCard>
+                        <Typography className='projectTitle'>Invited Users</Typography>
+                        <Stack spacing={3} sx={{ flex: .75 }}>
+                            <Scrollbar>
+                                <Stack spacing={3} maxHeight={300}>
+                                    {members.filter(item => item.team === "internal").map((user, index) => (
+                                        <Stack direction="row" alignItems="center" key={user.email}>
+                                            <Avatar src={_mock.image.avatar(index + 1)} sx={{ width: 48, height: 48, mr: 2 }} />
 
-                                        <ListItemText primary={user.role} secondary={user.email} />
-                                        {/* {!trade?.subcontractorId && <Chip size="small" variant='outlined' label='N/A' />} */}
-                                    </Stack>
-                                ))}
-                                {(external?.length > 0) && external.map((user, index) => (
-                                    <Stack direction="row" alignItems="center" key={user._id}>
-                                        <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
+                                            <ListItemText primary={user.role?.name} secondary={user.email} />
+                                        </Stack>
+                                    ))}
+                                    {members.filter(item => item.team === "external").map((user, index) => (
+                                        <Stack direction="row" alignItems="center" key={user.email}>
+                                            <Avatar src={_mock.image.avatar(index + 1)} sx={{ width: 48, height: 48, mr: 2 }} />
 
-                                        <ListItemText primary={user.role} secondary={user.email} />
-                                        {/* {!trade?.subcontractorId && <Chip size="small" variant='outlined' label='N/A' />} */}
-                                    </Stack>
-                                ))}
-                            </Stack>
-                        </Scrollbar>
-                    </Stack>
-                </StyledCard>}
+                                            <ListItemText primary={user.role?.name} secondary={user.email} />
+                                        </Stack>
+                                    ))}
+                                </Stack>
+                            </Scrollbar>
+                        </Stack>
+                    </StyledCard>)
+                }
+
+                {/* {((external?.length > 0) || (internal?.length > 0)) &&
+                    (<StyledCard>
+                        <Typography className='projectTitle'>Invited Users</Typography>
+                        <Stack spacing={3} sx={{ flex: .75 }}>
+                            <Scrollbar>
+                                <Stack spacing={3} maxHeight={300}>
+                                    {(internal?.length > 0) && internal.map((user, index) => (
+                                        <Stack direction="row" alignItems="center" key={user._id}>
+                                            <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
+
+                                            <ListItemText primary={user.role} secondary={user.email} />
+                                        </Stack>
+                                    ))}
+                                    {(external?.length > 0) && external.map((user, index) => (
+                                        <Stack direction="row" alignItems="center" key={user._id}>
+                                            <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
+
+                                            <ListItemText primary={user.role} secondary={user.email} />
+                                        </Stack>
+                                    ))}
+                                </Stack>
+                            </Scrollbar>
+                        </Stack>
+                    </StyledCard>)
+                } */}
 
             </Stack>
         </>

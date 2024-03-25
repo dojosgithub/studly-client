@@ -48,6 +48,28 @@ export const getProjectList = createAsyncThunk(
 )
 
 
+// get users list from
+export const getCompanyUserList = createAsyncThunk(
+  'company/user/list',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.company.userList);
+
+      return response.data.data
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the company.'
+      );
+    }
+  },
+)
+
 
 
 // const initialState = {
@@ -82,19 +104,12 @@ const initialState = {
 
   current: null,
   create: { ...projectObj },
-  subcontractors: {
-    list: [], // PROJECT_SUBCONTRACTORS
-  },
+  subcontractors: [], // PROJECT_SUBCONTRACTORS
+  members: [],
   inviteUsers: {
     internal: [],
     external: [],
   },
-  // workflows: [], // PROJECT_WORKFLOWS
-  // template: {
-  //   create: { name: '', trades: [] },
-  //   list: [], // PROJECT_TEMPLATES
-  // },
-  users: [], // _userList 
   isLoading: false,
   error: null
 }
@@ -133,8 +148,26 @@ const project = createSlice({
     setRemoveExternalUser: (state, action) => {
       state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.id !== action.payload);
     },
+    setMembers: (state, action) => {
+      const memberExists = state.members.some(member =>
+        member.email === action.payload.email
+      );
+
+      // If the member does not exist, add them to the members array
+      if (!memberExists) {
+        state.members = [...state.members, action.payload];
+      }
+    },
+    removeMember: (state, action) => {
+      const filteredMembers = state.members.filter(member => member?.id !== action?.payload)
+      state.members = filteredMembers
+    },
+    resetMembers: (state, action) => {
+      state.members = []
+    },
     resetCreateProject: (state) => {
       state.create = projectObj;
+      state.members = [];
       state.inviteUsers = {
         internal: [],
         external: [],
@@ -170,9 +203,23 @@ const project = createSlice({
       state.isLoading = false;
       state.error = action.error.message
     });
-  
+
+    // * Get Company User List
+    builder.addCase(getCompanyUserList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getCompanyUserList.fulfilled, (state, action) => {
+      state.users = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getCompanyUserList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject,setRemoveInternalUser,setRemoveExternalUser, resetProjectState } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setMembers, removeMember, resetMembers } = project.actions
 export default project.reducer

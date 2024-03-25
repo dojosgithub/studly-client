@@ -21,7 +21,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({ row, selected, onSelectRow,onDeleteRow }) {
+export default function UserTableRow({ row, selected, onSelectRow, onDeleteRow }) {
   const { name, avatarUrl, role, email, status } = row;
 
   // // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
@@ -53,18 +53,20 @@ export default function UserTableRow({ row, selected, onSelectRow,onDeleteRow })
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role?.name}</TableCell>
         <TableCell>
           <Label
             variant="soft"
             color={
               (status === 'joined' && 'success') ||
+              (status === 'invited' && 'info') ||
               (status === 'pending' && 'warning') ||
               (status === 'banned' && 'error') ||
               'default'
             }
           >
             {status}
+            {/* {status || !!row?.user ? "joined" : "invited"} */}
           </Label>
         </TableCell>
 
