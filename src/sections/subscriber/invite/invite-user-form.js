@@ -1,0 +1,110 @@
+import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { isEmpty } from 'lodash';
+// @mui
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Button, Box, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+// 
+import { useParams } from 'react-router';
+import { useSnackbar } from 'src/components/snackbar';
+//
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { sendInviteUserCredentials } from 'src/redux/slices/inviteSlice';
+import { useBoolean } from 'src/hooks/use-boolean';
+import Iconify from 'src/components/iconify';
+
+// ----------------------------------------------------------------------
+
+export default function InviteUserForm() {
+    const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch()
+    const params = useParams();
+    const password = useBoolean();
+
+    const NewUserSchema = Yup.object().shape({
+        name: Yup.string().required('Template Name is required'),
+        password: Yup.string()
+            .required('New Password is required')
+            .min(7, 'Password must be at least 7 characters')
+
+    });
+
+    const defaultValues = useMemo(
+        () => ({
+            name: '',
+            password: '',
+        }),
+        []
+    );
+
+    const methods = useForm({
+        resolver: yupResolver(NewUserSchema),
+        defaultValues,
+    });
+
+    const {
+        reset,
+        handleSubmit,
+        formState: { isSubmitting },
+    } = methods;
+
+    const onSubmit = handleSubmit(async (data) => {
+        try {
+
+            console.log('params', params)
+            console.log('data', data)
+            const { error, payload } = await dispatch(sendInviteUserCredentials({ inviteId: params?.inviteId, ...data }))
+            console.log('e-p', { error, payload });
+            if (!isEmpty(error)) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return
+            }
+            enqueueSnackbar('User created successfully!', { variant: 'success' });
+            reset();
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    return (
+
+        <FormProvider methods={methods} onSubmit={onSubmit}>
+
+            <Stack py='1rem' gap={3} maxWidth={400} mx="auto">
+                <RHFTextField name="name" label="Name" />
+                <RHFTextField
+                    name="password"
+                    label="Password"
+                    type={password.value ? 'text' : 'password'}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={password.onToggle} edge="end">
+                                    <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                    helperText={
+                        <Stack component="span" direction="row" alignItems="center">
+                            <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Password must be minimum
+                            7+
+                        </Stack>
+                    }
+                />
+
+                <Box>
+                    <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                        Submit
+                    </LoadingButton>
+                </Box>
+            </Stack>
+
+        </FormProvider>
+    );
+}
+
+

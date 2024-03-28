@@ -25,10 +25,11 @@ const MaintenancePage = lazy(() => import('src/pages/maintenance'));
 // const ProductDetailsPage = lazy(() => import('src/pages/product/details'));
 // const ProductCheckoutPage = lazy(() => import('src/pages/product/checkout'));
 // BLOG
-const PostListPage = lazy(() => import('src/pages/post/list'));
-const PostDetailsPage = lazy(() => import('src/pages/post/details'));
+// const PostListPage = lazy(() => import('src/pages/post/list'));
+// const PostDetailsPage = lazy(() => import('src/pages/post/details'));
 
 const OnboardingPage = lazy(() => import('src/pages/onboarding'));
+const InvitePage = lazy(() => import('src/pages/invite'));
 
 // ----------------------------------------------------------------------a
 
@@ -89,6 +90,19 @@ export const mainRoutes = [
   //     { path: 'payment', element: <PaymentPage /> },
   //   ],
   // },
+
+    {
+    element: (
+      // <SimpleLayout>
+      <Suspense fallback={<SplashScreen />}>
+        <Outlet />
+      </Suspense>
+      // </SimpleLayout>
+    ),
+    children: [
+      { path: 'invite/:inviteId', element: <InvitePage /> },
+    ],
+  },
   {
     element: (
       // <CompactLayout>

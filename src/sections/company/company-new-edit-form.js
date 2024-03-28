@@ -111,7 +111,6 @@ export default function CompanyNewEditForm({ currentCompany }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
       console.log('DATA', data);
       const { error, payload } = await dispatch(createNewCompany(data))
       if (!isEmpty(error)) {

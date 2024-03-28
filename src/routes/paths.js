@@ -25,7 +25,7 @@ export const paths = {
   page404: '/404',
   page500: '/500',
   components: '/components',
-  
+
   product: {
     root: `/product`,
     checkout: `/product/checkout`,
@@ -160,6 +160,7 @@ export const paths = {
   subscriber: {
     // root: `${ROOTS.SUBSCRIBER}`,
     onboarding: "/onboarding",
+    invite: (id) => `/invite/${id}`,
     submittals: {
       new: `${ROOTS.SUBSCRIBER}/submittals/new`,
       list: `${ROOTS.SUBSCRIBER}/submittals/list`,

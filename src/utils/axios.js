@@ -85,4 +85,8 @@ export const endpoints = {
     create: '/api/user/workflow',
 
   },
+  invite: {
+    details: (id) => `/api/user/invite/${id}`,
+    create: (id) => `/api/user/invite/${id}/create`,
+  },
 };
