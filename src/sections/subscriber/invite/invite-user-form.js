@@ -25,7 +25,8 @@ export default function InviteUserForm() {
     const password = useBoolean();
 
     const NewUserSchema = Yup.object().shape({
-        name: Yup.string().required('Template Name is required'),
+        firstName: Yup.string().required('First name is required'),
+        lastName: Yup.string().required('Last name is required'),
         password: Yup.string()
             .required('New Password is required')
             .min(7, 'Password must be at least 7 characters')
@@ -34,7 +35,8 @@ export default function InviteUserForm() {
 
     const defaultValues = useMemo(
         () => ({
-            name: '',
+            firstName: '',
+            lastName: '',
             password: '',
         }),
         []
@@ -62,7 +64,7 @@ export default function InviteUserForm() {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return
             }
-            enqueueSnackbar('User created successfully!', { variant: 'success' });
+            enqueueSnackbar('User invite has been accepted successfully!', { variant: 'success' });
             reset();
         } catch (error) {
             console.error(error);
@@ -74,7 +76,18 @@ export default function InviteUserForm() {
         <FormProvider methods={methods} onSubmit={onSubmit}>
 
             <Stack py='1rem' gap={3} maxWidth={400} mx="auto">
-                <RHFTextField name="name" label="Name" />
+                <Box
+                    rowGap={3}
+                    columnGap={2}
+                    display="grid"
+                    gridTemplateColumns={{
+                        xs: 'repeat(1, 1fr)',
+                        sm: 'repeat(2, 1fr)',
+                    }}
+                >
+                    <RHFTextField name="firstName" label="First name" />
+                    <RHFTextField name="lastName" label="Last name" />
+                </Box>
                 <RHFTextField
                     name="password"
                     label="Password"

@@ -4,6 +4,7 @@ import axiosInstance, { endpoints } from "src/utils/axios";
 const initialState = {
     list: [],
     current: null,
+    create: null,
     isLoading: false,
     error: null
 }
@@ -119,7 +120,7 @@ const invite = createSlice({
             state.error = null;
         });
         builder.addCase(sendInviteUserCredentials.fulfilled, (state, action) => {
-            state.current = action.payload;
+            state.create = action.payload;
             state.isLoading = false;
             state.error = null;
         });

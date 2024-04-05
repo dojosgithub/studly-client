@@ -160,7 +160,11 @@ export const paths = {
   subscriber: {
     // root: `${ROOTS.SUBSCRIBER}`,
     onboarding: "/onboarding",
-    invite: (id) => `/invite/${id}`,
+    // invite: (id) => `/invite/${id}`,
+    invite: {
+      details: (id) => `/invite/${id}`,
+      create: (id) => `/invite/${id}/create`,
+    },
     submittals: {
       new: `${ROOTS.SUBSCRIBER}/submittals/new`,
       list: `${ROOTS.SUBSCRIBER}/submittals/list`,
