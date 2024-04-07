@@ -63,6 +63,11 @@ const SubmittalsDetails = ({ id }) => {
         navigate(paths.subscriber.submittals.review(id))
 
     }
+    const handleViewResponse = () => {
+        console.log('handleViewResponse')
+        navigate(paths.subscriber.submittals.review(id))
+
+    }
 
 
     return (
@@ -78,18 +83,18 @@ const SubmittalsDetails = ({ id }) => {
                 {status === "Submitted" && (currentUser?.role?.name === "Company Admin") && <Alert severity="success">Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.</Alert>}
 
                 {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
-                {status === "Submitted" && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") &&
+                {status === "Submitted" && isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") &&
                     <Alert severity="warning" sx={{ gap: ".5rem", alignItems: "center", "& .MuiAlert-message": { display: "flex", alignItems: "center", width: "100%" } }}>
                         (architect/engineer/subcontractor name) already submitted a response to this submittal.
                         <Box display='flex' flex={1} gap={1} mr={2} justifyContent="flex-end">
-                            <Button variant="outlined">View Response</Button>
+                            <Button variant="outlined" onClick={handleViewResponse}>View Response</Button>
                             <Button >Dismiss</Button>
                         </Box>
                     </Alert>
                 }
 
                 {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                {!isResponseSubmitted && status === "Submitted" && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant='contained' onClick={handleSubmittalResponse}>
                             Add Submittal Response
@@ -176,7 +181,7 @@ const SubmittalsDetails = ({ id }) => {
                 </StyledCard>
 
             </Stack>
-            {status === "Draft" && <Box width="100%" display='flex' justifyContent='end'>
+            {status === "Draft" && (currentUser?.role?.name === "Company Admin") && <Box width="100%" display='flex' justifyContent='end'>
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
                     Submit to Architect
                 </LoadingButton >

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 // @mui
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -26,7 +27,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   // companyName, address, adminName, adminEmail, phoneNumber 
   const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status } = row;
-
+  const role = useSelector(state => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
 
   const quickEdit = useBoolean();
@@ -102,26 +103,30 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        <MenuItem
-          onClick={() => {
-            confirm.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
+        {role === "CAD" &&
+          (<>
+            <MenuItem
+              onClick={() => {
+                confirm.onTrue();
+                popover.onClose();
+              }}
+              sx={{ color: 'error.main' }}
+            >
+              <Iconify icon="solar:trash-bin-trash-bold" />
+              Delete
+            </MenuItem>
 
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:pen-bold" />
-          Edit
-        </MenuItem>
+            <MenuItem
+              onClick={() => {
+                onEditRow();
+                popover.onClose();
+              }}
+            >
+              <Iconify icon="solar:pen-bold" />
+              Edit
+            </MenuItem>
+          </>)
+        }
 
         <MenuItem
           onClick={() => {

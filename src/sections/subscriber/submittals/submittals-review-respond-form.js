@@ -41,16 +41,16 @@ import FormProvider, {
   RHFMultiSelectChip,
   RHFSelectChip
 } from 'src/components/hook-form';
-import { createNewSubmittal, editSubmittal } from 'src/redux/slices/submittalSlice';
+import { createNewSubmittal, editSubmittal, respondToSubmittalRequest } from 'src/redux/slices/submittalSlice';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondForm({ id }) {
+export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
-  const existingAttachments = []
+  const existingAttachments = currentSubmittalResponse?.attachments ? currentSubmittalResponse?.attachments : []
   const [files, setFiles] = useState(existingAttachments)
   const user = useSelector(state => state.user.user)
   const projectId = useSelector(state => state.project.current._id)
@@ -66,11 +66,11 @@ export default function SubmittalsReviewRespondForm({ id }) {
 
   const defaultValues = useMemo(
     () => ({
-      comment: '',
-      status: '',
+      comment: '' || currentSubmittalResponse?.comment,
+      status: '' || currentSubmittalResponse?.status,
 
     }),
-    []
+    [currentSubmittalResponse]
   );
 
   const methods = useForm({
@@ -100,7 +100,7 @@ export default function SubmittalsReviewRespondForm({ id }) {
       }
       console.log("data", data)
 
-      const finalData = { submittalId: params?.id, ...data };
+      // const finalData = { submittalId: params?.id, ...data };
 
       // if (isEmpty(currentSubmittal)) {
       //   // const creator = { _id, name: `${firstName} ${lastName}`, email }
@@ -110,7 +110,7 @@ export default function SubmittalsReviewRespondForm({ id }) {
       // } else {
       //   finalData = { ...currentSubmittal, ...data, creator, trade }
       // }
-      console.log('finalData', finalData)
+      // console.log('finalData', finalData)
 
 
       const formData = new FormData();
@@ -123,12 +123,13 @@ export default function SubmittalsReviewRespondForm({ id }) {
           attachments.push(file);
         }
       }
-      finalData.attachments = attachments
-      formData.append('body', JSON.stringify(finalData));
+      data.attachments = attachments
+      formData.append('body', JSON.stringify(data));
 
-      console.log('Final DATA', finalData);
+      console.log('Final DATA', data);
       console.log('files ', files)
       console.log('formData ', formData)
+      const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
 
       // let error;
       // let payload;
@@ -141,13 +142,13 @@ export default function SubmittalsReviewRespondForm({ id }) {
       // //   error = res.error
       // //   payload = res.payload
       // // }
-      // if (!isEmpty(error)) {
-      //   enqueueSnackbar(error.message, { variant: "error" });
-      //   return
-      // }
+      if (!isEmpty(error)) {
+        enqueueSnackbar(error.message, { variant: "error" });
+        return
+      }
       // reset();
       // // enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
-      // router.push(paths.subscriber.submittals.list);
+      router.push(paths.subscriber.submittals.details(params?.id));
 
 
     } catch (error) {
@@ -192,9 +193,18 @@ export default function SubmittalsReviewRespondForm({ id }) {
 
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
+            {!isEmpty(currentSubmittalResponse)&&
+
+              <Button type="button" variant="contained" size="large" loading={isSubmitting}>
+                Edit
+              </Button>
+            }
+            {isEmpty(currentSubmittalResponse)&&
+
               <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
                 Submit
               </LoadingButton>
+            }
             </Stack>
           </Card>
         </Grid>
@@ -204,5 +214,5 @@ export default function SubmittalsReviewRespondForm({ id }) {
 }
 
 SubmittalsReviewRespondForm.propTypes = {
-  id: PropTypes.string
+  currentSubmittalResponse: PropTypes.object
 };

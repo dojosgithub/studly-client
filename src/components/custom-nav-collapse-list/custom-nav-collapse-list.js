@@ -10,7 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import Collapse from '@mui/material/Collapse';
-import { setCurrentProject } from 'src/redux/slices/projectSlice';
+import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 // components
 import Iconify from 'src/components/iconify';
@@ -19,7 +19,11 @@ import Scrollbar from '../scrollbar';
 export default function CustomNavCollapseList({ onOpen }) {
     // const [open, setOpen] = React.useState(true);
     const projects = useSelector(state => state.project.list);
+    const email = useSelector(state => state.user?.user?.email);
     const currentProject = useSelector(state => state.project.current);
+    const role = useSelector(state => state?.user?.user?.role?.shortName);
+    const userType = useSelector(state => state?.user?.user?.userType);
+
     const dispatch = useDispatch();
 
     // const handleClose = () => {
@@ -28,6 +32,18 @@ export default function CustomNavCollapseList({ onOpen }) {
     const handleProject = (project) => {
         dispatch(setCurrentProject(project))
         // dispatch(getSubmittalList())
+        const { members } = project;
+        console.log("role", role);
+        console.log("members", members);
+        if (role !== "CAD") {
+          
+            if (members && members.length > 0) {
+                const projectRole = members.find(member => member.email === email);
+                console.log("projectRole", projectRole);
+                dispatch(setCurrentProjectRole(projectRole?.role))
+            }
+
+        }
         dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
         handleClose()
     };
@@ -126,28 +142,29 @@ export default function CustomNavCollapseList({ onOpen }) {
                         },
                     }}
                 >
-                    <MenuItem onClick={handleCreateNewProject} sx={{
-                        // position: "sticky",
-                        // bottom: 0,
-                        // left: 0,
-                        backgroundColor: (theme) => theme.palette.background.paper,
-                        "&.MuiMenuItem-root": {
-                            marginBottom: "1rem",
-                            padding: "1rem",
-                        },
-                        "&:hover": {
-                            opacity: .75,
-                            bgcolor: 'white'
-                        }
-                    }}>
-                        {/* <ListItemButton onClick={onOpen}> */}
-                        <ListItemIcon sx={{ m: 0 }}>
-                            <Iconify width={24}
-                                icon="mi:circle-add" />
-                        </ListItemIcon>
-                        <ListItemText primary="Add New Project" />
-                        {/* </ListItemButton> */}
-                    </MenuItem>
+                    {role === "CAD" &&
+                        <MenuItem MenuItem onClick={handleCreateNewProject} sx={{
+                            // position: "sticky",
+                            // bottom: 0,
+                            // left: 0,
+                            backgroundColor: (theme) => theme.palette.background.paper,
+                            "&.MuiMenuItem-root": {
+                                marginBottom: "1rem",
+                                padding: "1rem",
+                            },
+                            "&:hover": {
+                                opacity: .75,
+                                bgcolor: 'white'
+                            }
+                        }}>
+                            {/* <ListItemButton onClick={onOpen}> */}
+                            <ListItemIcon sx={{ m: 0 }}>
+                                <Iconify width={24}
+                                    icon="mi:circle-add" />
+                            </ListItemIcon>
+                            <ListItemText primary="Add New Project" />
+                            {/* </ListItemButton> */}
+                        </MenuItem>}
                     <Divider sx={{ ".MuiDivider-root": { marginBottom: "1rem" }, border: "1px solid white" }} />
                     {projects && projects.map((project) => (
                         <MenuItem sx={{ justifyContent: "center", border: "1px solid grey" }} key={project._id} onClick={() => handleProject(project)}>{project?.name}</MenuItem>

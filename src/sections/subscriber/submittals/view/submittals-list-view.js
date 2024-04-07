@@ -78,6 +78,7 @@ const defaultFilters = {
 export default function SubmittalsListView() {
   const table = useTable();
   const listData = useSelector(state => state?.submittal?.list)
+  const role = useSelector(state => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
@@ -94,7 +95,7 @@ export default function SubmittalsListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    console.log('filters.status',filters.status);
+    console.log('filters.status', filters.status);
     dispatch(getSubmittalList({ search: filters.query, page, status: filters.status }))
   }, [dispatch, filters.query, filters.status, page])
 
@@ -187,14 +188,14 @@ export default function SubmittalsListView() {
             { name: 'Log' },
           ]}
           action={
-            <Button
+            (role === "CAD" && <Button
               component={RouterLink}
               href={paths.subscriber.submittals.new}
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
               Create New Submittal
-            </Button>
+            </Button>)
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -303,16 +304,16 @@ export default function SubmittalsListView() {
 
                 <TableBody>
                   {listData?.docs?.map((row) => (
-                      <SubmittalsTableRow
-                        key={row.id}
-                        row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        // onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
-                      />
-                    ))}
+                    <SubmittalsTableRow
+                      key={row.id}
+                      row={row}
+                      selected={table.selected.includes(row.id)}
+                      onSelectRow={() => table.onSelectRow(row.id)}
+                      // onDeleteRow={() => handleDeleteRow(row.id)}
+                      onEditRow={() => handleEditRow(row.id)}
+                      onViewRow={() => handleViewRow(row.id)}
+                    />
+                  ))}
 
                   <TableEmptyRows
                     height={denseHeight}

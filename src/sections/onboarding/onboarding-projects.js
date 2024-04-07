@@ -19,7 +19,7 @@ import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
 import { bgGradient } from 'src/theme/css';
-import { setCurrentProject } from 'src/redux/slices/projectSlice';
+import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
 // components
 
 
@@ -28,11 +28,26 @@ import { setCurrentProject } from 'src/redux/slices/projectSlice';
 
 export default function OnboardingProjects({ projects }) {
   const dispatch = useDispatch();
-  const email = useSelector(state=>state?.user?.user?.email);
+  const email = useSelector(state => state?.user?.user?.email);
+  const role = useSelector(state => state?.user?.user?.role?.shortName);
+
   const navigate = useNavigate();
 
   const handleProject = (project) => {
     dispatch(setCurrentProject(project))
+    const { members } = project;
+    console.log("role", role);
+    console.log("members", members);
+    if (role !== "CAD") {
+      // Check if members array is not empty and find the member by email
+      if (members && members.length > 0) {
+        const projectRole = members.find(member => member.email === email);
+        console.log("projectRole", projectRole);
+        dispatch(setCurrentProjectRole(projectRole?.role))
+      }
+
+    }
+
     navigate(paths.subscriber.submittals.list)
   }
 
@@ -76,7 +91,7 @@ export default function OnboardingProjects({ projects }) {
           >
             {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
             </RouterLink> */}
-              {project?.name}
+            {project?.name}
           </Button>)
         )
         }
