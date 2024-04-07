@@ -36,6 +36,7 @@ export default function InviteNewUserView() {
                 enqueueSnackbar(error.message, { variant: "error" });
                 // router.push(paths.auth.jwt.login);
                 router.push(paths.page404);
+                
             }
         }
         if (!isEmpty(params)) {
