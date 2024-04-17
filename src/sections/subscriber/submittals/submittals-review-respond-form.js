@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
@@ -41,21 +41,38 @@ import FormProvider, {
   RHFMultiSelectChip,
   RHFSelectChip
 } from 'src/components/hook-form';
-import { createNewSubmittal, editSubmittal, respondToSubmittalRequest } from 'src/redux/slices/submittalSlice';
+import { createNewSubmittal, editSubmittal, respondToSubmittalRequest, updateSubmittalResponseDetails } from 'src/redux/slices/submittalSlice';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }) {
+export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, id }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
-  const existingAttachments = currentSubmittalResponse?.attachments ? currentSubmittalResponse?.attachments : []
+
+  const existingAttachments = useMemo(
+    () => (currentSubmittalResponse?.attachments ? currentSubmittalResponse?.attachments : []),
+    [currentSubmittalResponse]
+  );
+
   const [files, setFiles] = useState(existingAttachments)
-  const user = useSelector(state => state.user.user)
-  const projectId = useSelector(state => state.project.current._id)
-  const trades = useSelector(state => state.project?.current?.trades)
+  const [hasFileChanges, setHasFileChanges] = useState(JSON.stringify(files) !== JSON.stringify(existingAttachments))
   const { enqueueSnackbar } = useSnackbar();
+
+
+  useEffect(() => {
+    // Check if files have changed
+    const hasChanges = JSON.stringify(files) !== JSON.stringify(existingAttachments);
+    setHasFileChanges(hasChanges)
+
+  }, [files, existingAttachments]);
+  useEffect(() => {
+    // dispatch(setSubmittalResponse(currentSubmittalResponse))
+    console.log("currentSubmittal", currentSubmittalResponse)
+    console.log("submittalIdResponse", id)
+
+  }, [dispatch, currentSubmittalResponse, id])
 
   const NewSubmittalSchema = Yup.object().shape({
     comment: Yup.string().required('Comment is required'),
@@ -63,6 +80,8 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
     // attachments: Yup.array().min(1),
 
   });
+
+
 
   const defaultValues = useMemo(
     () => ({
@@ -84,13 +103,11 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty },
   } = methods;
 
   const values = watch();
-  console.log("values", values)
-  console.log("params", params)
-  console.log("user", user)
+
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
@@ -99,19 +116,6 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
         return
       }
       console.log("data", data)
-
-      // const finalData = { submittalId: params?.id, ...data };
-
-      // if (isEmpty(currentSubmittal)) {
-      //   // const creator = { _id, name: `${firstName} ${lastName}`, email }
-      //   const submittedDate = new Date()
-      //   const link = 'www.google.com'
-      //   finalData = { ...data, creator, submittedDate, link, projectId, trade }
-      // } else {
-      //   finalData = { ...currentSubmittal, ...data, creator, trade }
-      // }
-      // console.log('finalData', finalData)
-
 
       const formData = new FormData();
       const attachments = [];
@@ -128,33 +132,32 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
 
       console.log('Final DATA', data);
       console.log('files ', files)
-      console.log('formData ', formData)
-      const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
+      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
 
-      // let error;
-      // let payload;
-      // // if (!isEmpty(currentSubmittal) && id) {
-      // //   const res = await dispatch(editSubmittal({ formData, id }))
-      // //   error = res.error
-      // //   payload = res.payload
-      // // } else {
-      // //   const res = await dispatch(createNewSubmittal(formData))
-      // //   error = res.error
-      // //   payload = res.payload
-      // // }
+      let error;
+      let payload;
+      if (!isEmpty(currentSubmittalResponse) && params?.id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
+        error = res.error
+        payload = res.payload
+      } else {
+        const res = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
+        error = res.error
+        payload = res.payload
+      }
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: "error" });
         return
       }
       // reset();
-      // // enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
+      enqueueSnackbar(currentSubmittalResponse ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!', { variant: 'success' });
       router.push(paths.subscriber.submittals.details(params?.id));
 
 
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      // enqueueSnackbar(`Error ${currentSubmittal ? "Updating" : "Creating"} Project`, { variant: "error" });
+      // enqueueSnackbar(`Error ${currentSubmittalResponse ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });
 
@@ -193,18 +196,18 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
 
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
-            {!isEmpty(currentSubmittalResponse)&&
+              {!isEmpty(currentSubmittalResponse) &&
 
-              <Button type="button" variant="contained" size="large" loading={isSubmitting}>
-                Edit
-              </Button>
-            }
-            {isEmpty(currentSubmittalResponse)&&
+                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
+                  Edit
+                </LoadingButton>
+              }
+              {isEmpty(currentSubmittalResponse) &&
 
-              <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-                Submit
-              </LoadingButton>
-            }
+                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
+                  Submit
+                </LoadingButton>
+              }
             </Stack>
           </Card>
         </Grid>
@@ -214,5 +217,6 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse }
 }
 
 SubmittalsReviewRespondForm.propTypes = {
-  currentSubmittalResponse: PropTypes.object
+  currentSubmittalResponse: PropTypes.object,
+  id: PropTypes.string,
 };

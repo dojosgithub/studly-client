@@ -74,6 +74,7 @@ export const endpoints = {
     details: (id) => `/api/user/submittal/${id}/details`,
     submit: (id) => `/api/user/submittal/${id}/submit`,
     review: (id) => `/api/user/submittal/${id}/review`,
+    reviewDetails: (id) => `/api/user/submittal/${id}/review`,
 
   },
   template: {

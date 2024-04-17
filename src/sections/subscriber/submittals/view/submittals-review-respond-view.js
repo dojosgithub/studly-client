@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // @mui
@@ -11,29 +11,29 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import {  setCurrentSubmittalResponse } from 'src/redux/slices/submittalSlice';
+import { setSubmittalResponse } from 'src/redux/slices/submittalSlice';
 import SubmittalsReviewRespondForm from '../submittals-review-respond-form';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondView({id}) {
+export default function SubmittalsReviewRespondView({ id }) {
   const settings = useSettingsContext();
-  const submittalList = useSelector(state => state.submittal?.list?.docs)
   const dispatch = useDispatch()
-  const currentSubmittal = submittalList?.find(item => item.id === id)
-  console.log("currentSubmittal", currentSubmittal)
-  console.log("sumittalId", id)
-  useEffect(() => {
-    if (id) {
-      dispatch(setCurrentSubmittalResponse(currentSubmittal?.response))
-    }
+  // // const submittalList = useSelector(state => state.submittal?.list?.docs)
+  // // const currentSubmittal = submittalList?.find(item => item.id === id)
+  const currentSubmittalResponse = useSelector(state => state.submittal?.response)
+  // useEffect(() => {
+  //   // dispatch(setSubmittalResponse(currentSubmittalResponse))
+  //   console.log("currentSubmittal", currentSubmittalResponse)
+  //   console.log("submittalIdResponse", id)
 
-  }, [dispatch, id, currentSubmittal])
+  // }, [dispatch, currentSubmittalResponse, id])
 
+  console.log("currentSubmittalResponse", currentSubmittalResponse)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Typography fontSize="1.5rem" fontWeight="bold" my={2}>Review and Respond</Typography>
-      <SubmittalsReviewRespondForm currentSubmittalResponse={currentSubmittal?.response}/>
+      <SubmittalsReviewRespondForm currentSubmittalResponse={currentSubmittalResponse} />
     </Container>
   );
 }

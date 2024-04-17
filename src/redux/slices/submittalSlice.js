@@ -155,11 +155,58 @@ export const respondToSubmittalRequest = createAsyncThunk(
         }
     },
 )
+export const getSubmittalResponseDetails = createAsyncThunk(
+    'submittal/submittalResponseDetails',
+    async (id, { getState, rejectWithValue }) => {
+        try {
+            console.log("submittalId", id)
+
+            const response = await axiosInstance.get(endpoints.submittal.reviewDetails(id));
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while fetching submittal details.'
+            );
+        }
+    },
+)
+export const updateSubmittalResponseDetails = createAsyncThunk(
+    'submittal/updateSubmittalResponseDetails',
+    async (submittalData, { getState, rejectWithValue }) => {
+        try {
+            const { id, formData } = submittalData;
+            console.log("formData", formData)
+            console.log("submittalId", id)
+
+            const response = await axiosInstance.put(endpoints.submittal.reviewDetails(id),formData);
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while fetching submittal details.'
+            );
+        }
+    },
+)
 
 const initialState = {
     list: [],
     create: {},
     current: {},
+    response: null,
     isLoading: false,
     error: null
 }
@@ -174,8 +221,8 @@ const submittal = createSlice({
         setCurrentSubmittal: (state, action) => {
             state.current = action.payload
         },
-        setCurrentSubmittalResponse: (state, action) => {
-            state.current.response = action.payload
+        setSubmittalResponse: (state, action) => {
+            state.response = action.payload
         },
         setCreateSubmittal: (state, action) => {
             state.create = action.payload
@@ -251,8 +298,35 @@ const submittal = createSlice({
             state.isLoading = false;
             state.error = action.error.message
         });
+        //
+        builder.addCase(getSubmittalResponseDetails.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalResponseDetails.fulfilled, (state, action) => {
+            state.response = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalResponseDetails.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
+        builder.addCase(updateSubmittalResponseDetails.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(updateSubmittalResponseDetails.fulfilled, (state, action) => {
+            state.response = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(updateSubmittalResponseDetails.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
     }
 })
 
-export const { setSubmittal, setCurrentSubmittal,setCurrentSubmittalResponse, setCreateSubmittal } = submittal.actions
+export const { setSubmittal, setCurrentSubmittal,setSubmittalResponse, setCreateSubmittal } = submittal.actions
 export default submittal.reducer
