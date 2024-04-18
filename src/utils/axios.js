@@ -65,6 +65,7 @@ export const endpoints = {
   project: {
     list: '/api/user/project',
     create: '/api/user/project',
+    invite: '/api/user/project/invite/subcontractor',
 
   },
   submittal: {

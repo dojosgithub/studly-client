@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import MenuItem from '@mui/material/MenuItem';
+import { Stack, Table, Typography } from '@mui/material';
 // components
 import { enqueueSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
@@ -23,8 +24,9 @@ import FormProvider, {
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES } from 'src/_mock';
-import { setAddExternalUser, setAddInternalUser } from 'src/redux/slices/projectSlice';
+import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
+import { inviteSubcontractor, setAddExternalUser, setAddInternalUser, setMembers } from 'src/redux/slices/projectSlice';
+import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
 
 
@@ -36,20 +38,26 @@ export default function ProjectInviteSubcontractorDialog({
   onClose,
   ...other
 }) {
+  const userListOptions = useSelector(state => state?.project?.users);
 
   const dispatch = useDispatch()
   const InviteUserSchema = Yup.object().shape({
-    name: Yup.string().required('User email is required'),
-    email: Yup.string().email('Invalid email').required('User email is required'),
+    lastName: Yup.string().required('First name is required'),
+    firstName: Yup.string().required('Last name is required'),
+    // email: Yup.string().email('Invalid email').required('User email is required'),
+    user: Yup.object().shape({ email: Yup.string().email('Invalid email').required('User email is required'), id: Yup.string() }, { message: "Email is required" }),
     status: Yup.string(),
     role: Yup.string(),
   });
 
   const defaultValues = useMemo(() => ({
-    name: '',
-    email: '',
+    firstName: '',
+    lastName: '',
+    // email: '',
+    user: null,
     role: 'Sub Contractor',
-    status: 'invited'
+    status: 'invited',
+    team: null
   }), []);
 
   const methods = useForm({
@@ -61,26 +69,19 @@ export default function ProjectInviteSubcontractorDialog({
     reset,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    getValues,
+    watch,
+    formState: { isSubmitting, isValid, errors },
   } = methods;
+  const { user: userObj } = getValues;
 
-//   const handleSelectRole = useCallback(
-//     (index, option) => {
-//       console.log('option', option)
-//       setValue(
-//         `role`,
-//         option
-//       );
-//     },
-//     [setValue]
-//   );
-  const handleSelectEmail = useCallback(
-    (index, option) => {
-      console.log('email', option)
-      setValue(
-        `email`,
-        option
-      );
+
+  const handleSelectUser = useCallback(
+    (option) => {
+      console.log("option", option)
+
+      setValue('user', option)
+      // setValue('email', option.email);
     },
     [setValue]
   );
@@ -88,13 +89,37 @@ export default function ProjectInviteSubcontractorDialog({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-    
+
+      // reset();
+      // dispatch(setUsersActions(updatedData))
+      console.log('data', data)
+      const { role, user, ...rest } = data;
+      const hasEmailAndId = 'email' in user && 'id' in user;
+      const finalData = {
+        role: {
+          name: role, shortName: getRoleKeyByValue(role), loggedInAs: USER_TYPES_STUDLY.SUB
+        },
+        email: user?.email,
+        team: null,
+        status: "invited",
+        ...rest
+      }
+      if (hasEmailAndId) {
+        finalData.user = data.user.id
+        finalData.status = 'joined'
+      }
+      console.log('finalData', finalData)
+      // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
+      const { error, payload } = await dispatch(inviteSubcontractor(finalData))
+      if (error) {
+        enqueueSnackbar('There was an error sending Invite!', { variant: "error" });
+        return
+      }
+      reset()
       enqueueSnackbar('Invite sent successfully!');
-      const updatedData = { ...data, _id: uuidv4(), }
-      console.log('updatedData Final', updatedData);
-      reset();
-      onClose()
-    //   dispatch(setSubcontractor(updatedData))
+      // console.log('updatedData Final', updatedData);
+
+
     } catch (e) {
       console.error(e);
     }
@@ -108,25 +133,33 @@ export default function ProjectInviteSubcontractorDialog({
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <Box
-            sx={{ display: 'flex', gap: '1rem', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+            sx={{ display: 'flex', flexDirection: "column", gap: '1rem', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+          // sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr)', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
           >
-            <RHFTextField name='name' label="Name" InputLabelProps={{ shrink: true }}/>
-            <RHFSelect name='email' label="Email" InputLabelProps={{ shrink: true }}>
+            <Box
+              sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr)', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+            >
+              <RHFTextField name='firstName' label="First Name" InputLabelProps={{ shrink: true }} />
+              <RHFTextField name='lastName' label="Last Name" InputLabelProps={{ shrink: true }} />
+            </Box>
+
+            {/* <RHFSelect name='email' label="Email" InputLabelProps={{ shrink: true }}>
               {PROJECT_INVITE_USERS_INTERNAL.map((user, index) => (
                 <MenuItem key={user.email} value={user.email} onClick={() => handleSelectEmail(index, user.email)}>
                   {user.email}
                 </MenuItem>
               ))}
-            </RHFSelect>
-            {/* <RHFSelect name='role' label="Role" InputLabelProps={{ shrink: true }}>
-              {PROJECT_INVITE_USER_ROLES.map((role, index) => (
-                <MenuItem key={role.value} value={role.value} onClick={() => handleSelectRole(index, role.value)}>
-                  {role.label}
-                </MenuItem>
-              ))}
             </RHFSelect> */}
+            <Stack>
+              <CustomAutoComplete listOptions={userListOptions}
+                // error={errors && errors.user && errors.user.message} 
+                error={errors && errors.user && (errors.user.message) || (errors?.user?.email && errors?.user?.email?.message)}
+                value={userObj} setValue={(val) => handleSelectUser(val)} />
+              {/* {errors && errors?.email?.message && <Typography color='red' fontSize=".75rem">{errors?.email?.message}</Typography>} */}
+            </Stack>
 
           </Box>
+
         </FormProvider>
       </DialogContent>
 

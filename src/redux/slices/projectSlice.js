@@ -70,6 +70,26 @@ export const getCompanyUserList = createAsyncThunk(
   },
 )
 
+export const inviteSubcontractor = createAsyncThunk(
+  'project/inviteSubcontractor',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(endpoints.project.invite, data);
+
+      return response.data.data
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the project.'
+      );
+    }
+  },
+)
 
 
 // const initialState = {
@@ -218,6 +238,20 @@ const project = createSlice({
       state.error = null;
     });
     builder.addCase(getCompanyUserList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+
+     // * Invite Subcontractor
+     builder.addCase(inviteSubcontractor.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(inviteSubcontractor.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(inviteSubcontractor.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

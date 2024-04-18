@@ -331,15 +331,16 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <MenuItem value="option2">Option 2</MenuItem>
                 <MenuItem value="option3">Option 3</MenuItem>
               </RHFSelect>
+              {/* // TODO: List should be dynamic */}
               <RHFMultiSelect
                 name="ccList"
                 label="CC List"
                 placeholder="Select multiple options"
                 chip
                 options={[
-                  { label: 'Option 1', value: 'option1' },
-                  { label: 'Option 2', value: 'option2' },
-                  { label: 'Option 3', value: 'option3' },
+                  { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+                  { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+                  // { label: 'Option 3', value: 'option3' },
                   // Add more options as necessary
                 ]}
               />

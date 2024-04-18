@@ -11,9 +11,9 @@ const ProjectSubcontractor = () => {
     // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
     const { getValues, setValue } = useFormContext();
     // const { trades } = getValues()
-    const [subcontractor, setSubcontractor] = useState(null)
+    const [subContractor, setSubcontractor] = useState(null)
     const [open, setOpen] = useState(false)
-    const subcontractors = useSelector(state => state.project.subcontractors.list)
+    const subcontractors = useSelector(state => state.project.subcontractors)
     const trades = useSelector(state => state.project.create.trades)
     const initialOptions = trades.reduce((acc, { tradeId, }) => {
         acc[tradeId] = { tradeId, subcontractorId: "" };
