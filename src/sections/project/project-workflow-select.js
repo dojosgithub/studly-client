@@ -83,7 +83,10 @@ export default function ProjectWorkflowSelect() {
                 name='workflow'
                 value={selectedWorkflowName}
                 label=""
-                displayEmpty
+                // displayEmpty
+                defaultValue='default'
+                disabled
+                //
                 sx={{
                     "& .MuiSelect-select": {
                         display: 'flex',
@@ -92,12 +95,36 @@ export default function ProjectWorkflowSelect() {
                     }
                 }}
             >
+                <MenuItem
+                    value='default'
+                    sx={{ height: 50, px: 3, borderRadius: 0 }}
+                    selected
+                >
+                    Studly Default Workflow
+                    <Iconify
+                        icon='mdi:crown-outline'
+                        width={28}
+                        sx={{ mx: 1 }}
+                    />
+
+                </MenuItem>
                 {workflowList.map((item) => (
+                    item.name !== 'default' &&
+                    (<MenuItem
+                        key={item.id}
+                        value={item.name}
+                        sx={{ height: 50, px: 3, borderRadius: 0 }}
+                    >
+                        {item.name.toUpperCase()}
+
+                    </MenuItem>)
+                ))}
+                {/* {workflowList.map((item) => (
                     <MenuItem
                         key={item.id}
                         value={item.name === 'default' ? 'default' : item.name}
                         sx={{ height: 50, px: 3, borderRadius: 0 }}
-                    >
+                        >
                         {item.name === 'default' ? `Studly Default Workflow` : item.name.toUpperCase()}
                         {item.name === 'default' && (
                             <Iconify
@@ -107,7 +134,7 @@ export default function ProjectWorkflowSelect() {
                             />
                         )}
                     </MenuItem>
-                ))}
+                ))} */}
                 <MenuItem value='create' sx={{ height: 50, px: 3, borderTop: '1px solid black', borderRadius: 0 }}>
                     <Iconify
                         icon='material-symbols:add-circle-outline'

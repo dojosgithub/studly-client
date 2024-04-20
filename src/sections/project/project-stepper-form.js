@@ -201,9 +201,9 @@ export default function ProjectStepperForm() {
         _id: uuidv4(),
       }],
       workflow: {
-        name: '',
-        statuses: [],
-        returnDate: null
+        name: 'default',
+        statuses: ['Draft', 'Submitted'],
+        returnDate: "2024-03-05T07:23:21.004Z"
       },
       // inviteUsers: {
       //   inside: {
@@ -278,7 +278,6 @@ export default function ProjectStepperForm() {
 
       const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members }
       console.log("finalData", finalData)
-
 
       const { error, payload } = await dispatch(createNewProject(finalData))
       console.log('e-p', { error, payload });
