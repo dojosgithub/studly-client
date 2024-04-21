@@ -60,6 +60,8 @@ export const endpoints = {
     list: '/api/user/company',
     create: '/api/user/admin/register',
     userList: '/api/user/list',
+    subcontractorList: '/api/user/subcontractor/list',
+    subcontractorCompanyList: '/api/user/subcontractor/list/company',
 
   },
   project: {

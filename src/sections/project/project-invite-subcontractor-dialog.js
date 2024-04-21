@@ -24,8 +24,8 @@ import FormProvider, {
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { inviteSubcontractor, setAddExternalUser, setAddInternalUser, setMembers } from 'src/redux/slices/projectSlice';
+import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
+import { inviteSubcontractor, setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
 
@@ -38,7 +38,8 @@ export default function ProjectInviteSubcontractorDialog({
   onClose,
   ...other
 }) {
-  const userListOptions = useSelector(state => state?.project?.users);
+  // Get List of Subcontractors in DB
+  const subcontractorListOptions = useSelector(state => state?.project?.subcontractors?.list?.all);
 
   const dispatch = useDispatch()
   const InviteUserSchema = Yup.object().shape({
@@ -55,7 +56,7 @@ export default function ProjectInviteSubcontractorDialog({
     lastName: '',
     // email: '',
     user: null,
-    role: 'Sub Contractor',
+    role: SUBSCRIBER_USER_ROLE_STUDLY.SCO,
     status: 'invited',
     team: null
   }), []);
@@ -110,11 +111,14 @@ export default function ProjectInviteSubcontractorDialog({
       }
       console.log('finalData', finalData)
       // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
-      const { error, payload } = await dispatch(inviteSubcontractor(finalData))
-      if (error) {
-        enqueueSnackbar('There was an error sending Invite!', { variant: "error" });
-        return
-      }
+      dispatch(setMembers(finalData))
+      dispatch(setInvitedSubcontractor(finalData))
+      reset()
+      // const { error, payload } = await dispatch(inviteSubcontractor(finalData))
+      // if (error) {
+      //   enqueueSnackbar(error?.message||'There was an error sending Invite!', { variant: "error" });
+      //   return
+      // }
       reset()
       enqueueSnackbar('Invite sent successfully!');
       // console.log('updatedData Final', updatedData);
@@ -151,7 +155,7 @@ export default function ProjectInviteSubcontractorDialog({
               ))}
             </RHFSelect> */}
             <Stack>
-              <CustomAutoComplete listOptions={userListOptions}
+              <CustomAutoComplete listOptions={subcontractorListOptions}
                 // error={errors && errors.user && errors.user.message} 
                 error={errors && errors.user && (errors.user.message) || (errors?.user?.email && errors?.user?.email?.message)}
                 value={userObj} setValue={(val) => handleSelectUser(val)} />

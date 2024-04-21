@@ -16,7 +16,11 @@ const initialState = {
   current: null,
   create: { ...projectObj },
   subcontractors: {
-    list: [],
+    list: {
+      all:[],
+      company:[],
+    },
+    invited:[],
   },
   inviteUsers: {
     internal: [],

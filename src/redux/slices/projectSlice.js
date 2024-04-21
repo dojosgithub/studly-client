@@ -70,6 +70,49 @@ export const getCompanyUserList = createAsyncThunk(
   },
 )
 
+// get subcontractor list in company
+export const getCompanySubcontractorList = createAsyncThunk(
+  'subcontractor/companyList',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.company.subcontractorCompanyList);
+
+      return response.data.data
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the company.'
+      );
+    }
+  },
+)
+// get subcontractor list in db
+export const getAllSubcontractorList = createAsyncThunk(
+  'subcontractor/dbList',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.company.subcontractorList);
+
+      return response.data.data
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the company.'
+      );
+    }
+  },
+)
+
 export const inviteSubcontractor = createAsyncThunk(
   'project/inviteSubcontractor',
   async (data, { rejectWithValue }) => {
@@ -124,8 +167,16 @@ const initialState = {
 
   current: null,
   create: { ...projectObj },
-  subcontractors: [], // PROJECT_SUBCONTRACTORS
   members: [],
+  // Invite
+  subcontractors: {
+    list: {
+      all: [],
+      company: [],
+    },
+    invited: [],
+  },
+  users: [], // PROJECT_USERS
   inviteUsers: {
     internal: [],
     external: [],
@@ -170,6 +221,16 @@ const project = createSlice({
     },
     setRemoveExternalUser: (state, action) => {
       state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.id !== action.payload);
+    },
+    setInvitedSubcontractor: (state, action) => {
+      const subcontractorExists = state.subcontractors?.invited?.some(subcontractor =>
+        subcontractor.email === action.payload.email
+      );
+
+      // If the subcontractor does not exist, add them to the invited array
+      if (!subcontractorExists) {
+        state.subcontractors.invited = [...state.subcontractors.invited, action.payload];
+      }
     },
     setMembers: (state, action) => {
       const memberExists = state.members.some(member =>
@@ -242,8 +303,36 @@ const project = createSlice({
       state.error = action.error.message;
     });
 
-     // * Invite Subcontractor
-     builder.addCase(inviteSubcontractor.pending, (state) => {
+    // * Get Subcontractor List in Company 
+    builder.addCase(getCompanySubcontractorList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getCompanySubcontractorList.fulfilled, (state, action) => {
+      state.subcontractors.list = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getCompanySubcontractorList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // * Get Subcontractor List in DB 
+    builder.addCase(getAllSubcontractorList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getAllSubcontractorList.fulfilled, (state, action) => {
+      state.subcontractors.list = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getAllSubcontractorList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // * Invite Subcontractor
+    builder.addCase(inviteSubcontractor.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -258,5 +347,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject,setCurrentProjectRole, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setMembers, removeMember, resetMembers } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
 export default project.reducer

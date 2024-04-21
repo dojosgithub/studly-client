@@ -21,7 +21,7 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -116,6 +116,8 @@ export default function ProjectStepperForm() {
   useEffect(() => {
     dispatch(getTemplateList())
     dispatch(getWorkflowList())
+    dispatch(getAllSubcontractorList())
+    dispatch(getCompanySubcontractorList())
 
   }, [dispatch])
 
