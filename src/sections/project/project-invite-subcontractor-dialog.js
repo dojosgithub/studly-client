@@ -25,7 +25,8 @@ import FormProvider, {
 import uuidv4 from 'src/utils/uuidv4';
 // mock
 import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { inviteSubcontractor, setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
+import {setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
+// inviteSubcontractor, 
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
 
@@ -111,7 +112,7 @@ export default function ProjectInviteSubcontractorDialog({
       }
       console.log('finalData', finalData)
       // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
-      dispatch(setMembers(finalData))
+      // dispatch(setMembers(finalData))
       dispatch(setInvitedSubcontractor(finalData))
       reset()
       // const { error, payload } = await dispatch(inviteSubcontractor(finalData))
@@ -119,9 +120,9 @@ export default function ProjectInviteSubcontractorDialog({
       //   enqueueSnackbar(error?.message||'There was an error sending Invite!', { variant: "error" });
       //   return
       // }
-      reset()
-      enqueueSnackbar('Invite sent successfully!');
       // console.log('updatedData Final', updatedData);
+      enqueueSnackbar('Invite sent successfully!');
+      onClose()
 
 
     } catch (e) {

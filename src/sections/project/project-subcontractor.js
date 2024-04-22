@@ -5,7 +5,8 @@ import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock'
 import CustomAutoComplete from 'src/components/custom-automcomplete'
-import { setProjectTrades } from 'src/redux/slices/projectSlice'
+import { setMembers, setProjectTrades } from 'src/redux/slices/projectSlice'
+import Iconify from 'src/components/iconify'
 import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog'
 
 const ProjectSubcontractor = () => {
@@ -19,7 +20,7 @@ const ProjectSubcontractor = () => {
     const subcontractors = useMemo(() => [...subcontractorsList, ...subcontractorsInvitedList], [subcontractorsList, subcontractorsInvitedList]);
     const trades = useSelector(state => state.project.create.trades)
     const initialOptions = trades.reduce((acc, { tradeId, }) => {
-        acc[tradeId] = { tradeId, subcontractorId: "" };
+        acc[tradeId] = { tradeId, subcontractorId: "", email: "" };
         return acc;
     }, {});
 
@@ -30,39 +31,43 @@ const ProjectSubcontractor = () => {
 
     useEffect(() => {
         console.log('subcontractor', subcontractors);
+        console.log('options', options);
 
-    }, [subcontractors])
+    }, [subcontractors, options, trades])
 
-    const handleSelect = (tradeId, subcontractorObj) => {
+    const handleSelect = (tradeId, email) => {
         // console.log('subcontractorId', subcontractorId)
-        console.log('subcontractorObj', subcontractorObj)
-        const { email } = subcontractorObj
-        const hasEmailAndId = 'email' in subcontractorObj && 'id' in subcontractorObj;
-
-        // if (!subcontractorId) {
-        //     setOpen(true)
-        //     return
-        // }
-
-        // const data = { tradeId, subcontractorId }
-        const data = { email }
-        // if there is an id of subcontractor
-        if (hasEmailAndId) {
-            data.subcontractorId = subcontractorObj.id
+        if (email === "create") {
+            setOpen(true)
+            return
         }
-        console.log('handleSelect', data);
+        console.log('email', email)
+        // const { email } = subcontractorObj
+        // const hasEmailAndId = 'email' in subcontractorObj && 'id' in subcontractorObj;
+
+        // TODO ADD EXISTING SUBCONTRACTOR
+
+
+        // const data = { email }
+        // if there is an id of subcontractor
+        // if (hasEmailAndId) {
+        //     data.subcontractorId = subcontractorObj.id
+        // }
+        console.log('handleSelect', email);
 
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
                 // return { ...trade, subcontractorId };
-                return { ...trade, ...data };
+                return { ...trade, email };
             }
             return trade;
         });
-
         console.log('modifiedTrades', modifiedTrades)
         setValue('trades', modifiedTrades)
         dispatch(setProjectTrades(modifiedTrades))
+        // const filteredSubcontractor = subcontractors.filter(sub =>sub.email===email);
+        // console.log('filteredSubcontractor', filteredSubcontractor)
+        // dispatch(setMembers(filteredSubcontractor[0]))
 
         // // setOptions((prevOptions) => (
         // //     {
@@ -245,11 +250,11 @@ const ProjectSubcontractor = () => {
 
                     </Box>
                     {
-                        trades.map(({ tradeId, name }) => (
+                        trades?.map(({ tradeId, name }) => (
                             <Card sx={{ maxWidth: '500px', width: '100%', p: '1rem', display: 'flex', alignItems: "center", gap: 2, justifyContent: "space-between" }}>
                                 <Typography>{name}</Typography>
                                 <Box width='100%' maxWidth="200px">
-                                    <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].subcontractorId} label="" placeholder="Choose Subcontractor" sx={{
+                                    <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].email} label="" placeholder="Choose Subcontractor" sx={{
                                         width: '100%',
                                         // "&.MuiInputBase-root ": {
                                         //     borderBottomRightRadius: 0,
@@ -262,18 +267,26 @@ const ProjectSubcontractor = () => {
                                         }
                                     }}>
                                         {subcontractors?.length > 0 && subcontractors?.map((sub) => (
-                                            <MenuItem key={sub.email} value={sub} sx={{ height: 50, px: 3, borderRadius: 0 }}>
+                                            <MenuItem key={sub.email} value={sub.email} sx={{ height: 50, px: 3, borderRadius: 0 }}>
                                                 {/* {sub.name.toUpperCase()} */}
                                                 {sub.firstName.toUpperCase()}
                                                 {sub.lastName.toUpperCase()}
                                             </MenuItem>
                                         ))}
-                                        {(subcontractors?.length === 0) && (
+                                        {/* {(subcontractors?.length === 0) && (
                                             //  onClick={handleAddNew}
                                             <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="" onClick={() => setOpen(true)}>
                                                 Add New Subcontractor
                                             </MenuItem>
-                                        )}
+                                        )} */}
+                                        <Divider sx={{  background: 'grey' }} />
+                                        <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="create" onClick={() => setOpen(true)}>
+                                            <Iconify
+                                                icon='material-symbols:add-circle-outline'
+                                                width={20}
+                                                sx={{ mr: 1 }}
+                                            /> Invite subcontractor
+                                        </MenuItem>
                                     </Select>
                                 </Box>
                             </Card>
