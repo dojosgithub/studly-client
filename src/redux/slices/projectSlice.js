@@ -252,6 +252,7 @@ const project = createSlice({
     resetCreateProject: (state) => {
       state.create = projectObj;
       state.members = [];
+      state.subcontractors.invited = [];
       state.inviteUsers = {
         internal: [],
         external: [],
@@ -309,7 +310,7 @@ const project = createSlice({
       state.error = null;
     });
     builder.addCase(getCompanySubcontractorList.fulfilled, (state, action) => {
-      state.subcontractors.list = action.payload;
+      state.subcontractors.list.company = action.payload;
       state.isLoading = false;
       state.error = null;
     });
@@ -323,7 +324,7 @@ const project = createSlice({
       state.error = null;
     });
     builder.addCase(getAllSubcontractorList.fulfilled, (state, action) => {
-      state.subcontractors.list = action.payload;
+      state.subcontractors.list.all = action.payload;
       state.isLoading = false;
       state.error = null;
     });

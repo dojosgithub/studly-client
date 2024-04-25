@@ -42,23 +42,25 @@ const ProjectSubcontractor = () => {
             return
         }
         console.log('email', email)
+        const filteredSubcontractorByEmail = subcontractors.filter(sub =>sub.email===email)[0]
+        console.log("filteredSubcontractorByEmail",filteredSubcontractorByEmail);
         // const { email } = subcontractorObj
-        // const hasEmailAndId = 'email' in subcontractorObj && 'id' in subcontractorObj;
+        const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
 
         // TODO ADD EXISTING SUBCONTRACTOR
 
 
-        // const data = { email }
+        const data = { email }
         // if there is an id of subcontractor
-        // if (hasEmailAndId) {
-        //     data.subcontractorId = subcontractorObj.id
-        // }
-        console.log('handleSelect', email);
+        if (hasEmailAndId) {
+            data.subcontractorId = filteredSubcontractorByEmail.id
+        }
+        console.log('handleSelect', data);
 
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
                 // return { ...trade, subcontractorId };
-                return { ...trade, email };
+                return { ...trade, ...data };
             }
             return trade;
         });
@@ -111,7 +113,7 @@ const ProjectSubcontractor = () => {
             if (tradeIds.length === 0 || !prevOptions[tradeId]) {
                 // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
                 // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-                return { ...prevOptions, [tradeId]: { tradeId, email } };
+                return { ...prevOptions, [tradeId]: { tradeId, ...data } };
             }
 
             // Check if there's already an option with the same tradeId
@@ -120,14 +122,16 @@ const ProjectSubcontractor = () => {
             if (existingTradeIndex !== -1) {
                 // If an option with the same tradeId exists, update its subcontractorId
                 const updatedOptions = { ...prevOptions };
-                // updatedOptions[tradeId].subcontractorId = subcontractorId;
+                if(hasEmailAndId){
+                    updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
+                }
                 updatedOptions[tradeId].email = email;
                 return updatedOptions;
             }
 
             // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
             // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-            return { ...prevOptions, [tradeId]: { tradeId, email } };
+            return { ...prevOptions, [tradeId]: { tradeId, ...data } };
         });
 
 
@@ -140,7 +144,7 @@ const ProjectSubcontractor = () => {
             if (prevTrades.length === 0) {
                 // If it's empty, add a new trade with provided tradeId and subcontractorId
                 // return [{ tradeId, subcontractorId }];
-                return [{ tradeId, email }];
+                return [{ tradeId, ...data }];
             }
 
             // Check if there's already a trade with the same tradeId
@@ -149,14 +153,16 @@ const ProjectSubcontractor = () => {
             if (existingTradeIndex !== -1) {
                 // If a trade with the same tradeId exists, update its subcontractorId
                 const updatedTrades = [...prevTrades];
-                // updatedTrades[existingTradeIndex].subcontractorId = subcontractorId;
+                if(hasEmailAndId){
+                    updatedTrades[existingTradeIndex].subcontractorId =  filteredSubcontractorByEmail.id;
+                }
                 updatedTrades[existingTradeIndex].email = email;
                 return updatedTrades;
             }
 
             // If trade does not exist with the same tradeId, add a new trade
             // return [...prevTrades, { tradeId, subcontractorId }];
-            return [...prevTrades, { tradeId, email }];
+            return [...prevTrades, { tradeId, ...data }];
         });
 
 
