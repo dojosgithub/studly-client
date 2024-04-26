@@ -18,6 +18,7 @@ import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 //
+import { getStatusColor } from 'src/utils/constants';
 import { fDate, fDateISO } from 'src/utils/format-time';
 import UserQuickEditForm from './submittals-quick-edit-form';
 
@@ -65,7 +66,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>
 
         <TableCell>
-          <Label
+          {/* <Label
             variant="soft"
             color={
               (status === 'approved' && 'success') ||
@@ -74,6 +75,12 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
               (status === 'mcnr' && 'error') ||
               'default'
             }
+          >
+            {status}
+          </Label> */}
+          <Label
+            color={getStatusColor(status)}
+            variant="soft"
           >
             {status}
           </Label>

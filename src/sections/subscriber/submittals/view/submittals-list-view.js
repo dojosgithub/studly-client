@@ -178,7 +178,7 @@ export default function SubmittalsListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Submittals Log "
+          heading="Submittal Log "
           links={[
             {
               name: 'Dashboard',

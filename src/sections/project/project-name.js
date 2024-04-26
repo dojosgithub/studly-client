@@ -12,7 +12,7 @@ import {
 
 const ProjectName = () => (
   <>
-    <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Start by naming your project</Typography>
+    <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Let’s give your new project a name!</Typography>
     <Divider sx={{
       minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
     }} />

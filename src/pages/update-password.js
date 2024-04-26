@@ -10,7 +10,8 @@ export default function UpdatePasswordPage() {
   return (
     <>
       <Helmet>
-        <title>Update Password</title>
+        <title>Welcome to Studly!
+        </title>
       </Helmet>
 
       <SubscriberUpdatePasswordView />

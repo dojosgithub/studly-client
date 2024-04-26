@@ -30,20 +30,23 @@ export default function SubscriberUpdatePassword() {
   const router = useRouter();
 
   const ChangePassWordSchema = Yup.object().shape({
-    oldPassword: Yup.string().required('Old Password is required'),
+    // oldPassword: Yup.string().required('Old Password is required'),
+    // newPassword: Yup.string()
+    //   .required('New Password is required')
+    //   .min(7, 'Password must be at least 7 characters')
+    //   .test(
+    //     'no-match',
+    //     'New password must be different than old password',
+    //     (value, { parent }) => value !== parent.oldPassword
+    //   ),
     newPassword: Yup.string()
       .required('New Password is required')
-      .min(7, 'Password must be at least 7 characters')
-      .test(
-        'no-match',
-        'New password must be different than old password',
-        (value, { parent }) => value !== parent.oldPassword
-      ),
+      .min(7, 'Password must be at least 7 characters'),
     confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match'),
   });
 
   const defaultValues = {
-    oldPassword: '',
+    // oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
   };
@@ -73,7 +76,7 @@ export default function SubscriberUpdatePassword() {
         return
       }
       reset();
-      enqueueSnackbar('Password updated successfully!' , { variant: 'success' });
+      enqueueSnackbar('Password updated successfully!', { variant: 'success' });
       router.push(paths.subscriber.onboarding);
 
 
@@ -86,9 +89,12 @@ export default function SubscriberUpdatePassword() {
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit} >
-      <Typography fontSize={27} fontWeight='bold' mb={2} textAlign='center'>Update Password</Typography>
+      <Typography fontSize={27} fontWeight='bold' mb={1} textAlign='center'>Welcome to Studly!
+      </Typography>
+      <Typography fontSize={15} fontWeight='bold' mb={2} textAlign='center'>Please set a new password.
+      </Typography>
       <Stack component={Card} spacing={3} sx={{ p: 3, minWidth: { xs: "100%", sm: 400 } }}>
-        <RHFTextField
+        {/* <RHFTextField
           name="oldPassword"
           type={password.value ? 'text' : 'password'}
           label="Old Password"
@@ -101,7 +107,7 @@ export default function SubscriberUpdatePassword() {
               </InputAdornment>
             ),
           }}
-        />
+        /> */}
 
         <RHFTextField
           name="newPassword"

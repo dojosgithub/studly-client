@@ -59,6 +59,7 @@ export const endpoints = {
   company: {
     list: '/api/user/company',
     create: '/api/user/admin/register',
+    delete: (id) => `/api/user/company/${id}`,
     userList: '/api/user/list',
     subcontractorList: '/api/user/subcontractor/list',
     subcontractorCompanyList: '/api/user/subcontractor/list/company',

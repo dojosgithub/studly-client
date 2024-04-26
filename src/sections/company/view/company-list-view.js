@@ -18,7 +18,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // Redux API Functions
-import { fetchCompanyList } from 'src/redux/slices/companySlice';
+import { deleteCompany, fetchCompanyList } from 'src/redux/slices/companySlice';
 // _mock
 import { _userList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
@@ -117,6 +117,18 @@ export default function CompanyListView() {
     []
   );
 
+  const handleDeleteRow = useCallback(
+    (id) => {
+      // const deleteRow = tableData.filter((row) => row.id !== id);
+      // setTableData(deleteRow);
+      console.log("companyId", id)
+      dispatch(deleteCompany(id))
+
+      dispatch(fetchCompanyList({ search: filters.query, page }))
+    },
+    [dispatch, filters?.query, page]
+  );
+
 
   const handleEditRow = useCallback(
     (id) => {
@@ -140,14 +152,14 @@ export default function CompanyListView() {
   useEffect(() => {
     // Fetch company list data
     dispatch(fetchCompanyList({ search: filters.query, page }))
-      // .then((response) => {
-      //   // Update table data state using functional update to ensure the latest companyList value is used
-      //   console.log("companydata-->", response);
-      //   setTableData((prevTableData) => response.payload);
-      // })
-      // .catch(error => {
-      //   console.error('Error fetching company list:', error);
-      // });
+    // .then((response) => {
+    //   // Update table data state using functional update to ensure the latest companyList value is used
+    //   console.log("companydata-->", response);
+    //   setTableData((prevTableData) => response.payload);
+    // })
+    // .catch(error => {
+    //   console.error('Error fetching company list:', error);
+    // });
   }, [dispatch, filters.query, page]);
 
   const handlePageChange = (e, pg) => {
@@ -274,7 +286,7 @@ export default function CompanyListView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
-                      // onDeleteRow={() => handleDeleteRow(row.id)}
+                      onDeleteRow={() => handleDeleteRow(row.id)}
                       onEditRow={() => handleEditRow(row.id)}
                     />
                   ))}

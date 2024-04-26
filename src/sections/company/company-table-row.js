@@ -107,7 +107,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           Delete
         </MenuItem>
 
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -115,7 +115,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         >
           <Iconify icon="solar:pen-bold" />
           Edit
-        </MenuItem>
+        </MenuItem> */}
       </CustomPopover>
 
       <ConfirmDialog

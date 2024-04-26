@@ -13,6 +13,8 @@ import { paths } from 'src/routes/paths'
 import { fDateISO } from 'src/utils/format-time'
 import { getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice'
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock'
+import { getStatusColor } from 'src/utils/constants'
+import Label from 'src/components/label'
 
 
 const StyledCard = styled(Card, {
@@ -133,7 +135,20 @@ const SubmittalsDetails = ({ id }) => {
                 <StyledCard>
                     <Typography className='submittalTitle' >Status</Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: .75, px: 2 }}>
-                        <Chip size="medium" variant='contained' label={status} />
+                        {/* <Chip size="medium" variant='soft' label={status} color={getStatusColor(status)} /> */}
+                        <Label
+                            color={getStatusColor(status)}
+                            variant="soft"
+                        >
+                            {status}
+                        </Label>
+                        {/* // color={
+                            //   (status === 'joined' && 'success') ||
+                            //   (status === 'invited' && 'info') ||
+                            //   (status === 'pending' && 'warning') ||
+                            //   (status === 'banned' && 'error') ||
+                            //   'default'
+                            // } */}
                         {/* {status?.length > 0 && status?.slice(0, 4).map((item) => (
                             <Chip key={item} size="small" variant='outlined' label={item} />
                         ))}

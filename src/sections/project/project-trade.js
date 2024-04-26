@@ -11,6 +11,7 @@ import { buttonClasses } from '@mui/base/Button';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import { Divider, Typography } from '@mui/material';
 // components
+import { useFormContext } from 'react-hook-form';
 import { PROJECT_TEMPLATES } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import ProjectCreateTrade from './project-create-trade';
@@ -19,11 +20,12 @@ import ProjectTradeSelect from './project-trade-select';
 
 
 export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
-
+  const { getValues } = useFormContext();
+  const projectName = getValues('name')
 
   return (
     <>
-      <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Trades</Typography>
+      <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Which trades will you be using for {projectName}</Typography>
       <Divider sx={{
         minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
         mb: 4
@@ -39,7 +41,7 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
         </TabPanel>
         <TabPanel value={1}>
           {/* PROJECT_TEMPLATES */}
-          <ProjectTradeSelect/>
+          <ProjectTradeSelect />
           <ProjectExistingTrade />
 
           {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />

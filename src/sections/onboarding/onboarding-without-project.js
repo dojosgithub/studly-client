@@ -53,7 +53,7 @@ export default function OnboardingWithoutProjects() {
           Hello Mr. {startCase(user?.firstName)}
         </Typography>
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
-          Create a new project to get started with Studly
+          Let’s get started by creating a new project!
         </Typography>
 
 
