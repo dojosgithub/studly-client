@@ -188,7 +188,7 @@ export default function SubmittalsListView() {
             { name: 'Log' },
           ]}
           action={
-            (role === "CAD" && <Button
+            ((role === "CAD" || role === "PWU") && <Button
               component={RouterLink}
               href={paths.subscriber.submittals.new}
               variant="outlined"

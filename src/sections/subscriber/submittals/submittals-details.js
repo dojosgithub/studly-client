@@ -12,6 +12,7 @@ import Scrollbar from 'src/components/scrollbar'
 import { paths } from 'src/routes/paths'
 import { fDateISO } from 'src/utils/format-time'
 import { getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice'
+import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock'
 
 
 const StyledCard = styled(Card, {
@@ -80,10 +81,10 @@ const SubmittalsDetails = ({ id }) => {
                 }}
             >
                 {/* // ? If General Contractor has submitted Submittal to the (Architect || Engineer || Sub Contractor) */}
-                {status === "Submitted" && (currentUser?.role?.name === "Company Admin") && <Alert severity="success">Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.</Alert>}
+                {status === "Submitted" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Alert severity="success">Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.</Alert>}
 
                 {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
-                {status === "Submitted" && isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") &&
+                {status === "Submitted" && isResponseSubmitted && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) &&
                     <Alert severity="warning" sx={{ gap: ".5rem", alignItems: "center", "& .MuiAlert-message": { display: "flex", alignItems: "center", width: "100%" } }}>
                         (architect/engineer/subcontractor name) already submitted a response to this submittal.
                         <Box display='flex' flex={1} gap={1} mr={2} justifyContent="flex-end">
@@ -94,7 +95,7 @@ const SubmittalsDetails = ({ id }) => {
                 }
 
                 {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isResponseSubmitted && status === "Submitted" && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                {!isResponseSubmitted && status === "Submitted" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant='contained' onClick={handleSubmittalResponse}>
                             Add Submittal Response
@@ -103,7 +104,7 @@ const SubmittalsDetails = ({ id }) => {
                 )}
 
                 {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
-                {isResponseSubmitted && (currentUser?.role?.name === "Architect" || currentUser?.role?.name === "Engineer" || currentUser?.role?.name === "Sub Contractor") && (
+                {isResponseSubmitted && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
                     <Alert severity="success" >
                         Your response to the submittal was submitted. Thankyou!
                     </Alert>
@@ -181,7 +182,7 @@ const SubmittalsDetails = ({ id }) => {
                 </StyledCard>
 
             </Stack>
-            {status === "Draft" && (currentUser?.role?.name === "Company Admin") && <Box width="100%" display='flex' justifyContent='end'>
+            {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
                     Submit to Architect
                 </LoadingButton >

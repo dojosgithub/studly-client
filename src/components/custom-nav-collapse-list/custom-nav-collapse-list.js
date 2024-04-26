@@ -35,8 +35,8 @@ export default function CustomNavCollapseList({ onOpen }) {
         const { members } = project;
         console.log("role", role);
         console.log("members", members);
-        if (role !== "CAD") {
-          
+        if (role !== "CAD" || role !== "PWU") {
+
             if (members && members.length > 0) {
                 const projectRole = members.find(member => member.email === email);
                 console.log("projectRole", projectRole);
@@ -142,7 +142,7 @@ export default function CustomNavCollapseList({ onOpen }) {
                         },
                     }}
                 >
-                    {role === "CAD" &&
+                    {(role === "CAD" || role === "PWU") &&
                         <MenuItem MenuItem onClick={handleCreateNewProject} sx={{
                             // position: "sticky",
                             // bottom: 0,

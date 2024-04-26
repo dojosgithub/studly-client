@@ -67,11 +67,11 @@ export default function NavVertical({ openNav, onCloseNav }) {
       {/* {user?.role === "subscriber" && (<Button variant="contained" color='primary' onClick={() => setOpenDrawer(true)}>
         Project
       </Button>)} */}
-      {(user?.userType === "Subscriber" ) && (
+      {(user?.userType === "Subscriber") && (
         // && user?.role?.shortName === "CAD"
         <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} />
       )}
-      {(user?.userType === "Subscriber" && user?.role?.shortName === "CAD") && (
+      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (
         <CustomDrawer open={openDrawer} onClose={() => {
           setOpenDrawer(false)
           dispatch(resetCreateProject())

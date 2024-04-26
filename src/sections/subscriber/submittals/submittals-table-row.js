@@ -103,7 +103,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {role === "CAD" &&
+        {(role === "CAD" || role === "PWU") &&
           (<>
             <MenuItem
               onClick={() => {

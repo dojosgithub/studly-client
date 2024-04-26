@@ -32,8 +32,8 @@ import { ProjectView } from '../project/view';
 export default function OnboardingWithoutProjects() {
 
   const navigate = useNavigate()
-  const user = useSelector(state=>state?.user?.user);
-  const [openDrawer,setOpenDrawer] = useState(false)
+  const user = useSelector(state => state?.user?.user);
+  const [openDrawer, setOpenDrawer] = useState(false)
 
 
   return (
@@ -69,7 +69,7 @@ export default function OnboardingWithoutProjects() {
             color="secondary"
             size='large'
             onClick={() => setOpenDrawer(true)}
-            // onClick={() => navigate(paths.subscriber.submittals.list)}
+          // onClick={() => navigate(paths.subscriber.submittals.list)}
           >
             Create a new Project
           </Button>
@@ -78,7 +78,7 @@ export default function OnboardingWithoutProjects() {
 
       </Stack>
       {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}
-      {(user?.userType === "Subscriber" && user?.role?.shortName === "CAD") && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
+      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (<CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
 
     </>
   );
