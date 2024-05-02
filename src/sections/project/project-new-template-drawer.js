@@ -37,11 +37,14 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const NewTemplateSchema = Yup.object().shape({
-    name: Yup.string().required('Company Name is required').min(3, "Template name should be atleast three charachters long"),
+    name: Yup.string().required('Template Name is required').min(3, "Template name should be atleast three charachters long"),
     trades: Yup.array()
         .of(
             Yup.object().shape({
-                tradeId: Yup.string().required('Trade ID is required'),
+                // tradeId: Yup.string().required('Trade ID is required'),
+                tradeId: Yup.string()
+                    .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+                    .required('Trade id is required'),
                 name: Yup.string().required('Trade Name is required'),
                 _id: Yup.string()
             })
@@ -191,7 +194,7 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
                                 key={_id}
                                 sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                             >
-                                <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID' />
+                                <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID'  />
                                 <RHFTextField name={`trades[${index}].name`} placeholder='Trade Name' />
                                 <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                     <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />

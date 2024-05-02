@@ -139,7 +139,10 @@ export default function ProjectStepperForm() {
     trades: Yup.array()
       .of(
         Yup.object().shape({
-          tradeId: Yup.string().required('Trade ID is required'),
+          // tradeId: Yup.string().required('Trade ID is required'),
+          tradeId: Yup.string()
+          .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+          .required('Trade id is required'),
           name: Yup.string().required('Trade Name is required'),
           _id: Yup.string(),
           subcontractorId: Yup.string()

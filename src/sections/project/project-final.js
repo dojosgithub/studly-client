@@ -38,7 +38,7 @@ const ProjectFinal = () => {
                         // href: paths.subscriber.root
                     },
                     { name: 'Projects', href: paths.subscriber.submittals.list },
-                    { name: 'Prject' },
+                    { name: 'Project' },
                 ]}
 
                 sx={{

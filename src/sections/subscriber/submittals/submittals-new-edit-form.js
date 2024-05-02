@@ -41,6 +41,7 @@ import FormProvider, {
   RHFMultiSelectChip,
   RHFSelectChip
 } from 'src/components/hook-form';
+import { getStrTradeId } from 'src/utils/split-string';
 import { createNewSubmittal, editSubmittal } from 'src/redux/slices/submittalSlice';
 import SubmittalAttachments from './submittals-attachment';
 
@@ -113,11 +114,15 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const values = watch();
   console.log("values", values)
+  
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const tradeObj = trades.find(t => t.tradeId === data.trade);
+      const tradeId = getStrTradeId(data.trade);
+      console.log('tradeId', tradeId);
+      const tradeObj = trades.find(t => t.tradeId === tradeId);
       const trade = { ...tradeObj }
+      console.log("trade", trade)
       delete trade._id
       if (!trade) {
         return
@@ -228,7 +233,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   label="Trade"
                 >
                   {trades.map(trade => (
-                    <MenuItem key={trade.tradeId} value={trade?.tradeId}>{trade?.name}</MenuItem>
+                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId}-${trade?.name}`}>{trade?.name}</MenuItem>
                   )
                   )}
                 </RHFSelect>
