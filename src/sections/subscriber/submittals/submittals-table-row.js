@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 // hooks
+import truncate from 'lodash/truncate'
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
@@ -57,7 +58,9 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         </TableCell> */}
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{submittalId}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{description}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{
+          truncate(description, { length: 20, omission: '...' })
+        }</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(returnDate)}</TableCell>

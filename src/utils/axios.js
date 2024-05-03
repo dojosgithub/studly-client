@@ -69,7 +69,7 @@ export const endpoints = {
     list: '/api/user/project',
     create: '/api/user/project',
     invite: '/api/user/project/invite/subcontractor',
-
+    trades: (id) => `/api/user/project/${id}/trades`
   },
   submittal: {
     list: (id) => `/api/user/submittal/${id}`,

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { isEmpty } from 'lodash';
+import { isEmpty, concat } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import MenuItem from '@mui/material/MenuItem';
@@ -43,6 +43,7 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { getStrTradeId } from 'src/utils/split-string';
 import { createNewSubmittal, editSubmittal } from 'src/redux/slices/submittalSlice';
+import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
@@ -59,11 +60,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log("projectId", projectId)
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
-    submittalId: Yup.number()
-      .typeError('submittalId must be a number')
-      .positive('submittalId must be greater than zero')
-      .integer('submittalId must be an integer')
-      .required('submittalId is required'),
+    // submittalId: Yup.number()
+    //   .typeError('submittalId must be a number')
+    //   .positive('submittalId must be greater than zero')
+    //   .integer('submittalId must be an integer')
+    //   .required('submittalId is required'),
+    submittalId: Yup.string()
+      .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+      .required('Trade id is required'),
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     owner: Yup.string().required('Owner is required'),
@@ -80,7 +84,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const defaultValues = useMemo(
     () => ({
-      trade: currentSubmittal?.trade?.tradeId || '',
+      // currentSubmittal?.trade?.tradeId
+      trade: `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}` || '',
       submittalId: currentSubmittal?.submittalId || 0,
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
@@ -98,6 +103,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     [currentSubmittal]
   );
 
+
+
   const methods = useForm({
     resolver: yupResolver(NewSubmittalSchema),
     defaultValues,
@@ -113,15 +120,31 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   } = methods;
 
   const values = watch();
+  const { submittalId } = values
   console.log("values", values)
-  
+  const handleSelectTrade = useCallback(
+    (option) => {
+      console.log('option', option)
+      const sequence = option.submittalCreatedCount + 1
+      const id1 = concat(option.tradeId, '-', sequence).join('');
+      console.log('id1', id1)
+
+      setValue(
+        `submittalId`,
+        id1
+      );
+    },
+    [setValue]
+  );
+
+
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
       const tradeId = getStrTradeId(data.trade);
       console.log('tradeId', tradeId);
       const tradeObj = trades.find(t => t.tradeId === tradeId);
-      const trade = { ...tradeObj }
+      const trade = { ...tradeObj, submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1 }
       console.log("trade", trade)
       delete trade._id
       if (!trade) {
@@ -174,6 +197,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         enqueueSnackbar(error.message, { variant: "error" });
         return
       }
+      dispatch(getCurrentProjectTradesById(projectId))
+      dispatch(getProjectList())
       reset();
       enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
       router.push(paths.subscriber.submittals.list);
@@ -231,13 +256,15 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFSelect
                   name="trade"
                   label="Trade"
+                  defaultValue=''
                 >
-                  {trades.map(trade => (
-                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId}-${trade?.name}`}>{trade?.name}</MenuItem>
+                  {trades?.map(trade => (
+                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId}-${trade?.name}` || ''} onClick={() => handleSelectTrade(trade)}>{trade?.name}</MenuItem>
                   )
                   )}
                 </RHFSelect>
-                <RHFTextField name="submittalId" label="Submittal ID" type='number' />
+                <RHFTextField name="submittalId" label="Submittal ID" type='string' value={submittalId} disabled />
+                {/* type='number' */}
               </Box>
               <RHFTextField name="name" label="Name" />
               <RHFTextField name="description" multiline rows={3} label="Description" />
@@ -294,6 +321,29 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   ]}
                   disabled
                 /> */}
+                {/* <Controller
+                  name="returnDate"
+                  control={control}
+                  defaultValue={new Date()}
+                  render={({ field, fieldState: { error } }) => (
+                    <DatePicker
+                      label="Request Return Date"
+                      views={['day', 'month', 'year']}
+                      value={field.value || null}
+                      minDate={addDays(new Date(), 1)}
+                      onChange={(date) => field.onChange(date)}
+                      error={!!error}
+                      helperText={error && error?.message}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!error,
+                          helperText: error?.message,
+                        },
+                      }}
+                    />
+                  )}
+                /> */}
                 <Controller
                   name="returnDate"
                   control={control}
@@ -305,6 +355,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       value={field.value || null}
                       minDate={addDays(new Date(), 1)}
                       onChange={(date) => field.onChange(date)}
+                      format="dd/MM/yyyy" // Specify the desired date format
                       error={!!error}
                       helperText={error && error?.message}
                       slotProps={{

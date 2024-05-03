@@ -46,6 +46,27 @@ export const getProjectList = createAsyncThunk(
     }
   },
 )
+export const getCurrentProjectTradesById = createAsyncThunk(
+  'project/trades',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      console.log('id', id);
+      const response = await axiosInstance.get(endpoints.project.trades(id));
+
+      return response.data.data.trades
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while fetching project list.'
+      );
+    }
+  },
+)
 
 
 // get users list from
@@ -204,6 +225,9 @@ const project = createSlice({
     setCurrentProjectRole: (state, action) => {
       state.current = { ...state.current, role: action.payload }
     },
+    setCurrentProjectTrades: (state, action) => {
+      state.current = { ...state.current, trades: action.payload }
+    },
     setInternalUsers: (state, action) => {
       state.inviteUsers.internal = action.payload
     },
@@ -288,6 +312,19 @@ const project = createSlice({
       state.isLoading = false;
       state.error = action.error.message
     });
+    builder.addCase(getCurrentProjectTradesById.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getCurrentProjectTradesById.fulfilled, (state, action) => {
+      state.current = { ...state.current, trades: action.payload }
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getCurrentProjectTradesById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message
+    });
 
     // * Get Company User List
     builder.addCase(getCompanyUserList.pending, (state) => {
@@ -348,5 +385,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
 export default project.reducer
