@@ -10,6 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
+import { Box } from '@mui/material';
 // hooks
 import truncate from 'lodash/truncate'
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -56,7 +57,19 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }}
           />
         </TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{submittalId}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <Box
+            onClick={status === "Draft" ? onEditRow : onViewRow}
+            sx={{
+              cursor: 'pointer',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            {submittalId}
+          </Box>
+        </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{
           truncate(description, { length: 20, omission: '...' })

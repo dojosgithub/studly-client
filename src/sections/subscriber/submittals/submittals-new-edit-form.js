@@ -17,7 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { addDays } from 'date-fns';
+import { addDays, isAfter, isTomorrow } from 'date-fns';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers';
 // utils
@@ -41,8 +41,9 @@ import FormProvider, {
   RHFMultiSelectChip,
   RHFSelectChip
 } from 'src/components/hook-form';
+import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStrTradeId } from 'src/utils/split-string';
-import { createNewSubmittal, editSubmittal } from 'src/redux/slices/submittalSlice';
+import { createNewSubmittal, editSubmittal, getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
 import SubmittalAttachments from './submittals-attachment';
 
@@ -53,11 +54,16 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const dispatch = useDispatch();
   const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : []
   const [files, setFiles] = useState(existingAttachments)
-  const user = useSelector(state => state.user.user)
+  const currentUser = useSelector(state => state.user?.user)
   const projectId = useSelector(state => state.project?.current?.id)
   const trades = useSelector(state => state.project?.current?.trades)
+
   const { enqueueSnackbar } = useSnackbar();
   console.log("projectId", projectId)
+  console.log("submittalId ", id)
+
+
+
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
     // submittalId: Yup.number()
@@ -85,7 +91,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const defaultValues = useMemo(
     () => ({
       // currentSubmittal?.trade?.tradeId
-      trade: `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}` || '',
+      trade: currentSubmittal ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}` : '',
       submittalId: currentSubmittal?.submittalId || 0,
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
@@ -116,7 +122,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, },
   } = methods;
 
   const values = watch();
@@ -138,9 +144,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   );
 
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data, val) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
+      console.log("data-->", data)
+      console.log("val-->", val)
       const tradeId = getStrTradeId(data.trade);
       console.log('tradeId', tradeId);
       const tradeObj = trades.find(t => t.tradeId === tradeId);
@@ -152,7 +160,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       }
 
       let finalData;
-      const { _id, firstName, lastName, email } = user
+      const { _id, firstName, lastName, email } = currentUser
       const creator = _id
       if (isEmpty(currentSubmittal)) {
         // const creator = { _id, name: `${firstName} ${lastName}`, email }
@@ -197,10 +205,15 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         enqueueSnackbar(error.message, { variant: "error" });
         return
       }
+      
       dispatch(getCurrentProjectTradesById(projectId))
       dispatch(getProjectList())
       reset();
       enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
+      if (val === "review") {
+        console.log('payload', payload)
+        handleSubmitToArchitect(payload?.id)
+      }
       router.push(paths.subscriber.submittals.list);
 
 
@@ -210,6 +223,21 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       enqueueSnackbar(`Error ${currentSubmittal ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });
+
+  const handleSubmitToArchitect = async (SubmittalId) => {
+    console.log("SubmittalId", SubmittalId)
+    // setIsSubmitting(true);
+    const { error, payload } = await dispatch(submitSubmittalToArchitect(SubmittalId))
+    console.log('e-p', { error, payload });
+    // setIsSubmitting(false);
+    if (!isEmpty(error)) {
+      enqueueSnackbar(error.message, { variant: "error" });
+      return
+    }
+    enqueueSnackbar('Submittal submitted to architect successfully', { variant: "success" });
+    await dispatch(getSubmittalDetails(SubmittalId))
+
+  }
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {
@@ -256,10 +284,9 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFSelect
                   name="trade"
                   label="Trade"
-                  defaultValue=''
                 >
                   {trades?.map(trade => (
-                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId}-${trade?.name}` || ''} onClick={() => handleSelectTrade(trade)}>{trade?.name}</MenuItem>
+                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId || ''}-${trade?.name || ''}`} onClick={() => handleSelectTrade(trade)}>{trade?.name}</MenuItem>
                   )
                   )}
                 </RHFSelect>
@@ -344,7 +371,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     />
                   )}
                 /> */}
-                <Controller
+                {/* <Controller
                   name="returnDate"
                   control={control}
                   defaultValue={new Date()}
@@ -367,6 +394,43 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       }}
                     />
                   )}
+                /> */}
+                <Controller
+                  name="returnDate"
+                  control={control}
+                  defaultValue={new Date()}
+                  render={({ field, fieldState: { error } }) => {
+                    const selectedDate = field.value || null;
+                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
+                    const dateStyle = isDateNextDay ? {
+                      '.MuiInputBase-root.MuiOutlinedInput-root': {
+                        color: 'red',
+                        borderColor: 'red',
+                        border: '1px solid',
+                      },
+                    } : {};
+                    console.log(isDateNextDay)
+                    return (
+                      <DatePicker
+                        label="Request Return Date"
+                        views={['day', 'month', 'year']}
+                        value={selectedDate}
+                        minDate={addDays(new Date(), 1)}
+                        onChange={(date) => field.onChange(date)}
+                        format="dd/MM/yyyy" // Specify the desired date format
+                        error={!!error}
+                        helperText={error && error?.message}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: !!error,
+                            helperText: error?.message,
+                          },
+                        }}
+                        sx={dateStyle} // Apply conditional style based on the date comparison
+                      />
+                    );
+                  }}
                 />
                 <RHFSelect
                   name="type"
@@ -590,10 +654,28 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           </Card>
         </Grid> */}
 
-            <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-                {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'}
-              </LoadingButton>
+            <Stack direction="row" alignItems="center" justifyContent='flex-end' gap="2rem" sx={{ my: 3 }}>
+              {!currentSubmittal && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                <>
+                  <LoadingButton type="button" onClick={() => onSubmit("draft")} variant="outlined" size="large"  >
+                    Save Draft
+                  </LoadingButton>
+                  <LoadingButton type="button" onClick={() => onSubmit("review")} variant="contained" size="large" >
+                    Submit for Review
+                  </LoadingButton>
+                </>
+              )}
+
+              {currentSubmittal && <LoadingButton type="button" onClick={() => onSubmit("update")} variant="contained" size="large" >
+                Save Changes
+              </LoadingButton>}
+              {/* loading={isSubmitting} */}
+              {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
+              {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
+                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
+                    Submit to Architect
+                </LoadingButton >
+            </Box>} */}
             </Stack>
           </Card>
         </Grid>
