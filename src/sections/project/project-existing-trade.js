@@ -62,13 +62,36 @@ const ProjectExistingTrade = () => {
     const values = watch();
 
 
-    const handleAdd = () => {
+    // const handleAdd = () => {
+    //     append({
+    //         name: '',
+    //         tradeId: '',
+    //         _id: uuidv4(),
+    //     });
+    // };
+    const handleAdd = useCallback(() => {
         append({
             name: '',
             tradeId: '',
             _id: uuidv4(),
         });
-    };
+    }, [append]);
+
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === 'Tab') {
+                console.log('Tab key pressed');
+
+                handleAdd();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleAdd]);
 
     const handleRemove = (index) => {
         remove(index);
