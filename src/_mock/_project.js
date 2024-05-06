@@ -407,10 +407,11 @@ export const PROJECT_INVITE_USERS_INTERNAL = [...Array(8)].map((_, index) => {
   const status = ['Joined', 'Invited'][index % 2 === 0 || index % 3 === 1];
   return {
     id: _mock.id(index),
-    name: _mock.role(index),
+    firstName: _mock.firstName(index),
+    lastName: _mock.lastName(index),
     email: _mock.email(index),
-    role: _mock.role(index),
-    status
+    // role: _mock.role(index),
+    // status
   }
 
 }

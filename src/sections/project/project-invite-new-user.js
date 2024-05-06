@@ -39,9 +39,10 @@ const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
 
 const ProjectInviteNewUser = ({ type = 'internal' }) => {
     const dispatch = useDispatch()
-    const userListOptions = useSelector(state => state?.project?.users);
+    // const userListOptions = useSelector(state => state?.project?.users);
+    const userListOptions = PROJECT_INVITE_USERS_INTERNAL;
     const userRoles = type === "external" ? PROJECT_INVITE_EXTERNAL_USER_ROLES : PROJECT_INVITE_INTERNAL_USER_ROLES
-
+    console.log('userListOptions', userListOptions)
     const InviteUserSchema = Yup.object().shape({
         user: Yup.object().shape({ email: Yup.string().email('Invalid email').required('User email is required'), id: Yup.string() }),
         role: Yup.string().required('User role is required'),
@@ -69,7 +70,8 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         formState: { isSubmitting, isValid, errors },
     } = methods;
 
-    const { user: userObj } = getValues;
+    // const { user: userObj } = getValues;
+    const { user: userObj } = getValues();
 
     const handleSelectRole = useCallback(
         (index, option) => {
@@ -91,6 +93,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         [setValue]
     );
 
+    console.log('userObj',userObj)
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -106,7 +109,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
             const hasEmailAndId = 'email' in user && 'id' in user;
             const finalData = {
                 role: {
-                    name: role, shortName: getRoleKeyByValue(role), loggedInAs: USER_TYPES_STUDLY.SUB 
+                    name: role, shortName: getRoleKeyByValue(role), loggedInAs: USER_TYPES_STUDLY.SUB
                 },
                 email: user?.email,
                 team: type,
@@ -180,6 +183,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
                             ))}
                         </RHFSelect> */}
                         {/* USER_LIST_OPTIONS */}
+                        
                         <Stack>
                             <CustomAutoComplete listOptions={userListOptions} value={userObj} setValue={(val) => handleSelectUser(val)} />
                             {errors && errors?.user?.message && <Typography color='red' fontSize=".75rem">{errors?.user?.message}</Typography>}
