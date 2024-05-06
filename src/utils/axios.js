@@ -72,6 +72,7 @@ export const endpoints = {
     trades: (id) => `/api/user/project/${id}/trades`
   },
   submittal: {
+    pdf: (id) => `/api/user/report/${id}`,
     list: (id) => `/api/user/submittal/${id}`,
     create: '/api/user/submittal',
     edit: (id) => `/api/user/submittal/${id}`,

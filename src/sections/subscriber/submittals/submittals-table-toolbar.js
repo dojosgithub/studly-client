@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
 // @mui
 import Stack from '@mui/material/Stack';
@@ -12,9 +13,11 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
+import { Button } from '@mui/material';
 // components
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +28,7 @@ export default function SubmittalsTableToolbar({
   roleOptions,
 }) {
   const popover = usePopover();
+  const dispatch = useDispatch();
 
   // const handleFilterName = useCallback(
   //   (event) => {
@@ -35,7 +39,7 @@ export default function SubmittalsTableToolbar({
 
   const handleFilterStatus = useCallback(
     (event) => {
-      console.log('event.target.value',event.target.value)
+      console.log('event.target.value', event.target.value)
       onFilters(
         'status',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
@@ -44,7 +48,7 @@ export default function SubmittalsTableToolbar({
     [onFilters]
   );
 
-  
+
   const [inputValue, setInputValue] = useState('');
 
   // Debounce the call to onFilters
@@ -79,13 +83,13 @@ export default function SubmittalsTableToolbar({
           pr: { xs: 2.5, md: 1 },
         }}
       >
-        
+
 
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
             value={inputValue}
-            onChange={handleInputChange }
+            onChange={handleInputChange}
             // value={filters.name}
             // onChange={handleFilterName}
             placeholder="Search..."
@@ -103,7 +107,7 @@ export default function SubmittalsTableToolbar({
           </IconButton> */}
         </Stack>
 
-        
+
         <FormControl
           sx={{
             flexShrink: 0,
@@ -132,6 +136,15 @@ export default function SubmittalsTableToolbar({
             ))}
           </Select>
         </FormControl>
+        <Button
+          variant='outlined'
+          onClick={() => {
+            dispatch(getSubmittalLogPDF())
+          }}
+        >
+          <Iconify icon="solar:export-bold" style={{ height: "2rem", width: "3rem" }} />
+          Export
+        </Button>
       </Stack>
 
       {/* <CustomPopover

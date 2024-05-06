@@ -28,7 +28,7 @@ export default function SubmittalsDetailsPage() {
     return (
         <>
             <Helmet>
-                <title> Submittals Review</title>
+                <title> Submittal Review</title>
             </Helmet>
 
             <SubmittalsReviewRespondView id={`${id}`} />

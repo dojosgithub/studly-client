@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 
+import { truncate } from 'lodash';
 import { Box, Divider, IconButton, ListItem, Menu, MenuItem } from '@mui/material';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -16,7 +17,7 @@ import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 import Iconify from 'src/components/iconify';
 import Scrollbar from '../scrollbar';
 
-export default function CustomNavCollapseList({ onOpen }) {
+export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
     // const [open, setOpen] = React.useState(true);
     const projects = useSelector(state => state.project.list);
     const email = useSelector(state => state.user?.user?.email);
@@ -109,13 +110,16 @@ export default function CustomNavCollapseList({ onOpen }) {
                     "&:hover": {
                         bgcolor: (theme) => theme.palette.secondary.dark,
                         transition: 'ease-in-out .3s'
-                    }
+                    },
+                    // fontSize: isShirinked ? '1rem' : '2rem',
+
+                    ...isShirinked && { fontSize: '.75rem', textAlign: 'center' }
                 }}
                 aria-controls={open ? "project-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
             >
-                {currentProject?.name || 'Create New Project'}
+                {truncate(currentProject?.name || 'Create New Project', { length: isShirinked ? 12 : 20, omission: '...' })}
             </ListItem>
             <Scrollbar>
 
@@ -178,4 +182,5 @@ export default function CustomNavCollapseList({ onOpen }) {
 
 CustomNavCollapseList.propTypes = {
     onOpen: PropTypes.func,
+    isShirinked: PropTypes.bool,
 };

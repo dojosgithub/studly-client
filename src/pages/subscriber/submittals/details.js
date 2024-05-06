@@ -22,7 +22,7 @@ export default function SubmittalsDetailsPage() {
     return (
         <>
             <Helmet>
-                <title> Submittals Details</title>
+                <title> Submittal Details</title>
             </Helmet>
 
             <SubmittalsDetailsView id={`${id}`} />

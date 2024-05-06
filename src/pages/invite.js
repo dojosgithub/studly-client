@@ -7,7 +7,7 @@ import { InviteNewUserView } from 'src/sections/subscriber/invite/view';
 export default function InvitePage() {
   return (
     <>
-      <Helmet><title> Invite New</title></Helmet>
+      <Helmet><title> Invite</title></Helmet>
 
       <InviteNewUserView />
     </>

@@ -10,7 +10,7 @@ export default function CompanyListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Company List</title>
+        <title> Company List</title>
       </Helmet>
       <Stack sx={{ maxWidth: '100vw' }}>
         <CompanyListView />

@@ -10,7 +10,7 @@ export default function UpdatePasswordPage() {
   return (
     <>
       <Helmet>
-        <title>Welcome to Studly!
+        <title>Studly:Update Password
         </title>
       </Helmet>
 

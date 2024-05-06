@@ -8,7 +8,7 @@ export default function SubmittalsCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Create a new Project</title>
+        <title> Create a new Submittal</title>
       </Helmet>
 
       <SubmittalsCreateView />

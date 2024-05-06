@@ -108,6 +108,44 @@ export const getSubmittalList = createAsyncThunk(
     },
 )
 
+export const getSubmittalLogPDF = createAsyncThunk(
+    'submittal/pdf',
+    async (_, { getState, rejectWithValue }) => {
+        try {
+            const projectId = getState().project?.current?.id
+            console.log("projectId", projectId)
+
+            const response = await axiosInstance.get(endpoints.submittal.pdf(projectId), { responseType: 'blob' });
+            const buffer = response.data;
+            console.log('buffer', response.data)
+            const blob = new Blob([buffer], { type: 'application/pdf' });
+            console.log('blob', blob)
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary link and trigger a download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'submittal_logs.pdf';
+            a.click();
+
+            // Cleanup
+            URL.revokeObjectURL(url);
+
+            return response.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while fetching submittal list.'
+            );
+        }
+    },
+)
+
 export const submitSubmittalToArchitect = createAsyncThunk(
     'submittal/submitToArchitect',
     async (id, { getState, rejectWithValue }) => {
@@ -139,7 +177,7 @@ export const respondToSubmittalRequest = createAsyncThunk(
             console.log("formData", formData)
             console.log("submittalId", id)
 
-            const response = await axiosInstance.post(endpoints.submittal.review(id),formData);
+            const response = await axiosInstance.post(endpoints.submittal.review(id), formData);
 
             return response.data.data
         } catch (err) {
@@ -185,7 +223,7 @@ export const updateSubmittalResponseDetails = createAsyncThunk(
             console.log("formData", formData)
             console.log("submittalId", id)
 
-            const response = await axiosInstance.put(endpoints.submittal.reviewDetails(id),formData);
+            const response = await axiosInstance.put(endpoints.submittal.reviewDetails(id), formData);
 
             return response.data.data
         } catch (err) {
@@ -206,6 +244,7 @@ const initialState = {
     list: [],
     create: {},
     current: {},
+    report: null,
     response: null,
     isLoading: false,
     error: null
@@ -325,8 +364,21 @@ const submittal = createSlice({
             state.isLoading = false;
             state.error = action.error.message
         });
+        builder.addCase(getSubmittalLogPDF.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalLogPDF.fulfilled, (state, action) => {
+            state.report = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(getSubmittalLogPDF.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
     }
 })
 
-export const { setSubmittal, setCurrentSubmittal,setSubmittalResponse, setCreateSubmittal } = submittal.actions
+export const { setSubmittal, setCurrentSubmittal, setSubmittalResponse, setCreateSubmittal } = submittal.actions
 export default submittal.reducer

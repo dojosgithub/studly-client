@@ -14,7 +14,7 @@ export default function SubmittalsEditPage() {
   return (
     <>
       <Helmet>
-        <title> Submittals Edit</title>
+        <title> Submittal Edit</title>
       </Helmet>
 
       <SubmittalsEditView id={`${id}`} />
