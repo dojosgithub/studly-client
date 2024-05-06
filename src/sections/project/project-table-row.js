@@ -21,7 +21,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({ row, selected, onSelectRow, onDeleteRow }) {
+export default function ProjectTableRow({ row, selected, onSelectRow, onDeleteRow }) {
   const { name, avatarUrl, role, email, status } = row;
 
   // // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
@@ -131,7 +131,7 @@ export default function UserTableRow({ row, selected, onSelectRow, onDeleteRow }
   );
 }
 
-UserTableRow.propTypes = {
+ProjectTableRow.propTypes = {
   // // onEditRow: PropTypes.func,
   onDeleteRow: PropTypes.func,
   onSelectRow: PropTypes.func,

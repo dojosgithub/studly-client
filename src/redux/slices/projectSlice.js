@@ -235,16 +235,30 @@ const project = createSlice({
       state.inviteUsers.external = action.payload
     },
     setAddInternalUser: (state, action) => {
-      state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
+      // state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
+      // Check if the email already exists in the internal users array
+      const isExistingUser = state.inviteUsers.internal.some(user => user.email === action.payload.email);
+
+      // If the user does not already exist, add them to the internal users array
+      if (!isExistingUser) {
+        state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
+      }
     },
     setAddExternalUser: (state, action) => {
-      state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
+      // state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
+      // Check if the email already exists in the internal users array
+      const isExistingUser = state.inviteUsers.external.some(user => user.email === action.payload.email);
+
+      // If the user does not already exist, add them to the external users array
+      if (!isExistingUser) {
+        state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
+      }
     },
     setRemoveInternalUser: (state, action) => {
-      state.inviteUsers.internal = state.inviteUsers.internal.filter((row) => row.id !== action.payload);
+      state.inviteUsers.internal = state.inviteUsers.internal.filter((row) => row.email !== action.payload);
     },
     setRemoveExternalUser: (state, action) => {
-      state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.id !== action.payload);
+      state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.email !== action.payload);
     },
     setInvitedSubcontractor: (state, action) => {
       const subcontractorExists = state.subcontractors?.invited?.some(subcontractor =>
@@ -267,7 +281,8 @@ const project = createSlice({
       }
     },
     removeMember: (state, action) => {
-      const filteredMembers = state.members.filter(member => member?.id !== action?.payload)
+      // const filteredMembers = state.members.filter(member => member?.id !== action?.payload)
+      const filteredMembers = state.members.filter(member => member?.email !== action?.payload)
       state.members = filteredMembers
     },
     resetMembers: (state, action) => {

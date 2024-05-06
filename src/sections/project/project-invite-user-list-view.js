@@ -42,7 +42,7 @@ import {
     TablePaginationCustom,
 } from 'src/components/table';
 //
-import { setExternalUsers, setInternalUsers, setRemoveExternalUser, setRemoveInternalUser } from 'src/redux/slices/projectSlice';
+import { removeMember, setExternalUsers, setInternalUsers, setRemoveExternalUser, setRemoveInternalUser } from 'src/redux/slices/projectSlice';
 //
 import ProjectTableRow from './project-table-row';
 import ProjectTableToolbar from './project-table-toolbar';
@@ -86,11 +86,11 @@ export default function ProjectInviteUserListView({ type }) {
         const userList = members.filter(member => member.team === type);
         setTableData(userList);
         console.log('userList updated:', userList);
-      }, [members, type]);
+    }, [members, type]);
 
-    
-    
-    
+
+
+
     const settings = useSettingsContext();
 
     const router = useRouter();
@@ -130,17 +130,20 @@ export default function ProjectInviteUserListView({ type }) {
     );
 
     const handleDeleteRow = useCallback(
-        (id) => {
+        (email) => {
             console.log('tableData', tableData)
-            console.log('id', id)
-            const deleteRow = tableData.filter((row) => row.id !== id);
-            const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
+            console.log('email', email)
+            const filteredRows = tableData.filter((row) => row.email !== email);
+            console.log('filteredRows', filteredRows)
             // enqueueSnackbar('User removed from the team successfully!');
-            dispatch(setUsersActions(id))
-            setTableData(deleteRow);
+            // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
+            // dispatch(setUsersActions(email))
+            dispatch(removeMember(email))
+
+            setTableData(filteredRows);
             table.onUpdatePageDeleteRow(dataInPage.length);
         },
-        [dataInPage.length, table, tableData, dispatch, type]
+        [dataInPage.length, table, tableData, dispatch]
     );
 
     const handleResetFilters = useCallback(() => {
@@ -183,7 +186,7 @@ export default function ProjectInviteUserListView({ type }) {
         }
     }
 
-    
+
 
 
 
@@ -289,10 +292,10 @@ export default function ProjectInviteUserListView({ type }) {
                                     )
                                     .map((row) => (
                                         <ProjectTableRow
-                                            key={row.id}
+                                            key={row.email}
                                             row={row}
-                                            selected={table.selected.includes(row.id)}
-                                            onDeleteRow={() => handleDeleteRow(row.id)}
+                                            selected={table.selected.includes(row.email)}
+                                            onDeleteRow={() => handleDeleteRow(row.email)}
                                         // onSelectRow={() => {
                                         //     table.onSelectRow(row.id)
 
