@@ -141,8 +141,8 @@ export default function ProjectStepperForm() {
         Yup.object().shape({
           // tradeId: Yup.string().required('Trade ID is required'),
           tradeId: Yup.string()
-          .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
-          .required('Trade id is required'),
+            .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+            .required('Trade id is required'),
           name: Yup.string().required('Trade Name is required'),
           _id: Yup.string(),
           subcontractorId: Yup.string()
@@ -317,51 +317,95 @@ export default function ProjectStepperForm() {
     return { isFormValid, currentStepValue }
   }
 
+  // const handleNext = async () => {
+  //   // new change
+  //   if (activeStep === steps.length) return;
+
+  //   let newSkipped = skipped;
+  //   // console.log('newSkipped Before', newSkipped)
+  //   if (isStepSkipped(activeStep)) {
+  //     newSkipped = new Set(newSkipped.values());
+  //     newSkipped.delete(activeStep);
+  //   }
+  //   // console.log('newSkipped After', newSkipped)
+
+  //   const { isFormValid, currentStepValue } = await getFormValidation();
+  //   // console.log('isFormValid', { isFormValid, currentStepValue })
+
+  //   // ?  setting name to redux
+  //   if ((currentStepValue === 'name') && isFormValid) {
+  //     // console.log('formValues.name', formValues?.name);
+  //     dispatch(setProjectName(formValues?.name))
+  //   }
+  //   // ?  setting trades to redux
+  //   if ((currentStepValue === 'trades') && isFormValid) {
+  //     dispatch(setProjectTrades(formValues?.trades))
+  //   }
+
+  //   if ((currentStepValue === 'workflow') && isFormValid) {
+  //     dispatch(setProjectWorkflow(formValues?.workflow))
+  //   }
+  //   // TODO:  NEW CODE
+  //   if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+  //     setOpen(true)
+  //     return
+  //   }
+  //   // TODO:  NEW CODE END
+
+
+
+
+  //   if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
+  //     setOpen(true)
+  //     return
+  //   }
+  //   if (isFormValid) {
+  //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   }
+  //   setSkipped(newSkipped);
+  // };
   const handleNext = async () => {
-    // new change
-    if (activeStep === steps.length) return;
+    if (activeStep === steps.length) return; // Prevent submission if already on last step
 
     let newSkipped = skipped;
-    // console.log('newSkipped Before', newSkipped)
+
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-    // console.log('newSkipped After', newSkipped)
 
     const { isFormValid, currentStepValue } = await getFormValidation();
-    // console.log('isFormValid', { isFormValid, currentStepValue })
 
-    // ?  setting name to redux
-    if ((currentStepValue === 'name') && isFormValid) {
-      // console.log('formValues.name', formValues?.name);
-      dispatch(setProjectName(formValues?.name))
-    }
-    // ?  setting trades to redux
-    if ((currentStepValue === 'trades') && isFormValid) {
-      dispatch(setProjectTrades(formValues?.trades))
-    }
-
-    if ((currentStepValue === 'workflow') && isFormValid) {
-      dispatch(setProjectWorkflow(formValues?.workflow))
-    }
-    // TODO:  NEW CODE
-    if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
-      setOpen(true)
+    if (!isFormValid && currentStepValue === "trades") {
+      enqueueSnackbar('Please add a trade', { variant: "warning" });
       return
     }
-    // TODO:  NEW CODE END
-
-
-
-
-    if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
-      setOpen(true)
-      return
-    }
+    // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
+      switch (currentStepValue) {
+        case 'name':
+          dispatch(setProjectName(formValues?.name));
+          break;
+        case 'trades':
+          dispatch(setProjectTrades(formValues?.trades));
+          break;
+        case 'workflow':
+          dispatch(setProjectWorkflow(formValues?.workflow));
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Handle skipping steps or moving to the next step
+    if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+      setOpen(true);
+    } else if (activeTab === 'existing' && selectedTemplate === 'default' && activeStep === 1) {
+      setOpen(true);
+    } else if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
+
     setSkipped(newSkipped);
   };
 
