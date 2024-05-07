@@ -39,8 +39,8 @@ const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
 
 const ProjectInviteNewUser = ({ type = 'internal' }) => {
     const dispatch = useDispatch()
-    // const userListOptions = useSelector(state => state?.project?.users);
-    const userListOptions = PROJECT_INVITE_USERS_INTERNAL;
+    // const userListOptions = PROJECT_INVITE_USERS_INTERNAL;
+    const userListOptions = useSelector(state => state?.project?.users);
     const userRoles = type === "external" ? PROJECT_INVITE_EXTERNAL_USER_ROLES : PROJECT_INVITE_INTERNAL_USER_ROLES
     console.log('userListOptions', userListOptions)
     const InviteUserSchema = Yup.object().shape({
