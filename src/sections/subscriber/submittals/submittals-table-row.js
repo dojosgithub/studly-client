@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box } from '@mui/material';
 // hooks
+import { isTomorrow, parseISO } from 'date-fns';
 import truncate from 'lodash/truncate'
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -76,7 +77,9 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         }</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(returnDate)}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140, color: (theme) => isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.secondary }}>
+          {fDateISO(returnDate)}
+        </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>

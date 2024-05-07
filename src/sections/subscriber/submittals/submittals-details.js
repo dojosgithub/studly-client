@@ -7,6 +7,8 @@ import { Alert, Avatar, Box, Button, Card, Chip, Divider, ListItemText, Paper, S
 import { LoadingButton } from '@mui/lab'
 import { useNavigate } from 'react-router'
 import { useSnackbar } from 'notistack'
+import { addDays, isAfter, isTomorrow, parseISO } from 'date-fns';
+
 //
 import Scrollbar from 'src/components/scrollbar'
 import { paths } from 'src/routes/paths'
@@ -163,7 +165,9 @@ const SubmittalsDetails = ({ id }) => {
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Requested Return Date</Typography>
-                    <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: .75, px: 2 }}>{returnDate && fDateISO(returnDate)}</Typography>
+                    <Typography sx={{ color: (theme) => isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.secondary , flex: .75, px: 2 }}>
+                        {returnDate && fDateISO(returnDate)}
+                    </Typography>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Creator</Typography>
