@@ -36,7 +36,7 @@ export default function SubmittalsEditView({ id }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create a new Submittals"
+        heading="Edit Submittal"
         links={[
           {
             name: 'Dashboard',

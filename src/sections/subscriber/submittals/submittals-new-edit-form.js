@@ -52,6 +52,7 @@ import SubmittalAttachments from './submittals-attachment';
 export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const ccList = useSelector(state=>state.submittal.users)
   const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : []
   const [files, setFiles] = useState(existingAttachments)
   const currentUser = useSelector(state => state.user?.user)
@@ -61,6 +62,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const { enqueueSnackbar } = useSnackbar();
   console.log("projectId", projectId)
   console.log("submittalId ", id)
+  console.log("ccList ", ccList)
 
 
 
@@ -79,8 +81,9 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     owner: Yup.string().required('Owner is required'),
     type: Yup.string().required('Type is required'),
     status: Yup.string().required('Status is required'),
-    ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
+    ccList: Yup.array(),
     returnDate: Yup.date().required('Return Date is required'),
+    // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     // attachments: Yup.array().min(1),
     // creator: Yup.string().required('Creator is required'),
     // submittedDate: Yup.date().required('Submssion Date is required'),
@@ -92,7 +95,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     () => ({
       // currentSubmittal?.trade?.tradeId
       trade: currentSubmittal ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}` : '',
-      submittalId: currentSubmittal?.submittalId || 0,
+      submittalId: currentSubmittal?.submittalId || '',
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
       owner: currentSubmittal?.owner || '',
@@ -457,12 +460,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 label="CC List"
                 placeholder="Select multiple options"
                 chip
-                options={[
-                  { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-                  { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-                  // { label: 'Option 3', value: 'option3' },
-                  // Add more options as necessary
-                ]}
+                options={ccList?.map(item => ({ label: item.email, value: item.email }))}
+                // options={[
+                //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+                //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+                // ]}
               />
 
             </Box>
