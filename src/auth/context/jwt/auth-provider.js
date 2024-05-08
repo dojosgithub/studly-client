@@ -45,6 +45,17 @@ const reducer = (state, action) => {
       user: action.payload.user
     };
   }
+  if (action.type === 'FORGOT_PASSWORD') {
+    return {
+      ...state,
+    };
+  }
+  if (action.type === 'NEW_PASSWORD') {
+    return {
+      ...state,
+      user: action.payload.user
+    };
+  }
   if (action.type === 'LOGOUT') {
     return {
       ...state,
@@ -150,6 +161,41 @@ export function AuthProvider({ children }) {
     });
   }, []);
 
+  // FORGOT PASSWORD
+  const forgotPassword = useCallback(async (email) => {
+    const data = {
+      email,
+    };
+
+    const response = await axios.get(endpoints.auth.forgotPassword, { params: data });
+    console.log('forgotPassword-->', response.data)
+    dispatch({
+      type: 'FORGOT_PASSWORD',
+    });
+  }, []);
+
+  // NEW PASSWORD
+  const newPassword = useCallback(async (email, password, code) => {
+    const data = {
+      email,
+      password,
+      code
+    };
+
+    const response = await axios.post(endpoints.auth.newPassword, data);
+    console.log('response.data', response.data)
+    const { data: { accessToken, user, refreshToken } } = response.data;
+    setSession(accessToken);
+    dispatchRedux(signIn({ accessToken, user, refreshToken }))
+    dispatch({
+      type: 'LOGIN',
+      payload: {
+        user,
+      },
+    });
+    
+  }, [dispatchRedux]);
+
   // LOGOUT
   const logout = useCallback(async () => {
     setSession(null);
@@ -177,8 +223,10 @@ export function AuthProvider({ children }) {
       login,
       register,
       logout,
+      forgotPassword,
+      newPassword,
     }),
-    [login, logout, register, state.user, status]
+    [login, logout, register, forgotPassword, newPassword, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

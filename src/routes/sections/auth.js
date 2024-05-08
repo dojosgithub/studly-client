@@ -11,6 +11,8 @@ import { SplashScreen } from 'src/components/loading-screen';
 // JWT
 const JwtLoginPage = lazy(() => import('src/pages/auth/jwt/login'));
 const JwtRegisterPage = lazy(() => import('src/pages/auth/jwt/register'));
+const JwtForgotPasswordPage = lazy(() => import('src/pages/auth/jwt/forgot-password'));
+const JwtNewPasswordPage = lazy(() => import('src/pages/auth/jwt/new-password'));
 
 // AUTH0
 const Auth0LoginPage = lazy(() => import('src/pages/auth/auth0/login'));
@@ -39,6 +41,22 @@ const authJwt = {
       element: (
         <AuthClassicLayout title="Start with Studly Today">
           <JwtRegisterPage />
+        </AuthClassicLayout>
+      ),
+    },
+    {
+      path: 'forgot-password',
+      element: (
+        <AuthClassicLayout title="forgot-password">
+          <JwtForgotPasswordPage />
+        </AuthClassicLayout>
+      ),
+    },
+    {
+      path: 'new-password',
+      element: (
+        <AuthClassicLayout title="new-password">
+          <JwtNewPasswordPage />
         </AuthClassicLayout>
       ),
     },

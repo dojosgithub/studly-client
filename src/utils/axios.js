@@ -55,6 +55,8 @@ export const endpoints = {
     login: '/api/user/login',
     register: '/api/auth/register',
     updatePassword: '/api/user/update-password',
+    forgotPassword: '/api/user/send-totp',
+    newPassword: '/api/user/verify-totp',
   },
   company: {
     list: '/api/user/company',

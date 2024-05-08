@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 // sections
-import { JwtRegisterView } from 'src/sections/auth/jwt';
+import { JwtNewPasswordView } from 'src/sections/auth/jwt';
 
 // ----------------------------------------------------------------------
 
-export default function RegisterPage() {
+export default function NewPasswordPage() {
   return (
     <>
       <Helmet>
-        <title> Register</title>
+        <title> New Password</title>
       </Helmet>
 
-      <JwtRegisterView />
+      <JwtNewPasswordView />
     </>
   );
 }

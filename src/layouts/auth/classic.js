@@ -61,7 +61,7 @@ export default function AuthClassicLayout({ children, image, title }) {
         mx: 'auto',
         maxWidth: 480,
         px: { xs: 2, md: 8 },
-        py: { xs: 15, md: 30 },
+        py: { xs: 15, md: title === "forgot-password" || title === "new-password" ? 15 : 30 },
       }}
     >
       {children}
