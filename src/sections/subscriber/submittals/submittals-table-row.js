@@ -60,7 +60,9 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         </TableCell> */}
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           <Box
-            onClick={status === "Draft" ? onEditRow : onViewRow}
+            onClick={
+              (role === "CAD" || role === "PWU") && status === "Draft" ? onEditRow : onViewRow
+            }
             sx={{
               cursor: 'pointer',
               '&:hover': {
