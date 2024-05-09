@@ -196,7 +196,7 @@ const SubmittalsDetails = ({ id }) => {
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >Assignee / Owner</Typography>
-                    <Typography sx={{ color: (theme) => theme.palette.primary, flex: .75, px: 2 }}>{owner}</Typography>
+                    <Typography sx={{ color: (theme) => theme.palette.primary, flex: .75, px: 2 }}>{owner?.firstName}{" "}{owner?.lastName}</Typography>
                 </StyledCard>
                 <StyledCard>
                     <Typography className='submittalTitle' >CC List</Typography>

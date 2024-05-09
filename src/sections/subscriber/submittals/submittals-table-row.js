@@ -83,7 +83,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
           {fDateISO(returnDate)}
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.firstName}{" "}{owner?.lastName}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>
 
         <TableCell>

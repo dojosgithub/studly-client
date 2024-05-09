@@ -78,11 +78,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       .required('Trade id is required'),
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
-    owner: Yup.string().required('Owner is required'),
     type: Yup.string().required('Type is required'),
     status: Yup.string().required('Status is required'),
-    ccList: Yup.array(),
     returnDate: Yup.date().required('Return Date is required'),
+    owner: Yup.string(),
+    ccList: Yup.array(),
     // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     // attachments: Yup.array().min(1),
     // creator: Yup.string().required('Creator is required'),
@@ -98,7 +98,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       submittalId: currentSubmittal?.submittalId || '',
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
-      owner: currentSubmittal?.owner || '',
+      owner: currentSubmittal?.owner?.email || '',
       type: currentSubmittal?.type || '',
       ccList: currentSubmittal?.ccList || [],
       status: currentSubmittal?.status || 'Draft', // Set default values here
@@ -150,12 +150,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const onSubmit = handleSubmit(async (data, val) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      console.log("data-->", data)
-      console.log("val-->", val)
+      const owner=ccList.filter(item=>data.owner===item.email)[0]?.user;
       const tradeId = getStrTradeId(data.trade);
-      console.log('tradeId', tradeId);
       const tradeObj = trades.find(t => t.tradeId === tradeId);
       const trade = { ...tradeObj, submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1 }
+      console.log("data-->", data)
+      console.log("val-->", val)
+      console.log("owner-->", owner)
+      console.log('tradeId', tradeId);
       console.log("trade", trade)
       delete trade._id
       if (!trade) {
@@ -169,11 +171,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         // const creator = { _id, name: `${firstName} ${lastName}`, email }
         const submittedDate = new Date()
         const link = 'www.google.com'
-        finalData = { ...data, creator, submittedDate, link, projectId, trade }
+        finalData = { ...data, owner,creator, submittedDate, link, projectId, trade }
       } else {
-        finalData = { ...currentSubmittal, ...data, creator, trade }
+        finalData = { ...currentSubmittal, ...data, creator,owner, trade }
       }
-      console.log('finalData', finalData)
 
 
       const formData = new FormData();
@@ -449,10 +450,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
               <RHFSelect
                 name="owner"
                 label="Assignee/Owner"
+                // capitalize
               >
-                <MenuItem value="option1">Option 1</MenuItem>
+                {/* <MenuItem value="option1">Option 1</MenuItem>
                 <MenuItem value="option2">Option 2</MenuItem>
-                <MenuItem value="option3">Option 3</MenuItem>
+                <MenuItem value="option3">Option 3</MenuItem> */}
+                {ccList?.map(item =>(
+                  <MenuItem value={item?.email} key={item?.email}>{item?.email}</MenuItem>
+                ))}
               </RHFSelect>
               {/* // TODO: List should be dynamic */}
               <RHFMultiSelect

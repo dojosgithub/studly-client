@@ -87,11 +87,11 @@ const ProjectFinal = () => {
                             <Stack spacing={3} maxHeight={300}>
                                 {/* _bankingContacts.slice(-5) */}
                                 {filteredTrades.map((trade, index) => (
-                                    <Stack direction="row" alignItems="center" key={trade.id}>
-                                        {trade?.subcontractorId && <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />}
+                                    <Stack direction="row" alignItems="center" key={trade?.id}>
+                                        {trade?.email && <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />}
 
-                                        <ListItemText primary={trade.name} secondary={trade.subcontractorId} />
-                                        {!trade?.subcontractorId && <Chip size="small" variant='outlined' label='N/A' />}
+                                        <ListItemText primary={trade?.name} secondary={trade?.email} />
+                                        {!trade?.email && <Chip size="small" variant='outlined' label='N/A' />}
                                     </Stack>
                                 ))}
                             </Stack>

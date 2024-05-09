@@ -17,6 +17,7 @@ import TextField from '@mui/material/TextField';
 export function RHFSelect({
   name,
   native,
+  capitalize=false,
   maxHeight = 220,
   helperText,
   children,
@@ -63,7 +64,11 @@ export function RHFSelect({
                 },
               },
             },
-            sx: { textTransform: 'capitalize' },
+            sx:{
+              ...(capitalize && {
+                textTransform: 'capitalize'  
+              }),
+            },
             renderValue: selected => renderSelectedValue(selected, chip),
           }}
           error={!!error}
@@ -87,6 +92,7 @@ RHFSelect.propTypes = {
   native: PropTypes.bool,
   chip: PropTypes.bool,
   disabled: PropTypes.bool,
+  capitalize: PropTypes.bool,
 };
 
 // ----------------------------------------------------------------------
