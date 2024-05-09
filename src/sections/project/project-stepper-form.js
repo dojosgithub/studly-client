@@ -208,7 +208,8 @@ export default function ProjectStepperForm() {
       workflow: {
         name: 'default',
         statuses: ['Draft', 'Submitted'],
-        returnDate: "2024-03-05T07:23:21.004Z"
+        returnDate: new Date()
+        // returnDate: "2024-03-05T07:23:21.004Z"
       },
       // inviteUsers: {
       //   inside: {
