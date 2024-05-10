@@ -16,7 +16,14 @@ import { PageNotFoundIllustration } from 'src/assets/illustrations';
 export default function NotFoundView() {
   return (
     // <CompactLayout>
-    <MotionContainer>
+    <MotionContainer style={{
+      "display": "flex",
+      "flexDirection": "column",
+      "flexWrap": "wrap",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "paddingBlock": "2rem"
+    }}>
       <m.div variants={varBounce().in}>
         <Typography variant="h3" sx={{ mb: 2 }}>
           Sorry, Page Not Found!
