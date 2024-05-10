@@ -463,7 +463,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
               <RHFMultiSelect
                 name="ccList"
                 label="CC List"
-                placeholder="Select multiple options"
+                // placeholder="Select multiple options"
                 chip
                 options={ccList?.map(item => ({ label: item.email, value: item.email }))}
                 // options={[

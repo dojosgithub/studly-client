@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 
 import { truncate } from 'lodash';
@@ -14,6 +15,7 @@ import Collapse from '@mui/material/Collapse';
 import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 // components
+import { paths } from 'src/routes/paths';
 import Iconify from 'src/components/iconify';
 import Scrollbar from '../scrollbar';
 
@@ -26,6 +28,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
     const userType = useSelector(state => state?.user?.user?.userType);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // const handleClose = () => {
     //     setOpen(!open);
@@ -47,6 +50,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
         }
         dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
         handleClose()
+        navigate(paths.subscriber.submittals.list)
     };
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);

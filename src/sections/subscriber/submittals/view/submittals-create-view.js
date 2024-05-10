@@ -16,7 +16,7 @@ export default function SubmittalsCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create a new Submittals"
+        heading="Create a new Submittal"
         links={[
           {
             name: 'Dashboard',
@@ -26,7 +26,7 @@ export default function SubmittalsCreateView() {
             name: 'Submittals',
             href: paths.subscriber.submittals.list,
           },
-          { name: 'New Submittals' },
+          { name: 'New Submittal' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
