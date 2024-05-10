@@ -23,9 +23,10 @@ const ProjectFinal = () => {
         },
         display: 'flex', borderRadius: "10px", padding: "1rem",
         gap: '1rem',
-        ...(isSubcontractor && {
-            maxHeight: 300
-        }),
+        // ...(isSubcontractor && {
+        //     maxHeight: 300
+        // }),
+        maxHeight: 300
 
     }));
     return (
@@ -100,7 +101,7 @@ const ProjectFinal = () => {
                 </StyledCard>}
                 {((members?.length > 0)) &&
                     (<StyledCard>
-                        <Typography className='projectTitle'>Invited Users</Typography>
+                        <Typography className='projectTitle' sx={{minWidth:'max-content'}}>Invited Users</Typography>
                         <Stack spacing={3} sx={{ flex: .75 }}>
                             <Scrollbar>
                                 <Stack spacing={3} maxHeight={300}>
