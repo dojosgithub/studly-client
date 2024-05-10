@@ -102,6 +102,7 @@ export default function OnboardingView() {
             <Stack
                 component="div"
                 direction="row"
+                flexWrap= 'wrap'
             // sx={{
             //     minHeight: '100vh',
             // }}
