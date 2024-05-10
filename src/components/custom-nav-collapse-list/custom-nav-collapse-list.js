@@ -68,7 +68,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
 
     return (
         <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'transparent', color: 'grey' }}
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'transparent', color: 'white' }}
             component="nav"
             aria-labelledby="nested-list-subheader"
         // subheader={
