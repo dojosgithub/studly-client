@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { isEmpty } from 'lodash';
 // hook-form
 import * as Yup from 'yup';
@@ -21,7 +22,7 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectDrawerState, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -37,6 +38,7 @@ import FormProvider, {
 import { paths } from 'src/routes/paths';
 import { getTemplateList, resetTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
 import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
+import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectTemplateName from './project-template-name-dialog';
@@ -89,6 +91,7 @@ export default function ProjectStepperForm() {
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const projectList = useSelector(state => state.project.list);
@@ -294,14 +297,17 @@ export default function ProjectStepperForm() {
       handleReset()
       enqueueSnackbar('Project created successfully!', { variant: 'success' });
       await dispatch(getProjectList())
+      dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
       dispatch(resetTemplate())
       dispatch(resetWorkflow())
       dispatch(resetCreateProject())
+      dispatch(setProjectDrawerState(false))
       // if(isEmpty(projectList)){
       //   router.push(paths.subscriber.onboarding);
       //   return
       // }
-      router.push(paths.subscriber.submittals.list);
+      // router.push(paths.subscriber.submittals.list);
+      navigate(paths.subscriber.submittals.list)
 
 
     } catch (error) {

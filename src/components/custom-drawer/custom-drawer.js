@@ -28,7 +28,7 @@ import Scrollbar from '../scrollbar';
 
 // ----------------------------------------------------------------------
 
-export default function CustomDrawer({ open, onClose, Component, type = "project" }) {
+export default function CustomDrawer({ open, onClose, isOnboarding = false, Component, type = "project" }) {
     const theme = useTheme();
 
     const renderHead = (
@@ -99,7 +99,10 @@ export default function CustomDrawer({ open, onClose, Component, type = "project
                 [`& .${drawerClasses.paper}`]: {
                     // ...paper({ theme, bgcolor: theme.palette.background.default }),
                     width: `calc(100% - ${280}px)`,
-                    'background': 'white'
+                    'background': 'white',
+                    ...isOnboarding && {
+                        width: '100%',
+                    }
                 },
             }}
         >
@@ -118,4 +121,5 @@ CustomDrawer.propTypes = {
     open: PropTypes.bool,
     Component: PropTypes.node,
     type: PropTypes.string,
+    isOnboarding: PropTypes.bool,
 };

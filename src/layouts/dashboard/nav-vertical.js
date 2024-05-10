@@ -21,7 +21,7 @@ import { NavSectionVertical } from 'src/components/nav-section';
 import { CustomDrawer } from 'src/components/custom-drawer';
 import { CustomNavCollapseList } from 'src/components/custom-nav-collapse-list';
 //
-import { resetCreateProject } from 'src/redux/slices/projectSlice';
+import { resetCreateProject, setProjectDrawerState } from 'src/redux/slices/projectSlice';
 import { resetWorkflow } from 'src/redux/slices/workflowSlice';
 import { resetTemplate } from 'src/redux/slices/templateSlice';
 //
@@ -39,6 +39,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
   const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
   const projects = useSelector(state => state.project.list)
+  const isProjectDrawerOpen = useSelector(state => state.project.isProjectDrawerOpen)
 
   const navData = useNavData();
   const navDataSubscriber = useNavDataSubscriber();
@@ -64,19 +65,25 @@ export default function NavVertical({ openNav, onCloseNav }) {
       }}
     >
       {/* {user?.userType !== "Subscriber" && <Logo sx={{ my: 3, mx: "auto" }} />} */}
-       <Logo sx={{ my: 3, mx: "auto" }} />
+      <Logo sx={{ my: 3, mx: "auto" }} />
       {(user?.userType === "Subscriber") && (
         // && user?.role?.shortName === "CAD"
-        <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} />
+        <CustomNavCollapseList onOpen={() => {
+          // setOpenDrawer(true)
+          dispatch(setProjectDrawerState(true))
+        }} />
       )}
       {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (
-        <CustomDrawer open={openDrawer} onClose={() => {
-          setOpenDrawer(false)
+        <CustomDrawer onClose={() => {
+          dispatch(setProjectDrawerState(false))
+          // setOpenDrawer(false)
           dispatch(resetCreateProject())
           dispatch(resetWorkflow())
           dispatch(resetTemplate())
-        }
-        } Component={ProjectView} />
+        }}
+          open={isProjectDrawerOpen}
+          // open={openDrawer}
+          Component={ProjectView} />
       )}
       <NavSectionVertical data={navData} config={
         {

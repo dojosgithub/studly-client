@@ -185,7 +185,7 @@ const projectObj = {
 // PROJECTS ||
 const initialState = {
   list: [],
-
+  isProjectDrawerOpen: false,
   current: null,
   create: { ...projectObj },
   members: [],
@@ -297,6 +297,9 @@ const project = createSlice({
         external: [],
       };
     },
+    setProjectDrawerState: (state, action) => {
+      state.isProjectDrawerOpen = action.payload
+    },
     resetProjectState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -400,5 +403,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
+export const { setProjectDrawerState, setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
 export default project.reducer
