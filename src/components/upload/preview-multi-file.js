@@ -14,7 +14,7 @@ import FileThumbnail, { fileData } from '../file-thumbnail';
 
 // ----------------------------------------------------------------------
 
-export default function MultiFilePreview({ thumbnail, files, onRemove, sx }) {
+export default function MultiFilePreview({ thumbnail, files, onRemove, downloadAble, sx }) {
   return (
     <AnimatePresence initial={false}>
       {files?.map((file) => {
@@ -43,6 +43,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }) {
               }}
             >
               <FileThumbnail
+                downloadAble
                 tooltip
                 imageView
                 file={file}
@@ -118,4 +119,6 @@ MultiFilePreview.propTypes = {
   onRemove: PropTypes.func,
   sx: PropTypes.object,
   thumbnail: PropTypes.bool,
+  // onDownload: PropTypes.func,
+  downloadAble: PropTypes.bool,
 };

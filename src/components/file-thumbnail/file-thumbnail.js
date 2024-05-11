@@ -8,10 +8,26 @@ import DownloadButton from './download-button';
 
 // ----------------------------------------------------------------------
 
-export default function FileThumbnail({ file, tooltip, imageView, onDownload, sx, imgSx }) {
+export default function FileThumbnail({
+  file,
+  tooltip,
+  imageView,
+  downloadAble = false,
+  sx,
+  imgSx,
+}) {
   const { name = '', path = '', preview = '' } = fileData(file);
 
   const format = fileFormat(path || preview);
+
+  const onDownloadHandler = () => {
+    // if (format === 'image') {
+    //   window.open(preview, '_blank', 'noreferrer');
+    // } else {
+    //   window.open(preview, '_blank', 'noreferrer');
+    // }
+    window.open(preview, '_blank', 'noreferrer');
+  };
 
   const renderContent =
     format === 'image' && imageView ? (
@@ -22,7 +38,7 @@ export default function FileThumbnail({ file, tooltip, imageView, onDownload, sx
           width: 1,
           height: 1,
           flexShrink: 0,
-          objectFit: 'cover',
+          objectFit: 'contain',
           ...imgSx,
         }}
       />
@@ -53,7 +69,7 @@ export default function FileThumbnail({ file, tooltip, imageView, onDownload, sx
           }}
         >
           {renderContent}
-          {onDownload && <DownloadButton onDownload={onDownload} />}
+          {downloadAble && <DownloadButton onDownload={onDownloadHandler} />}
         </Stack>
       </Tooltip>
     );
@@ -62,7 +78,7 @@ export default function FileThumbnail({ file, tooltip, imageView, onDownload, sx
   return (
     <>
       {renderContent}
-      {onDownload && <DownloadButton onDownload={onDownload} />}
+      {downloadAble && <DownloadButton onDownload={onDownloadHandler} />}
     </>
   );
 }
@@ -71,7 +87,8 @@ FileThumbnail.propTypes = {
   file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   imageView: PropTypes.bool,
   imgSx: PropTypes.object,
-  onDownload: PropTypes.func,
+  // onDownload: PropTypes.func,
+  downloadAble: PropTypes.bool,
   sx: PropTypes.object,
   tooltip: PropTypes.bool,
 };
