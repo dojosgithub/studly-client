@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
@@ -61,7 +61,7 @@ const tradesDefaultVal = [{
 }]
 
 
-const ProjectNewTemplateDrawer = ({ onClose }) => {
+const ProjectNewTemplateDrawer = ({ onClose, open }) => {
 
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
@@ -72,6 +72,7 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
         }),
         []
     );
+    const showSnackbarRef = useRef(null)
     // const [rows, setRows] = useState(tradesDefaultVal)
     // const values = watch();
 
@@ -122,6 +123,10 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
     }, [append]);
 
     useEffect(() => {
+        if (trades.length === 0) {
+            showSnackbarRef.current = true
+        }
+
         const handleKeyPress = (event) => {
             if (event.key === 'Tab') {
                 console.log('Tab key pressed');
@@ -130,12 +135,14 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
             }
         };
 
-        document.addEventListener('keydown', handleKeyPress);
 
+        document.addEventListener('keydown', handleKeyPress);
         return () => {
             document.removeEventListener('keydown', handleKeyPress);
+            showSnackbarRef.current = false
+
         };
-    }, [handleAdd]);
+    }, [handleAdd, trades?.length]);
 
     const handleRemove = (index) => {
         remove(index);
@@ -193,7 +200,11 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
     //     setValue("trades", updatedTrades)
 
     // }
-
+    console.log('open->', open)
+    if (showSnackbarRef && showSnackbarRef.current && trades.length === 0 && open) {
+        console.log('trades', trades)
+        enqueueSnackbar('Please add a trade', { variant: "warning" });
+    }
 
     return (
         <Container>
@@ -217,7 +228,7 @@ const ProjectNewTemplateDrawer = ({ onClose }) => {
                                 key={_id}
                                 sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                             >
-                                <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID'  />
+                                <RHFTextField name={`trades[${index}].tradeId`} placeholder='Trade ID' />
                                 <RHFTextField name={`trades[${index}].name`} placeholder='Trade Name' />
                                 <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                     <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
@@ -254,5 +265,6 @@ export default ProjectNewTemplateDrawer
 
 ProjectNewTemplateDrawer.propTypes = {
     onClose: PropTypes.func,
+    open: PropTypes.bool,
 
 };

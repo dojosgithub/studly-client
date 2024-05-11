@@ -73,9 +73,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     //   .positive('submittalId must be greater than zero')
     //   .integer('submittalId must be an integer')
     //   .required('submittalId is required'),
-    submittalId: Yup.string()
-      .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
-      .required('Trade id is required'),
+    // submittalId: Yup.string()
+    //   .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+    //   .required('Trade id is required'),
+    submittalId: Yup.string(),
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     type: Yup.string().required('Type is required'),

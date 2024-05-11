@@ -44,8 +44,8 @@ export default function ProjectInviteSubcontractorDialog({
 
   const dispatch = useDispatch()
   const InviteUserSchema = Yup.object().shape({
-    lastName: Yup.string().required('First name is required'),
-    firstName: Yup.string().required('Last name is required'),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
     // email: Yup.string().email('Invalid email').required('User email is required'),
     user: Yup.object().shape({ email: Yup.string().email('Invalid email').required('User email is required'), id: Yup.string() }, { message: "Email is required" }),
     status: Yup.string(),

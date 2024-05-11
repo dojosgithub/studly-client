@@ -111,7 +111,7 @@ export default function CustomDrawer({ open, onClose, isOnboarding = false, Comp
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             {/* <ProjectView /> */}
-            <Component type={type} onClose={onClose} />
+            <Component type={type} onClose={onClose} open={open}/>
 
         </Drawer>
     );
