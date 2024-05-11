@@ -26,7 +26,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav }) {
+export default function Header({ onOpenNav,isOnboarding=false }) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -91,6 +91,10 @@ export default function Header({ onOpenNav }) {
           ...(isNavMini && {
             width: `calc(100% - ${NAV.W_MINI + 1}px)`,
           }),
+          // if it is onboarding
+          ...(isOnboarding && {
+            width: `100%`,
+          }),
         }),
       }}
     >
@@ -110,4 +114,5 @@ export default function Header({ onOpenNav }) {
 
 Header.propTypes = {
   onOpenNav: PropTypes.func,
+  isOnboarding: PropTypes.bool,
 };

@@ -37,7 +37,8 @@ export const StyledItem = styled(ListItemButton, {
     marginBottom: config.itemGap,
     borderRadius: config.itemRadius,
     minHeight: config.itemRootHeight,
-    color: theme.palette.text.secondary,
+    // color: theme.palette.text.secondary,
+    color: theme.palette.text.white,
 
     // Active root item
     ...(active && {

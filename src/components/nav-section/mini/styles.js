@@ -20,7 +20,8 @@ export const StyledItem = styled(ListItemButton, {
       },
     },
     sub: {
-      color: theme.palette.text.primary,
+      // color: theme.palette.text.primary,
+      color: theme.palette.text.white,
       backgroundColor: theme.palette.action.selected,
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
@@ -34,7 +35,8 @@ export const StyledItem = styled(ListItemButton, {
     justifyContent: 'center',
     borderRadius: config.itemRadius,
     minHeight: config.itemRootHeight,
-    color: theme.palette.text.secondary,
+    // color: theme.palette.text.secondary,
+    color: theme.palette.text.white,
     margin: `0 ${config.itemGap}px ${config.itemGap}px ${config.itemGap}px`,
     ...(config.hiddenLabel &&
       !subItem && {

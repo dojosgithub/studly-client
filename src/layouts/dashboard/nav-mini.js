@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -11,7 +11,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import Logo from 'src/components/logo';
 import { NavSectionMini } from 'src/components/nav-section';
 //
-import { resetCreateProject } from 'src/redux/slices/projectSlice';
+import { resetCreateProject, setProjectDrawerState } from 'src/redux/slices/projectSlice';
 import { resetWorkflow } from 'src/redux/slices/workflowSlice';
 import { resetTemplate } from 'src/redux/slices/templateSlice';
 //
@@ -31,6 +31,7 @@ export default function NavMini() {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { user } = useAuthContext();
+  const isProjectDrawerOpen = useSelector(state => state.project.isProjectDrawerOpen)
 
   return (
     <Box
@@ -58,25 +59,32 @@ export default function NavMini() {
           ...hideScroll.x,
         }}
       >
-        <Logo sx={{ mx: 'auto', my: 2, height:'1.25rem',width:"100%" }} />
+        <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: "100%" }} />
 
-        
-   {(user?.userType === "Subscriber") && (
-        // && user?.role?.shortName === "CAD"
-        <CustomNavCollapseList onOpen={() => setOpenDrawer(true)} isShirinked/>
-      )}
-      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (
-        <CustomDrawer open={openDrawer} onClose={() => {
-          setOpenDrawer(false)
-          dispatch(resetCreateProject())
-          dispatch(resetWorkflow())
-          dispatch(resetTemplate())
-        }
-        } Component={ProjectView} />
-      )}
+
+        {(user?.userType === "Subscriber") && (
+          // && user?.role?.shortName === "CAD"
+          <CustomNavCollapseList onOpen={() => {
+            // setOpenDrawer(true)
+            dispatch(setProjectDrawerState(true))
+          }}
+            isShirinked />
+        )}
+        {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (
+          <CustomDrawer onClose={() => {
+            dispatch(setProjectDrawerState(false))
+            // setOpenDrawer(false)
+            dispatch(resetCreateProject())
+            dispatch(resetWorkflow())
+            dispatch(resetTemplate())
+          }}
+            open={isProjectDrawerOpen}
+            // open={openDrawer} 
+            Component={ProjectView} />
+        )}
         <NavSectionMini
-        // // data={user?.role === "subscriber" ? navDataSubscriber : navData}
-         data={navData}
+          // // data={user?.role === "subscriber" ? navDataSubscriber : navData}
+          data={navData}
           config={
             {
               currentRole: user?.role?.shortName, // if current role is not allowed

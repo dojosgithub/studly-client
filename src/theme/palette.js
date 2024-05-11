@@ -119,6 +119,7 @@ export function palette(mode) {
     ...COMMON,
     mode: 'light',
     text: {
+      white: "#FFF",
       primary: GREY[800],
       secondary: GREY[600],
       disabled: GREY[500],
