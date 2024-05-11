@@ -16,7 +16,7 @@ import { Stack, Typography } from '@mui/material';
 // components
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { setCreateTemplate } from 'src/redux/slices/projectSlice';
+import { setCreateTemplate, setDefaultTemplateModified, setSelectedTradeTemplate } from 'src/redux/slices/projectSlice';
 import { createNewTemplate, getTemplateList, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,6 @@ export default function ProjectTemplateName({ open, onClose, setSelectedTemplate
             onTemplateCreation(data)
             console.info('DATA', data);
             setSelectedTemplate('')
-
             const { error, payload } = await dispatch(createNewTemplate(data))
             console.log('e-p', { error, payload });
             if (!isEmpty(error)) {
@@ -68,6 +67,8 @@ export default function ProjectTemplateName({ open, onClose, setSelectedTemplate
             enqueueSnackbar('Template created successfully!', { variant: 'success' });
             dispatch(setIsTemplateNameAdded(true))
             dispatch(getTemplateList())
+            dispatch(setDefaultTemplateModified(false))
+            dispatch(setSelectedTradeTemplate(name))
             reset();
             onClose();
         } catch (error) {

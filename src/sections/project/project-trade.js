@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha, styled } from '@mui/system';
 import { Tabs } from '@mui/base/Tabs';
@@ -10,19 +10,52 @@ import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { buttonClasses } from '@mui/base/Button';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import { Divider, Typography } from '@mui/material';
-// components
+
+//
 import { useFormContext } from 'react-hook-form';
+import { setActiveTab, setProjectTrades, setSelectedTradeTemplate } from 'src/redux/slices/projectSlice';
+
 import { PROJECT_TEMPLATES } from 'src/_mock';
+// components
 import { CustomSelect } from 'src/components/custom-select';
+import uuidv4 from 'src/utils/uuidv4';
 import ProjectCreateTrade from './project-create-trade';
 import ProjectExistingTrade from './project-existing-trade';
 import ProjectTradeSelect from './project-trade-select';
 
 
 export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
-  const { getValues } = useFormContext();
+  const { getValues, setValue } = useFormContext();
   const projectName = getValues('name')
 
+  const dispatch = useDispatch()
+  const activeTab = useSelector(state => state.project?.create?.activeTab)
+  const selectedTradeTemplate = useSelector(state => state.project?.create?.selectedTradeTemplate)
+  const defaultObj = {
+    name: '',
+    tradeId: '',
+    _id: uuidv4(),
+  }
+
+  // ? Reset trades and selected trade template on tab change 
+  const handleTabChange = (e, value) => {
+    console.log('value-->', value)
+    console.log('activeTab-->', activeTab)
+    dispatch(setActiveTab(value));
+    if (value === 'create') {
+      dispatch(setSelectedTradeTemplate(''))
+      dispatch(setProjectTrades([defaultObj]));
+      setValue('trades', [defaultObj])
+    } else {
+      setValue('trades', [])
+      dispatch(setProjectTrades([]));
+    }
+  }
+  // onClick={(e) => {
+  //   onTabChange(e.target.name)
+  //   dispatch(setActiveTab(e.target.name))
+  //   console.log('activeTab', e.target.name)
+  // }}
   return (
     <>
       <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Which trades will you be using for {projectName}</Typography>
@@ -31,18 +64,18 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
         mb: 4
       }} />
 
-      <Tabs>
-        <TabsList onClick={(e) => onTabChange(e.target.name)}>
-          <Tab value={0} name="create">Create Trade</Tab>
-          <Tab value={1} name="existing">Use Exisiting Template</Tab>
+      <Tabs value={activeTab} onChange={handleTabChange}>
+        <TabsList>
+          <Tab value='create' name="create">Create Trade</Tab>
+          <Tab value='existing' name="existing">Use Exisiting Template</Tab>
         </TabsList>
-        <TabPanel value={0}>
+        <TabPanel value='create'>
           <ProjectCreateTrade />
         </TabPanel>
-        <TabPanel value={1}>
+        <TabPanel value='existing'>
           {/* PROJECT_TEMPLATES */}
           <ProjectTradeSelect />
-          <ProjectExistingTrade />
+          {selectedTradeTemplate && <ProjectExistingTrade />}
 
           {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}

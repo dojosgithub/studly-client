@@ -181,6 +181,9 @@ const projectObj = {
     statuses: [],
     returnDate: '',
   },
+  activeTab: 'create', // existing
+  selectedTradeTemplate: '', // default || create || [template]
+  isDefaultTemplateModified: false, // if true open name modal for creating a new template 
 }
 // PROJECTS ||
 const initialState = {
@@ -300,6 +303,16 @@ const project = createSlice({
     setProjectDrawerState: (state, action) => {
       state.isProjectDrawerOpen = action.payload
     },
+    setActiveTab: (state, action) => {
+      state.create.activeTab = action.payload
+    },
+    setDefaultTemplateModified: (state, action) => {
+      state.create.isDefaultTemplateModified = action.payload
+    },
+    setSelectedTradeTemplate: (state, action) => {
+      state.create.selectedTradeTemplate = action.payload
+    },
+
     resetProjectState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -403,5 +416,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectDrawerState, setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
 export default project.reducer

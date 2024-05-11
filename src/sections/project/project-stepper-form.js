@@ -22,7 +22,7 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setProjectDrawerState, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setDefaultTemplateModified, setProjectDrawerState, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -84,7 +84,7 @@ export default function ProjectStepperForm() {
   const [activeStep, setActiveStep] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState('')
-  const [activeTab, setActiveTab] = useState('')
+  // const [activeTab, setActiveTab] = useState('')
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3, 4]));
 
   const [open, setOpen] = useState(false)
@@ -99,6 +99,14 @@ export default function ProjectStepperForm() {
   const inviteUsers = useSelector(state => state.project.inviteUsers);
   const members = useSelector(state => state.project.members);
   const companies = useSelector(state => state.user.user.companies);
+
+  const selectedTradeTemplate = useSelector(state => state.project.create.selectedTradeTemplate);
+  const isDefaultTemplateModified = useSelector(state => state.project.create.isDefaultTemplateModified);
+  const activeTab = useSelector(state => state.project.create.activeTab);
+  const templates = useSelector(state => state.template.list);
+  const defaultTemplate = templates.find(item => item.name === 'default');
+  console.log('defaultTemplate', defaultTemplate)
+  const defaultTemplateTrades = defaultTemplate ? defaultTemplate?.trades : [];
 
   const templateList = useSelector(state => state.template.list);
   const workflowList = useSelector(state => state.workflow.list);
@@ -203,17 +211,22 @@ export default function ProjectStepperForm() {
     // TODO: currentSelectedTemplate from redux 
     return {
       name: '',
-      trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
+      trades: activeTab === "create" ? [{
         name: '',
         tradeId: '',
         _id: uuidv4(),
-      }],
+      }] : [],
       workflow: {
         name: 'default',
         statuses: ['Draft', 'Submitted'],
         returnDate: new Date()
         // returnDate: "2024-03-05T07:23:21.004Z"
       },
+      // trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
+      //   name: '',
+      //   tradeId: '',
+      //   _id: uuidv4(),
+      // }],
       // inviteUsers: {
       //   inside: {
       //     internal: [],
@@ -226,7 +239,7 @@ export default function ProjectStepperForm() {
       //   }] : [] // Provide default value conditionally
       // }
     };
-  }, [selectedTemplate, getTemplateTrades, activeStep]);
+  }, [activeTab, activeStep]);
 
   const methods = useForm({
     resolver: yupResolver(ProjectSchema),
@@ -246,7 +259,7 @@ export default function ProjectStepperForm() {
 
   const formValues = getValues();
   const watchValues = watch();
-
+  console.log('formValues', formValues)
   function processInviteUsers() {
     // Check if both internal and external arrays are not empty
     const hasInternal = inviteUsers.internal && inviteUsers.internal.length > 0;
@@ -404,12 +417,22 @@ export default function ProjectStepperForm() {
       }
     }
 
+    // TODO: change defaultTemplate logic
     // Handle skipping steps or moving to the next step
-    if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+    // if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+    //   setOpen(true);
+    // } else if (activeTab === 'existing' && selectedTemplate === 'default' && activeStep === 1) {
+    //   setOpen(true);
+    // }
+    const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
+    console.log('isModified',isModified)
+    console.log('defaultTemplateTrades',defaultTemplateTrades)
+    console.log('formValues.trades',formValues.trades)
+    if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
       setOpen(true);
-    } else if (activeTab === 'existing' && selectedTemplate === 'default' && activeStep === 1) {
-      setOpen(true);
-    } else if (isFormValid) {
+      dispatch(setDefaultTemplateModified(true))
+    }
+    else if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
 
@@ -449,40 +472,40 @@ export default function ProjectStepperForm() {
   };
 
   const handleSelect = (val) => {
-    if (val === "create") {
-      setOpenNewTemplateDrawer(true)
+    // if (val === "create") {
+    //   setOpenNewTemplateDrawer(true)
 
-      // return
-    }
+    //   // return
+    // }
 
-    setSelectedTemplate(val)
+    // setSelectedTemplate(val)
 
-    const filteredTrades = getTemplateTrades(val)
-    // TODO: multiple templates
-    setValue('trades', filteredTrades)
+    // const filteredTrades = getTemplateTrades(val)
+    // // TODO: multiple templates
+    // setValue('trades', filteredTrades)
   }
   const handleTab = (tab) => {
-    const newField = {
-      name: '',
-      tradeId: '',
-      _id: uuidv4(),
-    }
-    const defaultTemplate = selectedTemplate ? getTemplateTrades(selectedTemplate) : []
-    const trades = tab === "create" ? [newField] : defaultTemplate;
-    setValue('trades', trades)
-    if (tab === "create" && !!selectedTemplate) {
-      setSelectedTemplate('')
-    }
-    setActiveTab(tab)
+    // const newField = {
+    //   name: '',
+    //   tradeId: '',
+    //   _id: uuidv4(),
+    // }
+    // const defaultTemplate = selectedTemplate ? getTemplateTrades(selectedTemplate) : []
+    // const trades = tab === "create" ? [newField] : defaultTemplate;
+    // setValue('trades', trades)
+    // if (tab === "create" && !!selectedTemplate) {
+    //   setSelectedTemplate('')
+    // }
+    // setActiveTab(tab)
   }
 
   const handleTemplateCreation = (val) => {
     // setValue("templateName", val)
 
     setOpen(false)
-    if (newTemplate?.create) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
+    // if (newTemplate?.create) {
+    //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // }
     // setSelectedTemplate('')
   }
 

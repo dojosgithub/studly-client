@@ -39,14 +39,14 @@ const ProjectCreateTrade = () => {
         name: 'trades',
     });
     // const [rows, setRows] = useState(trades)
-    const currentTrades = useSelector(state => state.project?.create?.trades);
-    useEffect(() => {
-        console.log("currentTrades->", currentTrades)
-        // if (currentTrades && currentTrades?.length > 1) {
-            console.log("template changed->", currentTrades)
-            setValue('trades', currentTrades)
-        // }
-    }, [currentTrades, setValue])
+    // const currentTrades = useSelector(state => state.project?.create?.trades);
+    // useEffect(() => {
+    //     console.log("currentTrades->", currentTrades)
+    //     // if (currentTrades && currentTrades?.length > 1) {
+    //         console.log("template changed->", currentTrades)
+    //         setValue('trades', currentTrades)
+    //     // }
+    // }, [currentTrades, setValue])
 
     const handleAdd = useCallback(() => {
         append({

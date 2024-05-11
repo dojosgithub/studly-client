@@ -41,7 +41,7 @@ const ProjectExistingTrade = () => {
     // const [rows, setRows] = useState(trades)
 
     const currentTemplate = useSelector(state => state.template.current);
-    const currentProjectTrades = useSelector(state => state.project?.create?.trades);
+    // const currentProjectTrades = useSelector(state => state.project?.create?.trades);
 
     const { control, setValue, getValues, watch, resetField } = useFormContext();
 
@@ -52,10 +52,10 @@ const ProjectExistingTrade = () => {
     // const { trades } = getValues()
     // const [rows, setRows] = useState(trades)
    
-    useEffect(() => {
-        console.log("template changed->", currentProjectTrades)
-        setValue('trades', currentProjectTrades)
-    }, [currentProjectTrades, setValue])
+    // useEffect(() => {
+    //     console.log("template changed->", currentProjectTrades)
+    //     setValue('trades', currentProjectTrades)
+    // }, [currentProjectTrades, setValue])
 
 
 

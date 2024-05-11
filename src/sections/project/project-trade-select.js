@@ -12,7 +12,7 @@ import { PROJECT_TEMPLATES, PROJECT_TEMPLATE_OPTIONS } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import { setCurrentTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded, setSelectedTemplate } from 'src/redux/slices/templateSlice';
 import { setCurrentWorkflow } from 'src/redux/slices/workflowSlice';
-import { setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import { setProjectTrades, setProjectWorkflow, setSelectedTradeTemplate } from 'src/redux/slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +22,7 @@ export default function ProjectTradeSelect() {
     const { setValue } = useFormContext()
     const templates = useSelector(state => state.template.list);
     const cTemplate = useSelector(state => state.template.current);
+    const selectedTradeTemplate = useSelector(state => state.project?.create?.selectedTradeTemplate);
     const [selectedTemplateName, setSelectedTemplateName] = useState(cTemplate?.name)
     const [templateList, setTemplateList] = useState(templates)
 
@@ -35,6 +36,7 @@ export default function ProjectTradeSelect() {
     const handleSelect = (value) => {
         console.log('handleSelect', value)
         // Find the selected item based on the value
+        dispatch(setSelectedTradeTemplate(value))
         if (value !== 'create') {
             const selectedItem = templateList.find(item => item.name === value || value === 'default');
             handleSelectTemplate(selectedItem);
@@ -68,7 +70,8 @@ export default function ProjectTradeSelect() {
             <Select
                 onChange={(e) => handleSelect(e.target.value)}
                 name='template'
-                value={selectedTemplateName}
+                // value={selectedTemplateName}
+                value={selectedTradeTemplate}
                 label=""
                 displayEmpty
                 sx={{
