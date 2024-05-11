@@ -133,7 +133,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
       >
         {(role === "CAD" || role === "PWU") &&
           (<>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 confirm.onTrue();
                 popover.onClose();
@@ -142,7 +142,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             >
               <Iconify icon="solar:trash-bin-trash-bold" />
               Delete
-            </MenuItem>
+            </MenuItem> */}
 
             <MenuItem
               onClick={() => {
