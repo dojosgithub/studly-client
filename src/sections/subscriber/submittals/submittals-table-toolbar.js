@@ -14,6 +14,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
 import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+
 // components
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -29,7 +31,7 @@ export default function SubmittalsTableToolbar({
 }) {
   const popover = usePopover();
   const dispatch = useDispatch();
-
+  const [isLoading, setIsLoading] = useState(false);
   // const handleFilterName = useCallback(
   //   (event) => {
   //     onFilters('name', event.target.value);
@@ -39,7 +41,7 @@ export default function SubmittalsTableToolbar({
 
   const handleFilterStatus = useCallback(
     (event) => {
-      console.log('event.target.value', event.target.value)
+      console.log('event.target.value', event.target.value);
       onFilters(
         'status',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
@@ -47,7 +49,6 @@ export default function SubmittalsTableToolbar({
     },
     [onFilters]
   );
-
 
   const [inputValue, setInputValue] = useState('');
 
@@ -69,6 +70,12 @@ export default function SubmittalsTableToolbar({
     setInputValue(event.target.value);
   };
 
+  const handleDownloadReport = async () => {
+    setIsLoading(true);
+    await dispatch(getSubmittalLogPDF());
+    setIsLoading(false);
+  };
+
   return (
     <>
       <Stack
@@ -83,8 +90,6 @@ export default function SubmittalsTableToolbar({
           pr: { xs: 2.5, md: 1 },
         }}
       >
-
-
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
@@ -106,7 +111,6 @@ export default function SubmittalsTableToolbar({
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton> */}
         </Stack>
-
 
         <FormControl
           sx={{
@@ -136,15 +140,25 @@ export default function SubmittalsTableToolbar({
             ))}
           </Select>
         </FormControl>
-        <Button
-          variant='outlined'
+        {/* <Button
+          variant="outlined"
           onClick={() => {
-            dispatch(getSubmittalLogPDF())
+            dispatch(getSubmittalLogPDF());
           }}
         >
-          <Iconify icon="solar:export-bold" style={{ height: "2rem", width: "3rem" }} />
+          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
           Export
-        </Button>
+        </Button> */}
+        <LoadingButton
+          onClick={handleDownloadReport}
+          type="button"
+          variant="contained"
+          loading={isLoading}
+          sx={{ ml: 'auto' }}
+        >
+          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
+          Export
+        </LoadingButton>
       </Stack>
 
       {/* <CustomPopover

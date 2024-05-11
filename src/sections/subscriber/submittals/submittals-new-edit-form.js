@@ -684,6 +684,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       onClick={() => onSubmit('draft')}
                       variant="outlined"
                       size="large"
+                      loading={isSubmitting}
                     >
                       Save Draft
                     </LoadingButton>
@@ -692,6 +693,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       onClick={() => onSubmit('review')}
                       variant="contained"
                       size="large"
+                      loading={isSubmitting}
                     >
                       Submit for Review
                     </LoadingButton>
@@ -704,6 +706,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   onClick={() => onSubmit('update')}
                   variant="contained"
                   size="large"
+                  loading={isSubmitting}
                 >
                   Save Changes
                 </LoadingButton>
