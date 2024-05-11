@@ -17,7 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { addDays, isAfter, isTomorrow } from 'date-fns';
+import { addDays, isAfter, isTomorrow, startOfDay } from 'date-fns';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers';
 // utils
@@ -39,32 +39,36 @@ import FormProvider, {
   RHFSelect,
   RHFMultiSelect,
   RHFMultiSelectChip,
-  RHFSelectChip
+  RHFSelectChip,
 } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStrTradeId } from 'src/utils/split-string';
-import { createNewSubmittal, editSubmittal, getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import {
+  createNewSubmittal,
+  editSubmittal,
+  getSubmittalDetails,
+  submitSubmittalToArchitect,
+} from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
 
 export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
+  console.log('currentSubmittal', currentSubmittal);
   const router = useRouter();
   const dispatch = useDispatch();
-  const ccList = useSelector(state=>state.submittal.users)
-  const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : []
-  const [files, setFiles] = useState(existingAttachments)
-  const currentUser = useSelector(state => state.user?.user)
-  const projectId = useSelector(state => state.project?.current?.id)
-  const trades = useSelector(state => state.project?.current?.trades)
+  const ccList = useSelector((state) => state.submittal.users);
+  const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : [];
+  const [files, setFiles] = useState(existingAttachments);
+  const currentUser = useSelector((state) => state.user?.user);
+  const projectId = useSelector((state) => state.project?.current?.id);
+  const trades = useSelector((state) => state.project?.current?.trades);
 
   const { enqueueSnackbar } = useSnackbar();
-  console.log("projectId", projectId)
-  console.log("submittalId ", id)
-  console.log("ccList ", ccList)
-
-
+  console.log('projectId', projectId);
+  console.log('submittalId ', id);
+  console.log('ccList ', ccList);
 
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
@@ -81,7 +85,9 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     description: Yup.string().required('Description is required'),
     type: Yup.string().required('Type is required'),
     status: Yup.string().required('Status is required'),
-    returnDate: Yup.date().required('Return Date is required'),
+    returnDate: Yup.date()
+      .required('Return Date is required')
+      .min(startOfDay(addDays(new Date(), 1)), 'Return Date must be later than today'),
     owner: Yup.string(),
     ccList: Yup.array(),
     // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
@@ -89,13 +95,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     // creator: Yup.string().required('Creator is required'),
     // submittedDate: Yup.date().required('Submssion Date is required'),
     // link: Yup.string().required('link is required'),
-
   });
 
   const defaultValues = useMemo(
     () => ({
       // currentSubmittal?.trade?.tradeId
-      trade: currentSubmittal ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}` : '',
+      trade: currentSubmittal
+        ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`
+        : '',
       submittalId: currentSubmittal?.submittalId || '',
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
@@ -103,17 +110,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       type: currentSubmittal?.type || '',
       ccList: currentSubmittal?.ccList || [],
       status: currentSubmittal?.status || 'Draft', // Set default values here
-      returnDate: new Date(currentSubmittal?.returnDate) || '',
+      returnDate: currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null,
       // attachments: currentSubmittal?.attachments || [],
       // submittedDate: currentSubmittal?.submittedDate || '',
       // creator: currentSubmittal?.creator || '',
       // link: currentSubmittal?.link || '',
-
     }),
     [currentSubmittal]
   );
-
-
 
   const methods = useForm({
     resolver: yupResolver(NewSubmittalSchema),
@@ -126,57 +130,55 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, },
+    formState: { isSubmitting },
   } = methods;
 
   const values = watch();
-  const { submittalId } = values
-  console.log("values", values)
+  const { submittalId } = values;
+  console.log('values', values);
   const handleSelectTrade = useCallback(
     (option) => {
-      console.log('option', option)
-      const sequence = option.submittalCreatedCount + 1
+      console.log('option', option);
+      const sequence = option.submittalCreatedCount + 1;
       const id1 = concat(option.tradeId, '-', sequence).join('');
-      console.log('id1', id1)
+      console.log('id1', id1);
 
-      setValue(
-        `submittalId`,
-        id1
-      );
+      setValue(`submittalId`, id1);
     },
     [setValue]
   );
 
-
   const onSubmit = handleSubmit(async (data, val) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const owner=ccList.filter(item=>data.owner===item.email)[0]?.user;
+      const owner = ccList.filter((item) => data.owner === item.email)[0]?.user;
       const tradeId = getStrTradeId(data.trade);
-      const tradeObj = trades.find(t => t.tradeId === tradeId);
-      const trade = { ...tradeObj, submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1 }
-      console.log("data-->", data)
-      console.log("val-->", val)
-      console.log("owner-->", owner)
+      const tradeObj = trades.find((t) => t.tradeId === tradeId);
+      const trade = {
+        ...tradeObj,
+        submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1,
+      };
+      console.log('data-->', data);
+      console.log('val-->', val);
+      console.log('owner-->', owner);
       console.log('tradeId', tradeId);
-      console.log("trade", trade)
-      delete trade._id
+      console.log('trade', trade);
+      delete trade._id;
       if (!trade) {
-        return
+        return;
       }
 
       let finalData;
-      const { _id, firstName, lastName, email } = currentUser
-      const creator = _id
+      const { _id, firstName, lastName, email } = currentUser;
+      const creator = _id;
       if (isEmpty(currentSubmittal)) {
         // const creator = { _id, name: `${firstName} ${lastName}`, email }
-        const submittedDate = new Date()
-        const link = 'www.google.com'
-        finalData = { ...data, owner,creator, submittedDate, link, projectId, trade }
+        const submittedDate = new Date();
+        const link = 'www.google.com';
+        finalData = { ...data, owner, creator, submittedDate, link, projectId, trade };
       } else {
-        finalData = { ...currentSubmittal, ...data, creator,owner, trade }
+        finalData = { ...currentSubmittal, ...data, creator, owner, trade };
       }
-
 
       const formData = new FormData();
       const attachments = [];
@@ -188,61 +190,63 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           attachments.push(file);
         }
       }
-      finalData.attachments = attachments
+      finalData.attachments = attachments;
       formData.append('body', JSON.stringify(finalData));
 
       console.log('Final DATA', finalData);
-      console.log('files ', files)
-      console.log('formData ', formData)
+      console.log('files ', files);
+      console.log('formData ', formData);
 
       let error;
       let payload;
       if (!isEmpty(currentSubmittal) && id) {
-        const res = await dispatch(editSubmittal({ formData, id }))
-        error = res.error
-        payload = res.payload
+        const res = await dispatch(editSubmittal({ formData, id }));
+        error = res.error;
+        payload = res.payload;
       } else {
-        const res = await dispatch(createNewSubmittal(formData))
-        error = res.error
-        payload = res.payload
+        const res = await dispatch(createNewSubmittal(formData));
+        error = res.error;
+        payload = res.payload;
       }
       if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
       }
-      
-      dispatch(getCurrentProjectTradesById(projectId))
-      dispatch(getProjectList())
+
+      dispatch(getCurrentProjectTradesById(projectId));
+      dispatch(getProjectList());
       reset();
-      enqueueSnackbar(currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!', { variant: 'success' });
-      if (val === "review") {
-        console.log('payload', payload)
-        handleSubmitToArchitect(payload?.id)
+      enqueueSnackbar(
+        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+        { variant: 'success' }
+      );
+      if (val === 'review') {
+        console.log('payload', payload);
+        handleSubmitToArchitect(payload?.id);
       }
       router.push(paths.subscriber.submittals.list);
-
-
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      enqueueSnackbar(`Error ${currentSubmittal ? "Updating" : "Creating"} Project`, { variant: "error" });
+      enqueueSnackbar(`Error ${currentSubmittal ? 'Updating' : 'Creating'} Project`, {
+        variant: 'error',
+      });
     }
   });
 
   const handleSubmitToArchitect = async (SubmittalId) => {
-    console.log("SubmittalId", SubmittalId)
+    console.log('SubmittalId', SubmittalId);
     // setIsSubmitting(true);
-    const { error, payload } = await dispatch(submitSubmittalToArchitect(SubmittalId))
+    const { error, payload } = await dispatch(submitSubmittalToArchitect(SubmittalId));
     console.log('e-p', { error, payload });
     // setIsSubmitting(false);
     if (!isEmpty(error)) {
-      enqueueSnackbar(error.message, { variant: "error" });
-      return
+      enqueueSnackbar(error.message, { variant: 'error' });
+      return;
     }
-    enqueueSnackbar('Submittal submitted to architect successfully', { variant: "success" });
-    await dispatch(getSubmittalDetails(SubmittalId))
-
-  }
+    enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
+    await dispatch(getSubmittalDetails(SubmittalId));
+  };
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {
@@ -263,7 +267,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
@@ -286,16 +289,24 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   sm: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFSelect
-                  name="trade"
-                  label="Trade"
-                >
-                  {trades?.map(trade => (
-                    <MenuItem key={trade.tradeId} value={`${trade?.tradeId || ''}-${trade?.name || ''}`} onClick={() => handleSelectTrade(trade)}>{trade?.name}</MenuItem>
-                  )
-                  )}
+                <RHFSelect name="trade" label="Trade">
+                  {trades?.map((trade) => (
+                    <MenuItem
+                      key={trade.tradeId}
+                      value={`${trade?.tradeId || ''}-${trade?.name || ''}`}
+                      onClick={() => handleSelectTrade(trade)}
+                    >
+                      {trade?.name}
+                    </MenuItem>
+                  ))}
                 </RHFSelect>
-                <RHFTextField name="submittalId" label="Submittal ID" type='string' value={submittalId} disabled />
+                <RHFTextField
+                  name="submittalId"
+                  label="Submittal ID"
+                  type="string"
+                  value={submittalId}
+                  disabled
+                />
                 {/* type='number' */}
               </Box>
               <RHFTextField name="name" label="Name" />
@@ -334,13 +345,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 /> */}
 
                 {/* // TODO: SHOW CHIP */}
-                <RHFSelect
-                  name="status"
-                  label="Status"
-                  chip
-                  disabled
-                >
-                  <MenuItem selected value="Draft">Draft</MenuItem>
+                <RHFSelect name="status" label="Status" chip disabled>
+                  <MenuItem selected value="Draft">
+                    Draft
+                  </MenuItem>
                 </RHFSelect>
 
                 {/* <RHFMultiSelectChip
@@ -407,20 +415,22 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   render={({ field, fieldState: { error } }) => {
                     const selectedDate = field.value || null;
                     const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                    const dateStyle = isDateNextDay ? {
-                      '.MuiInputBase-root.MuiOutlinedInput-root': {
-                        color: 'red',
-                        borderColor: 'red',
-                        border: '1px solid',
-                      },
-                    } : {};
-                    console.log(isDateNextDay)
+                    const dateStyle = isDateNextDay
+                      ? {
+                          '.MuiInputBase-root.MuiOutlinedInput-root': {
+                            color: 'red',
+                            borderColor: 'red',
+                            border: '1px solid',
+                          },
+                        }
+                      : {};
+                    console.log(isDateNextDay);
                     return (
                       <DatePicker
                         label="Request Return Date"
                         views={['day', 'month', 'year']}
                         value={selectedDate}
-                        minDate={addDays(new Date(), 1)}
+                        minDate={startOfDay(addDays(new Date(), 1))}
                         onChange={(date) => field.onChange(date)}
                         format="dd/MM/yyyy" // Specify the desired date format
                         error={!!error}
@@ -432,15 +442,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                             helperText: error?.message,
                           },
                         }}
-                        sx={dateStyle} // Apply conditional style based on the date comparison
+                        // sx={dateStyle} // Apply conditional style based on the date comparison
                       />
                     );
                   }}
                 />
-                <RHFSelect
-                  name="type"
-                  label="Type"
-                >
+                <RHFSelect name="type" label="Type">
                   <MenuItem value="Shop Drawings">Shop Drawings</MenuItem>
                   <MenuItem value="Samples">Samples</MenuItem>
                   <MenuItem value="Cut Sheet">Cut Sheet</MenuItem>
@@ -456,8 +463,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 {/* <MenuItem value="option1">Option 1</MenuItem>
                 <MenuItem value="option2">Option 2</MenuItem>
                 <MenuItem value="option3">Option 3</MenuItem> */}
-                {ccList?.map(item =>(
-                  <MenuItem value={item?.email} key={item?.email}>{item?.email}</MenuItem>
+                {ccList?.map((item) => (
+                  <MenuItem value={item?.email} key={item?.email}>
+                    {item?.email}
+                  </MenuItem>
                 ))}
               </RHFSelect>
               {/* // TODO: List should be dynamic */}
@@ -466,16 +475,13 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 label="CC List"
                 // placeholder="Select multiple options"
                 chip
-                options={ccList?.map(item => ({ label: item.email, value: item.email }))}
+                options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
                 // options={[
                 //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
                 //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
                 // ]}
               />
-
             </Box>
-
-
 
             {/* <Box
                 rowGap={3}
@@ -662,21 +668,46 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           </Card>
         </Grid> */}
 
-            <Stack direction="row" alignItems="center" justifyContent='flex-end' gap="2rem" sx={{ my: 3 }}>
-              {!currentSubmittal && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                <>
-                  <LoadingButton type="button" onClick={() => onSubmit("draft")} variant="outlined" size="large"  >
-                    Save Draft
-                  </LoadingButton>
-                  <LoadingButton type="button" onClick={() => onSubmit("review")} variant="contained" size="large" >
-                    Submit for Review
-                  </LoadingButton>
-                </>
-              )}
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+              gap="2rem"
+              sx={{ my: 3 }}
+            >
+              {!currentSubmittal &&
+                (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                  currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                  <>
+                    <LoadingButton
+                      type="button"
+                      onClick={() => onSubmit('draft')}
+                      variant="outlined"
+                      size="large"
+                    >
+                      Save Draft
+                    </LoadingButton>
+                    <LoadingButton
+                      type="button"
+                      onClick={() => onSubmit('review')}
+                      variant="contained"
+                      size="large"
+                    >
+                      Submit for Review
+                    </LoadingButton>
+                  </>
+                )}
 
-              {currentSubmittal && <LoadingButton type="button" onClick={() => onSubmit("update")} variant="contained" size="large" >
-                Save Changes
-              </LoadingButton>}
+              {currentSubmittal && (
+                <LoadingButton
+                  type="button"
+                  onClick={() => onSubmit('update')}
+                  variant="contained"
+                  size="large"
+                >
+                  Save Changes
+                </LoadingButton>
+              )}
               {/* loading={isSubmitting} */}
               {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
               {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
@@ -694,5 +725,5 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
 SubmittalsNewEditForm.propTypes = {
   currentSubmittal: PropTypes.object,
-  id: PropTypes.string
+  id: PropTypes.string,
 };
