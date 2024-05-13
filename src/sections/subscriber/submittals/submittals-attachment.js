@@ -28,7 +28,12 @@ export default function SubmittalAttachments({
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
-      const newFiles = acceptedFiles.map((file) =>
+      // const newFiles = acceptedFiles.map((file) =>
+      //   Object.assign(file, {
+      //     preview: URL.createObjectURL(file),
+      //   })
+      // );
+      const newFiles = acceptedFiles.slice(0, 10 - files.length).map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
