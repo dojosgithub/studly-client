@@ -59,6 +59,7 @@ export default function SubmittalAttachments({
         accept={{
           'application/pdf': ['.pdf'],
           'image/jpeg': ['.jpeg', '.jpg'],
+          'image/png': ['.png'],
           'image/gif': ['.gif'],
           'application/msword': ['.doc'],
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],

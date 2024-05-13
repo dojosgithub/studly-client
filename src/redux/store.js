@@ -4,6 +4,7 @@ import { useDispatch as useAppDispatch, useSelector as useAppSelector } from 're
 import { persistReducer, persistStore } from 'redux-persist';
 import rootReducer from "./rootReducer";
 import { signOut } from "./slices/userSlice";
+import { resetProjectState } from "./slices/projectSlice";
 
 // const persistConfig = {
 //   key: 'root',
@@ -30,6 +31,7 @@ const persistor = persistStore(store)
 const logoutRedux = () => {
   persistor.purge(); // Remove persisted state for 'user' slice
   // Dispatch any additional logout actions here
+  dispatch(resetProjectState())
   dispatch(signOut())
 };
 
