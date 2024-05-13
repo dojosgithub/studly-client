@@ -91,7 +91,9 @@ const workflow = createSlice({
 
             // Restore 'list' to its current value before the reset
             state.list = currentList;
-        }
+        },
+        resetWorkflowState: () => initialState,
+
     },
     extraReducers: (builder) => {
         // * Create New Project
@@ -124,5 +126,5 @@ const workflow = createSlice({
     }
 })
 
-export const { setWorkflowList, setCreateWorkflow, setCurrentWorkflow, resetWorkflow, setSelectedWorkflow, setIsNewWorkflow } = workflow.actions
+export const { setWorkflowList, setCreateWorkflow, setCurrentWorkflow, resetWorkflow, setSelectedWorkflow, setIsNewWorkflow, resetWorkflowState } = workflow.actions
 export default workflow.reducer

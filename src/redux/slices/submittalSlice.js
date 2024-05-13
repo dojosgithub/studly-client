@@ -290,6 +290,8 @@ const submittal = createSlice({
         setCreateSubmittal: (state, action) => {
             state.create = action.payload
         },
+        resetSubmittalState: () => initialState,
+
     },
     extraReducers: (builder) => {
         // * Create New Submittal
@@ -418,5 +420,5 @@ const submittal = createSlice({
     }
 })
 
-export const { setSubmittal, setCurrentSubmittal, setSubmittalResponse, setCreateSubmittal } = submittal.actions
+export const { setSubmittal, setCurrentSubmittal, setSubmittalResponse, setCreateSubmittal, resetSubmittalState } = submittal.actions
 export default submittal.reducer

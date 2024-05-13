@@ -95,7 +95,7 @@ export const updateCompanyStatus = createAsyncThunk(
 
 
 const initialState = {
-  list: [],
+  list: null,
   current: null,
   create: null,
   isLoading: false,

@@ -93,7 +93,8 @@ const template = createSlice({
 
             // Restore 'list' to its current value before the reset
             state.list = currentList;
-        }
+        },
+        resetTemplateState: () => initialState,
     },
     extraReducers: (builder) => {
         // * Create New Project
@@ -135,5 +136,5 @@ const template = createSlice({
     }
 })
 
-export const { setTemplates, setCreateTemplate, setCurrentTemplate, setSelectedTemplate, setIsNewTemplate, setIsTemplateNameAdded, setIsDefaultTemplate, resetTemplate } = template.actions
+export const { setTemplates, setCreateTemplate, setCurrentTemplate, setSelectedTemplate, setIsNewTemplate, setIsTemplateNameAdded, setIsDefaultTemplate, resetTemplate, resetTemplateState } = template.actions
 export default template.reducer
