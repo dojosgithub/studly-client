@@ -12,7 +12,7 @@ const ProjectFinal = () => {
     const { name, trades, workflow } = useSelector(state => state.project.create)
     const { internal, external } = useSelector(state => state.project.inviteUsers)
     const members = useSelector(state => state.project.members)
-    const filteredTrades = trades.filter(item => "subcontractorId" in item);
+    const filteredTrades = trades.filter(item => "email" in item);
 
     const StyledCard = styled(Card, {
         shouldForwardProp: (prop) => prop !== 'isSubcontractor',
