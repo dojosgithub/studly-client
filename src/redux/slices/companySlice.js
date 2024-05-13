@@ -69,6 +69,29 @@ export const deleteCompany = createAsyncThunk(
   },
 )
 
+export const updateCompanyStatus = createAsyncThunk(
+  'company/status',
+  async ({ id, status }, { rejectWithValue }) => {
+    console.log("companyId", id)
+    console.log("companyStatus", status)
+    try {
+      const response = await axiosInstance.put(endpoints.company.status(id, status));
+
+      return response.data.data.company
+    } catch (err) {
+      console.error("errSlice", err)
+      if (err && err.message) {
+        throw Error(
+          err.message
+        );
+      }
+      throw Error(
+        'An error occurred while creating the company.'
+      );
+    }
+  },
+)
+
 
 
 const initialState = {
@@ -134,6 +157,19 @@ const company = createSlice({
       state.error = null;
     });
     builder.addCase(deleteCompany.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message
+    });
+    builder.addCase(updateCompanyStatus.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateCompanyStatus.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.current = action.payload;
+      state.error = null;
+    });
+    builder.addCase(updateCompanyStatus.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message
     });

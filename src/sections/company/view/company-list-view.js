@@ -18,7 +18,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // Redux API Functions
-import { deleteCompany, fetchCompanyList } from 'src/redux/slices/companySlice';
+import { deleteCompany, fetchCompanyList, updateCompanyStatus } from 'src/redux/slices/companySlice';
 // _mock
 import { _userList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
@@ -135,6 +135,19 @@ export default function CompanyListView() {
       router.push(paths.dashboard.user.edit(id));
     },
     [router]
+  );
+
+  const handleUpdateStatus = useCallback(
+    async (id, value) => {
+      console.log('id', id)
+      console.log('status', value)
+      console.log('status type', typeof value)
+      const status = value === "1" ? "2" : "1"
+      await dispatch(updateCompanyStatus({ id, status }))
+      await dispatch(fetchCompanyList())
+
+    },
+    [dispatch]
   );
 
   const handleFilterStatus = useCallback(
@@ -288,6 +301,7 @@ export default function CompanyListView() {
                       onSelectRow={() => table.onSelectRow(row.id)}
                       onDeleteRow={() => handleDeleteRow(row.id)}
                       onEditRow={() => handleEditRow(row.id)}
+                      onUpdate={() => handleUpdateStatus(row.id, row.status)}
                     />
                   ))}
 

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import Button from '@mui/material/Button';
+import Switch from '@mui/material/Switch';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,7 +22,7 @@ import UserQuickEditForm from './company-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onUpdate }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   const { name, address, company_admin, adminName, adminEmail, status, phoneNumber } = row;
 
@@ -61,8 +62,9 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
 
         {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
-        <TableCell>
+        {/* <TableCell>
           <Label
+            onClick={onUpdate}
             variant="soft"
             color={
               (status === "1" && 'success') ||
@@ -73,6 +75,13 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           >
             {(status === "1" && 'active') || (status === "3" && 'inactive') || (status === "3" && 'blocked') || ('disabled')}
           </Label>
+        </TableCell> */}
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <Switch
+            checked={status === "1"}
+            onChange={onUpdate}
+            color='success'
+          />
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
@@ -137,6 +146,7 @@ CompanyTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
+  onUpdate: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
 };
