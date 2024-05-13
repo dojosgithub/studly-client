@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 //
 import { useFormContext } from 'react-hook-form';
+import { useSnackbar } from 'src/components/snackbar';
 // components
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
@@ -22,6 +23,8 @@ export default function SubmittalAttachments({
   //
   ...other
 }) {
+  const { enqueueSnackbar } = useSnackbar();
+
   // useEffect(() => {
   //     setFiles([]);
   // }, [setFiles]);
@@ -33,6 +36,12 @@ export default function SubmittalAttachments({
       //     preview: URL.createObjectURL(file),
       //   })
       // );
+      const totalFiles = acceptedFiles.length + files.length;
+      console.log('totalFiles', totalFiles);
+      if (totalFiles > 10) {
+        enqueueSnackbar('You can upload maximum of 10 files', { variant: 'error' });
+        return;
+      }
       const newFiles = acceptedFiles.slice(0, 10 - files.length).map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
@@ -41,7 +50,7 @@ export default function SubmittalAttachments({
 
       setFiles([...files, ...newFiles]);
     },
-    [files, setFiles]
+    [files, setFiles, enqueueSnackbar]
   );
 
   const handleRemoveFile = (inputFile) => {
