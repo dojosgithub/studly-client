@@ -44,6 +44,7 @@ export default function OnboardingWithoutProjects() {
         justifyContent="center"
         sx={{
           border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
+          borderRadius: '1rem',
           p: 6,
           maxWidth: { md: 580, lg: 680 },
           mx: 'auto'

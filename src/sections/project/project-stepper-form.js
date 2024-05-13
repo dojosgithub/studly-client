@@ -626,6 +626,7 @@ export default function ProjectStepperForm() {
       <CustomDrawer
         open={isNewTemplate} onClose={() => dispatch(setIsNewTemplate(false))}
         Component={ProjectNewTemplateDrawer}
+        setTrades={setValue}
         type='template'
       />
       <CustomDrawer

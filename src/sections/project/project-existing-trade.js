@@ -57,6 +57,10 @@ const ProjectExistingTrade = () => {
     //     setValue('trades', currentProjectTrades)
     // }, [currentProjectTrades, setValue])
 
+useEffect(() => {
+    console.log('FIELDS-->',fields)
+
+}, [fields])
 
 
     const values = watch();

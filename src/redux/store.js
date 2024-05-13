@@ -5,6 +5,10 @@ import { persistReducer, persistStore } from 'redux-persist';
 import rootReducer from "./rootReducer";
 import { signOut } from "./slices/userSlice";
 import { resetProjectState } from "./slices/projectSlice";
+import { resetCompanyState } from "./slices/companySlice";
+import { resetSubmittalState } from "./slices/submittalSlice";
+import { resetTemplateState } from "./slices/templateSlice";
+import { resetWorkflowState } from "./slices/workflowSlice";
 
 // const persistConfig = {
 //   key: 'root',
@@ -31,7 +35,11 @@ const persistor = persistStore(store)
 const logoutRedux = () => {
   persistor.purge(); // Remove persisted state for 'user' slice
   // Dispatch any additional logout actions here
+  dispatch(resetCompanyState())
   dispatch(resetProjectState())
+  dispatch(resetSubmittalState())
+  dispatch(resetTemplateState())
+  dispatch(resetWorkflowState())
   dispatch(signOut())
 };
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { isEmpty } from 'lodash';
@@ -21,6 +21,7 @@ import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
 import { createNewTemplate, getTemplateList, setCurrentTemplate } from 'src/redux/slices/templateSlice';
+import { setProjectTrades, setSelectedTradeTemplate } from 'src/redux/slices/projectSlice';
 
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -61,7 +62,7 @@ const tradesDefaultVal = [{
 }]
 
 
-const ProjectNewTemplateDrawer = ({ onClose, open }) => {
+const ProjectNewTemplateDrawer = ({ onClose, open, setTrades }) => {
 
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
@@ -93,7 +94,6 @@ const ProjectNewTemplateDrawer = ({ onClose, open }) => {
         reset,
         watch,
         control,
-        setValue,
         getValues,
         handleSubmit,
         resetField,
@@ -169,9 +169,13 @@ const ProjectNewTemplateDrawer = ({ onClose, open }) => {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return
             }
+            console.log('payload', payload);
             enqueueSnackbar('Template created successfully!', { variant: 'success' });
             dispatch(getTemplateList())
             dispatch(setCurrentTemplate(payload))
+            dispatch(setSelectedTradeTemplate(data?.name))
+            dispatch(setProjectTrades(payload?.trades))
+            setTrades('trades', payload?.trades)
             reset();
             onClose()
         } catch (error) {
@@ -265,6 +269,7 @@ export default ProjectNewTemplateDrawer
 
 ProjectNewTemplateDrawer.propTypes = {
     onClose: PropTypes.func,
+    setTrades: PropTypes.func,
     open: PropTypes.bool,
 
 };

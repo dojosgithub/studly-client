@@ -28,7 +28,7 @@ import Scrollbar from '../scrollbar';
 
 // ----------------------------------------------------------------------
 
-export default function CustomDrawer({ open, onClose, isOnboarding = false, Component, type = "project" }) {
+export default function CustomDrawer({ open, onClose, isOnboarding = false, Component, type = "project",setTrades }) {
     const theme = useTheme();
 
     const renderHead = (
@@ -111,13 +111,14 @@ export default function CustomDrawer({ open, onClose, isOnboarding = false, Comp
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             {/* <ProjectView /> */}
-            <Component type={type} onClose={onClose} open={open}/>
+            <Component type={type} onClose={onClose} open={open} setTrades={setTrades}/>
 
         </Drawer>
     );
 }
 CustomDrawer.propTypes = {
     onClose: PropTypes.func,
+    setTrades: PropTypes.func,
     open: PropTypes.bool,
     Component: PropTypes.node,
     type: PropTypes.string,
