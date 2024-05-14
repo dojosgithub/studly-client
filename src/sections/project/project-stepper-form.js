@@ -63,11 +63,11 @@ const steps = [
     description: 'Create trades for your project',
     value: 'trades',
   },
-  {
-    label: 'Workflow',
-    description: `Create  your project workflow`,
-    value: 'workflow',
-  },
+  // {
+  //   label: 'Workflow',
+  //   description: `Create  your project workflow`,
+  //   value: 'workflow',
+  // },
   {
     label: 'Assign Subcontractors',
     description: `Assign subcontractors to your project`,
@@ -86,7 +86,8 @@ export default function ProjectStepperForm() {
 
   const [selectedTemplate, setSelectedTemplate] = useState('')
   // const [activeTab, setActiveTab] = useState('')
-  const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3, 4]));
+  // [0, 1, 2, 3, 4]
+  const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
   const [open, setOpen] = useState(false)
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
@@ -120,8 +121,8 @@ export default function ProjectStepperForm() {
   // creating new workflow template
   const isNewWorkflow = useSelector(state => state.workflow.isNewWorkflow);
 
-
-  const isStepOptional = (step) => (step === 3 || step === 4);
+  // step === 3 || step === 4
+  const isStepOptional = (step) => (step === 2 || step === 3);
 
   const isStepSkipped = (step) => skipped?.has(step);
 
@@ -208,7 +209,8 @@ export default function ProjectStepperForm() {
   const defaultValues = useMemo(() => {
     // Check if form is being edited or a new entry is being created
     // For example, check if selectedTemplate is present or not
-    const isNewEntry = activeStep === 3 || activeStep === 4;
+    // const isNewEntry = activeStep === 3 || activeStep === 4;
+    const isNewEntry = activeStep === 2 || activeStep === 3;
     // TODO: currentSelectedTemplate from redux 
     return {
       name: '',
@@ -293,10 +295,11 @@ export default function ProjectStepperForm() {
 
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
       console.log("updatedTrades", updatedTrades)
-      // const teams = processInviteUsers(inviteUsers);
-      // const members = teamMembers?.map(({ _id, ...rest }) => rest);
-      const { id, ...rest } = data.workflow;
-      const updatedWorkflow = rest;
+      // // const teams = processInviteUsers(inviteUsers);
+      // // const members = teamMembers?.map(({ _id, ...rest }) => rest);
+      // const { id, ...rest } = data.workflow;
+      // const updatedWorkflow = rest;
+      const updatedWorkflow = data.workflow;
       console.log("updatedWorkflow", updatedWorkflow)
 
       const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members }
@@ -406,13 +409,15 @@ export default function ProjectStepperForm() {
       switch (currentStepValue) {
         case 'name':
           dispatch(setProjectName(formValues?.name));
+          dispatch(setProjectWorkflow(formValues?.workflow));
+          console.log('formValuesNAME',formValues);
           break;
         case 'trades':
           dispatch(setProjectTrades(formValues?.trades));
           break;
-        case 'workflow':
-          dispatch(setProjectWorkflow(formValues?.workflow));
-          break;
+        // case 'workflow':
+        //   dispatch(setProjectWorkflow(formValues?.workflow));
+        //   break;
         default:
           break;
       }
@@ -520,13 +525,13 @@ export default function ProjectStepperForm() {
       case 1:
         component = <ProjectTrade selectedTemplate={selectedTemplate} onSelect={handleSelect} onTabChange={handleTab} />;
         break;
+      // case 2:
+      //   component = <ProjectWorkflow />;
+      //   break;
       case 2:
-        component = <ProjectWorkflow />;
-        break;
-      case 3:
         component = <ProjectSubcontractor />;
         break;
-      case 4:
+      case 3:
         component = <ProjectInviteUsers />;
         break;
       default:
