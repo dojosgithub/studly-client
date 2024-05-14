@@ -223,7 +223,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       dispatch(getProjectList());
       reset();
       enqueueSnackbar(
-        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal has been successfully sent for review!',
         { variant: 'success' }
       );
       if (val === 'review') {
