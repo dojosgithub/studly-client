@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
-import { Select } from '@mui/material';
+import { InputLabel, Select } from '@mui/material';
 // _mock
 import { PROJECT_TEMPLATES, PROJECT_TEMPLATE_OPTIONS } from 'src/_mock';
 // components
@@ -73,7 +73,9 @@ export default function ProjectTradeSelect() {
                 // value={selectedTemplateName}
                 value={selectedTradeTemplate}
                 label=""
+                placeholder='Select an existing trade template from this dropdown'
                 displayEmpty
+                inputProps={{ 'aria-label': 'Select an existing trade template' }}
                 sx={{
                     "& .MuiSelect-select": {
                         display: 'flex',
@@ -82,6 +84,11 @@ export default function ProjectTradeSelect() {
                     }
                 }}
             >
+                <MenuItem
+                    disabled
+                    value=''
+                    sx={{ height: 50, px: 3, borderRadius: 0 }}
+                >Select an existing trade template from this dropdown</MenuItem>
                 {templateList.map((item) => (
                     <MenuItem
                         key={item.id}
