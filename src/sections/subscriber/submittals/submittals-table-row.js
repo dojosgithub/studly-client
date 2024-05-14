@@ -30,7 +30,7 @@ import UserQuickEditForm from './submittals-quick-edit-form';
 export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   // companyName, address, adminName, adminEmail, phoneNumber 
-  const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status } = row;
+  const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status, docStatus } = row;
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
 
@@ -40,7 +40,8 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
 
   return (
     <>
-      <TableRow hover selected={selected}>
+      { 
+      (<TableRow hover selected={selected}>
         {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
@@ -67,9 +68,9 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
               cursor: 'pointer',
               color: "blue",
               textDecoration: 'underline',
-              display:'flex',
-              alignItems:'center',
-              gap:'.25rem'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '.25rem'
               // '&:hover': {
               //   textDecoration: 'underline',
               // },
@@ -127,7 +128,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
-      </TableRow>
+      </TableRow>)}
 
       {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
@@ -139,7 +140,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
       >
         {(role === "CAD" || role === "PWU") &&
           (<>
-            {/* <MenuItem
+            <MenuItem
               onClick={() => {
                 confirm.onTrue();
                 popover.onClose();
@@ -148,7 +149,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             >
               <Iconify icon="solar:trash-bin-trash-bold" />
               Delete
-            </MenuItem> */}
+            </MenuItem>
 
             <MenuItem
               onClick={() => {

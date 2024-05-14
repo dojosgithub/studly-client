@@ -40,7 +40,7 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import { getSubmittalList } from 'src/redux/slices/submittalSlice';
+import { deleteSubmittal, getSubmittalList } from 'src/redux/slices/submittalSlice';
 import SubmittalsTableRow from '../submittals-table-row';
 import SubmittalsTableToolbar from '../submittals-table-toolbar';
 import SubmittalsTableFiltersResult from '../submittals-table-filters-result';
@@ -129,15 +129,14 @@ export default function SubmittalsListView() {
     []
   );
 
-  // const handleDeleteRow = useCallback(
-  //   (id) => {
-  //     const deleteRow = tableData.filter((row) => row.id !== id);
-  //     setTableData(deleteRow);
-
-  //     table.onUpdatePageDeleteRow(dataInPage.length);
-  //   },
-  //   [dataInPage.length, table, tableData]
-  // );
+  const handleDeleteRow = useCallback(
+    async (id) => {
+      console.log('id', id)
+      await dispatch(deleteSubmittal(id))
+      await dispatch(getSubmittalList())
+    },
+    [dispatch]
+  );
 
   // const handleDeleteRows = useCallback(() => {
   //   const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
@@ -309,7 +308,7 @@ export default function SubmittalsListView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
-                      // onDeleteRow={() => handleDeleteRow(row.id)}
+                      onDeleteRow={() => handleDeleteRow(row.id)}
                       onEditRow={() => handleEditRow(row.id)}
                       onViewRow={() => handleViewRow(row.id)}
                     />

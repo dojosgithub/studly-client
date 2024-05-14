@@ -53,6 +53,28 @@ export const editSubmittal = createAsyncThunk(
         }
     },
 )
+export const deleteSubmittal = createAsyncThunk(
+    'submittal/delete',
+    async (id, { getState, rejectWithValue }) => {
+        try {
+
+            console.log("submittalId", id)
+            const response = await axiosInstance.delete(endpoints.submittal.delete(id));
+
+            return response.data.data
+        } catch (err) {
+            console.error("errSlice", err)
+            if (err && err.message) {
+                throw Error(
+                    err.message
+                );
+            }
+            throw Error(
+                'An error occurred while creating the submittal.'
+            );
+        }
+    },
+)
 export const getSubmittalDetails = createAsyncThunk(
     'submittal/details',
     async (id, { getState, rejectWithValue }) => {
@@ -319,6 +341,20 @@ const submittal = createSlice({
             state.error = null;
         });
         builder.addCase(editSubmittal.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message
+        });
+        // * Delete Submittal
+        builder.addCase(deleteSubmittal.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(deleteSubmittal.fulfilled, (state, action) => {
+            // state.create = action.payload;
+            state.isLoading = false;
+            state.error = null;
+        });
+        builder.addCase(deleteSubmittal.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message
         });
