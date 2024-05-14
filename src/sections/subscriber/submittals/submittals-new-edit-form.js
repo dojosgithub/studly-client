@@ -50,6 +50,7 @@ import {
   submitSubmittalToArchitect,
 } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
+import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
@@ -130,12 +131,17 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting,errors },
   } = methods;
 
   const values = watch();
   const { submittalId } = values;
   console.log('values', values);
+  console.log('errors', errors);
+
+  if(!isEmpty(errors)){
+     window.scrollTo(0, 0);
+  }
   const handleSelectTrade = useCallback(
     (option) => {
       console.log('option', option);
