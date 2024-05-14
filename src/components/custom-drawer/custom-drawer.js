@@ -44,7 +44,7 @@ export default function CustomDrawer({ open, onClose, isOnboarding = false, Comp
         >
 
             <>
-                <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
+                <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type.charAt(0).toUpperCase() + type.slice(1)}</Typography>
                 <IconButton onClick={onClose} >
                     <Iconify icon="gg:close-o" color="black" height={32} width={32} />
                 </IconButton>

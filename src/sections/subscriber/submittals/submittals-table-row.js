@@ -65,11 +65,17 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }
             sx={{
               cursor: 'pointer',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
+              color: "blue",
+              textDecoration: 'underline',
+              display:'flex',
+              alignItems:'center',
+              gap:'.25rem'
+              // '&:hover': {
+              //   textDecoration: 'underline',
+              // },
             }}
           >
+            <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
             {submittalId}
           </Box>
         </TableCell>
