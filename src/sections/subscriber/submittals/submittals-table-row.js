@@ -40,13 +40,13 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
 
   return (
     <>
-      { 
-      (<TableRow hover selected={selected}>
-        {/* <TableCell padding="checkbox">
+      {
+        (<TableRow hover selected={selected}>
+          {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
 
           <ListItemText
@@ -59,42 +59,42 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             }}
           />
         </TableCell> */}
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <Box
-            onClick={
-              (role === "CAD" || role === "PWU") && status === "Draft" ? onEditRow : onViewRow
-            }
-            sx={{
-              cursor: 'pointer',
-              color: "blue",
-              textDecoration: 'underline',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '.25rem'
-              // '&:hover': {
-              //   textDecoration: 'underline',
-              // },
-            }}
-          >
-            <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-            {submittalId}
-          </Box>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{
-          truncate(description, { length: 20, omission: '...' })
-        }</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140, color: (theme) => isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.secondary }}>
-          {fDateISO(returnDate)}
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.firstName}{" "}{owner?.lastName}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            <Box
+              onClick={
+                (role === "CAD" || role === "PWU") && status === "Draft" ? onEditRow : onViewRow
+              }
+              sx={{
+                cursor: 'pointer',
+                color: "blue",
+                textDecoration: 'underline',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '.25rem'
+                // '&:hover': {
+                //   textDecoration: 'underline',
+                // },
+              }}
+            >
+              <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
+              {submittalId}
+            </Box>
+          </TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{
+            truncate(description, { length: 20, omission: '...' })
+          }</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140, color: (theme) => isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.secondary }}>
+            {fDateISO(returnDate)}
+          </TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.firstName}{" "}{owner?.lastName}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell>
 
-        <TableCell>
-          {/* <Label
+          <TableCell>
+            {/* <Label
             variant="soft"
             color={
               (status === 'approved' && 'success') ||
@@ -106,29 +106,29 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
           >
             {status}
           </Label> */}
-          <Label
-            color={getStatusColor(status)}
-            variant="soft"
-          >
-            {status}
-          </Label>
-        </TableCell>
+            <Label
+              color={getStatusColor(status)}
+              variant="soft"
+            >
+              {status}
+            </Label>
+          </TableCell>
 
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          {/* <Tooltip title="Quick Edit" placement="top" arrow>
+          <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+            {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip> */}
 
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
-      </TableRow>)}
+            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </TableCell>
+        </TableRow>)}
 
       {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
@@ -180,7 +180,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant="contained" color="error" onClick={() => { onDeleteRow(confirm);}}>
             Delete
           </Button>
         }

@@ -14,6 +14,7 @@ import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import { isEmpty } from 'lodash';
+import { useSnackbar } from 'notistack';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -82,6 +83,7 @@ export default function SubmittalsListView() {
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
@@ -129,12 +131,15 @@ export default function SubmittalsListView() {
   );
 
   const handleDeleteRow = useCallback(
-    async (id) => {
+    async (id, onDelete) => {
       console.log('id', id)
       await dispatch(deleteSubmittal(id))
-      await dispatch(getSubmittalList())
+      const { error, payload } = await dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
+      console.log('payload', payload)
+      onDelete.onFalse()
+      enqueueSnackbar('Submittal Deleted Successfully', { variant: "success" });
     },
-    [dispatch]
+    [dispatch, enqueueSnackbar]
   );
 
   // const handleDeleteRows = useCallback(() => {
@@ -307,7 +312,7 @@ export default function SubmittalsListView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
+                      onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
                       onEditRow={() => handleEditRow(row.id)}
                       onViewRow={() => handleViewRow(row.id)}
                     />
