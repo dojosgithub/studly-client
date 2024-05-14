@@ -100,12 +100,11 @@ export default function SubmittalsListView() {
   }, [dispatch, filters.query, filters.status, page])
 
 
-
-  // const dataFiltered = applyFilter({
-  //   inputData: tableData,
-  //   comparator: getComparator(table.order, table.orderBy),
-  //   filters,
-  // });
+  const dataFiltered = applyFilter({
+    inputData: listData?.docs,
+    comparator: getComparator(table.order, table.orderBy),
+    // filters,
+  });
 
   // const dataInPage = dataFiltered.slice(
   //   table.page * table.rowsPerPage,
@@ -139,7 +138,7 @@ export default function SubmittalsListView() {
   );
 
   // const handleDeleteRows = useCallback(() => {
-  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row.id));
   //   setTableData(deleteRows);
 
   //   table.onUpdatePageDeleteRows({
@@ -230,14 +229,14 @@ export default function SubmittalsListView() {
                   >
                     {tab.value === 'all' && _submittalsList.length}
                     {tab.value === 'active' &&
-                      _submittalsList.filter((user) => user.status === 'active').length}
+                      _submittalsList?.filter((user) => user.status === 'active').length}
 
                     {tab.value === 'pending' &&
-                      _submittalsList.filter((user) => user.status === 'pending').length}
+                      _submittalsList?.filter((user) => user.status === 'pending').length}
                     {tab.value === 'banned' &&
-                      _submittalsList.filter((user) => user.status === 'banned').length}
+                      _submittalsList?.filter((user) => user.status === 'banned').length}
                     {tab.value === 'rejected' &&
-                      _submittalsList.filter((user) => user.status === 'rejected').length}
+                      _submittalsList?.filter((user) => user.status === 'rejected').length}
                   </Label>
                 }
               />
@@ -265,7 +264,7 @@ export default function SubmittalsListView() {
           )} */}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
+            {/* <TableSelectedAction
               dense={table.dense}
               numSelected={table.selected.length}
               rowCount={tableData.length}
@@ -282,7 +281,7 @@ export default function SubmittalsListView() {
                   </IconButton>
                 </Tooltip>
               }
-            />
+            /> */}
 
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
@@ -290,19 +289,19 @@ export default function SubmittalsListView() {
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={table.selected.length}
                   onSort={table.onSort}
-                  onSelectAllRows={(checked) =>
-                    table.onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  rowCount={listData?.docs?.length}
+                // numSelected={table.selected.length}
+                // onSelectAllRows={(checked) =>
+                //   table.onSelectAllRows(
+                //     checked,
+                //     tableData.map((row) => row.id)
+                //   )
+                // }
                 />
 
                 <TableBody>
-                  {listData?.docs?.map((row) => (
+                  {dataFiltered && dataFiltered?.map((row) => (
                     <SubmittalsTableRow
                       key={row.id}
                       row={row}
@@ -316,7 +315,7 @@ export default function SubmittalsListView() {
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, listData?.docs?.length)}
                   />
 
                   <TableNoData notFound={notFound} />
@@ -374,31 +373,31 @@ export default function SubmittalsListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  // const { name, status, role } = filters;
 
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
+  const stabilizedThis = inputData?.map((el, index) => [el, index]);
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  inputData = stabilizedThis.map((el) => el[0]);
+  inputData = stabilizedThis?.map((el) => el[0]);
 
-  if (name) {
-    inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-    );
-  }
+  // if (name) {
+  //   inputData = inputData?.filter(
+  //     (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+  //   );
+  // }
 
-  if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
-  }
+  // if (status !== 'all') {
+  //   inputData = inputData?.filter((user) => user.status === status);
+  // }
 
-  if (role.length) {
-    inputData = inputData.filter((user) => role.includes(user.role));
-  }
+  // if (role.length) {
+  //   inputData = inputData?.filter((user) => role.includes(user.role));
+  // }
 
   return inputData;
 }
