@@ -22,6 +22,7 @@ import { paper } from 'src/theme/css';
 //
 import Iconify from '../iconify';
 import Scrollbar from '../scrollbar';
+import Logo from '../logo';
 //
 // import { useSettingsContext } from './context';
 
@@ -45,6 +46,7 @@ export default function CustomDrawer({ open, onClose, isOnboarding = false, Comp
 
             <>
                 <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type.charAt(0).toUpperCase() + type.slice(1)}</Typography>
+                <Logo/>
                 <IconButton onClick={onClose} >
                     <Iconify icon="gg:close-o" color="black" height={32} width={32} />
                 </IconButton>

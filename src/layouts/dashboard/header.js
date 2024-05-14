@@ -26,7 +26,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav,isOnboarding=false }) {
+export default function Header({ onOpenNav, isOnboarding = false }) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -43,13 +43,15 @@ export default function Header({ onOpenNav,isOnboarding=false }) {
 
   const renderContent = (
     <>
-      {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
+      {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} */}
+      {lgUp && isOnboarding && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
         <IconButton onClick={onOpenNav}>
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
+      {!lgUp && isOnboarding && <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: "100%" }} />}
 
       {/* <Searchbar /> */}
 
@@ -102,7 +104,7 @@ export default function Header({ onOpenNav,isOnboarding=false }) {
         sx={{
           height: 1,
           px: { lg: 5 },
-          backgroundColor:theme.palette.background.brandPrimary,
+          backgroundColor: theme.palette.background.brandPrimary,
 
         }}
       >
