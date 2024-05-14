@@ -51,7 +51,7 @@ export default function OnboardingWithoutProjects() {
         }}
       >
         <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
-          Hello Mr. {startCase(user?.firstName)}
+          Hello {startCase(user?.firstName)}
         </Typography>
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
           Let’s get started by creating a new project!
