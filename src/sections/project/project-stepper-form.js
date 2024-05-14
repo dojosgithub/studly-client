@@ -128,7 +128,7 @@ export default function ProjectStepperForm() {
   useEffect(() => {
     dispatch(getTemplateList())
     dispatch(getWorkflowList())
-    dispatch(getAllSubcontractorList())
+    // dispatch(getAllSubcontractorList())
     dispatch(getCompanySubcontractorList())
 
   }, [dispatch])

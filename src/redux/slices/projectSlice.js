@@ -173,7 +173,7 @@ export const getAllSubcontractorList = createAsyncThunk(
 // }
 // const assignSubcontractor ={ _id: '',tradeId:'',subcontractorId:'' }
 // const outsideUser ={ name: '', _id: '', email: '', role: '' }
-const projectObj = {
+const projectInitialState = {
   name: '',
   trades: [],
   workflow: {
@@ -185,21 +185,24 @@ const projectObj = {
   selectedTradeTemplate: '', // default || create || [template]
   isDefaultTemplateModified: false, // if true open name modal for creating a new template 
 }
+const subcontractorInitialState = {
+  list: {
+    all: [],
+    company: [],
+  },
+  invited: [],
+}
+
+
 // PROJECTS ||
 const initialState = {
   list: [],
   isProjectDrawerOpen: false,
   current: null,
-  create: { ...projectObj },
+  create: { ...projectInitialState },
   members: [],
   // Invite
-  subcontractors: {
-    list: {
-      all: [],
-      company: [],
-    },
-    invited: [],
-  },
+  subcontractors: { ...subcontractorInitialState },
   users: [], // PROJECT_USERS
   inviteUsers: {
     internal: [],
@@ -292,7 +295,7 @@ const project = createSlice({
       state.members = []
     },
     resetCreateProject: (state) => {
-      state.create = projectObj;
+      state.create = projectInitialState;
       state.members = [];
       state.subcontractors.invited = [];
       state.inviteUsers = {
@@ -313,6 +316,7 @@ const project = createSlice({
       state.create.selectedTradeTemplate = action.payload
     },
 
+    resetSubcontractorState: () => subcontractorInitialState,
     resetProjectState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -416,5 +420,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
 export default project.reducer
