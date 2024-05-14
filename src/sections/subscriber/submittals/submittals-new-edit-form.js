@@ -295,7 +295,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   sm: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFSelect name="trade" label="Trade">
+                <RHFSelect name="trade" label="Trade" disabled={!!currentSubmittal}>
                   {trades?.map((trade) => (
                     <MenuItem
                       key={trade.tradeId}
