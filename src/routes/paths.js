@@ -202,6 +202,20 @@ export const paths = {
       details: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}`,
       review: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/review`,
     },
+    logs: {
+      new: `${ROOTS.SUBSCRIBER}/logs/new`,
+      list: `${ROOTS.SUBSCRIBER}/logs/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}/review`,
+    },
+    coi: {
+      new: `${ROOTS.SUBSCRIBER}/coi/new`,
+      list: `${ROOTS.SUBSCRIBER}/coi/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/coi/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/coi/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/coi/${id}/review`,
+    },
     projectSettings: {
       new: `${ROOTS.SUBSCRIBER}/projectSettings/new`,
       list: `${ROOTS.SUBSCRIBER}/projectSettings/list`,

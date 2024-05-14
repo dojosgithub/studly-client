@@ -118,6 +118,20 @@ export function useNavData() {
 
           },
           {
+            title: 'Daily Logs',
+            path: paths.subscriber.logs.list,
+            icon: ICONS.file,
+            roles: STUDLY_ROLES.documents,
+
+          },
+          {
+            title: `COI's`,
+            path: paths.subscriber.coi.list,
+            icon: ICONS.lock,
+            roles: STUDLY_ROLES.documents,
+
+          },
+          {
             title: 'Project Settings',
             path: paths.subscriber.projectSettings.list,
             icon: ICONS.dashboard,

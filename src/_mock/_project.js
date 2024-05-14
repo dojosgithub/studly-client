@@ -16,6 +16,8 @@ rfis:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
 meetingMinutes:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
 planRoom:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
 documents:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+logs:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
+coi:["CAD", "PWU", "FIU", "ARC", "ENG", "SCO", "COM", "ASC"],
 projectSetting:["CAD",],
   
 }
