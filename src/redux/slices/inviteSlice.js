@@ -27,7 +27,7 @@ export const getInviteDetails = createAsyncThunk(
                 );
             }
             throw Error(
-                'An error occurred while creating the template.'
+                'An error occurred while fetching invite details.'
             );
         }
     },
@@ -53,7 +53,7 @@ export const sendInviteUserCredentials = createAsyncThunk(
                 );
             }
             throw Error(
-                'An error occurred while creating the template.'
+                'An error occurred while accepting the invite.'
             );
         }
     },
@@ -96,7 +96,8 @@ const invite = createSlice({
 
             // Restore 'list' to its current value before the reset
             state.list = currentList;
-        }
+        },
+        resetInviteState: () => initialState
     },
     extraReducers: (builder) => {
         // * Invite Details
@@ -132,5 +133,5 @@ const invite = createSlice({
     }
 })
 
-export const { resetInvite } = invite.actions
+export const { resetInvite, resetInviteState } = invite.actions
 export default invite.reducer

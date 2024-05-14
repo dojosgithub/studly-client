@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import { Divider, Stack } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 //
 import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
@@ -127,7 +128,7 @@ export default function ProjectStepperForm() {
   useEffect(() => {
     dispatch(getTemplateList())
     dispatch(getWorkflowList())
-    dispatch(getAllSubcontractorList())
+    // dispatch(getAllSubcontractorList())
     dispatch(getCompanySubcontractorList())
 
   }, [dispatch])
@@ -425,9 +426,9 @@ export default function ProjectStepperForm() {
     //   setOpen(true);
     // }
     const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
-    console.log('isModified',isModified)
-    console.log('defaultTemplateTrades',defaultTemplateTrades)
-    console.log('formValues.trades',formValues.trades)
+    console.log('isModified', isModified)
+    console.log('defaultTemplateTrades', defaultTemplateTrades)
+    console.log('formValues.trades', formValues.trades)
     if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
       setOpen(true);
       dispatch(setDefaultTemplateModified(true))
@@ -603,7 +604,10 @@ export default function ProjectStepperForm() {
                 )}
                 {/* steps.length - 1 new change */}
                 {activeStep === steps.length ? (
-                  <Button type="submit" variant="contained">Finish</Button>
+                  // <Button type="submit" variant="contained">Finish</Button>
+                  <LoadingButton type="submit" variant="contained" loading={isSubmitting} >
+                    Finish
+                  </LoadingButton>
                 ) : (
                   <Button onClick={handleNext} variant="contained">Next</Button>
                 )}

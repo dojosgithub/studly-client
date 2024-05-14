@@ -9,6 +9,7 @@ import { resetCompanyState } from "./slices/companySlice";
 import { resetSubmittalState } from "./slices/submittalSlice";
 import { resetTemplateState } from "./slices/templateSlice";
 import { resetWorkflowState } from "./slices/workflowSlice";
+import { resetInviteState } from "./slices/inviteSlice";
 
 // const persistConfig = {
 //   key: 'root',
@@ -40,6 +41,9 @@ const logoutRedux = () => {
   dispatch(resetSubmittalState())
   dispatch(resetTemplateState())
   dispatch(resetWorkflowState())
+  dispatch(resetWorkflowState())
+  dispatch(resetInviteState())
+
   dispatch(signOut())
 };
 
