@@ -434,11 +434,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     return (
                       <DatePicker
                         label="Request Return Date"
-                        views={['day', 'month', 'year']}
+                        views={['day']}
                         value={selectedDate}
                         minDate={startOfDay(addDays(new Date(), 1))}
                         onChange={(date) => field.onChange(date)}
-                        format="dd/MM/yyyy" // Specify the desired date format
+                        format="MM/dd/yyyy" // Specify the desired date format
                         error={!!error}
                         helperText={error && error?.message}
                         slotProps={{
