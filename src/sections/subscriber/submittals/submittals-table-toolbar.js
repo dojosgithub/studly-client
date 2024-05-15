@@ -13,7 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
-import { Button } from '@mui/material';
+import { Button, Menu } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 // components
@@ -32,6 +32,15 @@ export default function SubmittalsTableToolbar({
   const popover = usePopover();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   // const handleFilterName = useCallback(
   //   (event) => {
   //     onFilters('name', event.target.value);
@@ -70,9 +79,10 @@ export default function SubmittalsTableToolbar({
     setInputValue(event.target.value);
   };
 
-  const handleDownloadReport = async () => {
+  const handleDownloadReport = async (e) => {
+    handleClose();
     setIsLoading(true);
-    await dispatch(getSubmittalLogPDF());
+    await dispatch(getSubmittalLogPDF(e));
     setIsLoading(false);
   };
 
@@ -140,16 +150,8 @@ export default function SubmittalsTableToolbar({
             ))}
           </Select>
         </FormControl>
-        {/* <Button
-          variant="outlined"
-          onClick={() => {
-            dispatch(getSubmittalLogPDF());
-          }}
-        >
-          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
-          Export
-        </Button> */}
-        <LoadingButton
+
+        {/* <LoadingButton
           onClick={handleDownloadReport}
           type="button"
           variant="contained"
@@ -158,7 +160,49 @@ export default function SubmittalsTableToolbar({
         >
           <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
           Export
+        </LoadingButton> */}
+        {/* <Menu
+          onChange={handleDownloadReport}
+          input={<OutlinedInput label="Export" />}
+          MenuProps={{
+            PaperProps: {
+              sx: { maxHeight: 240 },
+            },
+          }}
+        >
+          <MenuItem key="pdf" value="pdf">
+            Export As PDF
+          </MenuItem>
+          <MenuItem key="csv" value="csv">
+            Export As CSV
+          </MenuItem>
+        </Menu> */}
+        <LoadingButton
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+          type="button"
+          variant="contained"
+          loading={isLoading}
+          sx={{ ml: 'auto' }}
+        >
+          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
+          Export
         </LoadingButton>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <MenuItem onClick={() => handleDownloadReport('pdf')}>Export As PDF</MenuItem>
+          <MenuItem onClick={() => handleDownloadReport('csv')}>Export As CSV</MenuItem>
+        </Menu>
       </Stack>
 
       {/* <CustomPopover
