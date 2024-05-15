@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import PropTypes from 'prop-types';
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Typography } from "@mui/material";
 import { isEmpty } from "lodash";
+import { useFormContext } from "react-hook-form";
 
 const filter = createFilterOptions();
 
@@ -137,23 +138,28 @@ const filter = createFilterOptions();
 //     );
 // }
 
-export default function CustomAutoComplete({ listOptions, setValue, value, error }) {
+// ? WORKING CODE EXCEPT DELAYED VALUE DISPLAY 
+export default function CustomAutoComplete({ listOptions, error }) {
     const [inputValue, setInputValue] = useState('');
     // const [selectedValue, setSelectedValue] = useState(value ? value.email : '');
-
     const [open, setOpen] = useState(false);
+
+    const { getValues, setValue } = useFormContext()
+    const { user: value } = getValues()
+    console.log("user", value)
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             if (inputValue.trim() !== '') {
-                setValue({
+
+                setValue("user", {
                     email: inputValue.trim(),
                 });
                 // // setInputValue('');
                 setInputValue(inputValue.trim());
             } else if (listOptions.length > 0) {
-                setValue({
+                setValue("user", {
                     email: listOptions[0].email,
                     id: listOptions[0].id
                 });
@@ -169,14 +175,15 @@ export default function CustomAutoComplete({ listOptions, setValue, value, error
             value={value}
             onChange={(event, newValue) => {
                 if (newValue) {
-                    setValue({
+                    setValue("user", {
                         email: newValue.email,
                         id: newValue.id,
                     });
                     setInputValue(newValue.email);
                     // setSelectedValue(newValue.email);
                 } else {
-                    setValue(null);
+
+                    setValue("user", null);
                     setInputValue('');
                     // setSelectedValue('');
                 }
@@ -203,6 +210,8 @@ export default function CustomAutoComplete({ listOptions, setValue, value, error
         />
     );
 }
+
+
 CustomAutoComplete.propTypes = {
     listOptions: PropTypes.array,
     value: PropTypes.object,

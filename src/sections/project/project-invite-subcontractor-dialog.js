@@ -130,7 +130,7 @@ export default function ProjectInviteSubcontractorDialog({
       //  //   return
       //  // }
       //  // console.log('updatedData Final', updatedData);
-      enqueueSnackbar('Invite sent successfully!');
+      // enqueueSnackbar('Invite sent successfully!');
       onClose()
 
 

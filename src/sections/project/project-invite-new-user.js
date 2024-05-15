@@ -185,7 +185,9 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
                         {/* USER_LIST_OPTIONS */}
                         
                         <Stack>
-                            <CustomAutoComplete listOptions={userListOptions} value={userObj} setValue={(val) => handleSelectUser(val)} />
+                        {/* setValue={(val) => handleSelectUser(val)} */}
+                        {/* value={userObj}  */}
+                            <CustomAutoComplete listOptions={userListOptions}  />
                             {errors && errors?.user?.message && <Typography color='red' fontSize=".75rem">{errors?.user?.message}</Typography>}
                             {errors && errors?.user?.email?.message && <Typography color='red' fontSize=".75rem">{errors?.user?.email?.message}</Typography>}
                         </Stack>
