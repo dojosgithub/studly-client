@@ -80,6 +80,7 @@ export const endpoints = {
     list: (id) => `/api/user/submittal/${id}`,
     create: '/api/user/submittal',
     edit: (id) => `/api/user/submittal/${id}`,
+    delete: (id) => `/api/user/submittal/${id}`,
     details: (id) => `/api/user/submittal/${id}/details`,
     submit: (id) => `/api/user/submittal/${id}/submit`,
     review: (id) => `/api/user/submittal/${id}/review`,

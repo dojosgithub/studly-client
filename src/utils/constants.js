@@ -33,3 +33,10 @@ export const STATUS_WORKFLOW_STUDLY = [
     "Custom",
     "Sent to Subcontractor"
 ];
+
+export const DOC_STATUS = {
+    active: 1,
+    inactive: 2,
+    archived: 3,
+    deleted: 4,
+  }

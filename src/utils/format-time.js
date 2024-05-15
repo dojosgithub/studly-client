@@ -4,7 +4,7 @@ import { format, getTime, formatDistanceToNow,parseISO } from 'date-fns';
 
 export function fDateISO(date) {
   const dateParsed = parseISO(date);
-  const formattedDate = format(dateParsed, 'dd/MM/yyyy');
+  const formattedDate = format(dateParsed, 'MM/dd/yyyy');
   return formattedDate 
 }
 

@@ -50,6 +50,7 @@ import {
   submitSubmittalToArchitect,
 } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
+import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
@@ -130,12 +131,17 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting,errors },
   } = methods;
 
   const values = watch();
   const { submittalId } = values;
   console.log('values', values);
+  console.log('errors', errors);
+
+  if(!isEmpty(errors)){
+     window.scrollTo(0, 0);
+  }
   const handleSelectTrade = useCallback(
     (option) => {
       console.log('option', option);
@@ -217,7 +223,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       dispatch(getProjectList());
       reset();
       enqueueSnackbar(
-        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal has been successfully sent for review!',
         { variant: 'success' }
       );
       if (val === 'review') {
@@ -289,7 +295,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   sm: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFSelect name="trade" label="Trade">
+                <RHFSelect name="trade" label="Trade" disabled={!!currentSubmittal}>
                   {trades?.map((trade) => (
                     <MenuItem
                       key={trade.tradeId}
@@ -428,11 +434,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     return (
                       <DatePicker
                         label="Request Return Date"
-                        views={['day', 'month', 'year']}
+                        views={['day']}
                         value={selectedDate}
                         minDate={startOfDay(addDays(new Date(), 1))}
                         onChange={(date) => field.onChange(date)}
-                        format="dd/MM/yyyy" // Specify the desired date format
+                        format="MM/dd/yyyy" // Specify the desired date format
                         error={!!error}
                         helperText={error && error?.message}
                         slotProps={{

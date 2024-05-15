@@ -43,6 +43,23 @@ export const editSubmittal = createAsyncThunk(
     }
   }
 );
+export const deleteSubmittal = createAsyncThunk(
+  'submittal/delete',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      console.log('submittalId', id);
+      const response = await axiosInstance.delete(endpoints.submittal.delete(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the submittal.');
+    }
+  }
+);
 export const getSubmittalDetails = createAsyncThunk(
   'submittal/details',
   async (id, { getState, rejectWithValue }) => {
@@ -244,141 +261,145 @@ const submittal = createSlice({
     setSubmittalList: (state, action) => {
       state.list = action.payload;
     },
-    setCurrentSubmittal: (state, action) => {
-      state.current = action.payload;
+    extraReducers: (builder) => {
+      // * Create New Submittal
+      builder.addCase(createNewSubmittal.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(createNewSubmittal.fulfilled, (state, action) => {
+        state.create = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(createNewSubmittal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      // * Edit Submittal
+      builder.addCase(editSubmittal.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(editSubmittal.fulfilled, (state, action) => {
+        state.create = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(editSubmittal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      // * Delete Submittal
+      builder.addCase(deleteSubmittal.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(deleteSubmittal.fulfilled, (state, action) => {
+        // state.create = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(deleteSubmittal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      // * Get Project Users List
+      builder.addCase(getProjectUsersList.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(getProjectUsersList.fulfilled, (state, action) => {
+        state.users = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(getProjectUsersList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      // * Get Submittal List
+      builder.addCase(getSubmittalList.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalList.fulfilled, (state, action) => {
+        state.list = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      // Get Submittal Details
+      builder.addCase(getSubmittalDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalDetails.fulfilled, (state, action) => {
+        state.current = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      builder.addCase(respondToSubmittalRequest.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(respondToSubmittalRequest.fulfilled, (state, action) => {
+        state.current = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(respondToSubmittalRequest.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      //
+      builder.addCase(getSubmittalResponseDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalResponseDetails.fulfilled, (state, action) => {
+        state.response = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalResponseDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      builder.addCase(updateSubmittalResponseDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(updateSubmittalResponseDetails.fulfilled, (state, action) => {
+        state.response = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(updateSubmittalResponseDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
+      builder.addCase(getSubmittalLogPDF.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalLogPDF.fulfilled, (state, action) => {
+        state.report = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      });
+      builder.addCase(getSubmittalLogPDF.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
     },
-    setSubmittalResponse: (state, action) => {
-      state.response = action.payload;
-    },
-    setCreateSubmittal: (state, action) => {
-      state.create = action.payload;
-    },
-    resetSubmittalState: () => initialState,
-  },
-  extraReducers: (builder) => {
-    // * Create New Submittal
-    builder.addCase(createNewSubmittal.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(createNewSubmittal.fulfilled, (state, action) => {
-      state.create = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(createNewSubmittal.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // * Edit Submittal
-    builder.addCase(editSubmittal.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(editSubmittal.fulfilled, (state, action) => {
-      state.create = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(editSubmittal.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // * Get Project Users List
-    builder.addCase(getProjectUsersList.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getProjectUsersList.fulfilled, (state, action) => {
-      state.users = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getProjectUsersList.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // * Get Submittal List
-    builder.addCase(getSubmittalList.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalList.fulfilled, (state, action) => {
-      state.list = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalList.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // Get Submittal Details
-    builder.addCase(getSubmittalDetails.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalDetails.fulfilled, (state, action) => {
-      state.current = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalDetails.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    builder.addCase(respondToSubmittalRequest.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(respondToSubmittalRequest.fulfilled, (state, action) => {
-      state.current = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(respondToSubmittalRequest.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    //
-    builder.addCase(getSubmittalResponseDetails.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalResponseDetails.fulfilled, (state, action) => {
-      state.response = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalResponseDetails.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    builder.addCase(updateSubmittalResponseDetails.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(updateSubmittalResponseDetails.fulfilled, (state, action) => {
-      state.response = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(updateSubmittalResponseDetails.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    builder.addCase(getSubmittalLogPDF.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalLogPDF.fulfilled, (state, action) => {
-      state.report = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getSubmittalLogPDF.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
   },
 });
 

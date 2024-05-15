@@ -65,7 +65,7 @@ export default function OnboardingWithoutProjects() {
           mx='auto'
         >
 
-          <Button
+          {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && <Button
             variant="contained"
             color="secondary"
             size='large'
@@ -73,8 +73,18 @@ export default function OnboardingWithoutProjects() {
           // onClick={() => navigate(paths.subscriber.submittals.list)}
           >
             Create a new Project
-          </Button>
-
+          </Button>}
+          {(user?.userType === "Subscriber" && (user?.role?.shortName !== "CAD" || user?.role?.shortName !== "PWU")) && <Box
+            sx={{
+              minHeight: '60px',
+              borderRadius: 1,
+              border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
+              textAlign: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            There are no projects.
+          </Box>}
         </Stack>
 
       </Stack>
