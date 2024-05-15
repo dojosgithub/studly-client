@@ -74,17 +74,7 @@ export default function OnboardingWithoutProjects() {
           >
             Create a new Project
           </Button>}
-          {(user?.userType === "Subscriber" && (user?.role?.shortName !== "CAD" || user?.role?.shortName !== "PWU")) && <Box
-            sx={{
-              minHeight: '60px',
-              borderRadius: 1,
-              border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
-              textAlign: 'center',
-              cursor: 'pointer'
-            }}
-          >
-            There are no projects.
-          </Box>}
+         
         </Stack>
 
       </Stack>
