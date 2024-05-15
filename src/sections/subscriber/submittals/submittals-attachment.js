@@ -81,6 +81,7 @@ export default function SubmittalAttachments({
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
         }}
         maxFiles={10}
+        maxSize={20000000}
       />
 
       {!!files.length && (
