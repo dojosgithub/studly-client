@@ -38,7 +38,7 @@ export default function ProjectTradeSelect() {
         // Find the selected item based on the value
         dispatch(setSelectedTradeTemplate(value))
         if (value !== 'create') {
-            const selectedItem = templateList.find(item => item.name === value || value === 'default');
+            const selectedItem = templateList.find(item => item.name === value);
             handleSelectTemplate(selectedItem);
             setValue('trades', selectedItem?.trades)
             dispatch(setProjectTrades(selectedItem?.trades))
