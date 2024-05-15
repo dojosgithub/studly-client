@@ -222,13 +222,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       dispatch(getCurrentProjectTradesById(projectId));
       dispatch(getProjectList());
       reset();
-      enqueueSnackbar(
-        currentSubmittal ? 'Submittal updated successfully!' : 'Submittal has been successfully sent for review!',
-        { variant: 'success' }
-      );
       if (val === 'review') {
         console.log('payload', payload);
         handleSubmitToArchitect(payload?.id);
+      }else{
+        enqueueSnackbar(
+          currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+          { variant: 'success' }
+        );
       }
       router.push(paths.subscriber.submittals.list);
     } catch (error) {
@@ -250,7 +251,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       enqueueSnackbar(error.message, { variant: 'error' });
       return;
     }
-    enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
+    enqueueSnackbar('Submittal has been successfully sent for review', { variant: 'success' });
     await dispatch(getSubmittalDetails(SubmittalId));
   };
 
