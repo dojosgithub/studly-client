@@ -52,7 +52,7 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'id', label: 'Submittal ID' },
+  { id: 'id', label: 'Submittal ID' ,width: 500 },
   { id: 'name', label: 'Name', width: 250 },
   { id: 'description', label: 'Description', width: 220 },
   { id: 'type', label: 'Type', width: 180 },
@@ -60,9 +60,8 @@ const TABLE_HEAD = [
   { id: 'returnDate', label: 'Return Date', width: 220 },
   { id: 'creator', label: 'Creator', width: 180 },
   { id: 'owner', label: 'Owner / Assignee', width: 400 },
-  { id: 'link', label: 'Preview Link', width: 180 },
+  // { id: 'link', label: 'Preview Link', width: 180 },
   { id: 'status', label: 'Status', width: 100 },
-  // { id: 'role', label: 'Role', width: 180 },
   { id: '', width: 88 },
 ];
 
