@@ -50,10 +50,10 @@ import CompanyTableFiltersResult from '../company-table-filters-result';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'companyName', label: 'Company Name' },
-  { id: 'adminName', label: 'Admin Name', minWidth:120},
+  { id: 'companyName', label: 'Company Name',minWidth:170 },
+  { id: 'adminName', label: 'Admin Name', minWidth:150},
   { id: 'adminEmail', label: 'Email', width: 220 },
-  { id: 'phoneNumber', label: 'Phone Number', width: 180,minWidth:140 },
+  { id: 'phoneNumber', label: 'Phone Number', width: 170,minWidth:150 },
   { id: 'address', label: 'Address', width: 220 },
   { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
