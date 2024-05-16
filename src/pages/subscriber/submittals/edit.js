@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProjectUsersList } from 'src/redux/slices/submittalSlice';
+import { getProjectAssigneeUsers, getProjectUsersList } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
@@ -21,6 +21,7 @@ export default function SubmittalsEditPage() {
   useEffect(() => {
     console.log('edit', id)
     dispatch(getProjectUsersList())
+    dispatch(getProjectAssigneeUsers())
   }, [id, dispatch])
   return (
     <>

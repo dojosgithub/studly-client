@@ -127,6 +127,25 @@ export const getProjectUsersList = createAsyncThunk(
     }
   }
 );
+export const getProjectAssigneeUsers = createAsyncThunk(
+  'submittal/users-assignee/list',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const response = await axiosInstance.get(endpoints.project.projectAssigneeUsersList(projectId));
+
+      return response.data.data.members;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal list.');
+    }
+  }
+);
 
 export const getSubmittalLogPDF = createAsyncThunk(
   'submittal/pdf',
@@ -248,6 +267,7 @@ const initialState = {
   create: {},
   current: {},
   users: [],
+  assineeUsers: [],
   report: null,
   response: null,
   isLoading: false,
@@ -326,6 +346,20 @@ const submittal = createSlice({
       state.error = null;
     });
     builder.addCase(getProjectUsersList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // * Get Project Assignee Users List
+    builder.addCase(getProjectAssigneeUsers.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getProjectAssigneeUsers.fulfilled, (state, action) => {
+      state.assineeUsers = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getProjectAssigneeUsers.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

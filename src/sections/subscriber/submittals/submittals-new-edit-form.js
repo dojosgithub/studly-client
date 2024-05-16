@@ -60,6 +60,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const ccList = useSelector((state) => state.submittal.users);
+  const ownerList = useSelector((state) => state.submittal.assineeUsers);
   const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : [];
   const [files, setFiles] = useState(existingAttachments);
   const currentUser = useSelector((state) => state.user?.user);
@@ -70,6 +71,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log('projectId', projectId);
   console.log('submittalId ', id);
   console.log('ccList ', ccList);
+  console.log('ownerList ', ownerList);
 
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
@@ -89,7 +91,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     returnDate: Yup.date()
       .required('Return Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Return Date must be later than today'),
-    owner: Yup.string(),
+    owner: Yup.string().required('Owner is required'),
     ccList: Yup.array(),
     // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     // attachments: Yup.array().min(1),
@@ -157,7 +159,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const onSubmit = handleSubmit(async (data, val) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const owner = ccList.filter((item) => data.owner === item.email)[0]?.user;
+      const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
       const tradeId = getStrTradeId(data.trade);
       const tradeObj = trades.find((t) => t.tradeId === tradeId);
       const trade = {
@@ -470,7 +472,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 {/* <MenuItem value="option1">Option 1</MenuItem>
                 <MenuItem value="option2">Option 2</MenuItem>
                 <MenuItem value="option3">Option 3</MenuItem> */}
-                {ccList?.map((item) => (
+                {ownerList?.map((item) => (
                   <MenuItem value={item?.email} key={item?.email}>
                     {item?.email}
                   </MenuItem>

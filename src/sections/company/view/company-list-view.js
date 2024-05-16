@@ -51,9 +51,9 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'companyName', label: 'Company Name' },
-  { id: 'adminName', label: 'Admin Name', },
+  { id: 'adminName', label: 'Admin Name', minWidth:120},
   { id: 'adminEmail', label: 'Email', width: 220 },
-  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
+  { id: 'phoneNumber', label: 'Phone Number', width: 180,minWidth:140 },
   { id: 'address', label: 'Address', width: 220 },
   { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
