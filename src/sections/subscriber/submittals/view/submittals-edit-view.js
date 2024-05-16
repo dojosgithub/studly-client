@@ -17,13 +17,14 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import { useRouter } from 'src/routes/hooks';
 import SubmittalsNewEditForm from '../submittals-new-edit-form';
 
 // ----------------------------------------------------------------------
 
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
-
+  const router = useRouter();
   const submittalList = useSelector(state => state.submittal?.list?.docs)
   const dispatch = useDispatch()
   const currentSubmittal = submittalList?.find(item => item.id === id)
@@ -56,6 +57,8 @@ export default function SubmittalsEditView({ id }) {
     enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
     await dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
     await dispatch(getSubmittalDetails(id));
+    router.push(paths.subscriber.submittals.list);
+
   };
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
