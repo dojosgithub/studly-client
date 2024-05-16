@@ -746,7 +746,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
                 {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
-                    Submit to Architect
+                    Submit to Review
                 </LoadingButton >
             </Box>} */}
               </Stack>

@@ -125,7 +125,7 @@ const SubmittalsDetails = ({ id }) => {
                                 loading={isSubmitting}
                                 onClick={handleSubmitToArchitect}
                             >
-                                Submit to Architect
+                                Submit to Review
                             </LoadingButton>
                         </Box>
                     )}
