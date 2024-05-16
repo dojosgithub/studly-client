@@ -20,6 +20,7 @@ export default function SubmittalAttachments({
   //
   files,
   setFiles,
+  // preview=true,
   //
   ...other
 }) {
@@ -80,6 +81,7 @@ export default function SubmittalAttachments({
           'application/vnd.ms-excel': ['.xls'],
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
         }}
+        {...other}
         maxFiles={10}
         maxSize={20000000}
       />
@@ -98,4 +100,5 @@ SubmittalAttachments.propTypes = {
   onUpdate: PropTypes.func,
   files: PropTypes.array,
   setFiles: PropTypes.func,
+  preview: PropTypes.bool,
 };

@@ -42,6 +42,7 @@ import FormProvider, {
   RHFSelectChip
 } from 'src/components/hook-form';
 import { createNewSubmittal, editSubmittal, respondToSubmittalRequest, updateSubmittalResponseDetails } from 'src/redux/slices/submittalSlice';
+import { REVIEW_STATUS } from 'src/utils/constants';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
@@ -182,13 +183,16 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
                 label="Status"
                 chip
               >
-                <MenuItem selected value="Draft">Draft</MenuItem>
+           
+                {REVIEW_STATUS?.map(item => (
+                  <MenuItem selected value={item}>{item}</MenuItem>
+                ))}
               </RHFSelect>
               <RHFTextField name="comment" label="Add a comment" />
 
 
 
-              <SubmittalAttachments files={files} setFiles={setFiles} />
+              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail/>
 
 
 
@@ -212,7 +216,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
           </Card>
         </Grid>
       </Grid>
-    </FormProvider>
+    </FormProvider >
   );
 }
 
