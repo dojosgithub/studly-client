@@ -133,7 +133,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting,errors },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
@@ -141,8 +141,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log('values', values);
   console.log('errors', errors);
 
-  if(!isEmpty(errors)){
-     window.scrollTo(0, 0);
+  if (!isEmpty(errors)) {
+    window.scrollTo(0, 0);
   }
   const handleSelectTrade = useCallback(
     (option) => {
@@ -223,16 +223,19 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
       dispatch(getCurrentProjectTradesById(projectId));
       dispatch(getProjectList());
-      reset();
-      if (val === 'review') {
-        console.log('payload', payload);
-        handleSubmitToArchitect(payload?.id);
-      }else{
+      if (val !== 'review') {
         enqueueSnackbar(
           currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
           { variant: 'success' }
         );
+        router.push(paths.subscriber.submittals.details(payload?.id));
+
+        return
       }
+      console.log('payload', payload);
+      await handleSubmitToArchitect(payload?.id);
+      reset();
+      
       router.push(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
@@ -426,12 +429,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     const isDateNextDay = selectedDate && isTomorrow(selectedDate);
                     const dateStyle = isDateNextDay
                       ? {
-                          '.MuiInputBase-root.MuiOutlinedInput-root': {
-                            color: 'red',
-                            borderColor: 'red',
-                            border: '1px solid',
-                          },
-                        }
+                        '.MuiInputBase-root.MuiOutlinedInput-root': {
+                          color: 'red',
+                          borderColor: 'red',
+                          border: '1px solid',
+                        },
+                      }
                       : {};
                     console.log(isDateNextDay);
                     return (
@@ -451,7 +454,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                             helperText: error?.message,
                           },
                         }}
-                        // sx={dateStyle} // Apply conditional style based on the date comparison
+                      // sx={dateStyle} // Apply conditional style based on the date comparison
                       />
                     );
                   }}
@@ -467,7 +470,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
               <RHFSelect
                 name="owner"
                 label="Assignee/Owner"
-                // capitalize
+              // capitalize
               >
                 {/* <MenuItem value="option1">Option 1</MenuItem>
                 <MenuItem value="option2">Option 2</MenuItem>
@@ -485,10 +488,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 // placeholder="Select multiple options"
                 chip
                 options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-                // options={[
-                //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-                //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-                // ]}
+              // options={[
+              //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+              //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+              // ]}
               />
             </Box>
 
