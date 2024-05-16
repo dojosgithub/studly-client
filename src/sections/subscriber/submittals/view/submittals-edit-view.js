@@ -24,15 +24,15 @@ import SubmittalsNewEditForm from '../submittals-new-edit-form';
 
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
-  const router = useRouter();
   const submittalList = useSelector(state => state.submittal?.list?.docs)
   const dispatch = useDispatch()
   const currentSubmittal = submittalList?.find(item => item.id === id)
   // const currentSubmittal = useSelector((state) => state.submittal.current);
+  // const router = useRouter();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const currentUser = useSelector((state) => state.user?.user);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
+  // const { enqueueSnackbar } = useSnackbar();
+  // const currentUser = useSelector((state) => state.user?.user);
 
   console.log("currentSubmittal", currentSubmittal)
   console.log("sumittalId", id)
@@ -44,22 +44,22 @@ export default function SubmittalsEditView({ id }) {
 
   }, [dispatch, id, currentSubmittal])
 
-  const handleSubmitToArchitect = async () => {
-    console.log('SubmittalId', id);
-    setIsSubmitting(true);
-    const { error, payload } = await dispatch(submitSubmittalToArchitect(id));
-    console.log('e-p', { error, payload });
-    setIsSubmitting(false);
-    if (!isEmpty(error)) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-      return;
-    }
-    enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
-    await dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
-    await dispatch(getSubmittalDetails(id));
-    router.push(paths.subscriber.submittals.list);
+  // const handleSubmitToArchitect = async () => {
+  //   console.log('SubmittalId', id);
+  //   setIsSubmitting(true);
+  //   const { error, payload } = await dispatch(submitSubmittalToArchitect(id));
+  //   console.log('e-p', { error, payload });
+  //   setIsSubmitting(false);
+  //   if (!isEmpty(error)) {
+  //     enqueueSnackbar(error.message, { variant: 'error' });
+  //     return;
+  //   }
+  //   enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
+  //   await dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+  //   await dispatch(getSubmittalDetails(id));
+  //   router.push(paths.subscriber.submittals.list);
 
-  };
+  // };
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -79,7 +79,7 @@ export default function SubmittalsEditView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      {currentSubmittal?.status === 'Draft' &&
+      {/* {currentSubmittal?.status === 'Draft' &&
         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
           currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
           <Box width="100%" display="flex" justifyContent="end">
@@ -93,7 +93,7 @@ export default function SubmittalsEditView({ id }) {
               Submit to Architect
             </LoadingButton>
           </Box>
-        )}
+        )} */}
       <SubmittalsNewEditForm currentSubmittal={currentSubmittal} id={id} />
     </Container>
   );

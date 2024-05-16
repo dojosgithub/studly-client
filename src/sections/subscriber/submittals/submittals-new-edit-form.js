@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty, concat } from 'lodash';
@@ -58,6 +58,7 @@ import SubmittalAttachments from './submittals-attachment';
 export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log('currentSubmittal', currentSubmittal);
   const router = useRouter();
+  const isSubmittingRef = useRef();
   const dispatch = useDispatch();
   const ccList = useSelector((state) => state.submittal.users);
   const ownerList = useSelector((state) => state.submittal.assineeUsers);
@@ -156,7 +157,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     [setValue]
   );
 
-  const onSubmit = handleSubmit(async (data, val) => {
+  const onSubmit = handleSubmit(async (data, val, secondVal) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
       const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
@@ -224,10 +225,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       dispatch(getCurrentProjectTradesById(projectId));
       dispatch(getProjectList());
       if (val !== 'review') {
-        enqueueSnackbar(
-          currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
-          { variant: 'success' }
-        );
+        if (!secondVal) {
+          enqueueSnackbar(
+            currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+            { variant: 'success' }
+          );
+        }
         router.push(paths.subscriber.submittals.details(payload?.id));
 
         return
@@ -235,7 +238,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       console.log('payload', payload);
       await handleSubmitToArchitect(payload?.id);
       reset();
-      
+
       router.push(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
@@ -248,10 +251,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const handleSubmitToArchitect = async (SubmittalId) => {
     console.log('SubmittalId', SubmittalId);
-    // setIsSubmitting(true);
+    isSubmittingRef.current = true;
     const { error, payload } = await dispatch(submitSubmittalToArchitect(SubmittalId));
     console.log('e-p', { error, payload });
-    // setIsSubmitting(false);
+    isSubmittingRef.current = false;
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });
       return;
@@ -277,62 +280,78 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   // );
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Grid container spacing={3}>
-        <Grid xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={4}
-              // columnGap={2}
-              // gridTemplateColumns={{
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              // }}
-              my={3}
-              display="flex"
-              flexDirection="column"
+    <>
+      {currentSubmittal && currentSubmittal?.status === 'Draft' &&
+        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+          <Box width="100%" display="flex" justifyContent="end">
+            <LoadingButton
+              type="button"
+              variant="contained"
+              size="large"
+              loading={isSubmittingRef?.current}
+              onClick={() => onSubmit('review', 'sendForReviewFromEditPage')}
             >
+              Submit for Review
+            </LoadingButton>
+          </Box>
+        )}
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Grid container spacing={3}>
+          <Grid xs={12} md={12}>
+            <Card sx={{ p: 3 }}>
               <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                }}
+                rowGap={4}
+                // columnGap={2}
+                // gridTemplateColumns={{
+                //   xs: 'repeat(1, 1fr)',
+                //   sm: 'repeat(2, 1fr)',
+                // }}
+                my={3}
+                display="flex"
+                flexDirection="column"
               >
-                <RHFSelect name="trade" label="Trade" disabled={!!currentSubmittal}>
-                  {trades?.map((trade) => (
-                    <MenuItem
-                      key={trade.tradeId}
-                      value={`${trade?.tradeId || ''}-${trade?.name || ''}`}
-                      onClick={() => handleSelectTrade(trade)}
-                    >
-                      {trade?.name}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-                <RHFTextField
-                  name="submittalId"
-                  label="Submittal ID"
-                  type="string"
-                  value={submittalId}
-                  disabled
-                />
-                {/* type='number' */}
-              </Box>
-              <RHFTextField name="name" label="Name" />
-              <RHFTextField name="description" multiline rows={3} label="Description" />
-              <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(3, 1fr)',
-                }}
-              >
-                {/* <Controller
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                  }}
+                >
+                  <RHFSelect name="trade" label="Trade" disabled={!!currentSubmittal}>
+                    {trades?.map((trade) => (
+                      <MenuItem
+                        key={trade.tradeId}
+                        value={`${trade?.tradeId || ''}-${trade?.name || ''}`}
+                        onClick={() => handleSelectTrade(trade)}
+                      >
+                        {trade?.name}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                  <RHFTextField
+                    name="submittalId"
+                    label="Submittal ID"
+                    type="string"
+                    value={submittalId}
+                    disabled
+                  />
+                  {/* type='number' */}
+                </Box>
+                <RHFTextField name="name" label="Name" />
+                <RHFTextField name="description" multiline rows={3} label="Description" />
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                  }}
+                >
+                  {/* <Controller
                   name="submittedDate"
                   control={control}
                   defaultValue={new Date()}
@@ -356,14 +375,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   )}
                 /> */}
 
-                {/* // TODO: SHOW CHIP */}
-                <RHFSelect name="status" label="Status" chip disabled>
-                  <MenuItem selected value="Draft">
-                    Draft
-                  </MenuItem>
-                </RHFSelect>
+                  {/* // TODO: SHOW CHIP */}
+                  <RHFSelect name="status" label="Status" chip disabled>
+                    <MenuItem selected value="Draft">
+                      Draft
+                    </MenuItem>
+                  </RHFSelect>
 
-                {/* <RHFMultiSelectChip
+                  {/* <RHFMultiSelectChip
                   name="status"
                   label="Status"
                   options={[
@@ -373,7 +392,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   ]}
                   disabled
                 /> */}
-                {/* <Controller
+                  {/* <Controller
                   name="returnDate"
                   control={control}
                   defaultValue={new Date()}
@@ -396,7 +415,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     />
                   )}
                 /> */}
-                {/* <Controller
+                  {/* <Controller
                   name="returnDate"
                   control={control}
                   defaultValue={new Date()}
@@ -420,82 +439,82 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     />
                   )}
                 /> */}
-                <Controller
-                  name="returnDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => {
-                    const selectedDate = field.value || null;
-                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                    const dateStyle = isDateNextDay
-                      ? {
-                        '.MuiInputBase-root.MuiOutlinedInput-root': {
-                          color: 'red',
-                          borderColor: 'red',
-                          border: '1px solid',
-                        },
-                      }
-                      : {};
-                    console.log(isDateNextDay);
-                    return (
-                      <DatePicker
-                        label="Request Return Date"
-                        views={['day']}
-                        value={selectedDate}
-                        minDate={startOfDay(addDays(new Date(), 1))}
-                        onChange={(date) => field.onChange(date)}
-                        format="MM/dd/yyyy" // Specify the desired date format
-                        error={!!error}
-                        helperText={error && error?.message}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!error,
-                            helperText: error?.message,
+                  <Controller
+                    name="returnDate"
+                    control={control}
+                    defaultValue={new Date()}
+                    render={({ field, fieldState: { error } }) => {
+                      const selectedDate = field.value || null;
+                      const isDateNextDay = selectedDate && isTomorrow(selectedDate);
+                      const dateStyle = isDateNextDay
+                        ? {
+                          '.MuiInputBase-root.MuiOutlinedInput-root': {
+                            color: 'red',
+                            borderColor: 'red',
+                            border: '1px solid',
                           },
-                        }}
-                      // sx={dateStyle} // Apply conditional style based on the date comparison
-                      />
-                    );
-                  }}
-                />
-                <RHFSelect name="type" label="Type">
-                  <MenuItem value="Shop Drawings">Shop Drawings</MenuItem>
-                  <MenuItem value="Samples">Samples</MenuItem>
-                  <MenuItem value="Cut Sheet">Cut Sheet</MenuItem>
-                </RHFSelect>
-              </Box>
-              <SubmittalAttachments files={files} setFiles={setFiles} />
+                        }
+                        : {};
+                      console.log(isDateNextDay);
+                      return (
+                        <DatePicker
+                          label="Request Return Date"
+                          views={['day']}
+                          value={selectedDate}
+                          minDate={startOfDay(addDays(new Date(), 1))}
+                          onChange={(date) => field.onChange(date)}
+                          format="MM/dd/yyyy" // Specify the desired date format
+                          error={!!error}
+                          helperText={error && error?.message}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
+                        // sx={dateStyle} // Apply conditional style based on the date comparison
+                        />
+                      );
+                    }}
+                  />
+                  <RHFSelect name="type" label="Type">
+                    <MenuItem value="Shop Drawings">Shop Drawings</MenuItem>
+                    <MenuItem value="Samples">Samples</MenuItem>
+                    <MenuItem value="Cut Sheet">Cut Sheet</MenuItem>
+                  </RHFSelect>
+                </Box>
+                <SubmittalAttachments files={files} setFiles={setFiles} />
 
-              <RHFSelect
-                name="owner"
-                label="Assignee/Owner"
-              // capitalize
-              >
-                {/* <MenuItem value="option1">Option 1</MenuItem>
+                <RHFSelect
+                  name="owner"
+                  label="Assignee/Owner"
+                // capitalize
+                >
+                  {/* <MenuItem value="option1">Option 1</MenuItem>
                 <MenuItem value="option2">Option 2</MenuItem>
                 <MenuItem value="option3">Option 3</MenuItem> */}
-                {ownerList?.map((item) => (
-                  <MenuItem value={item?.email} key={item?.email}>
-                    {item?.email}
-                  </MenuItem>
-                ))}
-              </RHFSelect>
-              {/* // TODO: List should be dynamic */}
-              <RHFMultiSelect
-                name="ccList"
-                label="CC List"
-                // placeholder="Select multiple options"
-                chip
-                options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-              // options={[
-              //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-              //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-              // ]}
-              />
-            </Box>
+                  {ownerList?.map((item) => (
+                    <MenuItem value={item?.email} key={item?.email}>
+                      {item?.email}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+                {/* // TODO: List should be dynamic */}
+                <RHFMultiSelect
+                  name="ccList"
+                  label="CC List"
+                  // placeholder="Select multiple options"
+                  chip
+                  options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
+                // options={[
+                //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+                //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+                // ]}
+                />
+              </Box>
 
-            {/* <Box
+              {/* <Box
                 rowGap={3}
                 columnGap={2}
                 display="grid"
@@ -507,8 +526,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFTextField name="status" label="Status" />
                 <RHFTextField name="type" label="Type" />
               </Box> */}
-            {/* <RHFTextField name="link" label="Link" /> */}
-            {/* <Box sx={{ mb: 5 }}>
+              {/* <RHFTextField name="link" label="Link" /> */}
+              {/* <Box sx={{ mb: 5 }}>
                   <RHFUpload
                     name="attachment"
                     maxSize={3145728}
@@ -530,7 +549,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
             }
           />
         </Box> */}
-            {/* 
+              {/* 
               <Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} />
 
 
@@ -555,7 +574,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
             </Button>
           </Stack>
         )} */}
-            {/* <RHFAutocomplete
+              {/* <RHFAutocomplete
                 name="country"
                 label="Country"
                 options={countries.map((country) => country.label)}
@@ -584,7 +603,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 }}
               /> */}
 
-            {/* <Grid xs={12} md={4}>
+              {/* <Grid xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
             {currentSubmittal && (
               <Label
@@ -680,61 +699,62 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           </Card>
         </Grid> */}
 
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-              gap="2rem"
-              sx={{ my: 3 }}
-            >
-              {!currentSubmittal &&
-                (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-                  currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                  <>
-                    <LoadingButton
-                      type="button"
-                      onClick={() => onSubmit('draft')}
-                      variant="outlined"
-                      size="large"
-                      loading={isSubmitting}
-                    >
-                      Save Draft
-                    </LoadingButton>
-                    <LoadingButton
-                      type="button"
-                      onClick={() => onSubmit('review')}
-                      variant="contained"
-                      size="large"
-                      loading={isSubmitting}
-                    >
-                      Submit for Review
-                    </LoadingButton>
-                  </>
-                )}
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+                gap="2rem"
+                sx={{ my: 3 }}
+              >
+                {!currentSubmittal &&
+                  (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                    currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                    <>
+                      <LoadingButton
+                        type="button"
+                        onClick={() => onSubmit('draft')}
+                        variant="outlined"
+                        size="large"
+                        loading={isSubmitting}
+                      >
+                        Save Draft
+                      </LoadingButton>
+                      <LoadingButton
+                        type="button"
+                        onClick={() => onSubmit('review')}
+                        variant="contained"
+                        size="large"
+                        loading={isSubmitting}
+                      >
+                        Submit for Review
+                      </LoadingButton>
+                    </>
+                  )}
 
-              {currentSubmittal && (
-                <LoadingButton
-                  type="button"
-                  onClick={() => onSubmit('update')}
-                  variant="contained"
-                  size="large"
-                  loading={isSubmitting}
-                >
-                  Save Changes
-                </LoadingButton>
-              )}
-              {/* loading={isSubmitting} */}
-              {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
-              {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
+                {currentSubmittal && (
+                  <LoadingButton
+                    type="button"
+                    onClick={() => onSubmit('update')}
+                    variant="contained"
+                    size="large"
+                    loading={isSubmitting}
+                  >
+                    Save Changes
+                  </LoadingButton>
+                )}
+                {/* loading={isSubmitting} */}
+                {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
+                {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
                     Submit to Architect
                 </LoadingButton >
             </Box>} */}
-            </Stack>
-          </Card>
+              </Stack>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </FormProvider>
+      </FormProvider>
+    </>
   );
 }
 
