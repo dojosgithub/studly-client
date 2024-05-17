@@ -33,6 +33,7 @@ import { getStatusColor } from 'src/utils/constants';
 import Label from 'src/components/label';
 import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
 import { MultiFilePreview } from 'src/components/upload';
+import { isIncluded } from 'src/utils/functions';
 
 const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -58,6 +59,7 @@ const SubmittalsDetails = ({ id }) => {
     const { enqueueSnackbar } = useSnackbar();
     const currentUser = useSelector((state) => state.user?.user);
     const currentSubmittal = useSelector((state) => state.submittal.current);
+
     const {
         isResponseSubmitted,
         trade,
@@ -76,8 +78,10 @@ const SubmittalsDetails = ({ id }) => {
 
     useEffect(() => {
         console.log('currentSubmittal', currentSubmittal);
+        console.log('OwnerList', currentSubmittal?.owner);
+        console.log('currentUser:?._id', currentUser?._id);
         console.log('id', id);
-    }, [currentSubmittal, id]);
+    }, [currentSubmittal, id,currentUser]);
 
     const handleSubmitToArchitect = async () => {
         console.log('SubmittalId', id);
@@ -125,7 +129,7 @@ const SubmittalsDetails = ({ id }) => {
                                 loading={isSubmitting}
                                 onClick={handleSubmitToArchitect}
                             >
-                                Submit to Review
+                                Submit for Review
                             </LoadingButton>
                         </Box>
                     )}
@@ -148,11 +152,12 @@ const SubmittalsDetails = ({ id }) => {
                     )}
 
                 {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
-                {status === 'Submitted' &&
-                    isEmpty(isResponseSubmitted) &&
-                    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
+                {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
+                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO)  */}
+                {status === 'Submitted' &&
+                    isResponseSubmitted &&
+                    (isIncluded(currentSubmittal?.owner, currentUser?._id)) && (
                         <Alert
                             severity="warning"
                             sx={{
@@ -172,24 +177,27 @@ const SubmittalsDetails = ({ id }) => {
                         </Alert>
                     )}
 
-                {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isEmpty(isResponseSubmitted) &&
-                    status === 'Submitted' &&
-                    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
+
+                {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
+                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) */}
+                {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
+                {!isResponseSubmitted &&
+                    status === 'Submitted' &&
+                    (isIncluded(currentSubmittal?.owner, currentUser?._id))
+                    && (
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Button variant="contained" onClick={handleSubmittalResponse}>
                                 Add Submittal Response
                             </Button>
                         </Box>
                     )}
-
-                {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
-                {isEmpty(isResponseSubmitted) &&
-                    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
+                {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
+                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) */}
+                {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
+                {isResponseSubmitted &&
+                    (isIncluded(currentSubmittal?.owner, currentUser?._id)) && (
                         <Alert severity="success">
                             Your response to the submittal was submitted. Thankyou!
                         </Alert>

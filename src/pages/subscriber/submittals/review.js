@@ -17,6 +17,7 @@ export default function SubmittalsDetailsPage() {
     console.log('reviewDetails', id)
     useEffect(() => {
         async function fetchDetails() {
+            await dispatch(getSubmittalDetails(id))
             await dispatch(getSubmittalResponseDetails(id))
             // const { error, payload } = await dispatch(getSubmittalResponseDetails(id))
             // console.log('error', error)

@@ -21,19 +21,19 @@ export default function SubmittalsReviewRespondView({ id }) {
   const dispatch = useDispatch()
   // // const submittalList = useSelector(state => state.submittal?.list?.docs)
   // // const currentSubmittal = submittalList?.find(item => item.id === id)
-  const currentSubmittalResponse = useSelector(state => state.submittal?.response)
-  // useEffect(() => {
-  //   // dispatch(setSubmittalResponse(currentSubmittalResponse))
-  //   console.log("currentSubmittal", currentSubmittalResponse)
-  //   console.log("submittalIdResponse", id)
+  const currentSubmittal = useSelector(state => state.submittal.current)
+  useEffect(() => {
+    // dispatch(setSubmittalResponse(currentSubmittal))
+    console.log("currentSubmittal", currentSubmittal)
+    console.log("submittalIdResponse", id)
 
-  // }, [dispatch, currentSubmittalResponse, id])
+  }, [dispatch, currentSubmittal, id])
 
-  console.log("currentSubmittalResponse", currentSubmittalResponse)
+  // console.log("currentSubmittalResponse", currentSubmittal)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Typography fontSize="1.5rem" fontWeight="bold" my={2}>Review and Respond</Typography>
-      <SubmittalsReviewRespondForm currentSubmittalResponse={currentSubmittalResponse} />
+      <SubmittalsReviewRespondForm currentSubmittal={currentSubmittal}  id={id}/>
     </Container>
   );
 }

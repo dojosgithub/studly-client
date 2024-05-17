@@ -38,7 +38,9 @@ export default function SubmittalsEditView({ id }) {
   console.log("sumittalId", id)
   
   useEffect(() => {
-    if (id) {
+    // if (id) {
+    // }
+    if(!isEmpty(currentSubmittal)){
       dispatch(setCurrentSubmittal(currentSubmittal))
     }
 

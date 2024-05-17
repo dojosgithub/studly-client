@@ -272,7 +272,7 @@ const initialState = {
   create: {},
   current: {},
   users: [],
-  assineeUsers: [],
+  assigneeUsers: [],
   report: null,
   response: null,
   isLoading: false,
@@ -360,7 +360,7 @@ const submittal = createSlice({
       state.error = null;
     });
     builder.addCase(getProjectAssigneeUsers.fulfilled, (state, action) => {
-      state.assineeUsers = action.payload;
+      state.assigneeUsers = action.payload;
       state.isLoading = false;
       state.error = null;
     });

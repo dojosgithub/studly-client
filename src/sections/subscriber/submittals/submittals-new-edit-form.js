@@ -61,7 +61,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
   const ccList = useSelector((state) => state.submittal.users);
-  const ownerList = useSelector((state) => state.submittal.assineeUsers);
+  const ownerList = useSelector((state) => state.submittal.assigneeUsers);
   const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : [];
   const [files, setFiles] = useState(existingAttachments);
   const currentUser = useSelector((state) => state.user?.user);

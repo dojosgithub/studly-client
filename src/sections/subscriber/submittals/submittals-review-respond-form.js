@@ -47,14 +47,15 @@ import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, id }) {
+export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
+  // const currentSubmittal = useSelector(state => state.submittal.current)
 
   const existingAttachments = useMemo(
-    () => (currentSubmittalResponse?.attachments ? currentSubmittalResponse?.attachments : []),
-    [currentSubmittalResponse]
+    () => (currentSubmittal?.response?.attachments ? currentSubmittal?.response?.attachments : []),
+    [currentSubmittal?.response]
   );
 
   const [files, setFiles] = useState(existingAttachments)
@@ -68,12 +69,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
     setHasFileChanges(hasChanges)
 
   }, [files, existingAttachments]);
-  useEffect(() => {
-    // dispatch(setSubmittalResponse(currentSubmittalResponse))
-    console.log("currentSubmittal", currentSubmittalResponse)
-    console.log("submittalIdResponse", id)
 
-  }, [dispatch, currentSubmittalResponse, id])
 
   const NewSubmittalSchema = Yup.object().shape({
     comment: Yup.string().required('Comment is required'),
@@ -86,11 +82,11 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
 
   const defaultValues = useMemo(
     () => ({
-      comment: '' || currentSubmittalResponse?.comment,
-      status: '' || currentSubmittalResponse?.status,
+      comment: currentSubmittal?.response?.comment || '',
+      status: currentSubmittal?.response?.status || '',
 
     }),
-    [currentSubmittalResponse]
+    [currentSubmittal]
   );
 
   const methods = useForm({
@@ -108,6 +104,16 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
   } = methods;
 
   const values = watch();
+
+
+  useEffect(() => {
+    // dispatch(setSubmittalResponse(currentSubmittal?.response))
+    console.log("currentSubmittal", currentSubmittal?.response)
+    console.log("submittalIdResponse--->", id)
+    reset(defaultValues)
+  }, [dispatch, currentSubmittal, id, reset, defaultValues])
+
+
 
   const onSubmit = handleSubmit(async (data) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
@@ -137,7 +143,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
 
       let error;
       let payload;
-      if (!isEmpty(currentSubmittalResponse) && params?.id) {
+      if (currentSubmittal?.isResponseSubmitted && params?.id) {
         const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
         error = res.error
         payload = res.payload
@@ -151,14 +157,14 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
         return
       }
       // reset();
-      enqueueSnackbar(currentSubmittalResponse ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!', { variant: 'success' });
+      enqueueSnackbar(currentSubmittal?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!', { variant: 'success' });
       router.push(paths.subscriber.submittals.details(params?.id));
 
 
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      // enqueueSnackbar(`Error ${currentSubmittalResponse ? "Updating" : "Creating"} Project`, { variant: "error" });
+      // enqueueSnackbar(`Error ${currentSubmittal?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });
 
@@ -182,8 +188,9 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
                 name="status"
                 label="Status"
                 chip
+                disabled={currentSubmittal?.isResponseSubmitted}
               >
-           
+
                 {REVIEW_STATUS?.map(item => (
                   <MenuItem selected value={item}>{item}</MenuItem>
                 ))}
@@ -192,7 +199,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
 
 
 
-              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail/>
+              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail />
 
 
 
@@ -200,14 +207,12 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
 
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              {!isEmpty(currentSubmittalResponse) &&
+              {currentSubmittal?.isResponseSubmitted ?
 
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
-                  Edit
+                  Update
                 </LoadingButton>
-              }
-              {isEmpty(currentSubmittalResponse) &&
-
+                :
                 <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
                   Submit
                 </LoadingButton>
@@ -221,6 +226,6 @@ export default function SubmittalsReviewRespondForm({ currentSubmittalResponse, 
 }
 
 SubmittalsReviewRespondForm.propTypes = {
-  currentSubmittalResponse: PropTypes.object,
+  currentSubmittal: PropTypes.object,
   id: PropTypes.string,
 };
