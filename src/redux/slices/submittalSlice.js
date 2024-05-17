@@ -108,6 +108,7 @@ export const getSubmittalList = createAsyncThunk(
     }
   }
 );
+
 export const getProjectUsersList = createAsyncThunk(
   'submittal/users/list',
   async (_, { getState, rejectWithValue }) => {
@@ -117,7 +118,7 @@ export const getProjectUsersList = createAsyncThunk(
 
       const response = await axiosInstance.get(endpoints.project.projectUsersList(projectId));
 
-      return response.data.data.members;
+      return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {
@@ -127,6 +128,7 @@ export const getProjectUsersList = createAsyncThunk(
     }
   }
 );
+
 export const getProjectAssigneeUsers = createAsyncThunk(
   'submittal/users-assignee/list',
   async (_, { getState, rejectWithValue }) => {
@@ -134,9 +136,12 @@ export const getProjectAssigneeUsers = createAsyncThunk(
       const projectId = getState().project?.current?.id;
       console.log('projectId', projectId);
 
-      const response = await axiosInstance.get(endpoints.project.projectAssigneeUsersList(projectId));
+      const response = await axiosInstance.get(
+        endpoints.project.projectAssigneeUsersList(projectId)
+      );
 
-      return response.data.data.members;
+      console.log('response.data.data', response.data.data);
+      return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {
@@ -282,13 +287,13 @@ const submittal = createSlice({
       state.list = action.payload;
     },
     setCurrentSubmittal: (state, action) => {
-      state.current = action.payload
+      state.current = action.payload;
     },
     setSubmittalResponse: (state, action) => {
-      state.response = action.payload
+      state.response = action.payload;
     },
     setCreateSubmittal: (state, action) => {
-      state.create = action.payload
+      state.create = action.payload;
     },
     resetSubmittalState: () => initialState,
   },
