@@ -92,7 +92,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     returnDate: Yup.date()
       .required('Return Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Return Date must be later than today'),
-    owner: Yup.string().required('Owner is required'),
+    // owner: Yup.string().required('Owner is required'),
+    owner: Yup.array().min(1).required('Owner is required'),
     ccList: Yup.array(),
     // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     // attachments: Yup.array().min(1),
@@ -110,7 +111,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       submittalId: currentSubmittal?.submittalId || '',
       name: currentSubmittal?.name || '',
       description: currentSubmittal?.description || '',
-      owner: currentSubmittal?.owner?.email || '',
+      // owner: currentSubmittal?.owner?.email || '',
+      owner: currentSubmittal?.owner?.map(item => item.email) || [],
       type: currentSubmittal?.type || '',
       ccList: currentSubmittal?.ccList || [],
       status: currentSubmittal?.status || 'Draft', // Set default values here
@@ -160,7 +162,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const onSubmit = handleSubmit(async (data, val, secondVal) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
+      // const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
+      const owner = ownerList
+        .filter(item => data?.owner?.includes(item.email)) // Filter based on matching emails
+        .map(item => item.user);
       const tradeId = getStrTradeId(data.trade);
       const tradeObj = trades.find((t) => t.tradeId === tradeId);
       const trade = {
@@ -486,22 +491,29 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 </Box>
                 <SubmittalAttachments files={files} setFiles={setFiles} />
 
-                <RHFSelect
+                {/* <RHFSelect
                   name="owner"
                   label="Assignee/Owner"
                   disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
                 // capitalize
                 >
-                  {/* <MenuItem value="option1">Option 1</MenuItem>
-                <MenuItem value="option2">Option 2</MenuItem>
-                <MenuItem value="option3">Option 3</MenuItem> */}
+               
                   {ownerList?.map((item) => (
                     <MenuItem value={item?.email} key={item?.email}>
                       {item?.email}
                     </MenuItem>
                   ))}
-                </RHFSelect>
-                {/* // TODO: List should be dynamic */}
+                </RHFSelect> */}
+
+
+                <RHFMultiSelect
+                  name="owner"
+                  label="Assignee/Owner"
+                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
+                  // placeholder="Select multiple options"
+                  chip
+                  options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
+                />
                 <RHFMultiSelect
                   name="ccList"
                   label="CC List"

@@ -90,7 +90,9 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             {fDateISO(returnDate)}
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.firstName}{" "}{owner?.lastName}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.length > 0 && owner.map((item, index) => (
+            <span key={index}>{item?.firstName} {item?.lastName}{index < owner.length - 1 ? ', ' : ''}</span>
+          ))}</TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
 
           <TableCell>
@@ -180,7 +182,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={() => { onDeleteRow(confirm);}}>
+          <Button variant="contained" color="error" onClick={() => { onDeleteRow(confirm); }}>
             Delete
           </Button>
         }

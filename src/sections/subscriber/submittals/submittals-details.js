@@ -149,7 +149,7 @@ const SubmittalsDetails = ({ id }) => {
 
                 {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
                 {status === 'Submitted' &&
-                    isResponseSubmitted &&
+                    isEmpty(isResponseSubmitted) &&
                     (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
@@ -173,7 +173,7 @@ const SubmittalsDetails = ({ id }) => {
                     )}
 
                 {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-                {!isResponseSubmitted &&
+                {!isEmpty(isResponseSubmitted) &&
                     status === 'Submitted' &&
                     (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
@@ -186,7 +186,7 @@ const SubmittalsDetails = ({ id }) => {
                     )}
 
                 {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
-                {isResponseSubmitted &&
+                {isEmpty(isResponseSubmitted) &&
                     (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) && (
@@ -297,7 +297,9 @@ const SubmittalsDetails = ({ id }) => {
                 <StyledCard>
                     <Typography className="submittalTitle">Assignee / Owner</Typography>
                     <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-                        {owner?.firstName} {owner?.lastName}
+                        {owner?.length > 0 && owner.map((item, index) => (
+                            <span key={index}>{item?.firstName} {item?.lastName}{index < owner.length - 1 ? ', ' : ''}</span>
+                        ))}
                     </Typography>
                 </StyledCard>
                 <StyledCard>
