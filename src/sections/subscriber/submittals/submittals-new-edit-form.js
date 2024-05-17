@@ -489,6 +489,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFSelect
                   name="owner"
                   label="Assignee/Owner"
+                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
                 // capitalize
                 >
                   {/* <MenuItem value="option1">Option 1</MenuItem>
@@ -504,6 +505,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFMultiSelect
                   name="ccList"
                   label="CC List"
+                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
                   // placeholder="Select multiple options"
                   chip
                   options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
