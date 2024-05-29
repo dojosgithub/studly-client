@@ -19,7 +19,7 @@ import {
     styled,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { addDays, isAfter, isTomorrow, parseISO } from 'date-fns';
 
@@ -55,6 +55,8 @@ const StyledCard = styled(Card, {
 const SubmittalsDetails = ({ id }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const params = useParams();
+    const { id: parentSubmittalId } = params;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const currentUser = useSelector((state) => state.user?.user);
@@ -81,7 +83,7 @@ const SubmittalsDetails = ({ id }) => {
         console.log('OwnerList', currentSubmittal?.owner);
         console.log('currentUser:?._id', currentUser?._id);
         console.log('id', id);
-    }, [currentSubmittal, id,currentUser]);
+    }, [currentSubmittal, id, currentUser]);
 
     const handleSubmitToArchitect = async () => {
         console.log('SubmittalId', id);
@@ -133,6 +135,24 @@ const SubmittalsDetails = ({ id }) => {
                             </LoadingButton>
                         </Box>
                     )}
+                {(status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') &&
+                    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                        <Box width="100%" display="flex" justifyContent="end">
+                            <LoadingButton
+                                type="submit"
+                                variant="contained"
+                                size="large"
+                                loading={isSubmitting}
+                                onClick={() => {
+                                    console.log("parentSubmittalId", parentSubmittalId)
+                                    navigate(paths.subscriber.submittals.revision(parentSubmittalId))
+                                }}
+                            >
+                                Create Revised Submittal
+                            </LoadingButton>
+                        </Box>
+                    )}
             </Box>
 
             <Stack
@@ -155,7 +175,9 @@ const SubmittalsDetails = ({ id }) => {
                 {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO)  */}
-                {status === 'Submitted' &&
+                {/* // * status === 'Submitted' */}
+                {/* // ? Everyone can view it but only the assigned one can update the response */}
+                {status !== 'Draft' &&
                     isResponseSubmitted &&
                     (isIncluded(currentSubmittal?.owner, currentUser?._id)) && (
                         <Alert

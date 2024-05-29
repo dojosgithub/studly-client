@@ -286,10 +286,10 @@ export default function ProjectInviteUserListView({ type }) {
 
                             <TableBody>
                                 {dataFiltered
-                                    .slice(
-                                        table.page * table.rowsPerPage,
-                                        table.page * table.rowsPerPage + table.rowsPerPage
-                                    )
+                                    // .slice(
+                                    //     table.page * table.rowsPerPage,
+                                    //     table.page * table.rowsPerPage + table.rowsPerPage
+                                    // )
                                     .map((row) => (
                                         <ProjectTableRow
                                             key={row.email}

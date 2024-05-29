@@ -7,9 +7,10 @@ export const getStatusColor = (status) => {
         case "Reviewed":
         case "Reviewed for record":
         case "Approved (APR)":
+            return "info";
         case "Make Corrections Noted (MCN)":
         case "Make Corrections and Resubmit (MCNR)":
-            return "info";
+            return "warning";
         case "Rejected (RJT)":
             return "error";
         case "Custom":

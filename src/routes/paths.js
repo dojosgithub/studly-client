@@ -169,6 +169,7 @@ export const paths = {
     },
     submittals: {
       new: `${ROOTS.SUBSCRIBER}/submittals/new`,
+      revision: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/revision`,
       list: `${ROOTS.SUBSCRIBER}/submittals/list`,
       edit: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/edit`,
       details: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}`,

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty, concat } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 // @mui
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -24,7 +25,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 // assets
 import { countries } from 'src/assets/data';
 // components
@@ -50,6 +51,7 @@ import {
   submitSubmittalToArchitect,
 } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
+import { updateRevision } from 'src/utils/submittalId';
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import SubmittalAttachments from './submittals-attachment';
 
@@ -58,21 +60,32 @@ import SubmittalAttachments from './submittals-attachment';
 export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log('currentSubmittal', currentSubmittal);
   const router = useRouter();
+  const params = useParams();
+  const { pathname } = useLocation();
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
   const ccList = useSelector((state) => state.submittal.users);
   const ownerList = useSelector((state) => state.submittal.assigneeUsers);
-  const existingAttachments = currentSubmittal?.attachments ? currentSubmittal?.attachments : [];
-  const [files, setFiles] = useState(existingAttachments);
   const currentUser = useSelector((state) => state.user?.user);
   const projectId = useSelector((state) => state.project?.current?.id);
   const trades = useSelector((state) => state.project?.current?.trades);
+  const existingAttachments = useMemo(() => currentSubmittal?.attachments ? currentSubmittal?.attachments : [], [currentSubmittal]);
+  const [files, setFiles] = useState(existingAttachments);
+  useEffect(() => {
+    if (pathname.includes('revision')) {
+      setFiles([]);
+    } else {
+      setFiles(existingAttachments);
+    }
+  }, [pathname, existingAttachments]);
 
   const { enqueueSnackbar } = useSnackbar();
   console.log('projectId', projectId);
   console.log('submittalId ', id);
   console.log('ccList ', ccList);
   console.log('ownerList ', ownerList);
+  console.log('pathname ', pathname);
+  console.log('params ', params);
 
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
@@ -102,28 +115,78 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     // link: Yup.string().required('link is required'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      // currentSubmittal?.trade?.tradeId
-      trade: currentSubmittal
-        ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`
-        : '',
-      submittalId: currentSubmittal?.submittalId || '',
-      name: currentSubmittal?.name || '',
-      description: currentSubmittal?.description || '',
-      // owner: currentSubmittal?.owner?.email || '',
-      owner: currentSubmittal?.owner?.map(item => item.email) || [],
-      type: currentSubmittal?.type || '',
-      ccList: currentSubmittal?.ccList || [],
-      status: currentSubmittal?.status || 'Draft', // Set default values here
-      returnDate: currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null,
-      // attachments: currentSubmittal?.attachments || [],
-      // submittedDate: currentSubmittal?.submittedDate || '',
-      // creator: currentSubmittal?.creator || '',
-      // link: currentSubmittal?.link || '',
-    }),
-    [currentSubmittal]
-  );
+  // const defaultValues = useMemo(
+  //   () => ({
+  //     // currentSubmittal?.trade?.tradeId
+  //     trade: currentSubmittal
+  //       ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`
+  //       : '',
+  //     submittalId: currentSubmittal?.submittalId || '',
+  //     name: currentSubmittal?.name || '',
+  //     description: currentSubmittal?.description || '',
+  //     // owner: currentSubmittal?.owner?.email || '',
+  //     owner: currentSubmittal?.owner?.map(item => item.email) || [],
+  //     type: currentSubmittal?.type || '',
+  //     ccList: currentSubmittal?.ccList || [],
+  //     status: currentSubmittal?.status || 'Draft', // Set default values here
+  //     returnDate: currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null,
+  //     // attachments: currentSubmittal?.attachments || [],
+  //     // submittedDate: currentSubmittal?.submittedDate || '',
+  //     // creator: currentSubmittal?.creator || '',
+  //     // link: currentSubmittal?.link || '',
+  //   }),
+  //   [currentSubmittal]
+  // );
+  const defaultValues = useMemo(() => {
+    let submittalId = '';
+    let trade = '';
+    let name = '';
+    let description = '';
+    let type = '';
+    // let owner = [];
+    // let ccListInside = [];
+    let status = 'Draft';
+    let returnDate = null;
+    const ccListInside = currentSubmittal?.ccList || [];
+    const owner = currentSubmittal?.owner?.map(item => item.email) || [];
+
+    if (currentSubmittal) {
+      submittalId = currentSubmittal.submittalId || '';
+      trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
+
+      if (pathname.includes('revision')) {
+        if (currentSubmittal?.revisionCount === 0)
+          submittalId += '-R'
+        else {
+          console.log('updateRevision(submittalId, currentSubmittal?.revisionCount);',updateRevision(submittalId, currentSubmittal?.revisionCount))
+          submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
+        }
+
+      } else {
+        name = currentSubmittal?.name || '';
+        description = currentSubmittal?.description || '';
+        // owner = currentSubmittal?.owner?.map(item => item.email) || [];
+        // ccListInside = currentSubmittal?.ccList || [];
+        type = currentSubmittal?.type || '';
+        status = currentSubmittal?.status || 'Draft';
+        returnDate = currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null;
+      }
+    }
+
+    return {
+      trade,
+      submittalId,
+      name,
+      description,
+      owner,
+      type,
+      ccList:ccListInside,
+      status,
+      returnDate,
+    };
+  }, [currentSubmittal, pathname]);
+
+
 
   const methods = useForm({
     resolver: yupResolver(NewSubmittalSchema),
@@ -190,6 +253,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         const submittedDate = new Date();
         const link = 'www.google.com';
         finalData = { ...data, owner, creator, submittedDate, link, projectId, trade };
+      } else if (!isEmpty(currentSubmittal) && (pathname.includes('revision'))) {
+        const submittedDate = new Date();
+        const link = 'www.google.com';
+
+        finalData = { ...data, owner, creator, submittedDate, link, projectId, trade, parentSubmittal: params?.id };
+
       } else {
         finalData = { ...currentSubmittal, ...data, creator, owner, trade };
       }
@@ -213,7 +282,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
       let error;
       let payload;
-      if (!isEmpty(currentSubmittal) && id) {
+      if (!isEmpty(currentSubmittal) && !pathname.includes('revision') && id) {
         const res = await dispatch(editSubmittal({ formData, id }));
         error = res.error;
         payload = res.payload;
@@ -720,7 +789,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {!currentSubmittal &&
+                {(!currentSubmittal || currentSubmittal && pathname.includes('revision')) &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                     <>
@@ -745,7 +814,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     </>
                   )}
 
-                {currentSubmittal && (
+                {(currentSubmittal && !pathname.includes('revision')) && (
                   <LoadingButton
                     type="button"
                     onClick={() => onSubmit('update')}
