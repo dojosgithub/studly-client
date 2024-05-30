@@ -34,6 +34,9 @@ import Label from 'src/components/label';
 import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
 import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useBoolean } from 'src/hooks/use-boolean';
+import SubmittalSendAllDialog from './submittal-send-all-dialog';
 
 const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -61,7 +64,7 @@ const SubmittalsDetails = ({ id }) => {
     const { enqueueSnackbar } = useSnackbar();
     const currentUser = useSelector((state) => state.user?.user);
     const currentSubmittal = useSelector((state) => state.submittal.current);
-
+    const sentToAllModal = useBoolean();
     const {
         isResponseSubmitted,
         trade,
@@ -77,6 +80,10 @@ const SubmittalsDetails = ({ id }) => {
         attachments,
         ccList,
     } = currentSubmittal;
+
+    // const ccListUser = useSelector((state) => state?.submittal?.users) || [];
+    // const ownerList = useSelector((state) => state?.submittal?.assigneeUsers) || [];
+    // const userList = [...ccListUser, ...ownerList];
 
     useEffect(() => {
         console.log('currentSubmittal', currentSubmittal);
@@ -169,7 +176,8 @@ const SubmittalsDetails = ({ id }) => {
                                     loading={isSubmitting}
                                     onClick={() => {
                                         console.log("id", id)
-                                        dispatch(changeSubmittalStatus({ status: "Void", submittalId: id }))
+                                        sentToAllModal.onTrue();
+                                        // dispatch(sendToAll({ users: ['johndoe@mailinator.com'], submittalId: id }))
                                     }}
                                     color='info'
                                 >
@@ -417,6 +425,11 @@ const SubmittalsDetails = ({ id }) => {
                     </Box>
                 </StyledCard>
             </Stack>
+            {sentToAllModal?.value && <SubmittalSendAllDialog
+                open={sentToAllModal.value}
+                onClose={() => sentToAllModal.onFalse()}
+                // userList={userList}
+            />}
         </>
     );
 };

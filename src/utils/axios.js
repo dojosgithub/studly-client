@@ -87,7 +87,8 @@ export const endpoints = {
     review: (id) => `/api/user/submittal/${id}/review`,
     reviewDetails: (id) => `/api/user/submittal/${id}/review`,
     status: `/api/user/submittal/status`,
-    resend: (id) => `/api/user/submittal/resend/${id}`,
+    resendToSubcontractor: (id) => `/api/user/submittal/resend/${id}`,
+    sendToAll: (id) => `/api/user/submittal/sendto`,
 
 
   },

@@ -291,7 +291,7 @@ export const resendToSubcontractor = createAsyncThunk(
      
       console.log('submittalId', id);
 
-      const response = await axiosInstance.get(endpoints.submittal.resend(id));
+      const response = await axiosInstance.get(endpoints.submittal.resendToSubcontractor(id));
 
       return response.data.data;
     } catch (err) {
@@ -303,7 +303,24 @@ export const resendToSubcontractor = createAsyncThunk(
     }
   }
 );
+export const sendToAll = createAsyncThunk(
+  'submittal/sendToAll',
+  async (submittalData, { getState, rejectWithValue }) => {
+    try {
+      console.log('submittalData', submittalData);
 
+      const response = await axiosInstance.post(endpoints.submittal.sendToAll, submittalData);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
+    }
+  }
+);
 const initialState = {
   list: [],
   create: {},
@@ -494,6 +511,18 @@ const submittal = createSlice({
       state.error = null;
     });
     builder.addCase(resendToSubcontractor.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(sendToAll.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(sendToAll.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(sendToAll.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });
