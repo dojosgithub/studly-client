@@ -1,11 +1,18 @@
-export const updateRevision = (submittalId, newRevisionNumber) => {
-    // Regular expression to match the pattern -R[number] at the end of the string
-    const regex = /(.*-R)\d+$/;
+export const updateSubmittalId = (submittalId, revisionCount) => {
+    const regex = /(.*-R)(\d+)$/;
     const match = submittalId.match(regex);
 
     if (match) {
-        // Replace the current revision number with the new revision number
-        return `${match[1]}${newRevisionNumber}`;
-    } return `${submittalId}-R${newRevisionNumber}`;
+        // Case 1: submittalId contains -R[number]
+        const baseId = match[1]; // The part before the revision number
+        const currentRevisionNumber = parseInt(match[2], 10); // The current revision number
+        const nextRevisionNumber = currentRevisionNumber + 1; // Increment the revision number
+        return `${baseId}${nextRevisionNumber}`;
+    }
+    // Case 2: submittalId does not contain -R[number]
+    if (revisionCount === 0) {
+        return `${submittalId}-R`;
+    }
+    return `${submittalId}-R${revisionCount}`;
 
 };

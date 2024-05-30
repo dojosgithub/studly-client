@@ -86,6 +86,9 @@ export const endpoints = {
     submit: (id) => `/api/user/submittal/${id}/submit`,
     review: (id) => `/api/user/submittal/${id}/review`,
     reviewDetails: (id) => `/api/user/submittal/${id}/review`,
+    status: `/api/user/submittal/status`,
+    resend: (id) => `/api/user/submittal/resend/${id}`,
+
 
   },
   template: {

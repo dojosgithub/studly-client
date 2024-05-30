@@ -266,6 +266,43 @@ export const updateSubmittalResponseDetails = createAsyncThunk(
     }
   }
 );
+export const changeSubmittalStatus = createAsyncThunk(
+  'submittal/changeSubmittalStatus',
+  async (submittalData, { getState, rejectWithValue }) => {
+    try {
+      console.log('submittalData', submittalData);
+
+      const response = await axiosInstance.post(endpoints.submittal.status, submittalData);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
+    }
+  }
+);
+export const resendToSubcontractor = createAsyncThunk(
+  'submittal/resendToSubcontractor',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+     
+      console.log('submittalId', id);
+
+      const response = await axiosInstance.get(endpoints.submittal.resend(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
+    }
+  }
+);
 
 const initialState = {
   list: [],
@@ -433,6 +470,30 @@ const submittal = createSlice({
       state.error = null;
     });
     builder.addCase(updateSubmittalResponseDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(changeSubmittalStatus.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(changeSubmittalStatus.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(changeSubmittalStatus.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(resendToSubcontractor.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(resendToSubcontractor.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(resendToSubcontractor.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

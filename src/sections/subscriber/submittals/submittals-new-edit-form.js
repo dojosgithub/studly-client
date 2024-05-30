@@ -51,7 +51,7 @@ import {
   submitSubmittalToArchitect,
 } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
-import { updateRevision } from 'src/utils/submittalId';
+import { updateSubmittalId } from 'src/utils/submittalId';
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import SubmittalAttachments from './submittals-attachment';
 
@@ -155,12 +155,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
 
       if (pathname.includes('revision')) {
-        if (currentSubmittal?.revisionCount === 0)
-          submittalId += '-R'
-        else {
-          console.log('updateRevision(submittalId, currentSubmittal?.revisionCount);',updateRevision(submittalId, currentSubmittal?.revisionCount))
-          submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
-        }
+        // if (currentSubmittal?.revisionCount === 0)
+        //   submittalId += '-R'
+        // else {
+        //   submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
+        // }
+        submittalId = updateSubmittalId(submittalId, currentSubmittal?.revisionCount);
 
       } else {
         name = currentSubmittal?.name || '';
@@ -180,7 +180,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       description,
       owner,
       type,
-      ccList:ccListInside,
+      ccList: ccListInside,
       status,
       returnDate,
     };
@@ -231,6 +231,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         .map(item => item.user);
       const tradeId = getStrTradeId(data.trade);
       const tradeObj = trades.find((t) => t.tradeId === tradeId);
+
+      // TODO: if it's a revision then donot increment submittalCreatedCount
       const trade = {
         ...tradeObj,
         submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1,

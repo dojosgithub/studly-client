@@ -27,7 +27,7 @@ import { addDays, isAfter, isTomorrow, parseISO } from 'date-fns';
 import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
 import { fDateISO } from 'src/utils/format-time';
-import { getSubmittalDetails, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import { changeSubmittalStatus, getSubmittalDetails, resendToSubcontractor, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStatusColor } from 'src/utils/constants';
 import Label from 'src/components/label';
@@ -135,24 +135,89 @@ const SubmittalsDetails = ({ id }) => {
                             </LoadingButton>
                         </Box>
                     )}
-                {(status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') &&
-                    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                        <Box width="100%" display="flex" justifyContent="end">
-                            <LoadingButton
-                                type="submit"
-                                variant="contained"
-                                size="large"
-                                loading={isSubmitting}
-                                onClick={() => {
-                                    console.log("parentSubmittalId", parentSubmittalId)
-                                    navigate(paths.subscriber.submittals.revision(parentSubmittalId))
-                                }}
-                            >
-                                Create Revised Submittal
-                            </LoadingButton>
-                        </Box>
-                    )}
+
+                <Box display='flex' alignItems='center' justifyContent='center' gap={2}>
+                    {(status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') &&
+                        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                            <Box width="100%" display="flex" justifyContent="end" >
+                                <LoadingButton
+                                    sx={{ minWidth: "max-content" }}
+                                    type="submit"
+                                    variant="contained"
+                                    size="large"
+                                    loading={isSubmitting}
+                                    onClick={() => {
+                                        console.log("parentSubmittalId", parentSubmittalId)
+                                        navigate(paths.subscriber.submittals.revision(parentSubmittalId))
+                                    }}
+
+                                >
+                                    Create Revised Submittal
+                                </LoadingButton>
+                            </Box>
+                        )}
+                    {(status !== 'Draft' || status === 'Submitted') &&
+                        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                            <Box width="100%" display="flex" justifyContent="end">
+                                <LoadingButton
+                                    sx={{ minWidth: "max-content" }}
+                                    type="submit"
+                                    variant="outlined"
+                                    size="large"
+                                    loading={isSubmitting}
+                                    onClick={() => {
+                                        console.log("id", id)
+                                        dispatch(changeSubmittalStatus({ status: "Void", submittalId: id }))
+                                    }}
+                                    color='info'
+                                >
+                                    Send To
+                                </LoadingButton>
+                            </Box>
+                        )}
+                    {(status !== 'Draft' || status === 'Submitted') &&
+                        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                            <Box width="100%" display="flex" justifyContent="end">
+                                <LoadingButton
+                                    type="submit"
+                                    variant="outlined"
+                                    size="large"
+                                    loading={isSubmitting}
+                                    onClick={() => {
+                                        console.log("id", id)
+                                        dispatch(changeSubmittalStatus({ status: "Void", submittalId: id }))
+                                    }}
+                                    color='error'
+                                >
+                                    VOID
+                                </LoadingButton>
+                            </Box>
+                        )}
+                    {(status !== 'Draft' || status === 'Submitted') &&
+                        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                            <Box width="100%" display="flex" justifyContent="end">
+                                <LoadingButton
+                                    sx={{ minWidth: "max-content" }}
+                                    type="submit"
+                                    variant="outlined"
+                                    size="large"
+                                    loading={isSubmitting}
+                                    onClick={() => {
+                                        console.log("id", id)
+                                        dispatch(resendToSubcontractor(id))
+                                    }}
+                                    color='primary'
+                                >
+                                    Resend to Subcontractor
+                                </LoadingButton>
+                            </Box>
+                        )}
+
+                </Box>
             </Box>
 
             <Stack
