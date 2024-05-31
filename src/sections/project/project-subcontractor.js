@@ -275,8 +275,9 @@ const ProjectSubcontractor = () => {
                                         {subcontractors?.length > 0 && subcontractors?.map((sub) => (
                                             <MenuItem key={sub.email} value={sub.email} sx={{ height: 50, px: 3, borderRadius: 0 }}>
                                                 {/* {sub.name.toUpperCase()} */}
-                                                {sub.firstName.toUpperCase()}
-                                                {sub.lastName.toUpperCase()}
+                                                {sub.firstName}
+                                                {' '}
+                                                {sub.lastName}
                                             </MenuItem>
                                         ))}
                                         {/* {(subcontractors?.length === 0) && (
