@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
 
 // @mui
+import { isEmpty } from 'lodash';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -16,6 +17,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import MenuItem from '@mui/material/MenuItem';
 import { Stack, Table, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
@@ -33,7 +35,6 @@ import CustomAutoComplete from 'src/components/custom-automcomplete';
 import { sendToAll } from 'src/redux/slices/submittalSlice';
 // components
 
-
 // ----------------------------------------------------------------------
 
 export default function SubmittalSendAllDialog({
@@ -44,15 +45,11 @@ export default function SubmittalSendAllDialog({
   ...other
 }) {
   const { id } = useParams();
-  const ccList = useSelector((state) => state?.submittal?.users) || [];
-  const ownerList = useSelector((state) => state?.submittal?.assigneeUsers) || [];
- 
-  const userList = [...ccList, ...ownerList];
+  const userList = useSelector((state) => state?.submittal?.projectUsersAll) || [];
+
 
   const dispatch = useDispatch()
   console.log('id--->', id);
-  console.log('ccList--->', ccList);
-  console.log('ownerList--->', ownerList);
   console.log('userList--->', userList);
   const SendtoAllSchema = Yup.object().shape({
     users: Yup.array(Yup.string()).min(1, "Minimum 1 user is required").required("Users are required"),
@@ -87,10 +84,14 @@ export default function SubmittalSendAllDialog({
 
       console.log('data', data)
 
-      dispatch(sendToAll(data))
-
-      // enqueueSnackbar('Invite sent successfully!');
-      // onClose()
+      const { error, payload } = await dispatch(sendToAll(data))
+      console.log('e-p', { error, payload });
+      if (!isEmpty(error)) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
+      }
+      enqueueSnackbar(payload || 'Email send to users successfully', { variant: 'success' });
+      onClose()
 
 
     } catch (e) {
@@ -100,7 +101,7 @@ export default function SubmittalSendAllDialog({
 
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
-      <DialogTitle> Invite </DialogTitle>
+      <DialogTitle> Send To: </DialogTitle>
 
       <DialogContent sx={{ overflow: 'unset' }}>
 
@@ -109,13 +110,14 @@ export default function SubmittalSendAllDialog({
             sx={{ display: 'flex', flexDirection: "column", gap: '1rem', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
           >
 
-            {userList && userList.length > 0 && <RHFMultiSelect
-              name="user"
-              label="Users"
-              // disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
-              chip
-              options={userList?.map((item) => ({ label: item.email, value: item.email }))}
-            />}
+            {userList.length > 0 && (
+              <RHFMultiSelect
+                name="users"
+                label="Users"
+                chip
+                options={userList.map((item) => ({ label: item.email, value: item.email }))}
+              />
+            )}
           </Box>
 
         </FormProvider>
@@ -128,9 +130,9 @@ export default function SubmittalSendAllDialog({
             Close
           </Button>
         )}
-        <Button color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
+        <LoadingButton loading={isSubmitting} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
           Send To All
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
