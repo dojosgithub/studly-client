@@ -33,7 +33,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
   const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status, docStatus } = row;
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
-
+  const isDisabled = status === "Void";
   const quickEdit = useBoolean();
 
   const popover = usePopover();
@@ -41,7 +41,13 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
   return (
     <>
       {
-        (<TableRow hover selected={selected}>
+        (<TableRow hover={!isDisabled} selected={selected} sx={{
+          ...(isDisabled && {
+            cursor: 'not-allowed',
+            pointerEvents: 'none',
+            opacity: 0.5,
+          }),
+        }}>
           {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
