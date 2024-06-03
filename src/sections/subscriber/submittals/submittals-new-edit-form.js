@@ -242,7 +242,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       console.log('owner-->', owner);
       console.log('tradeId', tradeId);
       console.log('trade', trade);
-      delete trade._id;
+      // delete trade._id;
       if (!trade) {
         return;
       }
