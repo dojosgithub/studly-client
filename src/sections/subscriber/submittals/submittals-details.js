@@ -80,6 +80,7 @@ const SubmittalsDetails = ({ id }) => {
         attachments,
         ccList,
     } = currentSubmittal;
+    const hasSubcontractorId = !isEmpty(trade) ? Object.prototype.hasOwnProperty.call(trade, 'subcontractorId') : null;
 
     // const ccListUser = useSelector((state) => state?.submittal?.users) || [];
     // const ownerList = useSelector((state) => state?.submittal?.assigneeUsers) || [];
@@ -114,6 +115,31 @@ const SubmittalsDetails = ({ id }) => {
         console.log('handleViewResponse');
         navigate(paths.subscriber.submittals.review(id));
     };
+    const handleResendEmailSubcontractor = async () => {
+        console.log("id", id)
+        setIsSubmitting(true);
+        const { error, payload } = await dispatch(resendToSubcontractor(id));
+        console.log('e-p', { error, payload });
+        setIsSubmitting(false);
+        if (!isEmpty(error)) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+            return;
+        }
+        enqueueSnackbar(payload || 'Submittal response resends successfully', { variant: 'success' });
+    }
+    const handleVoid = async () => {
+        console.log("id", id)
+        setIsSubmitting(true);
+        const { error, payload } = await dispatch(changeSubmittalStatus({ status: "Void", submittalId: id }))
+        console.log('e-p', { error, payload });
+        setIsSubmitting(false);
+        if (!isEmpty(error)) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+            return;
+        }
+        enqueueSnackbar(payload || 'Submittal status updated successfully', { variant: 'success' });
+        navigate(paths.subscriber.submittals.list);
+    }
 
     return (
         <>
@@ -164,7 +190,7 @@ const SubmittalsDetails = ({ id }) => {
                                 </LoadingButton>
                             </Box>
                         )}
-                    {(status !== 'Draft' || status === 'Submitted') &&
+                    {(status !== 'Draft' && status !== 'Submitted') &&
                         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                             <Box width="100%" display="flex" justifyContent="end">
@@ -185,7 +211,7 @@ const SubmittalsDetails = ({ id }) => {
                                 </LoadingButton>
                             </Box>
                         )}
-                    {(status !== 'Draft' || status === 'Submitted') &&
+                    {(status !== 'Draft' && status !== 'Submitted') &&
                         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                             <Box width="100%" display="flex" justifyContent="end">
@@ -194,17 +220,14 @@ const SubmittalsDetails = ({ id }) => {
                                     variant="outlined"
                                     size="large"
                                     loading={isSubmitting}
-                                    onClick={() => {
-                                        console.log("id", id)
-                                        dispatch(changeSubmittalStatus({ status: "Void", submittalId: id }))
-                                    }}
+                                    onClick={handleVoid}
                                     color='error'
                                 >
                                     VOID
                                 </LoadingButton>
                             </Box>
                         )}
-                    {(status !== 'Draft' || status === 'Submitted') &&
+                    {(status !== 'Draft' && status !== 'Submitted') && (hasSubcontractorId) &&
                         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                             <Box width="100%" display="flex" justifyContent="end">
@@ -214,10 +237,7 @@ const SubmittalsDetails = ({ id }) => {
                                     variant="outlined"
                                     size="large"
                                     loading={isSubmitting}
-                                    onClick={() => {
-                                        console.log("id", id)
-                                        dispatch(resendToSubcontractor(id))
-                                    }}
+                                    onClick={handleResendEmailSubcontractor}
                                     color='primary'
                                 >
                                     Resend to Subcontractor
@@ -428,7 +448,7 @@ const SubmittalsDetails = ({ id }) => {
             {sentToAllModal?.value && <SubmittalSendAllDialog
                 open={sentToAllModal.value}
                 onClose={() => sentToAllModal.onFalse()}
-                // userList={userList}
+            // userList={userList}
             />}
         </>
     );

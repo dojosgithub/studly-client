@@ -109,6 +109,25 @@ export const getSubmittalList = createAsyncThunk(
   }
 );
 
+export const getAllProjectUsersList = createAsyncThunk(
+  'submittal/users/list/all',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const response = await axiosInstance.get(endpoints.project.projectAllUsersList(projectId));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal list.');
+    }
+  }
+);
 export const getProjectUsersList = createAsyncThunk(
   'submittal/users/list',
   async (_, { getState, rejectWithValue }) => {
@@ -288,12 +307,13 @@ export const resendToSubcontractor = createAsyncThunk(
   'submittal/resendToSubcontractor',
   async (id, { getState, rejectWithValue }) => {
     try {
-     
+
       console.log('submittalId', id);
 
       const response = await axiosInstance.get(endpoints.submittal.resendToSubcontractor(id));
+      console.log('response.data', response.data);
 
-      return response.data.data;
+      return response.data.message;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {
@@ -327,6 +347,10 @@ const initialState = {
   current: {},
   users: [],
   assigneeUsers: [],
+  projectUsersAll:[],
+  statusMessage: null,
+  resendSubContractorMessage: null,
+  sendAllMessage: null,
   report: null,
   response: null,
   isLoading: false,
@@ -394,7 +418,20 @@ const submittal = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-    // * Get Project Users List
+    // * Get Project All Users List
+    builder.addCase(getAllProjectUsersList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getAllProjectUsersList.fulfilled, (state, action) => {
+      state.projectUsersAll = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getAllProjectUsersList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     builder.addCase(getProjectUsersList.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -496,14 +533,16 @@ const submittal = createSlice({
     });
     builder.addCase(changeSubmittalStatus.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.statusMessage = action.payload
       state.error = null;
     });
     builder.addCase(changeSubmittalStatus.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });
-    builder.addCase(resendToSubcontractor.pending, (state) => {
+    builder.addCase(resendToSubcontractor.pending, (state, action) => {
       state.isLoading = true;
+      state.resendSubContractorMessage = action.payload
       state.error = null;
     });
     builder.addCase(resendToSubcontractor.fulfilled, (state, action) => {
@@ -520,6 +559,7 @@ const submittal = createSlice({
     });
     builder.addCase(sendToAll.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.sendAllMessage = action.payload
       state.error = null;
     });
     builder.addCase(sendToAll.rejected, (state, action) => {

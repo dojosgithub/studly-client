@@ -73,6 +73,7 @@ export const endpoints = {
     create: '/api/user/project',
     invite: '/api/user/project/invite/subcontractor',
     trades: (id) => `/api/user/project/${id}/trades`,
+    projectAllUsersList: (id) => `/api/user/project/${id}/all`,
     projectUsersList: (id) => `/api/user/project/${id}`,
     projectAssigneeUsersList: (id) => `/api/user/project/${id}/assignee`,
   },
@@ -88,7 +89,7 @@ export const endpoints = {
     reviewDetails: (id) => `/api/user/submittal/${id}/review`,
     status: `/api/user/submittal/status`,
     resendToSubcontractor: (id) => `/api/user/submittal/resend/${id}`,
-    sendToAll: (id) => `/api/user/submittal/sendto`,
+    sendToAll: `/api/user/submittal/sendto`,
 
 
   },

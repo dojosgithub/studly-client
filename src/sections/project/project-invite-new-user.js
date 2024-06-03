@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 
 // mui
 import { styled } from '@mui/material/styles';
-import { Box, IconButton, MenuItem, Stack, TableCell, TableRow, Typography, alpha } from '@mui/material'
+import { Box, IconButton, MenuItem, Stack, TableCell, TableRow, Typography, alpha, Button } from '@mui/material'
 //
 import { enqueueSnackbar } from 'notistack';
 import { setAddExternalUser, setAddInternalUser, setMembers } from 'src/redux/slices/projectSlice';
@@ -20,6 +20,7 @@ import Iconify from 'src/components/iconify'
 import uuidv4 from 'src/utils/uuidv4';
 import { PROJECT_INVITE_EXTERNAL_USER_ROLES, PROJECT_INVITE_INTERNAL_USER_ROLES, PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, USER_LIST_OPTIONS, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
 import CustomAutoComplete from 'src/components/custom-automcomplete';
+import { CustomInviteAutoComplete } from 'src/components/custom-invite-autocomplete';
 
 
 const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
@@ -52,7 +53,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
 
     const defaultValues = useMemo(() => ({
 
-        user: null,
+        user: '',
         role: '',
 
     }), []);
@@ -93,7 +94,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         [setValue]
     );
 
-    console.log('userObj',userObj)
+    console.log('userObj', userObj)
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -122,8 +123,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
             console.log('finalData', finalData)
             // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
             dispatch(setMembers(finalData))
-            reset()
-
+            reset(defaultValues)
 
         } catch (e) {
             console.error(e);
@@ -183,11 +183,12 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
                             ))}
                         </RHFSelect> */}
                         {/* USER_LIST_OPTIONS */}
-                        
+
                         <Stack>
-                        {/* setValue={(val) => handleSelectUser(val)} */}
-                        {/* value={userObj}  */}
-                            <CustomAutoComplete listOptions={userListOptions}  />
+                            {/* setValue={(val) => handleSelectUser(val)} */}
+                            {/* value={userObj}  */}
+                            {/* <CustomAutoComplete optionsList={userListOptions} /> */}
+                            <CustomInviteAutoComplete optionsList={userListOptions} />
                             {errors && errors?.user?.message && <Typography color='red' fontSize=".75rem">{errors?.user?.message}</Typography>}
                             {errors && errors?.user?.email?.message && <Typography color='red' fontSize=".75rem">{errors?.user?.email?.message}</Typography>}
                         </Stack>
@@ -200,9 +201,14 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
                         </RHFSelect>
                         {/* </TableCell> */}
                         {/* <TableCell> */}
-                        <StyledIconButton color="inherit" onClick={handleSubmit(onSubmit)} variant="contained" disabled={isSubmitting}>
+
+                        {/* BEFORE */}
+                        {/* <StyledIconButton color="inherit" onClick={handleSubmit(onSubmit)} variant="contained" disabled={isSubmitting}>
                             <Iconify icon='flowbite:user-add-solid' width='40px' height='40px' sx={{ color: 'white' }} />
-                        </StyledIconButton>
+                        </StyledIconButton> */}
+                        <Button disabled={isSubmitting} variant='contained' onClick={handleSubmit(onSubmit)} sx={{ minWidth: "max-content" }}>
+                            Add User
+                        </Button>
                         {/* </TableCell> */}
                     </Box>
                 </FormProvider>
