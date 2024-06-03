@@ -105,6 +105,7 @@ const SubmittalsDetails = ({ id }) => {
         }
         enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
         await dispatch(getSubmittalDetails(id));
+        navigate(paths.subscriber.submittals.list);
     };
 
     const handleSubmittalResponse = () => {
