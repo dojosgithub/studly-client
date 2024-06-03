@@ -114,6 +114,10 @@ const SubmittalsDetails = ({ id }) => {
     };
     const handleViewResponse = () => {
         console.log('handleViewResponse');
+        navigate(paths.subscriber.submittals.responseDetails(id));
+    };
+    const handleEditResponse = () => {
+        console.log('handleEditResponse');
         navigate(paths.subscriber.submittals.review(id));
     };
     const handleResendEmailSubcontractor = async () => {
@@ -271,9 +275,9 @@ const SubmittalsDetails = ({ id }) => {
                         currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO)  */}
                 {/* // * status === 'Submitted' */}
                 {/* // ? Everyone can view it but only the assigned one can update the response */}
-                {status !== 'Draft' &&
+                {(status !== 'Draft' && status !== 'Submitted') &&
                     isResponseSubmitted &&
-                    (isIncluded(currentSubmittal?.owner, currentUser?._id)) && (
+                    (
                         <Alert
                             severity="warning"
                             sx={{
@@ -288,7 +292,13 @@ const SubmittalsDetails = ({ id }) => {
                                 <Button variant="outlined" onClick={handleViewResponse}>
                                     View Response
                                 </Button>
-                                <Button>Dismiss</Button>
+                                {isIncluded(currentSubmittal?.owner, currentUser?._id) &&
+                                    <Button variant="outlined" onClick={handleEditResponse}>
+                                        Edit Response
+                                    </Button>
+                                }
+
+                                {/* <Button>Dismiss</Button> */}
                             </Box>
                         </Alert>
                     )}

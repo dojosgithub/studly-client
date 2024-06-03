@@ -20,6 +20,7 @@ const SubmittalsEditPage = lazy(() => import('src/pages/subscriber/submittals/ed
 const SubmittalsDetailsPage = lazy(() => import('src/pages/subscriber/submittals/details'));
 const SubmittalsRevisionPage = lazy(() => import('src/pages/subscriber/submittals/revision'));
 const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
+const SubmittalsResponseDetailsPage = lazy(() => import('src/pages/subscriber/submittals/response-details'));
 
 // Project
 const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
@@ -70,9 +71,10 @@ export const subscriberRoutes = [
           { path: 'new', element: <SubmittalsCreatePage /> },
           { path: ':id', element: <SubmittalsDetailsPage /> },
           { path: ':id/edit', element: <SubmittalsEditPage /> },
-          { path: ':id/review', element: <SubmittalsReviewPage /> },
+          // { path: ':id/review', element: <SubmittalsReviewPage /> },
+          // ? done in index routes
+          { path: ':id/response/details', element: <SubmittalsResponseDetailsPage /> },
           { path: ':id/revision', element: <SubmittalsRevisionPage /> },
-          // { path: ':id/review/details', element: <SubmittalsReviewDetailsPage /> },
         ],
       },
 

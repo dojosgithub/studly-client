@@ -5,11 +5,11 @@ import { getSubmittalDetails, getSubmittalResponseDetails } from 'src/redux/slic
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
-import { SubmittalsReviewRespondView } from 'src/sections/subscriber/submittals/view';
+import { SubmittalsResponseDetailsView } from 'src/sections/subscriber/submittals/view';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewPage() {
+export default function SubmittalsResponseDetailsPage() {
     const params = useParams();
     const dispatch = useDispatch();
 
@@ -29,10 +29,10 @@ export default function SubmittalsReviewPage() {
     return (
         <>
             <Helmet>
-                <title> Submittal Review</title>
+                <title> Submittal Response Details</title>
             </Helmet>
 
-            <SubmittalsReviewRespondView id={`${id}`} />
+            <SubmittalsResponseDetailsView id={`${id}`} />
         </>
     );
 }
