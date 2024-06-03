@@ -199,7 +199,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
 
 
-              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail />
+              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
 
 
 
