@@ -228,6 +228,9 @@ const project = createSlice({
     setCurrentProject: (state, action) => {
       state.current = action.payload
     },
+    setCreateProject: (state, action) => {
+      state.create = action.payload
+    },
     setCurrentProjectRole: (state, action) => {
       state.current = { ...state.current, role: action.payload }
     },
@@ -297,7 +300,10 @@ const project = createSlice({
     resetCreateProject: (state) => {
       state.create = projectInitialState;
       state.members = [];
-      state.subcontractors.invited = [];
+      // state.subcontractors.invited = [];
+      // ? Changed subcontractor to initial state
+      state.subcontractors={ ...subcontractorInitialState };
+      state.users = [];
       state.inviteUsers = {
         internal: [],
         external: [],
@@ -420,5 +426,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCreateProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
 export default project.reducer

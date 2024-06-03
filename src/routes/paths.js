@@ -217,12 +217,13 @@ export const paths = {
       details: (id) => `${ROOTS.SUBSCRIBER}/coi/${id}`,
       review: (id) => `${ROOTS.SUBSCRIBER}/coi/${id}/review`,
     },
-    projectSettings: {
-      new: `${ROOTS.SUBSCRIBER}/projectSettings/new`,
-      list: `${ROOTS.SUBSCRIBER}/projectSettings/list`,
-      edit: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}/edit`,
-      details: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}`,
-      review: (id) => `${ROOTS.SUBSCRIBER}/projectSettings/${id}/review`,
+    settings: {
+      root: `${ROOTS.SUBSCRIBER}/settings`,
+      new: `${ROOTS.SUBSCRIBER}/settings/new`,
+      list: `${ROOTS.SUBSCRIBER}/settings/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/settings/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/settings/${id}`,
+      review: (id) => `${ROOTS.SUBSCRIBER}/settings/${id}/review`,
     },
     updatePassword: `/update-password`
   }
