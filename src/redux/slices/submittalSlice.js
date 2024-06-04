@@ -253,7 +253,7 @@ export const getSubmittalResponseDetails = createAsyncThunk(
     try {
       console.log('submittalId', id);
 
-      const response = await axiosInstance.get(endpoints.submittal.reviewDetails(id));
+      const response = await axiosInstance.get(endpoints.submittal.responseDetails(id));
 
       return response.data.data;
     } catch (err) {
@@ -273,7 +273,7 @@ export const updateSubmittalResponseDetails = createAsyncThunk(
       console.log('formData', formData);
       console.log('submittalId', id);
 
-      const response = await axiosInstance.put(endpoints.submittal.reviewDetails(id), formData);
+      const response = await axiosInstance.put(endpoints.submittal.responseDetails(id), formData);
 
       return response.data.data;
     } catch (err) {
