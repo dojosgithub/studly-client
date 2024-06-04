@@ -163,7 +163,7 @@ export default function JwtNewPasswordView() {
         <Typography variant="h3">Request sent successfully!</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          We&apos;ve sent a 6-digit confirmation email to your email.
+          We&apos;ve sent a 4-digit confirmation code to your email.
           <br />
           Please enter the code in below box to verify your email.
         </Typography>
