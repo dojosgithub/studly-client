@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 // @mui
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
@@ -10,7 +12,6 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Box } from '@mui/material';
 // hooks
 import { isBefore, parseISO } from 'date-fns';
 import truncate from 'lodash/truncate';
@@ -21,11 +22,13 @@ import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 //
+import { getInitialsWithColor } from 'src/utils/get-initials';
 import { getStatusColor } from 'src/utils/constants';
 import { fDate, fDateISO } from 'src/utils/format-time';
 import UserQuickEditForm from './submittals-quick-edit-form';
 
 // ----------------------------------------------------------------------
+const COLORS = ['default', 'primary', 'secondary', 'info', 'success', 'warning', 'error'];
 
 export default function SubmittalsTableRow({
   row,
@@ -126,7 +129,7 @@ export default function SubmittalsTableRow({
               whiteSpace: 'nowrap',
               minWidth: 140,
               color: (theme) =>
-                isBefore(new Date(returnDate).setHours(0,0,0,0), new Date().setHours(0,0,0,0))
+                isBefore(new Date(returnDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
                   ? 'red'
                   : theme.palette.secondary,
             }}
@@ -137,13 +140,22 @@ export default function SubmittalsTableRow({
             {creator?.firstName} {creator?.lastName}
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {owner?.length > 0 &&
-              owner.map((item, index) => (
-                <span key={index}>
-                  {item?.firstName} {item?.lastName}
-                  {index < owner.length - 1 ? ', ' : ''}
-                </span>
-              ))}
+            <Box display='flex'>
+              <AvatarGroup max={4}>
+                {owner?.map((item, index) => (
+                  <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
+                    <Avatar
+                      key={`${item?.firstName} ${item?.lastName}`}
+                      alt={`${item?.firstName} ${item?.lastName}`}
+                    // {...getInitialsWithColor(`${item?.firstName} ${item?.lastName}`)}
+                    >
+                      {`${item?.firstName} ${item?.lastName}`.charAt(0)
+                        .toUpperCase()}
+                    </Avatar>
+                  </Tooltip>
+                ))}
+              </AvatarGroup>
+            </Box>
           </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
 
