@@ -15,6 +15,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { getInviteDetails } from 'src/redux/slices/inviteSlice';
 import { paths } from 'src/routes/paths';
+import Logo from 'src/components/logo/logo';
 import InviteUserForm from '../invite-user-form';
 
 // ----------------------------------------------------------------------
@@ -36,7 +37,7 @@ export default function InviteNewUserView() {
                 enqueueSnackbar(error.message, { variant: "error" });
                 // router.push(paths.auth.jwt.login);
                 router.push(paths.page404);
-                
+
             }
         }
         if (!isEmpty(params)) {
@@ -47,7 +48,8 @@ export default function InviteNewUserView() {
 
     return (
         <Container maxWidth='lg' sx={{ height: '100%', display: "grid", placeContent: 'center' }}>
-            <Stack maxWidth={500} mx='auto' >
+            <Stack maxWidth={500} mx='auto'>
+                <Logo style={{ marginBottom: "2rem", alignSelf: 'center', height: "2.5rem", width: "100%" }} />
                 <Typography sx={{ mb: 4, }} textAlign='center' fontSize='2rem' fontWeight='bold'>You have been Invited to Studly</Typography>
 
                 {!showForm?.value && <Button variant='contained' color='primary' onClick={showForm.onToggle}>Join Now</Button>}
