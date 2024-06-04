@@ -21,7 +21,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
-import { addDays, isAfter, isTomorrow, parseISO } from 'date-fns';
+import { addDays, isAfter, isBefore, isTomorrow, parseISO } from 'date-fns';
 
 //
 import Scrollbar from 'src/components/scrollbar';
@@ -391,7 +391,11 @@ const SubmittalsDetails = ({ id }) => {
                     <Typography className="submittalTitle">Requested Return Date</Typography>
                     <Typography
                         sx={{
-                            color: (theme) => (isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.primary),
+                            // color: (theme) => (isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.primary),
+                            color: (theme) =>
+                                isBefore(new Date(returnDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
+                                    ? 'red'
+                                    : theme.palette.secondary,
                             flex: 0.75,
                             px: 2,
                         }}
