@@ -31,7 +31,7 @@ export default function SubmittalsTableToolbar({
 }) {
   const popover = usePopover();
   const dispatch = useDispatch();
-  const userRole = useSelector(state=>state.user.user.role.shortName);
+  const userRole = useSelector(state => state.user.user.role.shortName);
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -188,7 +188,7 @@ export default function SubmittalsTableToolbar({
           variant="contained"
           loading={isLoading}
           sx={{ ml: 'auto' }}
-          disabled={userRole!=="CAD"||userRole!=="PWU"}
+          disabled={!(userRole === "CAD" || userRole === "PWU")}
         >
           <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
           Export
