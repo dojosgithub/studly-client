@@ -67,6 +67,15 @@ export default function CustomInviteAutoComplete({ optionsList }) {
                     console.log("newValue", newValue)
                 }
             }}
+            onInputChange={(event, newInputValue) => {
+                if (handleEmailValidation(newInputValue)) {
+                    setInputError("");
+                    setValue("user", { email: newInputValue });
+                } else {
+                    setInputError("Invalid email address");
+                }
+                console.log('newInputValue',newInputValue)
+            }}
             filterOptions={(options, params) => {
                 const filtered = filter(options, params);
                 const { inputValue } = params;

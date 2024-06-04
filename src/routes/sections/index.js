@@ -143,6 +143,15 @@ export default function Router() {
       path: '/subscriber',
       element: <Navigate to={PATH_AFTER_LOGIN_SUBSCRIBER} replace />,
     },
+    // admin
+    {
+      path: '/admin',
+      element: <Navigate to={PATH_AFTER_LOGIN_SYSTEM_ADMIN} replace />,
+    },
+    {
+      path: '/admin/company',
+      element: <Navigate to={PATH_AFTER_LOGIN_SYSTEM_ADMIN} replace />,
+    },
 
 
 
