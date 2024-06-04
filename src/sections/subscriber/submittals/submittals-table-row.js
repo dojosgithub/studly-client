@@ -12,8 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box } from '@mui/material';
 // hooks
-import { isTomorrow, parseISO } from 'date-fns';
-import truncate from 'lodash/truncate'
+import { isBefore, parseISO } from 'date-fns';
+import truncate from 'lodash/truncate';
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
@@ -27,27 +27,54 @@ import UserQuickEditForm from './submittals-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) {
+export default function SubmittalsTableRow({
+  row,
+  selected,
+  onEditRow,
+  onSelectRow,
+  onDeleteRow,
+  onViewRow,
+}) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
-  // companyName, address, adminName, adminEmail, phoneNumber 
-  const { id, submittalId, name, description, type, submittedDate, returnDate, creator, owner, link, status, docStatus } = row;
-  const role = useSelector(state => state?.user?.user?.role?.shortName);
+  // companyName, address, adminName, adminEmail, phoneNumber
+  const {
+    id,
+    submittalId,
+    name,
+    description,
+    type,
+    submittedDate,
+    returnDate,
+    creator,
+    owner,
+    link,
+    status,
+    docStatus,
+  } = row;
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
-  const isDisabled = status === "Void";
+  const isDisabled = status === 'Void';
   const quickEdit = useBoolean();
 
+  console.log(isBefore(new Date(returnDate), new Date()));
+
+  // setHours(0, 0, 0, 0);
   const popover = usePopover();
 
   return (
     <>
       {
-        (<TableRow hover={!isDisabled} selected={selected} sx={{
-          ...(isDisabled && {
-            cursor: 'not-allowed',
-            pointerEvents: 'none',
-            opacity: 0.5,
-          }),
-        }}>
+        <TableRow
+          hover={!isDisabled}
+          selected={selected}
+          sx={{
+            ...(isDisabled && {
+              cursor: 'not-allowed',
+              pointerEvents: 'none',
+              opacity: 0.5,
+            }),
+          }}
+        >
           {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
@@ -68,15 +95,15 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             <Box
               onClick={
-                (role === "CAD" || role === "PWU") && status === "Draft" ? onEditRow : onViewRow
+                (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
               }
               sx={{
                 cursor: 'pointer',
-                color: "blue",
+                color: 'blue',
                 textDecoration: 'underline',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '.25rem'
+                gap: '.25rem',
                 // '&:hover': {
                 //   textDecoration: 'underline',
                 // },
@@ -87,18 +114,37 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             </Box>
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{
-            truncate(description, { length: 20, omission: '...' })
-          }</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {truncate(description, { length: 20, omission: '...' })}
+          </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>{fDateISO(submittedDate)}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140, color: (theme) => isTomorrow(parseISO(returnDate)) ? 'red' : theme.palette.secondary }}>
+          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>
+            {fDateISO(submittedDate)}
+          </TableCell>
+          <TableCell
+            sx={{
+              whiteSpace: 'nowrap',
+              minWidth: 140,
+              color: (theme) =>
+                isBefore(new Date(returnDate).setHours(0,0,0,0), new Date().setHours(0,0,0,0))
+                  ? 'red'
+                  : theme.palette.secondary,
+            }}
+          >
             {fDateISO(returnDate)}
           </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{creator?.firstName}{" "}{creator?.lastName}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner?.length > 0 && owner.map((item, index) => (
-            <span key={index}>{item?.firstName} {item?.lastName}{index < owner.length - 1 ? ', ' : ''}</span>
-          ))}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {creator?.firstName} {creator?.lastName}
+          </TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {owner?.length > 0 &&
+              owner.map((item, index) => (
+                <span key={index}>
+                  {item?.firstName} {item?.lastName}
+                  {index < owner.length - 1 ? ', ' : ''}
+                </span>
+              ))}
+          </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
 
           <TableCell>
@@ -114,16 +160,12 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
           >
             {status}
           </Label> */}
-            <Label
-              color={getStatusColor(status)}
-              variant="soft"
-            >
+            <Label color={getStatusColor(status)} variant="soft">
               {status}
             </Label>
           </TableCell>
 
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
-
 
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
             {/* <Tooltip title="Quick Edit" placement="top" arrow>
@@ -136,7 +178,8 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </TableCell>
-        </TableRow>)}
+        </TableRow>
+      }
 
       {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
@@ -146,8 +189,8 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {(role === "CAD" || role === "PWU") &&
-          (<>
+        {(role === 'CAD' || role === 'PWU') && (
+          <>
             <MenuItem
               onClick={() => {
                 confirm.onTrue();
@@ -168,8 +211,8 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
               <Iconify icon="solar:pen-bold" />
               Edit
             </MenuItem>
-          </>)
-        }
+          </>
+        )}
 
         <MenuItem
           onClick={() => {
@@ -177,7 +220,7 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
             popover.onClose();
           }}
         >
-          <Iconify icon="ion:eye" style={{ color: "grey" }} />
+          <Iconify icon="ion:eye" style={{ color: 'grey' }} />
           View
         </MenuItem>
       </CustomPopover>
@@ -188,7 +231,13 @@ export default function SubmittalsTableRow({ row, selected, onEditRow, onSelectR
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={() => { onDeleteRow(confirm); }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              onDeleteRow(confirm);
+            }}
+          >
             Delete
           </Button>
         }
