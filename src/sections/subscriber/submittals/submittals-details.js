@@ -130,7 +130,7 @@ const SubmittalsDetails = ({ id }) => {
             enqueueSnackbar(error.message, { variant: 'error' });
             return;
         }
-        enqueueSnackbar(payload || 'Submittal response resends successfully', { variant: 'success' });
+        enqueueSnackbar('Submittal response resends successfully', { variant: 'success' });
     }
     const handleVoid = async () => {
         console.log("id", id)
