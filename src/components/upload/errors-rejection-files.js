@@ -38,11 +38,16 @@ export default function RejectionFiles({ fileRejections }) {
               {path} - {size ? fData(size) : ''}
             </Typography>
 
-            {errors.map((error) => (
-              <Box key={error.code} component="span" sx={{ typography: 'caption' }}>
-                - {error.message}
-              </Box>
-            ))}
+            {errors.map((error) => {
+              if (error.code === 'file-too-large') {
+                error.message = 'File is larger than 20 MB';
+              }
+              return (
+                <Box key={error.code} component="span" sx={{ typography: 'caption' }}>
+                  - {error.message}
+                </Box>
+              );
+            })}
           </Box>
         );
       })}
