@@ -14,6 +14,7 @@ import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 // routes
+import { useSnackbar } from 'notistack';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
@@ -50,10 +51,10 @@ import CompanyTableFiltersResult from '../company-table-filters-result';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'companyName', label: 'Company Name',minWidth:170 },
-  { id: 'adminName', label: 'Admin Name', minWidth:150},
+  { id: 'companyName', label: 'Company Name', minWidth: 170 },
+  { id: 'adminName', label: 'Admin Name', minWidth: 150 },
   { id: 'adminEmail', label: 'Email', width: 220 },
-  { id: 'phoneNumber', label: 'Phone Number', width: 170,minWidth:150 },
+  { id: 'phoneNumber', label: 'Phone Number', width: 170, minWidth: 150 },
   { id: 'address', label: 'Address', width: 220 },
   { id: 'status', label: 'Status', width: 100 },
   // { id: 'role', label: 'Role', width: 180 },
@@ -76,6 +77,8 @@ export default function CompanyListView() {
   const table = useTable();
 
   const settings = useSettingsContext();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -123,10 +126,10 @@ export default function CompanyListView() {
       // setTableData(deleteRow);
       console.log("companyId", id)
       dispatch(deleteCompany(id))
-
+      enqueueSnackbar('Company deleted successfully!', { variant: 'success' });
       dispatch(fetchCompanyList({ search: filters.query, page }))
     },
-    [dispatch, filters?.query, page]
+    [dispatch, filters?.query, page, enqueueSnackbar]
   );
 
 
