@@ -65,24 +65,32 @@ const StyledCard = styled(Card, {
 
 const getActions = (props) => {
   const {
+    setMenuItems,
     currentUser,
     status,
     isSubmitting,
     navigate,
     id,
+    currentSubmittal,
+    isResponseSubmitted,
     parentSubmittalId,
     sentToAllModal,
     handleSubmitToArchitect,
     handleVoid,
     handleResendEmailSubcontractor,
+    handleEditResponse,
+    handleViewResponse,
+    handleSubmittalResponse,
   } = props;
+
+  const optionsArray = [];
 
   if (
     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
   ) {
     if (status === 'Draft') {
-      return (
+      optionsArray.push(
         <MenuItem onClick={handleSubmitToArchitect}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
             Submit for Review
@@ -91,7 +99,7 @@ const getActions = (props) => {
       );
     }
     if (status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') {
-      return (
+      optionsArray.push(
         <MenuItem onClick={() => navigate(paths.subscriber.submittals.revision(parentSubmittalId))}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
             Create Revised Submittal
@@ -100,52 +108,86 @@ const getActions = (props) => {
       );
     }
     if (status !== 'Draft' && status !== 'Submitted') {
-      return (
-        <>
-          <MenuItem onClick={sentToAllModal.onTrue}>
-            <LoadingButton
-              fullWidth
-              //   sx={{ minWidth: 'max-content' }}
-              type="submit"
-              variant="outlined"
-              //   size="large"
-              loading={isSubmitting}
-              color="info"
-            >
-              Send To
-            </LoadingButton>
-          </MenuItem>
-          <MenuItem onClick={handleVoid}>
-            <LoadingButton
-              fullWidth
-              type="submit"
-              variant="outlined"
-              //   size="large"
-              loading={isSubmitting}
-              color="error"
-            >
-              VOID
-            </LoadingButton>
-          </MenuItem>
-          <MenuItem onClick={handleResendEmailSubcontractor}>
-            <LoadingButton
-              //   sx={{ minWidth: 'max-content' }}
-              fullWidth
-              type="submit"
-              variant="outlined"
-              //   size="large"
-              loading={isSubmitting}
-              color="primary"
-            >
-              Resend to Subcontractor
-            </LoadingButton>
-          </MenuItem>
-        </>
+      optionsArray.push(
+        <MenuItem onClick={sentToAllModal.onTrue}>
+          <LoadingButton
+            fullWidth
+            //   sx={{ minWidth: 'max-content' }}
+            type="submit"
+            variant="outlined"
+            //   size="large"
+            loading={isSubmitting}
+            // color="info"
+          >
+            Send To
+          </LoadingButton>
+        </MenuItem>
+      );
+      optionsArray.push(
+        <MenuItem onClick={handleVoid}>
+          <LoadingButton
+            fullWidth
+            type="submit"
+            variant="outlined"
+            //   size="large"
+            loading={isSubmitting}
+            // color="error"
+          >
+            VOID
+          </LoadingButton>
+        </MenuItem>
+      );
+      optionsArray.push(
+        <MenuItem onClick={handleResendEmailSubcontractor}>
+          <LoadingButton
+            //   sx={{ minWidth: 'max-content' }}
+            fullWidth
+            type="submit"
+            variant="outlined"
+            //   size="large"
+            loading={isSubmitting}
+            // color="primary"
+          >
+            Resend to Subcontractor
+          </LoadingButton>
+        </MenuItem>
       );
     }
-    return null;
+    // return null;
   }
-  return null;
+  if (status !== 'Draft' && status !== 'Submitted' && isResponseSubmitted) {
+    optionsArray.push(
+      <MenuItem onClick={handleViewResponse}>
+        <Button fullWidth variant="outlined">
+          View Response
+        </Button>
+      </MenuItem>
+    );
+  }
+  if (isIncluded(currentSubmittal?.owner, currentUser?._id)) {
+    optionsArray.push(
+      <MenuItem onClick={handleEditResponse}>
+        <Button fullWidth variant="outlined">
+          Edit Response
+        </Button>
+      </MenuItem>
+    );
+  }
+  if (
+    !isResponseSubmitted &&
+    status === 'Submitted' &&
+    isIncluded(currentSubmittal?.owner, currentUser?._id)
+  ) {
+    optionsArray.push(
+      <MenuItem onClick={handleSubmittalResponse}>
+        <Button fullWidth variant="outlined" onClick={handleSubmittalResponse}>
+          Add Submittal Response
+        </Button>
+      </MenuItem>
+    );
+  }
+  setMenuItems(optionsArray)
+  // return optionsArray;
 };
 
 const SubmittalsDetails = ({ id }) => {
@@ -158,6 +200,9 @@ const SubmittalsDetails = ({ id }) => {
   const currentUser = useSelector((state) => state.user?.user);
   const currentSubmittal = useSelector((state) => state.submittal.current);
   const sentToAllModal = useBoolean();
+
+  // const  = useBoolean();
+  const [menuItems, setMenuItems] = useState([]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -197,8 +242,31 @@ const SubmittalsDetails = ({ id }) => {
     console.log('OwnerList', currentSubmittal?.owner);
     console.log('currentUser:?._id', currentUser?._id);
     console.log('id', id);
+    getMenus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSubmittal, id, currentUser]);
 
+  const getMenus = () => {
+    getActions({
+      currentSubmittal,
+      currentUser,
+      status,
+      isSubmitting,
+      navigate,
+      paths,
+      id,
+      isResponseSubmitted,
+      parentSubmittalId,
+      sentToAllModal,
+      handleSubmitToArchitect,
+      handleVoid,
+      handleResendEmailSubcontractor,
+      handleEditResponse,
+      handleViewResponse,
+      handleSubmittalResponse,
+      setMenuItems
+    });
+  };
   const handleSubmitToArchitect = async () => {
     console.log('SubmittalId', id);
     setIsSubmitting(true);
@@ -273,47 +341,55 @@ const SubmittalsDetails = ({ id }) => {
           label={status}
         />
 
-        <div>
-          <Button
-            variant="outlined"
-            id="demo-positioned-button"
-            aria-controls={open ? 'demo-positioned-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-          >
-            Actions
-          </Button>
-          <Menu
-            id="demo-positioned-menu"
-            aria-labelledby="demo-positioned-button"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            {getActions({
+        {menuItems.length > 0 && (
+          <div>
+            <Button
+              variant="outlined"
+              id="demo-positioned-button"
+              aria-controls={open ? 'demo-positioned-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+            >
+              Actions
+            </Button>
+            <Menu
+              id="demo-positioned-menu"
+              aria-labelledby="demo-positioned-button"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              {/* {getActions({
+              currentSubmittal,
               currentUser,
               status,
               isSubmitting,
               navigate,
               paths,
               id,
+              isResponseSubmitted,
               parentSubmittalId,
               sentToAllModal,
               handleSubmitToArchitect,
               handleVoid,
               handleResendEmailSubcontractor,
-            })}
-          </Menu>
-        </div>
+              handleEditResponse,
+              handleViewResponse,
+              handleSubmittalResponse,
+            })} */}
+              {menuItems}
+            </Menu>
+          </div>
+        )}
       </Box>
 
       <Stack
@@ -332,52 +408,6 @@ const SubmittalsDetails = ({ id }) => {
             </Alert>
           )}
 
-        {/* // ? If (Architect || Engineer || Sub Contractor) has already submitted response for the submittal */}
-        {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO)  */}
-        {/* // * status === 'Submitted' */}
-        {/* // ? Everyone can view it but only the assigned one can update the response */}
-        {/* {status !== 'Draft' && status !== 'Submitted' && isResponseSubmitted && (
-          <Alert
-            severity="warning"
-            sx={{
-              gap: '.5rem',
-              alignItems: 'center',
-              '& .MuiAlert-message': { display: 'flex', alignItems: 'center', width: '100%' },
-            }}
-          >
-            (architect/engineer/subcontractor name) already submitted a response to this submittal.
-            <Box display="flex" flex={1} gap={1} mr={2} justifyContent="flex-end">
-              <Button variant="outlined" onClick={handleViewResponse}>
-                View Response
-              </Button>
-              {isIncluded(currentSubmittal?.owner, currentUser?._id) && (
-                <Button variant="outlined" onClick={handleEditResponse}>
-                  Edit Response
-                </Button>
-              )}
-            </Box>
-          </Alert>
-        )} */}
-
-        {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) */}
-        {/* // ? If Submittal Response is not submitted by (Architect || Engineer || Sub Contractor) */}
-        {!isResponseSubmitted &&
-          status === 'Submitted' &&
-          isIncluded(currentSubmittal?.owner, currentUser?._id) && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button variant="contained" onClick={handleSubmittalResponse}>
-                Add Submittal Response
-              </Button>
-            </Box>
-          )}
-        {/* (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ARC ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.ENG ||
-                        currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.SCO) */}
-        {/* // ? If Submittal Response is submitted by (Architect || Engineer || Sub Contractor) */}
         {isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id) && (
           <Alert severity="success">Your response to the submittal was submitted. Thankyou!</Alert>
         )}
