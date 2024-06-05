@@ -294,7 +294,7 @@ export default function SubmittalsListView() {
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
-                  onSort={table.onSort}
+                  // onSort={table.onSort}
                   rowCount={listData?.docs?.length}
                 // numSelected={table.selected.length}
                 // onSelectAllRows={(checked) =>
