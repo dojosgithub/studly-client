@@ -41,6 +41,8 @@ const ICONS = {
   ecommerce: icon('ic_ecommerce'),
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
+  settings: icon('ic_settings'),
+  // settings: icon('solar:settings-bold-duotone'),
 };
 
 // ----------------------------------------------------------------------
@@ -75,7 +77,7 @@ export function useNavData() {
             // roles: ['System Admin'],
           },
 
-          
+
         ],
       },
 
@@ -133,15 +135,15 @@ export function useNavData() {
           },
           {
             title: 'Project Settings',
-            path: paths.subscriber.projectSettings.list,
-            icon: ICONS.dashboard,
+            path: paths.subscriber.settings.root,
+            icon: ICONS.settings,
             roles: STUDLY_ROLES.projectSetting,
           },
 
 
         ],
       },
-     
+
     ],
     []
   );

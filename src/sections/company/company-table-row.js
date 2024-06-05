@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 // hooks
+import { truncate } from 'lodash';
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
@@ -57,7 +58,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.firstName}{" "}{company_admin?.lastName}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.email}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{truncate(address, { length: 20, omission: '...' })}</TableCell>
 
 
         {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}

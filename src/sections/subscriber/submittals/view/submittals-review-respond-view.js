@@ -32,7 +32,25 @@ export default function SubmittalsReviewRespondView({ id }) {
   // console.log("currentSubmittalResponse", currentSubmittal)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <Typography fontSize="1.5rem" fontWeight="bold" my={2}>Review and Respond</Typography>
+      {/* <Typography fontSize="1.5rem" fontWeight="bold" my={2}>Review and Respond</Typography> */}
+      <CustomBreadcrumbs
+        // heading="Add Submittal Response"
+        heading="Review and Respond"
+        links={[
+          {
+            name: 'Submittals',
+            href: paths.subscriber.submittals.list,
+          },
+          {
+            name: 'Details',
+            href: paths.subscriber.submittals.details(id),
+          },
+          { name: 'Response' },
+        ]}
+        sx={{
+          mb: { xs: 3, md: 5 },
+        }}
+      />
       <SubmittalsReviewRespondForm currentSubmittal={currentSubmittal}  id={id}/>
     </Container>
   );

@@ -20,6 +20,11 @@ const SubmittalsEditPage = lazy(() => import('src/pages/subscriber/submittals/ed
 const SubmittalsDetailsPage = lazy(() => import('src/pages/subscriber/submittals/details'));
 const SubmittalsRevisionPage = lazy(() => import('src/pages/subscriber/submittals/revision'));
 const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
+const SubmittalsResponseDetailsPage = lazy(() => import('src/pages/subscriber/submittals/response-details'));
+
+// Project
+const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
+
 // // USER
 // const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
 // const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
@@ -49,14 +54,15 @@ export const subscriberRoutes = [
       </AuthGuard>
     ),
     children: [
-    //   { element: <IndexPage />, index: true },
-    //   { path: 'submittals', element: <OverviewEcommercePage /> },
-    //   { path: 'rfis', element: <OverviewAnalyticsPage /> },
-    //   { path: 'meeting-minutes', element: <OverviewBankingPage /> },
-    //   { path: 'plan-room', element: <OverviewBookingPage /> },
-    //   { path: 'Documents', element: <OverviewBookingPage /> },
-    //   { path: 'Subcontractors', element: <OverviewBookingPage /> },
+      //   { element: <IndexPage />, index: true },
+      //   { path: 'submittals', element: <OverviewEcommercePage /> },
+      //   { path: 'rfis', element: <OverviewAnalyticsPage /> },
+      //   { path: 'meeting-minutes', element: <OverviewBankingPage /> },
+      //   { path: 'plan-room', element: <OverviewBookingPage /> },
+      //   { path: 'Documents', element: <OverviewBookingPage /> },
+      //   { path: 'Subcontractors', element: <OverviewBookingPage /> },
 
+      { path: 'settings', element: <ProjectSettingsPage /> },
       {
         path: 'submittals',
         children: [
@@ -65,24 +71,25 @@ export const subscriberRoutes = [
           { path: 'new', element: <SubmittalsCreatePage /> },
           { path: ':id', element: <SubmittalsDetailsPage /> },
           { path: ':id/edit', element: <SubmittalsEditPage /> },
-          { path: ':id/review', element: <SubmittalsReviewPage /> },
+          // { path: ':id/review', element: <SubmittalsReviewPage /> },
+          // ? done in index routes
+          { path: ':id/response/details', element: <SubmittalsResponseDetailsPage /> },
           { path: ':id/revision', element: <SubmittalsRevisionPage /> },
-          // { path: ':id/review/details', element: <SubmittalsReviewDetailsPage /> },
         ],
       },
-      
-    //   {
-    //     path: 'user',
-    //     children: [
-    //       { element: <UserProfilePage />, index: true },
-    //       { path: 'profile', element: <UserProfilePage /> },
-    //       { path: 'cards', element: <UserCardsPage /> },
-    //       { path: 'list', element: <UserListPage /> },
-    //       { path: 'new', element: <UserCreatePage /> },
-    //       { path: ':id/edit', element: <UserEditPage /> },
-    //       { path: 'account', element: <UserAccountPage /> },
-    //     ],
-    //   },
+
+      //   {
+      //     path: 'user',
+      //     children: [
+      //       { element: <UserProfilePage />, index: true },
+      //       { path: 'profile', element: <UserProfilePage /> },
+      //       { path: 'cards', element: <UserCardsPage /> },
+      //       { path: 'list', element: <UserListPage /> },
+      //       { path: 'new', element: <UserCreatePage /> },
+      //       { path: ':id/edit', element: <UserEditPage /> },
+      //       { path: 'account', element: <UserAccountPage /> },
+      //     ],
+      //   },
 
     ],
   },

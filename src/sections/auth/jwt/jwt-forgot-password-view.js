@@ -98,8 +98,7 @@ export default function JwtForgotPasswordView() {
         <Typography variant="h3">Forgot your password?</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Please enter the email address associated with your account and We will email you a link
-          to reset your password.
+          Please enter the email address associated with your account and We will email you an OTP to reset your password.
         </Typography>
       </Stack>
     </>

@@ -580,7 +580,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFMultiSelect
                   name="owner"
                   label="Assignee/Owner"
-                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
+                  disabled={pathname.includes('revision') ? false : currentSubmittal && ((currentSubmittal?.status !== "Draft"))}
                   // placeholder="Select multiple options"
                   chip
                   options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
@@ -588,7 +588,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFMultiSelect
                   name="ccList"
                   label="CC List"
-                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
+                  disabled={pathname.includes('revision') ? false : currentSubmittal && ((currentSubmittal?.status !== "Draft"))}
                   // placeholder="Select multiple options"
                   chip
                   options={ccList?.map((item) => ({ label: item.email, value: item.email }))}

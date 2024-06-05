@@ -32,7 +32,7 @@ const validateEmail = (email) => {
 export default function CustomInviteAutoComplete({ optionsList }) {
     // const [value, setInputValue] = React.useState(null);
     const [inputError, setInputError] = useState("");
-    const { getValues, setValue } = useFormContext()
+    const { getValues, setValue,formState: { isSubmitSuccessful } } = useFormContext()
     const { user } = getValues()
     // console.log("value", value);
     console.log("user", user);
@@ -45,6 +45,23 @@ export default function CustomInviteAutoComplete({ optionsList }) {
         return false;
 
     };
+
+    const handleUserObject = (inputValue) => {
+        const matchedUser = optionsList.find((option) => option.email === inputValue);
+        if (matchedUser) {
+            setValue("user", matchedUser);
+        } else {
+            setValue("user", { email: inputValue });
+        }
+    };
+    React.useEffect(() => {
+        console.log('inputError', inputError)
+        if (isSubmitSuccessful) {
+            console.log('isSubmitSuccessful', isSubmitSuccessful)
+            setInputError('')
+        }
+
+    }, [inputError, isSubmitSuccessful, setInputError])
 
     return (
         <Autocomplete
@@ -65,6 +82,13 @@ export default function CustomInviteAutoComplete({ optionsList }) {
                     // setInputValue(newValue);
                     setValue("user",newValue);
                     console.log("newValue", newValue)
+                }
+            }}
+            onInputChange={(event, newInputValue) => {
+                if (handleEmailValidation(newInputValue)) {
+                    handleUserObject(newInputValue);
+                } else {
+                    setInputError("Invalid email address");
                 }
             }}
             filterOptions={(options, params) => {

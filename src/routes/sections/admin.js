@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
+
 // auth
 import { AuthGuard } from 'src/auth/guard';
 // layouts
@@ -37,20 +38,22 @@ export const adminRoutes = [
       </AuthGuard>
     ),
     children: [
-      { element: <IndexPage />, index: true },
-     
+      // { element: <IndexPage />, index: true },
+
       // company routes
       {
         path: 'company',
         children: [
-          { element: <CompanyListPage />, index: true },
+          // { element: <CompanyListPage />, index: true },
           { path: 'list', element: <CompanyListPage /> },
           { path: ':id/edit', element: <CompanyEditPage /> },
           { path: 'new', element: <CompanyCreatePage /> },
+          // { path: '*', element: <Navigate to="/404" replace /> },
         ],
       },
-      
+
 
     ],
   },
+
 ];
