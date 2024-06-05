@@ -79,6 +79,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     }
   }, [pathname, existingAttachments]);
 
+
   const { enqueueSnackbar } = useSnackbar();
   console.log('projectId', projectId);
   console.log('submittalId ', id);
@@ -149,7 +150,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     let returnDate = null;
     const ccListInside = currentSubmittal?.ccList || [];
     const owner = currentSubmittal?.owner?.map(item => item.email) || [];
-
+    console.log("owner000",owner)
     if (currentSubmittal) {
       submittalId = currentSubmittal.submittalId || '';
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
@@ -160,7 +161,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         // else {
         //   submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
         // }
-        submittalId = updateSubmittalId(submittalId, currentSubmittal?.revisionCount);
+        // ? currentSubmittal contains parentSubmittal we retrieve revisionCount from there.
+        const revisionCount = currentSubmittal?.parentSubmittal?.revisionCount || currentSubmittal?.revisionCount
+        const isParentSubmittalHasRevisions = currentSubmittal?.parentSubmittal?.revisionCount > 0
+        console.log("revisionCount", revisionCount)
+        console.log("isParentSubmittalHasRevisions", isParentSubmittalHasRevisions)
+        submittalId = updateSubmittalId(submittalId, revisionCount, isParentSubmittalHasRevisions);
 
       } else {
         name = currentSubmittal?.name || '';
@@ -206,6 +212,15 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const { submittalId } = values;
   console.log('values', values);
   console.log('errors', errors);
+
+
+  useEffect(() => {
+    if(!isEmpty(currentSubmittal)){
+      reset(defaultValues)
+
+    }
+  }, [reset,currentSubmittal,defaultValues]);
+
 
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);

@@ -24,44 +24,23 @@ import SubmittalsNewEditForm from '../submittals-new-edit-form';
 
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
-  const submittalList = useSelector(state => state.submittal?.list?.docs)
-  const dispatch = useDispatch()
-  const currentSubmittal = submittalList?.find(item => item.id === id)
-  // const currentSubmittal = useSelector((state) => state.submittal.current);
-  // const router = useRouter();
+  // const submittalList = useSelector(state => state.submittal?.list?.docs)
+  // const currentSubmittal = submittalList?.find(item => item.id === id)
+  // const dispatch = useDispatch()
+  const currentSubmittal = useSelector((state) => state.submittal.current);
 
-  // const [isSubmitting, setIsSubmitting] = useState(false);
-  // const { enqueueSnackbar } = useSnackbar();
-  // const currentUser = useSelector((state) => state.user?.user);
-
-  console.log("currentSubmittal", currentSubmittal)
+  console.log("currentSubmittalEdit", currentSubmittal)
   console.log("sumittalId", id)
   
-  useEffect(() => {
-    // if (id) {
-    // }
-    if(!isEmpty(currentSubmittal)){
-      dispatch(setCurrentSubmittal(currentSubmittal))
-    }
-
-  }, [dispatch, id, currentSubmittal])
-
-  // const handleSubmitToArchitect = async () => {
-  //   console.log('SubmittalId', id);
-  //   setIsSubmitting(true);
-  //   const { error, payload } = await dispatch(submitSubmittalToArchitect(id));
-  //   console.log('e-p', { error, payload });
-  //   setIsSubmitting(false);
-  //   if (!isEmpty(error)) {
-  //     enqueueSnackbar(error.message, { variant: 'error' });
-  //     return;
+  // useEffect(() => {
+  //   // if (id) {
+  //   // }
+  //   if(!isEmpty(currentSubmittal)){
+  //     dispatch(setCurrentSubmittal(currentSubmittal))
   //   }
-  //   enqueueSnackbar('Submittal submitted to architect successfully', { variant: 'success' });
-  //   await dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
-  //   await dispatch(getSubmittalDetails(id));
-  //   router.push(paths.subscriber.submittals.list);
 
-  // };
+  // }, [dispatch, id, currentSubmittal])
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
