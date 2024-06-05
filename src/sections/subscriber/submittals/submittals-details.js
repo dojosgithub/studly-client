@@ -164,7 +164,7 @@ const getActions = (props) => {
       </MenuItem>
     );
   }
-  if (isIncluded(currentSubmittal?.owner, currentUser?._id)) {
+  if (isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id)) {
     optionsArray.push(
       <MenuItem onClick={handleEditResponse}>
         <Button fullWidth variant="outlined">
