@@ -12,6 +12,8 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
+import { Typography } from '@mui/material';
+
 // hooks
 import { isBefore, parseISO } from 'date-fns';
 import truncate from 'lodash/truncate';
@@ -142,22 +144,28 @@ export default function SubmittalsTableRow({
             {creator?.firstName} {creator?.lastName}
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            <Box display='flex'>
+            {/* <Box display="flex">
               <AvatarGroup max={4}>
                 {owner?.map((item, index) => (
                   <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
                     <Avatar
                       key={`${item?.firstName} ${item?.lastName}`}
                       alt={`${item?.firstName} ${item?.lastName}`}
-                    // {...getInitialsWithColor(`${item?.firstName} ${item?.lastName}`)}
                     >
-                      {`${item?.firstName} ${item?.lastName}`.charAt(0)
-                        .toUpperCase()}
+                      {`${item?.firstName} ${item?.lastName}`.charAt(0).toUpperCase()}
                     </Avatar>
                   </Tooltip>
                 ))}
               </AvatarGroup>
-            </Box>
+            </Box> */}
+            {owner?.map((item, index) => (
+              <>
+                <Typography>
+                  {item.firstName} {item.firstName}
+                </Typography>
+                {index < owner.length - 1 && ' / '}
+              </>
+            ))}
           </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
 
