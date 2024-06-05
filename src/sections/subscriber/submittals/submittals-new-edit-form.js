@@ -99,6 +99,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     //   .required('Trade id is required'),
     submittalId: Yup.string(),
     name: Yup.string().required('Name is required'),
+    leadTime: Yup.string().required('Lead time is required'),
     description: Yup.string().required('Description is required'),
     type: Yup.string().required('Type is required'),
     status: Yup.string().required('Status is required'),
@@ -141,6 +142,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     let submittalId = '';
     let trade = '';
     let name = '';
+    let leadTime = '';
     let description = '';
     let type = '';
     // let owner = [];
@@ -164,6 +166,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
       } else {
         name = currentSubmittal?.name || '';
+        leadTime = currentSubmittal?.leadTime || '';
         description = currentSubmittal?.description || '';
         // owner = currentSubmittal?.owner?.map(item => item.email) || [];
         // ccListInside = currentSubmittal?.ccList || [];
@@ -177,6 +180,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       trade,
       submittalId,
       name,
+      leadTime,
       description,
       owner,
       type,
@@ -416,7 +420,18 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   />
                   {/* type='number' */}
                 </Box>
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                  }}
+                >
                 <RHFTextField name="name" label="Name" />
+                <RHFTextField name="leadTime" label="Lead Time" />
+                </Box>
                 <RHFTextField name="description" multiline rows={3} label="Description" />
                 <Box
                   rowGap={3}

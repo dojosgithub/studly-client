@@ -41,6 +41,7 @@ export default function SubmittalsTableRow({
     id,
     submittalId,
     name,
+    leadTime,
     description,
     type,
     submittedDate,
@@ -114,6 +115,7 @@ export default function SubmittalsTableRow({
             </Box>
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{leadTime}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(description, { length: 20, omission: '...' })}
           </TableCell>
