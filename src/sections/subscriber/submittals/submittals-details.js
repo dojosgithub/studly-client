@@ -408,7 +408,7 @@ const SubmittalsDetails = ({ id }) => {
       enqueueSnackbar(error.message, { variant: 'error' });
       return;
     }
-    enqueueSnackbar('Submittal response resends successfully', { variant: 'success' });
+    enqueueSnackbar('Submittal response has been resent to subcontractor', { variant: 'success' });
   };
   const handleVoid = async () => {
     console.log('id', id);
