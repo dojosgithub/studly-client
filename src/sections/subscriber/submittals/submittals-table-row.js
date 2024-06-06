@@ -159,12 +159,10 @@ export default function SubmittalsTableRow({
               </AvatarGroup>
             </Box> */}
             {owner?.map((item, index) => (
-              <>
                 <Typography>
-                  {item.firstName} {item.lastName}
+                  {item.firstName} {owner.length === 1 && item.lastName}
+                  {index < owner.length - 1 && ' / '}
                 </Typography>
-                {index < owner.length - 1 && ' / '}
-              </>
             ))}
           </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
