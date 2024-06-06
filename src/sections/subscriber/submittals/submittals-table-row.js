@@ -126,7 +126,7 @@ export default function SubmittalsTableRow({
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>
-            {fDateISO(submittedDate)}
+            {submittedDate && fDateISO(submittedDate)}
           </TableCell>
           <TableCell
             sx={{

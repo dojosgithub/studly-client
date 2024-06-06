@@ -69,7 +69,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const currentUser = useSelector((state) => state.user?.user);
   const projectId = useSelector((state) => state.project?.current?.id);
   const trades = useSelector((state) => state.project?.current?.trades);
-  const existingAttachments = useMemo(() => currentSubmittal?.attachments ? currentSubmittal?.attachments : [], [currentSubmittal]);
+  const existingAttachments = useMemo(
+    () => (currentSubmittal?.attachments ? currentSubmittal?.attachments : []),
+    [currentSubmittal]
+  );
   const [files, setFiles] = useState(existingAttachments);
   useEffect(() => {
     if (pathname.includes('revision')) {
@@ -78,7 +81,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       setFiles(existingAttachments);
     }
   }, [pathname, existingAttachments]);
-
 
   const { enqueueSnackbar } = useSnackbar();
   console.log('projectId', projectId);
@@ -151,8 +153,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     let status = 'Draft';
     let returnDate = null;
     const ccListInside = currentSubmittal?.ccList || [];
-    const owner = currentSubmittal?.owner?.map(item => item.email) || [];
-    console.log("owner000",owner)
+    const owner = currentSubmittal?.owner?.map((item) => item.email) || [];
+    console.log('owner000', owner);
     if (currentSubmittal) {
       submittalId = currentSubmittal.submittalId || '';
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
@@ -164,12 +166,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         //   submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
         // }
         // ? currentSubmittal contains parentSubmittal we retrieve revisionCount from there.
-        const revisionCount = currentSubmittal?.parentSubmittal?.revisionCount || currentSubmittal?.revisionCount
-        const isParentSubmittalHasRevisions = currentSubmittal?.parentSubmittal?.revisionCount > 0
-        console.log("revisionCount", revisionCount)
-        console.log("isParentSubmittalHasRevisions", isParentSubmittalHasRevisions)
+        const revisionCount =
+          currentSubmittal?.parentSubmittal?.revisionCount || currentSubmittal?.revisionCount;
+        const isParentSubmittalHasRevisions = currentSubmittal?.parentSubmittal?.revisionCount > 0;
+        console.log('revisionCount', revisionCount);
+        console.log('isParentSubmittalHasRevisions', isParentSubmittalHasRevisions);
         submittalId = updateSubmittalId(submittalId, revisionCount, isParentSubmittalHasRevisions);
-
       } else {
         name = currentSubmittal?.name || '';
         leadTime = currentSubmittal?.leadTime || '';
@@ -196,8 +198,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     };
   }, [currentSubmittal, pathname]);
 
-
-
   const methods = useForm({
     resolver: yupResolver(NewSubmittalSchema),
     defaultValues,
@@ -217,14 +217,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   console.log('values', values);
   console.log('errors', errors);
 
-
   useEffect(() => {
-    if(!isEmpty(currentSubmittal)){
-      reset(defaultValues)
-
+    if (!isEmpty(currentSubmittal)) {
+      reset(defaultValues);
     }
-  }, [reset,currentSubmittal,defaultValues]);
-
+  }, [reset, currentSubmittal, defaultValues]);
 
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
@@ -246,8 +243,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     try {
       // const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
       const owner = ownerList
-        .filter(item => data?.owner?.includes(item.email)) // Filter based on matching emails
-        .map(item => item.user);
+        .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
+        .map((item) => item.user);
       const tradeId = getStrTradeId(data.trade);
       const tradeObj = trades.find((t) => t.tradeId === tradeId);
 
@@ -271,15 +268,22 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       const creator = _id;
       if (isEmpty(currentSubmittal)) {
         // const creator = { _id, name: `${firstName} ${lastName}`, email }
-        const submittedDate = new Date();
+        // const submittedDate = new Date();
         const link = 'www.google.com';
-        finalData = { ...data, owner, creator, submittedDate, link, projectId, trade };
-      } else if (!isEmpty(currentSubmittal) && (pathname.includes('revision'))) {
-        const submittedDate = new Date();
+        finalData = { ...data, owner, creator, link, projectId, trade };
+      } else if (!isEmpty(currentSubmittal) && pathname.includes('revision')) {
+        // const submittedDate = new Date();
         const link = 'www.google.com';
 
-        finalData = { ...data, owner, creator, submittedDate, link, projectId, trade, parentSubmittal: params?.id };
-
+        finalData = {
+          ...data,
+          owner,
+          creator,
+          link,
+          projectId,
+          trade,
+          parentSubmittal: params?.id,
+        };
       } else {
         finalData = { ...currentSubmittal, ...data, creator, owner, trade };
       }
@@ -322,13 +326,15 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       if (val !== 'review') {
         if (!secondVal) {
           enqueueSnackbar(
-            currentSubmittal ? 'Submittal updated successfully!' : 'Submittal created successfully!',
+            currentSubmittal
+              ? 'Submittal updated successfully!'
+              : 'Submittal created successfully!',
             { variant: 'success' }
           );
         }
         router.push(paths.subscriber.submittals.details(payload?.id));
 
-        return
+        return;
       }
       console.log('payload', payload);
       await handleSubmitToArchitect(payload?.id);
@@ -376,7 +382,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   return (
     <>
-      {currentSubmittal && currentSubmittal?.status === 'Draft' &&
+      {currentSubmittal &&
+        currentSubmittal?.status === 'Draft' &&
         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
           currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
           <Box width="100%" display="flex" justifyContent="end">
@@ -444,8 +451,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     sm: 'repeat(2, 1fr)',
                   }}
                 >
-                <RHFTextField name="name" label="Name" />
-                <RHFTextField name="leadTime" label="Lead Time" />
+                  <RHFTextField name="name" label="Name" />
+                  <RHFTextField name="leadTime" label="Lead Time" />
                 </Box>
                 <RHFTextField name="description" multiline rows={3} label="Description" />
                 <Box
@@ -554,12 +561,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       const isDateNextDay = selectedDate && isTomorrow(selectedDate);
                       const dateStyle = isDateNextDay
                         ? {
-                          '.MuiInputBase-root.MuiOutlinedInput-root': {
-                            color: 'red',
-                            borderColor: 'red',
-                            border: '1px solid',
-                          },
-                        }
+                            '.MuiInputBase-root.MuiOutlinedInput-root': {
+                              color: 'red',
+                              borderColor: 'red',
+                              border: '1px solid',
+                            },
+                          }
                         : {};
                       console.log(isDateNextDay);
                       return (
@@ -579,7 +586,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                               helperText: error?.message,
                             },
                           }}
-                        // sx={dateStyle} // Apply conditional style based on the date comparison
+                          // sx={dateStyle} // Apply conditional style based on the date comparison
                         />
                       );
                     }}
@@ -606,11 +613,14 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                   ))}
                 </RHFSelect> */}
 
-
                 <RHFMultiSelect
                   name="owner"
                   label="Assignee/Owner"
-                  disabled={pathname.includes('revision') ? false : currentSubmittal && ((currentSubmittal?.status !== "Draft"))}
+                  disabled={
+                    pathname.includes('revision')
+                      ? false
+                      : currentSubmittal && currentSubmittal?.status !== 'Draft'
+                  }
                   // placeholder="Select multiple options"
                   chip
                   options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
@@ -618,14 +628,18 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 <RHFMultiSelect
                   name="ccList"
                   label="CC List"
-                  disabled={pathname.includes('revision') ? false : currentSubmittal && ((currentSubmittal?.status !== "Draft"))}
+                  disabled={
+                    pathname.includes('revision')
+                      ? false
+                      : currentSubmittal && currentSubmittal?.status !== 'Draft'
+                  }
                   // placeholder="Select multiple options"
                   chip
                   options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-                // options={[
-                //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-                //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-                // ]}
+                  // options={[
+                  //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+                  //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+                  // ]}
                 />
               </Box>
 
@@ -821,7 +835,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {(!currentSubmittal || currentSubmittal && pathname.includes('revision')) &&
+                {(!currentSubmittal || (currentSubmittal && pathname.includes('revision'))) &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                     <>
@@ -846,7 +860,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     </>
                   )}
 
-                {(currentSubmittal && !pathname.includes('revision')) && (
+                {currentSubmittal && !pathname.includes('revision') && (
                   <LoadingButton
                     type="button"
                     onClick={() => onSubmit('update')}
