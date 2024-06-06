@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // @mui
@@ -25,7 +25,7 @@ import FormProvider, {
 import uuidv4 from 'src/utils/uuidv4';
 // mock
 import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
+import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers, setProjectTrades } from 'src/redux/slices/projectSlice';
 // inviteSubcontractor, 
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
@@ -35,12 +35,27 @@ import CustomAutoComplete from 'src/components/custom-automcomplete';
 
 export default function ProjectInviteSubcontractorDialog({
   //
+  ID: tradeId,
+  options,
   open,
   onClose,
+  setOptions,
   ...other
 }) {
   // Get List of Subcontractors in DB
   const subcontractorListOptions = useSelector(state => state?.project?.subcontractors?.list?.all);
+  const subcontractorsList = useSelector(state => state.project?.subcontractors?.list?.company)
+  const subcontractorsInvitedList = useSelector(state => state.project?.subcontractors?.invited)
+  const subcontractors = useMemo(() => [...subcontractorsList, ...subcontractorsInvitedList], [subcontractorsList, subcontractorsInvitedList]);
+  const trades = useSelector(state => state.project.create.trades)
+  const { getValues, setValue } = useFormContext()
+  const stepperFormValues = getValues()
+  console.table('object', {
+    tradeId,
+    options,
+  })
+
+  console.log('stepperFormValues', stepperFormValues);
 
   const dispatch = useDispatch()
   const InviteUserSchema = Yup.object().shape({
@@ -69,10 +84,7 @@ export default function ProjectInviteSubcontractorDialog({
 
   const {
     reset,
-    setValue,
     handleSubmit,
-    getValues,
-    watch,
     formState: { isSubmitting, isValid, errors },
   } = methods;
   // const { user: userObj } = getValues;
@@ -89,11 +101,78 @@ export default function ProjectInviteSubcontractorDialog({
   // );
 
 
+  const isEmailAlreadyExists = async (email) => {
+    console.log('email', email)
+    const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)
+    console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
+    // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
+
+    // TODO ADD EXISTING SUBCONTRACTOR
+
+
+    // if there is an id of subcontractor
+    if (filteredSubcontractorByEmail.length > 0) {
+      enqueueSnackbar('email already exists!', { variant: 'error' });
+      return true
+    }
+    const data = { email }
+    console.log('handleSelect', data);
+
+    const modifiedTrades = trades.map(trade => {
+      if (trade.tradeId === tradeId) {
+        // return { ...trade, subcontractorId };
+        return { ...trade, ...data };
+      }
+      return trade;
+    });
+    console.log('modifiedTradesDialog', modifiedTrades)
+    setValue('trades', modifiedTrades)
+    dispatch(setProjectTrades(modifiedTrades))
+
+    // ? set options
+
+    setOptions(prevOptions => {
+      const tradeIds = Object.keys(prevOptions);
+
+      // Check if the options object is empty or if the tradeId is not present in prevOptions
+      if (tradeIds.length === 0 || !prevOptions[tradeId]) {
+        // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
+        // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
+        return { ...prevOptions, [tradeId]: { tradeId, ...data } };
+      }
+
+      // Check if there's already an option with the same tradeId
+      const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
+
+      if (existingTradeIndex !== -1) {
+        // If an option with the same tradeId exists, update its subcontractorId
+        const updatedOptions = { ...prevOptions };
+        // if (hasEmailAndId) {
+        //   updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
+        // }
+        updatedOptions[tradeId].email = email;
+        return updatedOptions;
+      }
+
+      // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
+      // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
+      return { ...prevOptions, [tradeId]: { tradeId, ...data } };
+    });
+    return false
+  }
+
+
+
   const onSubmit = handleSubmit(async (data) => {
     try {
 
-
+      const emailExists = await isEmailAlreadyExists(data.email)
+      if (emailExists) {
+        enqueueSnackbar('email already exists!', { variant: 'error' });
+        return
+      }
       console.log('data', data)
+
       // const { role, user, ...rest } = data;
       // const hasEmailAndId = 'email' in user && 'id' in user;
       // const finalData = {
@@ -165,7 +244,7 @@ export default function ProjectInviteSubcontractorDialog({
               ))}
             </RHFSelect> */}
             <Stack>
-            <RHFTextField name="email" label="Email address"  />
+              <RHFTextField name="email" label="Email address" />
               {/* <CustomAutoComplete listOptions={subcontractorListOptions}
                 error={errors && errors.user && (errors.user.message) || (errors?.user?.email && errors?.user?.email?.message)}
                 value={userObj} setValue={(val) => handleSelectUser(val)} /> */}
@@ -184,7 +263,7 @@ export default function ProjectInviteSubcontractorDialog({
             Close
           </Button>
         )}
-        <Button color="inherit"onClick={handleSubmit(onSubmit)}  variant="contained">
+        <Button color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
           Invite Subcontractor
         </Button>
       </DialogActions>
@@ -193,6 +272,9 @@ export default function ProjectInviteSubcontractorDialog({
 }
 
 ProjectInviteSubcontractorDialog.propTypes = {
-  onClose: PropTypes.func,
+  ID: PropTypes.string,
   open: PropTypes.bool,
+  options: PropTypes.array,
+  onClose: PropTypes.func,
+  setOptions: PropTypes.func,
 };

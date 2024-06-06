@@ -14,6 +14,7 @@ const ProjectSubcontractor = () => {
     const { getValues, setValue } = useFormContext();
     // const { trades } = getValues()
     const [open, setOpen] = useState(false)
+    const [ID, setID] = useState('')
     // GET Subcontractor list in Company
     const subcontractorsList = useSelector(state => state.project?.subcontractors?.list?.company)
     const subcontractorsInvitedList = useSelector(state => state.project?.subcontractors?.invited)
@@ -39,6 +40,7 @@ const ProjectSubcontractor = () => {
         // console.log('subcontractorId', subcontractorId)
         if (email === "create") {
             setOpen(true)
+            setID(tradeId)
             return
         }
         console.log('email', email)
@@ -139,32 +141,33 @@ const ProjectSubcontractor = () => {
 
 
         // ? set assigned subcontractors
-        setAssignedSubcontractors(prevTrades => {
-            // Check if the trades array is empty
-            if (prevTrades.length === 0) {
-                // If it's empty, add a new trade with provided tradeId and subcontractorId
-                // return [{ tradeId, subcontractorId }];
-                return [{ tradeId, ...data }];
-            }
+        // setAssignedSubcontractors(prevTrades => {
+        //     // Check if the trades array is empty
+        //     if (prevTrades.length === 0) {
+        //         // If it's empty, add a new trade with provided tradeId and subcontractorId
+        //         // return [{ tradeId, subcontractorId }];
+        //         return [{ tradeId, ...data }];
+        //     }
 
-            // Check if there's already a trade with the same tradeId
-            const existingTradeIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId);
+        //     // Check if there's already a trade with the same tradeId
+        //     const existingTradeIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId);
 
-            if (existingTradeIndex !== -1) {
-                // If a trade with the same tradeId exists, update its subcontractorId
-                const updatedTrades = [...prevTrades];
-                if(hasEmailAndId){
-                    updatedTrades[existingTradeIndex].subcontractorId =  filteredSubcontractorByEmail.id;
-                }
-                updatedTrades[existingTradeIndex].email = email;
-                return updatedTrades;
-            }
+        //     if (existingTradeIndex !== -1) {
+        //         // If a trade with the same tradeId exists, update its subcontractorId
+        //         const updatedTrades = [...prevTrades];
+        //         if(hasEmailAndId){
+        //             updatedTrades[existingTradeIndex].subcontractorId =  filteredSubcontractorByEmail.id;
+        //         }
+        //         updatedTrades[existingTradeIndex].email = email;
+        //         return updatedTrades;
+        //     }
 
-            // If trade does not exist with the same tradeId, add a new trade
-            // return [...prevTrades, { tradeId, subcontractorId }];
-            return [...prevTrades, { tradeId, ...data }];
-        });
+        //     // If trade does not exist with the same tradeId, add a new trade
+        //     // return [...prevTrades, { tradeId, subcontractorId }];
+        //     return [...prevTrades, { tradeId, ...data }];
+        // });
 
+        // ? Not in use
 
         //  multiple
         // setAssignedSubcontractors(prevTrades => {
@@ -305,8 +308,11 @@ const ProjectSubcontractor = () => {
 
                 {(open) && (
                     <ProjectInviteSubcontractorDialog
+                        ID={ID}
+                        options={options}
                         open={open}
                         onClose={() => setOpen(false)}
+                        setOptions={setOptions}
                     />
                 )}
             </Container>
