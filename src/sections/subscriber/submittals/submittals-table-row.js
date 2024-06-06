@@ -161,7 +161,7 @@ export default function SubmittalsTableRow({
             {owner?.map((item, index) => (
               <>
                 <Typography>
-                  {item.firstName} {item.firstName}
+                  {item.firstName} {item.lastName}
                 </Typography>
                 {index < owner.length - 1 && ' / '}
               </>

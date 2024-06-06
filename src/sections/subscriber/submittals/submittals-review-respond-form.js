@@ -115,13 +115,14 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
 
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data, value) => {
     // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
       if (isEmpty(params)) {
         enqueueSnackbar('Submittal Id not Found', { variant: "error" });
         return
       }
+      console.log("value", value)
       console.log("data", data)
 
       const formData = new FormData();
@@ -143,7 +144,12 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
       let error;
       let payload;
-      if (currentSubmittal?.isResponseSubmitted && params?.id) {
+      if (currentSubmittal?.isResponseSubmitted && value === "update" && params?.id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
+        error = res.error
+        payload = res.payload
+      } else if (!currentSubmittal?.isResponseSubmitted && value === "save" && params?.id) {
+        console.log('inside')
         const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
         error = res.error
         payload = res.payload
@@ -157,7 +163,16 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
         return
       }
       // reset();
-      enqueueSnackbar(currentSubmittal?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!', { variant: 'success' });
+      // let message = currentSubmittal?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!'
+      let message = ''
+      if (currentSubmittal?.isResponseSubmitted && value === "update") {
+        message = 'Submittal response updated successfully!';
+      } else if (!currentSubmittal?.isResponseSubmitted && value === "save") {
+        message = 'Submittal response saved successfully!';
+      } else {
+        message = 'Submittal response submitted successfully!';
+      }
+      enqueueSnackbar(message, { variant: 'success' });
       router.push(paths.subscriber.submittals.details(params?.id));
 
 
@@ -207,16 +222,24 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              {currentSubmittal?.isResponseSubmitted ?
+              <Box display='flex' justifyContent='flex-end' gap={2}>
 
-                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
-                  Update
-                </LoadingButton>
-                :
-                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-                  Submit
-                </LoadingButton>
-              }
+                {!currentSubmittal?.isResponseSubmitted &&
+                  <LoadingButton type="button" onClick={() => onSubmit('save')} variant="outlined" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
+                    Save
+                  </LoadingButton>
+                }
+                {currentSubmittal?.isResponseSubmitted ?
+
+                  <LoadingButton type="button" onClick={() => onSubmit('update')} variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
+                    Update
+                  </LoadingButton>
+                  :
+                  <LoadingButton type="button" onClick={() => onSubmit('submit')} variant="contained" size="large" loading={isSubmitting}>
+                    Submit
+                  </LoadingButton>
+                }
+              </Box>
             </Stack>
           </Card>
         </Grid>
