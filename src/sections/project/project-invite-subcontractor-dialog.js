@@ -105,7 +105,10 @@ export default function ProjectInviteSubcontractorDialog({
     console.log('email', email)
     const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)
     console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
+    const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
+    console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
     // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
+    const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
 
     // TODO ADD EXISTING SUBCONTRACTOR
 
@@ -121,6 +124,11 @@ export default function ProjectInviteSubcontractorDialog({
     const modifiedTrades = trades.map(trade => {
       if (trade.tradeId === tradeId) {
         // return { ...trade, subcontractorId };
+        if (!isEmailExistsInCompanyList && trade.subcontractorId) {
+          // Remove subcontractorId from the trade
+          const { subcontractorId, ...restOfTrade } = trade;
+          return { ...restOfTrade, ...data };
+      }
         return { ...trade, ...data };
       }
       return trade;

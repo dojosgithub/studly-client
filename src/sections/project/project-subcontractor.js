@@ -44,11 +44,13 @@ const ProjectSubcontractor = () => {
             return
         }
         console.log('email', email)
-        const filteredSubcontractorByEmail = subcontractors.filter(sub =>sub.email===email)[0]
-        console.log("filteredSubcontractorByEmail",filteredSubcontractorByEmail);
+        const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
+        console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
+        const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
+        console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
         // const { email } = subcontractorObj
         const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
-
+        const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
         // TODO ADD EXISTING SUBCONTRACTOR
 
 
@@ -57,12 +59,20 @@ const ProjectSubcontractor = () => {
         if (hasEmailAndId) {
             data.subcontractorId = filteredSubcontractorByEmail.id
         }
+
+
         console.log('handleSelect', data);
 
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
                 // return { ...trade, subcontractorId };
+                if (!isEmailExistsInCompanyList && trade.subcontractorId) {
+                    // Remove subcontractorId from the trade
+                    const { subcontractorId, ...restOfTrade } = trade;
+                    return { ...restOfTrade, ...data };
+                }
                 return { ...trade, ...data };
+
             }
             return trade;
         });
@@ -124,7 +134,7 @@ const ProjectSubcontractor = () => {
             if (existingTradeIndex !== -1) {
                 // If an option with the same tradeId exists, update its subcontractorId
                 const updatedOptions = { ...prevOptions };
-                if(hasEmailAndId){
+                if (hasEmailAndId) {
                     updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
                 }
                 updatedOptions[tradeId].email = email;
@@ -289,7 +299,7 @@ const ProjectSubcontractor = () => {
                                                 Add New Subcontractor
                                             </MenuItem>
                                         )} */}
-                                        <Divider sx={{  background: 'grey' }} />
+                                        <Divider sx={{ background: 'grey' }} />
                                         <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="create" onClick={() => setOpen(true)}>
                                             <Iconify
                                                 icon='material-symbols:add-circle-outline'
