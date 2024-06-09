@@ -93,6 +93,13 @@ export const endpoints = {
 
 
   },
+  rfi: {
+    list: (id) => `/api/user/submittal/${id}`,
+    create: '/api/user/submittal',
+    edit: (id) => `/api/user/submittal/${id}`,
+    delete: (id) => `/api/user/submittal/${id}`,
+    details: (id) => `/api/user/submittal/${id}/details`,
+  },
   template: {
     list: '/api/user/template',
     create: '/api/user/template',

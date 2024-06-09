@@ -176,12 +176,11 @@ export const paths = {
       review: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/review`,
       responseDetails: (id) => `${ROOTS.SUBSCRIBER}/submittals/${id}/response/details`,
     },
-    rfis: {
-      new: `${ROOTS.SUBSCRIBER}/rfis/new`,
-      list: `${ROOTS.SUBSCRIBER}/rfis/list`,
-      edit: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}/edit`,
-      details: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}`,
-      response: (id) => `${ROOTS.SUBSCRIBER}/rfis/${id}/response`,
+    rfi: {
+      new: `${ROOTS.SUBSCRIBER}/rfi/new`,
+      list: `${ROOTS.SUBSCRIBER}/rfi/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/rfi/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/rfi/${id}`,
     },
     meetingMinutes: {
       new: `${ROOTS.SUBSCRIBER}/meetingMinutes/new`,

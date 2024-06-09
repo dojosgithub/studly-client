@@ -94,7 +94,7 @@ export function useNavData() {
           },
           {
             title: 'RFIs',
-            path: paths.subscriber.rfis.list,
+            path: paths.subscriber.rfi.list,
             icon: ICONS.analytics,
             roles: STUDLY_ROLES.rfis,
           },

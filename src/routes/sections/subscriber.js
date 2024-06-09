@@ -22,16 +22,18 @@ const SubmittalsRevisionPage = lazy(() => import('src/pages/subscriber/submittal
 const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
 const SubmittalsResponseDetailsPage = lazy(() => import('src/pages/subscriber/submittals/response-details'));
 
+
+// Rfis
+const RfiListPage = lazy(() => import('src/pages/subscriber/rfis/list'));
+const RfiCreatePage = lazy(() => import('src/pages/subscriber/rfis/new'));
+const RfiEditPage = lazy(() => import('src/pages/subscriber/rfis/edit'));
+const RfiDetailsPage = lazy(() => import('src/pages/subscriber/rfis/details'));
+
+
+
 // Project
 const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
 
-// // USER
-// const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
-// const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
-// const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
-// const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
-// const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
-// const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
 
 
 // TEST RENDER PAGE BY ROLE
@@ -75,6 +77,16 @@ export const subscriberRoutes = [
           // ? done in index routes
           { path: ':id/response/details', element: <SubmittalsResponseDetailsPage /> },
           { path: ':id/revision', element: <SubmittalsRevisionPage /> },
+        ],
+      },
+      {
+        path: 'rfi',
+        children: [
+          { element: <RfiListPage />, index: true },
+          { path: 'list', element: <RfiListPage /> },
+          { path: 'new', element: <RfiCreatePage /> },
+          { path: ':id', element: <RfiDetailsPage /> },
+          { path: ':id/edit', element: <RfiEditPage /> },
         ],
       },
 
