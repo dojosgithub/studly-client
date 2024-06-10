@@ -62,7 +62,7 @@ export const endpoints = {
     list: '/api/user/company',
     create: '/api/user/admin/register',
     delete: (id) => `/api/user/company/${id}`,
-    status: (id,status) => `/api/user/company/status/${id}/${status}`,
+    status: (id, status) => `/api/user/company/status/${id}/${status}`,
     userList: '/api/user/list',
     subcontractorList: '/api/user/subcontractor/list',
     subcontractorCompanyList: '/api/user/subcontractor/list/company',
@@ -94,11 +94,12 @@ export const endpoints = {
 
   },
   rfi: {
-    list: (id) => `/api/user/submittal/${id}`,
-    create: '/api/user/submittal',
-    edit: (id) => `/api/user/submittal/${id}`,
-    delete: (id) => `/api/user/submittal/${id}`,
-    details: (id) => `/api/user/submittal/${id}/details`,
+    list: (id) => `/api/user/rfi/${id}`,
+    create: '/api/user/rfi',
+    edit: (id) => `/api/user/rfi/${id}`,
+    delete: (id) => `/api/user/rfi/${id}`,
+    submit: (id) => `/api/user/rfi/${id}/submit`,
+    details: (id) => `/api/user/rfi/${id}/details`,
   },
   template: {
     list: '/api/user/template',

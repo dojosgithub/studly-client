@@ -44,17 +44,17 @@ export default function RfiTableRow({
   // companyName, address, adminName, adminEmail, phoneNumber
   const {
     id,
-    submittalId,
     name,
-    leadTime,
     description,
-    type,
-    submittedDate,
-    returnDate,
+    drawingSheet,
+    createdDate,
+    dueDate,
+    costImpact,
+    scheduleDelay,
+    attachments,
+    status,
     creator,
     owner,
-    link,
-    status,
     docStatus,
   } = row;
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
@@ -62,7 +62,6 @@ export default function RfiTableRow({
   const isDisabled = status === 'Void';
   const quickEdit = useBoolean();
 
-  console.log(isBefore(new Date(returnDate), new Date()));
 
   // setHours(0, 0, 0, 0);
   const popover = usePopover();
@@ -81,24 +80,8 @@ export default function RfiTableRow({
             }),
           }}
         >
-          {/* <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
 
-          {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-
-          <ListItemText
-            primary={name}
-            secondary={email}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell> */}
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
             <Box
               onClick={
                 (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
@@ -118,33 +101,37 @@ export default function RfiTableRow({
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
               {submittalId}
             </Box>
-          </TableCell>
+          </TableCell> */}
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{leadTime}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(description, { length: 20, omission: '...' })}
           </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{drawingSheet}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 140 }}>
-            {submittedDate && fDateISO(submittedDate)}
+            {createdDate && fDateISO(createdDate)}
           </TableCell>
           <TableCell
             sx={{
               whiteSpace: 'nowrap',
               minWidth: 140,
               color: (theme) =>
-                isBefore(new Date(returnDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
+                isBefore(new Date(dueDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
                   ? 'red'
                   : theme.palette.secondary,
             }}
           >
-            {fDateISO(returnDate)}
+            {fDateISO(dueDate)}
           </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{costImpact}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{scheduleDelay}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{attachments?.length > 0 ? 'attachments' : null}</TableCell>
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
+
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {creator?.firstName} {creator?.lastName}
-          </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {/* <Box display="flex">
+          </TableCell> */}
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            <Box display="flex">
               <AvatarGroup max={4}>
                 {owner?.map((item, index) => (
                   <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
@@ -157,15 +144,9 @@ export default function RfiTableRow({
                   </Tooltip>
                 ))}
               </AvatarGroup>
-            </Box> */}
-            {owner?.map((item, index) => (
-                <Typography>
-                  {item.firstName} {owner.length === 1 && item.lastName}
-                  {index < owner.length - 1 && ' / '}
-                </Typography>
-            ))}
-          </TableCell>
-          {/* <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>{link}</TableCell> */}
+            </Box>
+           
+          </TableCell> */}
 
           <TableCell>
             {/* <Label
@@ -185,7 +166,6 @@ export default function RfiTableRow({
             </Label>
           </TableCell>
 
-          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
             {/* <Tooltip title="Quick Edit" placement="top" arrow>

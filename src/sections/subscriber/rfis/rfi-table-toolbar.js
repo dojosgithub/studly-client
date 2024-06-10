@@ -23,7 +23,7 @@ import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsTableToolbar({
+export default function RfiTableToolbar({
   filters,
   onFilters,
   //
@@ -80,12 +80,12 @@ export default function SubmittalsTableToolbar({
     setInputValue(event.target.value);
   };
 
-  const handleDownloadReport = async (e) => {
-    handleClose();
-    setIsLoading(true);
-    await dispatch(getSubmittalLogPDF(e));
-    setIsLoading(false);
-  };
+  // const handleDownloadReport = async (e) => {
+  //   handleClose();
+  //   setIsLoading(true);
+  //   await dispatch(getSubmittalLogPDF(e));
+  //   setIsLoading(false);
+  // };
 
   return (
     <>
@@ -178,7 +178,7 @@ export default function SubmittalsTableToolbar({
             Export As CSV
           </MenuItem>
         </Menu> */}
-        <LoadingButton
+        {/* <LoadingButton
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
           aria-haspopup="true"
@@ -204,7 +204,7 @@ export default function SubmittalsTableToolbar({
         >
           <MenuItem onClick={() => handleDownloadReport('pdf')}>Export As PDF</MenuItem>
           <MenuItem onClick={() => handleDownloadReport('csv')}>Export As CSV</MenuItem>
-        </Menu>
+        </Menu> */}
       </Stack>
 
       {/* <CustomPopover
@@ -244,7 +244,7 @@ export default function SubmittalsTableToolbar({
   );
 }
 
-SubmittalsTableToolbar.propTypes = {
+RfiTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,

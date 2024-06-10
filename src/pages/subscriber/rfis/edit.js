@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
+import { getRfiDetails } from 'src/redux/slices/rfiSlice';
 import { getProjectAssigneeUsers, getProjectUsersList, getSubmittalDetails } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
-import { SubmittalsEditView } from 'src/sections/subscriber/submittals/view';
+import { RfiEditView } from 'src/sections/subscriber/rfis/view';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +25,7 @@ export default function SubmittalsEditPage() {
     dispatch(getProjectAssigneeUsers())
     async function getDetails(){
 
-      await dispatch(getSubmittalDetails(id));
+      await dispatch(getRfiDetails(id));
     }
     getDetails()
 
@@ -32,10 +33,10 @@ export default function SubmittalsEditPage() {
   return (
     <>
       <Helmet>
-        <title> Submittal Edit</title>
+        <title> Rfi Edit</title>
       </Helmet>
 
-      <SubmittalsEditView id={`${id}`} />
+      <RfiEditView id={`${id}`} />
     </>
   );
 }

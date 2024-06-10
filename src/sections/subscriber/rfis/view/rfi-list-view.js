@@ -41,7 +41,7 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import { deleteSubmittal, getSubmittalList } from 'src/redux/slices/submittalSlice';
+import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
 import RfiTableRow from '../rfi-table-row';
 import RfiTableToolbar from '../rfi-table-toolbar';
 import RfiTableFiltersResult from '../rfi-table-filters-result';
@@ -52,16 +52,15 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'id', label: 'Submittal ID', minWidth: 150, width: 150, },
-  { id: 'name', label: 'Name', width: 250 },
-  { id: 'leadTime', label: 'Lead Time', minWidth: 170, width: 170 },
-  { id: 'description', label: 'Description', width: 220 },
-  { id: 'type', label: 'Type', width: 180 },
-  { id: 'submittedDate', label: 'Date Submitted', minWidth: 170, width: 170 },
-  { id: 'returnDate', label: 'Return Date', minWidth: 150, width: 150 },
-  { id: 'creator', label: 'Creator', width: 180 },
-  { id: 'owner', label: 'Owner / Assignee', minWidth: 180, width: 400 },
-  // { id: 'link', label: 'Preview Link', width: 180 },
+  // { id: 'id', label: 'Submittal ID', minWidth: 150, width: 150, },
+  { id: 'name', label: 'Title', minWidth: 150, width: 220 },
+  { id: 'description', label: 'Description',minWidth: 170, width: 220 },
+  { id: 'drawingSheet', label: 'Drawing Sheet', minWidth: 170, width: 170 },
+  { id: 'createdDate', label: 'Created Date', minWidth: 170, width: 170 },
+  { id: 'dueDate', label: 'Due Date', minWidth: 150, width: 150 },
+  { id: 'costImpact', label: 'Cost Impact',  minWidth: 150,width: 180 },
+  { id: 'scheduleDelay', label: 'Schedule Impact', minWidth: 150, width: 200 },
+  { id: 'attachments', label: 'Attachments', minWidth: 180, width: 400 },
   { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
@@ -78,7 +77,7 @@ const defaultFilters = {
 
 export default function RfiListView() {
   const table = useTable();
-  const listData = useSelector(state => state?.submittal?.list)
+  const listData = useSelector(state => state?.rfi?.list)
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
@@ -98,7 +97,7 @@ export default function RfiListView() {
 
   useEffect(() => {
     console.log('filters.status', filters.status);
-    dispatch(getSubmittalList({ search: filters.query, page, status: filters.status }))
+    dispatch(getRfiList({ search: filters.query, page, status: filters.status }))
   }, [dispatch, filters.query, filters.status, page])
 
 
@@ -133,11 +132,11 @@ export default function RfiListView() {
   const handleDeleteRow = useCallback(
     async (id, onDelete) => {
       console.log('id', id)
-      await dispatch(deleteSubmittal(id))
-      const { error, payload } = await dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
+      await dispatch(deleteRfi(id))
+      const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }))
       console.log('payload', payload)
       onDelete.onFalse()
-      enqueueSnackbar('Submittal Deleted Successfully', { variant: "success" });
+      enqueueSnackbar('Rfi Deleted Successfully', { variant: "success" });
     },
     [dispatch, enqueueSnackbar]
   );
@@ -155,13 +154,13 @@ export default function RfiListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.subscriber.submittals.edit(id));
+      router.push(paths.subscriber.rfi.edit(id));
     },
     [router]
   );
   const handleViewRow = useCallback(
     (id) => {
-      router.push(paths.subscriber.submittals.details(id));
+      router.push(paths.subscriber.rfi.details(id));
     },
     [router]
   );

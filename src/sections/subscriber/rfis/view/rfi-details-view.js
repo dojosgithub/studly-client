@@ -18,11 +18,11 @@ export default function RfiDetailsView({ id }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Submittals Details"
+        heading="Rfi Details"
         links={[
           {
-            name: 'Submittals',
-            href: paths.subscriber.submittals.list,
+            name: 'Rfi',
+            href: paths.subscriber.rfi.list,
           },
           { name: 'Details' },
         ]}

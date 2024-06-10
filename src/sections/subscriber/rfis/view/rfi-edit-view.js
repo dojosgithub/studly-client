@@ -18,28 +18,28 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
 import { useRouter } from 'src/routes/hooks';
-import SubmittalsNewEditForm from '../rfi-new-edit-form';
+import RfiNewEditForm from '../rfi-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsEditView({ id }) {
+export default function RfiEditView({ id }) {
   const settings = useSettingsContext();
-  // const submittalList = useSelector(state => state.submittal?.list?.docs)
-  // const currentSubmittal = submittalList?.find(item => item.id === id)
+  // const rfiList = useSelector(state => state.rfi?.list?.docs)
+  // const currentRfi = rfiList?.find(item => item.id === id)
   // const dispatch = useDispatch()
-  const currentSubmittal = useSelector((state) => state.submittal.current);
+  const currentRfi = useSelector((state) => state.rfi.current);
 
-  console.log("currentSubmittalEdit", currentSubmittal)
-  console.log("sumittalId", id)
+  console.log("currentRfiEdit", currentRfi)
+  console.log("rfiId", id)
   
   // useEffect(() => {
   //   // if (id) {
   //   // }
-  //   if(!isEmpty(currentSubmittal)){
-  //     dispatch(setCurrentSubmittal(currentSubmittal))
+  //   if(!isEmpty(currentRfi)){
+  //     dispatch(setCurrentSubmittal(currentRfi))
   //   }
 
-  // }, [dispatch, id, currentSubmittal])
+  // }, [dispatch, id, currentRfi])
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -51,16 +51,16 @@ export default function SubmittalsEditView({ id }) {
             // href: paths.subscriber.root,
           },
           {
-            name: 'Submittals',
-            href: paths.subscriber.submittals.list,
+            name: 'Rfis',
+            href: paths.subscriber.rfi.list,
           },
-          { name: 'Update Submittal' },
+          { name: 'Update Rfi' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      {/* {currentSubmittal?.status === 'Draft' &&
+      {/* {currentRfi?.status === 'Draft' &&
         (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
           currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
           <Box width="100%" display="flex" justifyContent="end">
@@ -75,11 +75,11 @@ export default function SubmittalsEditView({ id }) {
             </LoadingButton>
           </Box>
         )} */}
-      <SubmittalsNewEditForm currentSubmittal={currentSubmittal} id={id} />
+      <RfiNewEditForm currentRfi={currentRfi} id={id} />
     </Container>
   );
 }
 
-SubmittalsEditView.propTypes = {
+RfiEditView.propTypes = {
   id: PropTypes.string,
 };

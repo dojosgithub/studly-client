@@ -7,7 +7,7 @@ export const createRfi = createAsyncThunk(
   'rfi/create',
   async (rfiData, { getState, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(endpoints.submittal.create, rfiData);
+      const response = await axiosInstance.post(endpoints.rfi.create, rfiData);
 
       return response.data.data;
     } catch (err) {
@@ -16,6 +16,25 @@ export const createRfi = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while creating the rfi.');
+    }
+  }
+);
+
+export const submitRfiToArchitect = createAsyncThunk(
+  'rfi/submitToArchitect',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      console.log('rfiId', id);
+
+      const response = await axiosInstance.post(endpoints.rfi.submit(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while submitting rfi for review.');
     }
   }
 );
@@ -37,6 +56,36 @@ export const editRfi = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while updating the rfi.');
+    }
+  }
+);
+
+export const getRfiList = createAsyncThunk(
+  'rfi/list',
+  async (listOptions, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const { status, ...data } = listOptions;
+      console.log('status', status);
+      console.log('data', data);
+      // const projectId = getState().projectId.id
+      const response = await axiosInstance.post(
+        endpoints.rfi.list(projectId),
+        { status },
+        {
+          params: data,
+        }
+      );
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
     }
   }
 );
@@ -63,7 +112,7 @@ export const getRfiDetails = createAsyncThunk(
     try {
       console.log('submittalId', id);
 
-      const response = await axiosInstance.get(endpoints.submittal.details(id));
+      const response = await axiosInstance.get(endpoints.rfi.details(id));
 
       return response.data.data;
     } catch (err) {
@@ -76,35 +125,6 @@ export const getRfiDetails = createAsyncThunk(
   }
 );
 
-export const getRfiList = createAsyncThunk(
-  'submittal/list',
-  async (listOptions, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
-
-      const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
-      // const projectId = getState().projectId.id
-      const response = await axiosInstance.post(
-        endpoints.submittal.list(projectId),
-        { status },
-        {
-          params: data,
-        }
-      );
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal list.');
-    }
-  }
-);
 
 
 const initialState = {

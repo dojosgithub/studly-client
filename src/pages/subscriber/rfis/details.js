@@ -1,22 +1,23 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
-import { getAllProjectUsersList, getProjectAssigneeUsers, getProjectUsersList, getSubmittalDetails } from 'src/redux/slices/submittalSlice';
+import { getAllProjectUsersList,  } from 'src/redux/slices/submittalSlice';
+import { getRfiDetails  } from 'src/redux/slices/rfiSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
-import { SubmittalsDetailsView } from 'src/sections/subscriber/submittals/view';
+import { RfiDetailsView } from 'src/sections/subscriber/rfis/view';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsDetailsPage() {
+export default function RfiDetailsPage() {
     const params = useParams();
     const dispatch = useDispatch();
 
     const { id } = params;
     console.log('details', id)
     useEffect(() => {
-        dispatch(getSubmittalDetails(id))
+        dispatch(getRfiDetails(id))
         // getting users list of project
         dispatch(getAllProjectUsersList())
         // dispatch(getProjectUsersList())
@@ -26,10 +27,10 @@ export default function SubmittalsDetailsPage() {
     return (
         <>
             <Helmet>
-                <title> Submittal Details</title>
+                <title> RFI Details</title>
             </Helmet>
 
-            <SubmittalsDetailsView id={`${id}`} />
+            <RfiDetailsView id={`${id}`} />
         </>
     );
 }
