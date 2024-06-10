@@ -146,13 +146,15 @@ export default function SubmittalsListView() {
       console.log('id', id);
       await dispatch(deleteSubmittal(id));
       const { error, payload } = await dispatch(
-        getSubmittalList({ search: '', page: 1, status: [] })
+        // getSubmittalList({ search: '', page: 1, status: [] })
+        getSubmittalList({ search: filters.query, page, sortDir, status: filters.status })
+
       );
       console.log('payload', payload);
       onDelete.onFalse();
       enqueueSnackbar('Submittal Deleted Successfully', { variant: 'success' });
     },
-    [dispatch, enqueueSnackbar]
+    [dispatch, enqueueSnackbar, sortDir, filters, page]
   );
 
   // const handleDeleteRows = useCallback(() => {
@@ -323,8 +325,10 @@ export default function SubmittalsListView() {
                 />
 
                 <TableBody>
-                  {dataFiltered &&
-                    dataFiltered?.map((row) => (
+                {/* dataFiltered &&
+                dataFiltered? */}
+                  {listData?.docs &&
+                    listData?.docs?.map((row) => (
                       <SubmittalsTableRow
                         key={row.id}
                         row={row}
