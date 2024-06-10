@@ -513,7 +513,7 @@ const SubmittalsDetails = ({ id }) => {
           )}
 
         {isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id) && (
-          <Alert severity="success">Your response to the submittal was submitted. Thankyou!</Alert>
+          <Alert severity="success">Your response to the submittal was submitted. Thank You!</Alert>
         )}
 
         <StyledCard>
