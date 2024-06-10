@@ -21,7 +21,7 @@ export default function RfiCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Create a new Rfi</title>
+        <title> Create a new RFI</title>
       </Helmet>
 
       <RfiCreateView />

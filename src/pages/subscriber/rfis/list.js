@@ -10,7 +10,7 @@ export default function RfiListPage() {
   return (
     <>
       <Helmet>
-        <title> Rfi List</title>
+        <title> RFI List</title>
       </Helmet>
       <Stack sx={{ maxWidth: '100vw' }}>
         <RfiListView />
