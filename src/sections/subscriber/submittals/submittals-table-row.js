@@ -62,7 +62,6 @@ export default function SubmittalsTableRow({
   const isDisabled = status === 'Void';
   const quickEdit = useBoolean();
 
-  console.log(isBefore(new Date(returnDate), new Date()));
 
   // setHours(0, 0, 0, 0);
   const popover = usePopover();

@@ -20,7 +20,13 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW } from 'src/_mock';
+import {
+  _userList,
+  _submittalsList,
+  _roles,
+  USER_STATUS_OPTIONS,
+  STATUS_WORKFLOW,
+} from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -52,7 +58,7 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'id', label: 'Submittal ID', minWidth: 150, width: 150, },
+  { id: 'id', label: 'Submittal ID', minWidth: 150, width: 150 },
   { id: 'name', label: 'Name', width: 250 },
   { id: 'leadTime', label: 'Lead Time', minWidth: 170, width: 170 },
   { id: 'description', label: 'Description', width: 220 },
@@ -71,23 +77,32 @@ const defaultFilters = {
   role: [],
   status: [],
   // status: 'all',
-  query: ''
+  query: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function SubmittalsListView() {
   const table = useTable();
-  const listData = useSelector(state => state?.submittal?.list)
-  const role = useSelector(state => state?.user?.user?.role?.shortName);
+  const listData = useSelector((state) => state?.submittal?.list);
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const { enqueueSnackbar } = useSnackbar();
+  const [sortDir, setSortDir] = useState('asc');
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
-  }
+  };
+
+  const handleSortChange = () => {
+    if (sortDir === 'asc') {
+      setSortDir('desc');
+    } else {
+      setSortDir('asc');
+    }
+  };
 
   const settings = useSettingsContext();
 
@@ -98,9 +113,8 @@ export default function SubmittalsListView() {
 
   useEffect(() => {
     console.log('filters.status', filters.status);
-    dispatch(getSubmittalList({ search: filters.query, page, status: filters.status }))
-  }, [dispatch, filters.query, filters.status, page])
-
+    dispatch(getSubmittalList({ search: filters.query, page, sortDir, status: filters.status }));
+  }, [dispatch, filters.query, filters.status, page, sortDir]);
 
   const dataFiltered = applyFilter({
     inputData: listData?.docs,
@@ -117,27 +131,26 @@ export default function SubmittalsListView() {
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = listData?.totalDocs === 0
+  const notFound = listData?.totalDocs === 0;
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      // table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleFilters = useCallback((name, value) => {
+    // table.onResetPage();
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
 
   const handleDeleteRow = useCallback(
     async (id, onDelete) => {
-      console.log('id', id)
-      await dispatch(deleteSubmittal(id))
-      const { error, payload } = await dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
-      console.log('payload', payload)
-      onDelete.onFalse()
-      enqueueSnackbar('Submittal Deleted Successfully', { variant: "success" });
+      console.log('id', id);
+      await dispatch(deleteSubmittal(id));
+      const { error, payload } = await dispatch(
+        getSubmittalList({ search: '', page: 1, status: [] })
+      );
+      console.log('payload', payload);
+      onDelete.onFalse();
+      enqueueSnackbar('Submittal Deleted Successfully', { variant: 'success' });
     },
     [dispatch, enqueueSnackbar]
   );
@@ -191,14 +204,16 @@ export default function SubmittalsListView() {
             { name: 'Log' },
           ]}
           action={
-            ((role === "CAD" || role === "PWU") && <Button
-              component={RouterLink}
-              href={paths.subscriber.submittals.new}
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              Create New Submittal
-            </Button>)
+            (role === 'CAD' || role === 'PWU') && (
+              <Button
+                component={RouterLink}
+                href={paths.subscriber.submittals.new}
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                Create New Submittal
+              </Button>
+            )
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -296,27 +311,30 @@ export default function SubmittalsListView() {
                   headLabel={TABLE_HEAD}
                   // onSort={table.onSort}
                   rowCount={listData?.docs?.length}
-                // numSelected={table.selected.length}
-                // onSelectAllRows={(checked) =>
-                //   table.onSelectAllRows(
-                //     checked,
-                //     tableData.map((row) => row.id)
-                //   )
-                // }
+                  // numSelected={table.selected.length}
+                  // onSelectAllRows={(checked) =>
+                  //   table.onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
+                  handleSortChange={handleSortChange}
+                  sortDir={sortDir}
                 />
 
                 <TableBody>
-                  {dataFiltered && dataFiltered?.map((row) => (
-                    <SubmittalsTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onViewRow={() => handleViewRow(row.id)}
-                    />
-                  ))}
+                  {dataFiltered &&
+                    dataFiltered?.map((row) => (
+                      <SubmittalsTableRow
+                        key={row.id}
+                        row={row}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
+                        onEditRow={() => handleEditRow(row.id)}
+                        onViewRow={() => handleViewRow(row.id)}
+                      />
+                    ))}
 
                   <TableEmptyRows
                     height={denseHeight}
