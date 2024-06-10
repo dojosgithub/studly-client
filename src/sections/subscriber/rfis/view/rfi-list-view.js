@@ -252,7 +252,7 @@ export default function RfiListView() {
             onFilters={handleFilters}
             //
             // roleOptions={_roles}
-            roleOptions={STATUS_WORKFLOW}
+            roleOptions={STATUS_WORKFLOW?.slice(0,2)}
           />
 
           {/* {canReset && (
