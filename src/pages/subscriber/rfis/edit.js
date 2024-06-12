@@ -33,7 +33,7 @@ export default function SubmittalsEditPage() {
   return (
     <>
       <Helmet>
-        <title> Rfi Edit</title>
+        <title> RFI Edit</title>
       </Helmet>
 
       <RfiEditView id={`${id}`} />

@@ -88,7 +88,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   const NewSubmittalSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
-    drawingSheet: Yup.string().required('Description is required'),
+    drawingSheet: Yup.string().required('Drawing sheet is required'),
     createdDate: Yup.date()
       .required('Created Date is required'),
     dueDate: Yup.date()
@@ -214,7 +214,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
       if (val !== 'review') {
         enqueueSnackbar(
-          `Rfi ${message} successfully!`,
+          `RFI ${message} successfully!`,
           { variant: 'success' }
         );
         router.push(paths.subscriber.rfi.details(payload?.id));
@@ -222,7 +222,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       }
       await dispatch(submitRfiToArchitect(payload?.id));
       enqueueSnackbar(
-        `Rfi ${message} successfully!`,
+        `RFI ${message} successfully!`,
         { variant: 'success' }
       );
       console.log('payload', payload);
@@ -232,7 +232,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       router.push(paths.subscriber.rfi.list);
     } catch (error) {
       console.log('error-->', error);
-      enqueueSnackbar(`Error ${currentRfi ? 'Updating' : 'Creating'} Rfi`, {
+      enqueueSnackbar(`Error ${currentRfi ? 'Updating' : 'Creating'} RFI`, {
         variant: 'error',
       });
     }

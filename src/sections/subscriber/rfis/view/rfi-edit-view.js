@@ -51,10 +51,10 @@ export default function RfiEditView({ id }) {
             // href: paths.subscriber.root,
           },
           {
-            name: 'Rfis',
+            name: 'RFIs',
             href: paths.subscriber.rfi.list,
           },
-          { name: 'Update Rfi' },
+          { name: 'Update RFI' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

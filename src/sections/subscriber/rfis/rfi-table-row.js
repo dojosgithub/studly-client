@@ -124,14 +124,14 @@ export default function RfiTableRow({
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{costImpact}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{scheduleDelay}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{attachments?.length > 0 ? 'attachments' : null}</TableCell>
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{attachments?.length > 0 ? 'attachments' : null}</TableCell> */}
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {creator?.firstName} {creator?.lastName}
           </TableCell> */}
-          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            <Box display="flex">
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {/* <Box display="flex">
               <AvatarGroup max={4}>
                 {owner?.map((item, index) => (
                   <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
@@ -144,9 +144,14 @@ export default function RfiTableRow({
                   </Tooltip>
                 ))}
               </AvatarGroup>
-            </Box>
-           
-          </TableCell> */}
+            </Box> */}
+            {owner?.map((item, index) => (
+              <Typography>
+                {item.firstName} {owner.length === 1 && item.lastName}
+                {index < owner.length - 1 && ' / '}
+              </Typography>
+            ))}
+          </TableCell>
 
           <TableCell>
             {/* <Label

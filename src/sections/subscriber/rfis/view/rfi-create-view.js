@@ -16,17 +16,17 @@ export default function RfiCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create a new Rfi"
+        heading="Create a new RFI"
         links={[
           {
             name: 'Dashboard',
             // href: paths.subscriber.root,
           },
           {
-            name: 'Rfi',
+            name: 'RFIs',
             href: paths.subscriber.rfi.list,
           },
-          { name: 'New Rfi' },
+          { name: 'New RFI' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

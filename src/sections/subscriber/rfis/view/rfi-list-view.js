@@ -59,8 +59,8 @@ const TABLE_HEAD = [
   { id: 'createdDate', label: 'Created Date', minWidth: 170, width: 170 },
   { id: 'dueDate', label: 'Due Date', minWidth: 150, width: 150 },
   { id: 'costImpact', label: 'Cost Impact',  minWidth: 150,width: 180 },
-  { id: 'scheduleDelay', label: 'Schedule Impact', minWidth: 150, width: 200 },
-  { id: 'attachments', label: 'Attachments', minWidth: 180, width: 400 },
+  { id: 'scheduleDelay', label: 'Schedule Delay', minWidth: 150, width: 200 },
+  { id: 'owner', label: 'Owner/Assignee', minWidth: 200, width: 400 },
   { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
@@ -136,7 +136,7 @@ export default function RfiListView() {
       const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }))
       console.log('payload', payload)
       onDelete.onFalse()
-      enqueueSnackbar('Rfi Deleted Successfully', { variant: "success" });
+      enqueueSnackbar('RFI Deleted Successfully', { variant: "success" });
     },
     [dispatch, enqueueSnackbar]
   );
@@ -180,13 +180,13 @@ export default function RfiListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <CustomBreadcrumbs
-          heading="Rfi Logs"
+          heading="RFI Logs"
           links={[
             {
               name: 'Dashboard',
               // href: paths.subscriber.root
             },
-            { name: 'Rfis', href: paths.subscriber.rfi.list },
+            { name: 'RFIs', href: paths.subscriber.rfi.list },
             { name: 'Log' },
           ]}
           action={
@@ -196,7 +196,7 @@ export default function RfiListView() {
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              Create New Rfi
+              Create New RFI
             </Button>)
           }
           sx={{
@@ -252,7 +252,7 @@ export default function RfiListView() {
             onFilters={handleFilters}
             //
             // roleOptions={_roles}
-            roleOptions={STATUS_WORKFLOW}
+            roleOptions={STATUS_WORKFLOW?.slice(0,2)}
           />
 
           {/* {canReset && (
