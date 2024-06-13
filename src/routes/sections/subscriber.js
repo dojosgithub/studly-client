@@ -28,6 +28,7 @@ const RfiListPage = lazy(() => import('src/pages/subscriber/rfis/list'));
 const RfiCreatePage = lazy(() => import('src/pages/subscriber/rfis/new'));
 const RfiEditPage = lazy(() => import('src/pages/subscriber/rfis/edit'));
 const RfiDetailsPage = lazy(() => import('src/pages/subscriber/rfis/details'));
+const RfiResponseDetailsPage = lazy(() => import('src/pages/subscriber/rfis/response-details'));
 
 
 
@@ -77,9 +78,9 @@ export const subscriberRoutes = [
           // ? done in index routes
           { path: ':id/response/details', element: <SubmittalsResponseDetailsPage /> },
           { path: ':id/revision', element: <SubmittalsRevisionPage /> },
-        ],
-      },
-      {
+          ],
+          },
+          {
         path: 'rfi',
         children: [
           { element: <RfiListPage />, index: true },
@@ -87,6 +88,7 @@ export const subscriberRoutes = [
           { path: 'new', element: <RfiCreatePage /> },
           { path: ':id', element: <RfiDetailsPage /> },
           { path: ':id/edit', element: <RfiEditPage /> },
+          { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
           // { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
         ],
       },

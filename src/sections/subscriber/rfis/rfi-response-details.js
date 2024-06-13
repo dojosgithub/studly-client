@@ -41,7 +41,7 @@ import SubmittalSendAllDialog from './rfi-send-all-dialog';
 const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
 })(({ isSubcontractor, theme }) => ({
-    '& .submittalTitle': {
+    '& .rfiTitle': {
         color: theme.palette.primary,
         flex: 0.15,
         flexBasis: '40px',
@@ -56,7 +56,7 @@ const StyledCard = styled(Card, {
         maxHeight: 300,
     }),
 }));
-const SubmittalsDetails = ({ id }) => {
+const RfiResponseDetails = ({ id }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
@@ -64,20 +64,20 @@ const SubmittalsDetails = ({ id }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const currentUser = useSelector((state) => state.user?.user);
-    const currentSubmittal = useSelector((state) => state.submittal.current);
+    const currentRfi = useSelector((state) => state.rfi.current);
     const sentToAllModal = useBoolean();
     const {
         isResponseSubmitted,
         response,
-    } = currentSubmittal;
+    } = currentRfi;
 
 
     useEffect(() => {
-        console.log('currentSubmittal', currentSubmittal);
-        console.log('OwnerList', currentSubmittal?.owner);
+        console.log('currentRfi', currentRfi);
+        console.log('OwnerList', currentRfi?.owner);
         console.log('currentUser:?._id', currentUser?._id);
         console.log('id', id);
-    }, [currentSubmittal, id, currentUser]);
+    }, [currentRfi, id, currentUser]);
 
 
     return (
@@ -104,12 +104,12 @@ const SubmittalsDetails = ({ id }) => {
             >
 
                 <StyledCard>
-                    <Typography className="submittalTitle" sx={{ flex: ".2 !important", }}>Status</Typography>
+                    <Typography className="rfiTitle" sx={{ flex: ".2 !important", }}>Status</Typography>
                     <Chip size="medium" variant='outlined' label={response?.status} />
                 </StyledCard>
 
                 <StyledCard>
-                    <Typography className="submittalTitle">Comment</Typography>
+                    <Typography className="rfiTitle">Comment</Typography>
                     <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
                         {response?.comment}
                     </Typography>
@@ -118,7 +118,7 @@ const SubmittalsDetails = ({ id }) => {
 
 
                 <StyledCard>
-                    <Typography className="submittalTitle">Attachments</Typography>
+                    <Typography className="rfiTitle">Attachments</Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
 
                         {isResponseSubmitted && response?.attachments.length > 0 && <MultiFilePreview files={response?.attachments} thumbnail onDownload />}
@@ -131,8 +131,8 @@ const SubmittalsDetails = ({ id }) => {
     );
 };
 
-export default SubmittalsDetails;
+export default RfiResponseDetails;
 
-SubmittalsDetails.propTypes = {
+RfiResponseDetails.propTypes = {
     id: PropTypes.string,
 };
