@@ -279,6 +279,12 @@ const project = createSlice({
         state.subcontractors.invited = [...state.subcontractors.invited, action.payload];
       }
     },
+    removeInvitedSubcontractor: (state, action) => {
+      // Filter out the subcontractor with the matching email
+      state.subcontractors.invited = state.subcontractors.invited.filter(
+        subcontractor => subcontractor.email !== action.payload
+      );
+    },
     setMembers: (state, action) => {
       const memberExists = state.members.some(member =>
         member.email === action.payload.email
@@ -426,5 +432,5 @@ const project = createSlice({
   }
 })
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCreateProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
+export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCreateProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor,removeInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
 export default project.reducer

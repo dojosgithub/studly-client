@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Box, Container, Divider, MenuItem, Stack, Typography, Select, Card } from '@mui/material'
+import { Box, Container, Divider, MenuItem, Stack, Typography, Select, Card, Button, IconButton } from '@mui/material'
 import { isEmpty } from 'lodash'
 import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock'
 import CustomAutoComplete from 'src/components/custom-automcomplete'
-import { setMembers, setProjectTrades } from 'src/redux/slices/projectSlice'
+import { removeInvitedSubcontractor, setMembers, setProjectTrades } from 'src/redux/slices/projectSlice'
 import Iconify from 'src/components/iconify'
 import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog'
 
@@ -21,12 +21,12 @@ const ProjectSubcontractor = () => {
     const subcontractors = useMemo(() => [...subcontractorsList, ...subcontractorsInvitedList], [subcontractorsList, subcontractorsInvitedList]);
     const trades = useSelector(state => state.project.create.trades)
     const initialOptions = trades.reduce((acc, { tradeId, }) => {
-        acc[tradeId] = { tradeId, subcontractorId: "", email: "" };
+        acc[tradeId] = { tradeId, subcontractorId: "", email: "", firstName: '', lastName: '' };
         return acc;
     }, {});
 
     const [options, setOptions] = useState(initialOptions)
-    const [assignedSubcontractors, setAssignedSubcontractors] = useState([])
+    const [assignedSubcontractor, setAssignedSubcontractor] = useState(null);
     const dispatch = useDispatch()
 
 
@@ -38,224 +38,121 @@ const ProjectSubcontractor = () => {
 
     const handleSelect = (tradeId, email) => {
         // console.log('subcontractorId', subcontractorId)
+        console.log('tradeId', tradeId)
+        console.log('email', email)
         if (email === "create") {
             setOpen(true)
             setID(tradeId)
-            return
         }
-        console.log('email', email)
-        const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
-        console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
-        const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
-        console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
-        // const { email } = subcontractorObj
-        const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
-        const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
-        // TODO ADD EXISTING SUBCONTRACTOR
+        // const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
+        // console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
+        // const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
+        // console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
+        // // const { email } = subcontractorObj
+        // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
+        // const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
+        // // TODO ADD EXISTING SUBCONTRACTOR
 
 
-        const data = { email }
-        // if there is an id of subcontractor
-        if (hasEmailAndId) {
-            data.subcontractorId = filteredSubcontractorByEmail.id
-        }
+        // const data = { email }
+        // // if there is an id of subcontractor
+        // if (hasEmailAndId) {
+        //     data.subcontractorId = filteredSubcontractorByEmail.id
+        // }
 
 
-        console.log('handleSelect', data);
+        // console.log('handleSelect', data);
 
+        // const modifiedTrades = trades.map(trade => {
+        //     if (trade.tradeId === tradeId) {
+        //         // return { ...trade, subcontractorId };
+        //         if (!isEmailExistsInCompanyList && trade.subcontractorId) {
+        //             // Remove subcontractorId from the trade
+        //             const { subcontractorId, ...restOfTrade } = trade;
+        //             return { ...restOfTrade, ...data };
+        //         }
+        //         return { ...trade, ...data };
+
+        //     }
+        //     return trade;
+        // });
+        // console.log('modifiedTrades', modifiedTrades)
+        // setValue('trades', modifiedTrades)
+        // dispatch(setProjectTrades(modifiedTrades))
+
+
+        // // ? set options
+
+        // setOptions(prevOptions => {
+        //     const tradeIds = Object.keys(prevOptions);
+
+        //     // Check if the options object is empty or if the tradeId is not present in prevOptions
+        //     if (tradeIds.length === 0 || !prevOptions[tradeId]) {
+        //         // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
+        //         // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
+        //         return { ...prevOptions, [tradeId]: { tradeId, ...data } };
+        //     }
+
+        //     // Check if there's already an option with the same tradeId
+        //     const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
+
+        //     if (existingTradeIndex !== -1) {
+        //         // If an option with the same tradeId exists, update its subcontractorId
+        //         const updatedOptions = { ...prevOptions };
+        //         if (hasEmailAndId) {
+        //             updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
+        //         }
+        //         updatedOptions[tradeId].email = email;
+        //         return updatedOptions;
+        //     }
+
+        //     // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
+        //     // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
+        //     return { ...prevOptions, [tradeId]: { tradeId, ...data } };
+        // });
+
+
+
+
+    }
+
+    const handleRemove = (tradeId, emailId) => {
+        console.log('tradeId', tradeId)
+        console.log('email', emailId)
+        dispatch(removeInvitedSubcontractor(emailId))
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
-                // return { ...trade, subcontractorId };
-                if (!isEmailExistsInCompanyList && trade.subcontractorId) {
-                    // Remove subcontractorId from the trade
-                    const { subcontractorId, ...restOfTrade } = trade;
-                    return { ...restOfTrade, ...data };
-                }
-                return { ...trade, ...data };
-
+                // Remove email from the trade
+                const { subcontractorId, email, ...restOfTrade } = trade;
+                return { ...restOfTrade };
             }
             return trade;
         });
-        console.log('modifiedTrades', modifiedTrades)
+        console.log('modifiedTradesRemove', modifiedTrades)
         setValue('trades', modifiedTrades)
         dispatch(setProjectTrades(modifiedTrades))
-        // const filteredSubcontractor = subcontractors.filter(sub =>sub.email===email);
-        // console.log('filteredSubcontractor', filteredSubcontractor)
-        // dispatch(setMembers(filteredSubcontractor[0]))
-
-        // // setOptions((prevOptions) => (
-        // //     {
-        // //         ...prevOptions,
-        // //         [tradeId]: {
-        // //             ...data
-        // //         }
-        // //     }
-        // // ))
-
-        // // set options both unique 
-        // // setOptions(prevOptions => {
-        // //     const tradeIds = Object.keys(prevOptions);
-
-        // //     if (tradeIds.length === 0) {
-        // //         // // If options object is empty, add a new entry with provided tradeId and subcontractorId
-        // //         return { [tradeId]: { tradeId, subcontractorId } };
-        // //     }
-
-        // //     const tradeIndex = tradeIds.findIndex(id => prevOptions[id].subcontractorId === subcontractorId);
-
-        // //     if (tradeIndex === -1) {
-        // //         // // If trade does not exist with provided subcontractorId, add a new entry with provided tradeId and subcontractorId
-        // //         return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-        // //     }
-
-        // //     if (tradeIds[tradeIndex] === tradeId) {
-        // //         // // If trade exists and tradeId matches, update its subcontractorId
-        // //         return { ...prevOptions, [tradeId]: { ...prevOptions[tradeId], subcontractorId } };
-        // //     }
-
-        // //     return prevOptions;
-        // // });
-
-        // ? set options
 
         setOptions(prevOptions => {
             const tradeIds = Object.keys(prevOptions);
-
-            // Check if the options object is empty or if the tradeId is not present in prevOptions
-            if (tradeIds.length === 0 || !prevOptions[tradeId]) {
-                // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
-                // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-                return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-            }
-
+      
             // Check if there's already an option with the same tradeId
             const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
-
+      
             if (existingTradeIndex !== -1) {
-                // If an option with the same tradeId exists, update its subcontractorId
-                const updatedOptions = { ...prevOptions };
-                if (hasEmailAndId) {
-                    updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
-                }
-                updatedOptions[tradeId].email = email;
-                return updatedOptions;
+              // If an option with the same tradeId exists, update its subcontractorId
+              const updatedOptions = { ...prevOptions };
+              
+              updatedOptions[tradeId].email = '';
+              updatedOptions[tradeId].firstName = '';
+              updatedOptions[tradeId].lastName = '';
+              return updatedOptions;
             }
-
-            // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
-            // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-            return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-        });
-
-
-
-
-
-        // ? set assigned subcontractors
-        // setAssignedSubcontractors(prevTrades => {
-        //     // Check if the trades array is empty
-        //     if (prevTrades.length === 0) {
-        //         // If it's empty, add a new trade with provided tradeId and subcontractorId
-        //         // return [{ tradeId, subcontractorId }];
-        //         return [{ tradeId, ...data }];
-        //     }
-
-        //     // Check if there's already a trade with the same tradeId
-        //     const existingTradeIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId);
-
-        //     if (existingTradeIndex !== -1) {
-        //         // If a trade with the same tradeId exists, update its subcontractorId
-        //         const updatedTrades = [...prevTrades];
-        //         if(hasEmailAndId){
-        //             updatedTrades[existingTradeIndex].subcontractorId =  filteredSubcontractorByEmail.id;
-        //         }
-        //         updatedTrades[existingTradeIndex].email = email;
-        //         return updatedTrades;
-        //     }
-
-        //     // If trade does not exist with the same tradeId, add a new trade
-        //     // return [...prevTrades, { tradeId, subcontractorId }];
-        //     return [...prevTrades, { tradeId, ...data }];
-        // });
-
-        // ? Not in use
-
-        //  multiple
-        // setAssignedSubcontractors(prevTrades => {
-        //     // Check if the trades array is empty
-        //     if (prevTrades.length === 0) {
-        //         // If it's empty, add a new trade with provided tradeId and subcontractorId
-        //         return [{ tradeId, subcontractorId }];
-        //     }
-
-        //     // Check if there's already a trade with the same tradeId and subcontractorId
-        //     const existingTradeIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId && trade.subcontractorId === subcontractorId);
-
-        //     // Check if there's already a trade with the same tradeId but a different subcontractorId
-        //     const tradeWithSameTradeIdIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId && trade.subcontractorId !== subcontractorId);
-        //     // if not then update
-
-        //     // Check if there's already a trade with the same subcontractorId but a different tradeId
-        //     const tradeWithSameSubcontractorIdIndex = prevTrades.findIndex(trade => trade.tradeId !== tradeId && trade.subcontractorId === subcontractorId);
-
-        //     if (existingTradeIndex !== -1) {
-        //         // If a trade with the same tradeId and subcontractorId exists, update its subcontractorId
-        //         const updatedTrades = [...prevTrades];
-        //         updatedTrades[existingTradeIndex].subcontractorId = subcontractorId;
-        //         return updatedTrades;
-        //     }
-
-        //     if (tradeWithSameTradeIdIndex !== -1 || tradeWithSameSubcontractorIdIndex !== -1) {
-        //         // If there's already a trade with the same tradeId or the same subcontractorId assigned to a different tradeId, do not add a new trade
-        //         return prevTrades;
-        //     }
-
-        //     // If trade does not exist with the same tradeId and subcontractorId, add a new trade
-        //     return [...prevTrades, { tradeId, subcontractorId }];
-        // });
-
-        // one tradeId == one subcontractorId
-
-        // setAssignedSubcontractors(prevTrades => {
-
-        //     console.log("prevTrades",prevTrades)
-        //     // Check if the trades array is empty
-        //     if (prevTrades.length === 0) {
-        //         // If it's empty, add a new trade with provided tradeId and subcontractorId
-        //         return [{ tradeId, subcontractorId }];
-        //     }
-
-        //     // Check if there's already a trade with the same tradeId and subcontractorId
-        //     const existingTradeIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId && trade.subcontractorId === subcontractorId);
-
-        //     // Check if there's already a trade with the same tradeId but a different subcontractorId
-        //     const tradeWithSameTradeIdIndex = prevTrades.findIndex(trade => trade.tradeId === tradeId && trade.subcontractorId !== subcontractorId);
-        //     console.log("tradeWithSameTradeIdIndex",tradeWithSameTradeIdIndex)
-        //     // if not then update
-
-        //     // Check if there's already a trade with the same subcontractorId but a different tradeId
-        //     const tradeWithSameSubcontractorIdIndex = prevTrades.findIndex(trade => trade.tradeId !== tradeId && trade.subcontractorId === subcontractorId);
-
-        //     if (existingTradeIndex !== -1) {
-        //         // If a trade with the same tradeId and subcontractorId exists, update its subcontractorId
-        //         const updatedTrades = [...prevTrades];
-        //         updatedTrades[existingTradeIndex].subcontractorId = subcontractorId;
-        //         return updatedTrades;
-        //     }
-
-
-        //     if (tradeWithSameTradeIdIndex !== -1 || tradeWithSameSubcontractorIdIndex !== -1) {
-        //         // If there's already a trade with the same tradeId or the same subcontractorId assigned to a different tradeId, do not add a new trade
-        //         return prevTrades;
-        //     }
-
-        //     // If trade does not exist with the same tradeId and subcontractorId, add a new trade
-        //     return [...prevTrades, { tradeId, subcontractorId }];
-        // });
+      
+            return prevOptions; 
+          });
     }
 
-    const handleAddNew = () => {
-        setOpen(true)
-    }
+
 
     return (
         <>
@@ -272,13 +169,9 @@ const ProjectSubcontractor = () => {
                         trades?.map(({ tradeId, name }) => (
                             <Card sx={{ maxWidth: '500px', width: '100%', p: '1rem', display: 'flex', alignItems: "center", gap: 2, justifyContent: "space-between" }}>
                                 <Typography>{name}</Typography>
-                                <Box width='100%' maxWidth="200px">
-                                    <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].email} label="" placeholder="Choose Subcontractor" sx={{
+                                <Box width='100%' maxWidth="200px" display='flex' justifyContent='flex-end' gap=".5rem">
+                                    {/* <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].email} label="" placeholder="Choose Subcontractor" sx={{
                                         width: '100%',
-                                        // "&.MuiInputBase-root ": {
-                                        //     borderBottomRightRadius: 0,
-                                        //     borderBottomLeftRadius: 0,
-                                        // },
                                         "& .MuiSelect-select": {
                                             display: 'flex',
                                             alignItems: 'center',
@@ -287,18 +180,12 @@ const ProjectSubcontractor = () => {
                                     }}>
                                         {subcontractors?.length > 0 && subcontractors?.map((sub) => (
                                             <MenuItem key={sub.email} value={sub.email} sx={{ height: 50, px: 3, borderRadius: 0 }}>
-                                                {/* {sub.name.toUpperCase()} */}
                                                 {sub.firstName}
                                                 {' '}
                                                 {sub.lastName}
                                             </MenuItem>
                                         ))}
-                                        {/* {(subcontractors?.length === 0) && (
-                                            //  onClick={handleAddNew}
-                                            <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="" onClick={() => setOpen(true)}>
-                                                Add New Subcontractor
-                                            </MenuItem>
-                                        )} */}
+                                        
                                         <Divider sx={{ background: 'grey' }} />
                                         <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="create" onClick={() => setOpen(true)}>
                                             <Iconify
@@ -307,7 +194,23 @@ const ProjectSubcontractor = () => {
                                                 sx={{ mr: 1 }}
                                             /> Invite subcontractor
                                         </MenuItem>
-                                    </Select>
+                                    </Select> */}
+                                    {(!(options[tradeId] && options[tradeId].email)) &&
+                                        <Button variant='contained' onClick={(e) => handleSelect(tradeId, 'create')}>Invite Subcontractor</Button>
+                                    }
+
+                                    {(options[tradeId] && options[tradeId].email) && (
+                                        <>
+                                            <Button variant='outlined' onClick={() => handleSelect(tradeId, 'create')}>
+                                                {options[tradeId].firstName}{" "}{options[tradeId].lastName}
+                                            </Button>
+                                            <IconButton variant='contained' onClick={() => handleRemove(tradeId, options[tradeId].email)}>
+                                                <Iconify icon="solar:trash-bin-trash-bold" />
+                                            </IconButton>
+                                        </>
+                                    )}
+
+
                                 </Box>
                             </Card>
                         )
@@ -320,9 +223,10 @@ const ProjectSubcontractor = () => {
                     <ProjectInviteSubcontractorDialog
                         ID={ID}
                         options={options}
+                        setOptions={setOptions}
                         open={open}
                         onClose={() => setOpen(false)}
-                        setOptions={setOptions}
+                        setAssignedSubcontractor={setAssignedSubcontractor}
                     />
                 )}
             </Container>
