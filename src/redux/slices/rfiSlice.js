@@ -126,6 +126,44 @@ export const getRfiDetails = createAsyncThunk(
 );
 
 
+export const getRFILogPDF = createAsyncThunk(
+  'rfi/pdf',
+  async (exptype, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
+        responseType: 'blob',
+      });
+
+      const buffer = response.data;
+      console.log('buffer', response.data);
+
+      const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
+      console.log('blob', blob);
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary link and trigger a download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rfi_logs';
+      a.click();
+
+      // Cleanup
+      URL.revokeObjectURL(url);
+
+      return response.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal list.');
+    }
+  }
+);
+
 
 const initialState = {
   list: [],

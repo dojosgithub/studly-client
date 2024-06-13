@@ -20,6 +20,7 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
+import { getRFILogPDF } from 'src/redux/slices/rfiSlice';
 
 // ----------------------------------------------------------------------
 
@@ -80,12 +81,12 @@ export default function RfiTableToolbar({
     setInputValue(event.target.value);
   };
 
-  // const handleDownloadReport = async (e) => {
-  //   handleClose();
-  //   setIsLoading(true);
-  //   await dispatch(getSubmittalLogPDF(e));
-  //   setIsLoading(false);
-  // };
+  const handleDownloadReport = async (e) => {
+    handleClose();
+    setIsLoading(true);
+    await dispatch(getRFILogPDF(e));
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -178,7 +179,7 @@ export default function RfiTableToolbar({
             Export As CSV
           </MenuItem>
         </Menu> */}
-        {/* <LoadingButton
+        <LoadingButton
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
           aria-haspopup="true"
@@ -204,7 +205,7 @@ export default function RfiTableToolbar({
         >
           <MenuItem onClick={() => handleDownloadReport('pdf')}>Export As PDF</MenuItem>
           <MenuItem onClick={() => handleDownloadReport('csv')}>Export As CSV</MenuItem>
-        </Menu> */}
+        </Menu>
       </Stack>
 
       {/* <CustomPopover

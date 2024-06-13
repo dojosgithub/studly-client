@@ -78,7 +78,7 @@ export const endpoints = {
     projectAssigneeUsersList: (id) => `/api/user/project/${id}/assignee`,
   },
   submittal: {
-    pdf: (id, exptype) => `/api/user/report/${id}/${exptype}`,
+    pdf: (id, exptype) => `/api/user/submittal-report/${id}/${exptype}`,
     list: (id) => `/api/user/submittal/${id}`,
     create: '/api/user/submittal',
     edit: (id) => `/api/user/submittal/${id}`,
@@ -100,6 +100,7 @@ export const endpoints = {
     delete: (id) => `/api/user/rfi/${id}`,
     submit: (id) => `/api/user/rfi/${id}/submit`,
     details: (id) => `/api/user/rfi/${id}/details`,
+    pdf: (id, exptype) => `/api/user/rfi-report/${id}/${exptype}`,
   },
   template: {
     list: '/api/user/template',
