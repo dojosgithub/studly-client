@@ -181,6 +181,7 @@ export const paths = {
       list: `${ROOTS.SUBSCRIBER}/rfi/list`,
       edit: (id) => `${ROOTS.SUBSCRIBER}/rfi/${id}/edit`,
       details: (id) => `${ROOTS.SUBSCRIBER}/rfi/${id}`,
+      response: (id) => `${ROOTS.SUBSCRIBER}/rfi/${id}/response`,
     },
     meetingMinutes: {
       new: `${ROOTS.SUBSCRIBER}/meetingMinutes/new`,

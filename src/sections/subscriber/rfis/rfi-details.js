@@ -65,132 +65,132 @@ const StyledCard = styled(Card, {
   }),
 }));
 
-const getActions = (props) => {
-  const {
-    setMenuItems,
-    currentUser,
-    status,
-    isSubmitting,
-    navigate,
-    id,
-    currentRfi,
-    isResponseSubmitted,
-    parentSubmittalId,
-    sentToAllModal,
-    handleSubmitToArchitect,
-    handleVoid,
-    handleResendEmailSubcontractor,
-    handleEditResponse,
-    handleViewResponse,
-    handleSubmittalResponse,
-  } = props;
+// const getActions = (props) => {
+//   const {
+//     setMenuItems,
+//     currentUser,
+//     status,
+//     isSubmitting,
+//     navigate,
+//     id,
+//     currentRfi,
+//     isResponseSubmitted,
+//     parentSubmittalId,
+//     sentToAllModal,
+//     handleSubmitToArchitect,
+//     handleVoid,
+//     handleResendEmailSubcontractor,
+//     handleEditResponse,
+//     handleViewResponse,
+//     handleSubmittalResponse,
+//   } = props;
 
-  const optionsArray = [];
+//   const optionsArray = [];
 
-  if (
-    currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-    currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
-  ) {
-    if (status === 'Draft') {
-      optionsArray.push(
-        <MenuItem onClick={handleSubmitToArchitect}>
-          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-            Submit for Review
-          </LoadingButton>
-        </MenuItem>
-      );
-    }
-    if (status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') {
-      optionsArray.push(
-        <MenuItem onClick={() => navigate(paths.subscriber.submittals.revision(parentSubmittalId))}>
-          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-            Create Revised Submittal
-          </LoadingButton>
-        </MenuItem>
-      );
-    }
-    if (status !== 'Draft' && status !== 'Submitted') {
-      optionsArray.push(
-        <MenuItem onClick={sentToAllModal.onTrue}>
-          <LoadingButton
-            fullWidth
-            //   sx={{ minWidth: 'max-content' }}
-            type="submit"
-            variant="outlined"
-            //   size="large"
-            loading={isSubmitting}
-            // color="info"
-          >
-            Send To
-          </LoadingButton>
-        </MenuItem>
-      );
-      optionsArray.push(
-        <MenuItem onClick={handleVoid}>
-          <LoadingButton
-            fullWidth
-            type="submit"
-            variant="outlined"
-            //   size="large"
-            loading={isSubmitting}
-            // color="error"
-          >
-            VOID
-          </LoadingButton>
-        </MenuItem>
-      );
-      optionsArray.push(
-        <MenuItem onClick={handleResendEmailSubcontractor}>
-          <LoadingButton
-            //   sx={{ minWidth: 'max-content' }}
-            fullWidth
-            type="submit"
-            variant="outlined"
-            //   size="large"
-            loading={isSubmitting}
-            // color="primary"
-          >
-            Resend to Subcontractor
-          </LoadingButton>
-        </MenuItem>
-      );
-    }
-    // return null;
-  }
-  if (status !== 'Draft' && status !== 'Submitted' && isResponseSubmitted) {
-    optionsArray.push(
-      <MenuItem onClick={handleViewResponse}>
-        <Button fullWidth variant="outlined">
-          View Response
-        </Button>
-      </MenuItem>
-    );
-  }
-  if (isResponseSubmitted && isIncluded(currentRfi?.owner, currentUser?._id)) {
-    optionsArray.push(
-      <MenuItem onClick={handleEditResponse}>
-        <Button fullWidth variant="outlined">
-          Edit Response
-        </Button>
-      </MenuItem>
-    );
-  }
-  if (
-    !isResponseSubmitted &&
-    status === 'Submitted' &&
-    isIncluded(currentRfi?.owner, currentUser?._id)
-  ) {
-    optionsArray.push(
-      <MenuItem onClick={handleSubmittalResponse}>
-        <Button fullWidth variant="outlined" onClick={handleSubmittalResponse}>
-          Add Submittal Response
-        </Button>
-      </MenuItem>
-    );
-  }
-  setMenuItems(optionsArray);
-  // return optionsArray;
-};
+//   if (
+//     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+//     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
+//   ) {
+//     if (status === 'Draft') {
+//       optionsArray.push(
+//         <MenuItem onClick={handleSubmitToArchitect}>
+//           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+//             Submit for Review
+//           </LoadingButton>
+//         </MenuItem>
+//       );
+//     }
+//     if (status === 'Rejected (RJT)' || status === 'Make Corrections and Resubmit (MCNR)') {
+//       optionsArray.push(
+//         <MenuItem onClick={() => navigate(paths.subscriber.submittals.revision(parentSubmittalId))}>
+//           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+//             Create Revised Submittal
+//           </LoadingButton>
+//         </MenuItem>
+//       );
+//     }
+//     if (status !== 'Draft' && status !== 'Submitted') {
+//       optionsArray.push(
+//         <MenuItem onClick={sentToAllModal.onTrue}>
+//           <LoadingButton
+//             fullWidth
+//             //   sx={{ minWidth: 'max-content' }}
+//             type="submit"
+//             variant="outlined"
+//             //   size="large"
+//             loading={isSubmitting}
+//           // color="info"
+//           >
+//             Send To
+//           </LoadingButton>
+//         </MenuItem>
+//       );
+//       optionsArray.push(
+//         <MenuItem onClick={handleVoid}>
+//           <LoadingButton
+//             fullWidth
+//             type="submit"
+//             variant="outlined"
+//             //   size="large"
+//             loading={isSubmitting}
+//           // color="error"
+//           >
+//             VOID
+//           </LoadingButton>
+//         </MenuItem>
+//       );
+//       optionsArray.push(
+//         <MenuItem onClick={handleResendEmailSubcontractor}>
+//           <LoadingButton
+//             //   sx={{ minWidth: 'max-content' }}
+//             fullWidth
+//             type="submit"
+//             variant="outlined"
+//             //   size="large"
+//             loading={isSubmitting}
+//           // color="primary"
+//           >
+//             Resend to Subcontractor
+//           </LoadingButton>
+//         </MenuItem>
+//       );
+//     }
+//     // return null;
+//   }
+//   if (status !== 'Draft' && status !== 'Submitted' && isResponseSubmitted) {
+//     optionsArray.push(
+//       <MenuItem onClick={handleViewResponse}>
+//         <Button fullWidth variant="outlined">
+//           View Response
+//         </Button>
+//       </MenuItem>
+//     );
+//   }
+//   if (isResponseSubmitted && isIncluded(currentRfi?.owner, currentUser?._id)) {
+//     optionsArray.push(
+//       <MenuItem onClick={handleEditResponse}>
+//         <Button fullWidth variant="outlined">
+//           Edit Response
+//         </Button>
+//       </MenuItem>
+//     );
+//   }
+//   if (
+//     !isResponseSubmitted &&
+//     status === 'Submitted' &&
+//     isIncluded(currentRfi?.owner, currentUser?._id)
+//   ) {
+//     optionsArray.push(
+//       <MenuItem onClick={handleSubmittalResponse}>
+//         <Button fullWidth variant="outlined" onClick={handleSubmittalResponse}>
+//           Add Submittal Response
+//         </Button>
+//       </MenuItem>
+//     );
+//   }
+//   setMenuItems(optionsArray);
+//   // return optionsArray;
+// };
 
 const RfiDetails = ({ id }) => {
   const dispatch = useDispatch();
@@ -447,6 +447,20 @@ const RfiDetails = ({ id }) => {
               Submit for Review
             </LoadingButton>
           )}
+        {
+          (
+            status === 'Submitted' &&
+            isIncluded(currentRfi?.owner, currentUser?._id)
+          ) &&
+          <LoadingButton
+            loading={isSubmitting}
+            variant="contained"
+            onClick={() => navigate(paths.subscriber.rfi.response(id))}
+          >
+            Add Response
+          </LoadingButton>
+
+        }
         {/* {menuItems.length > 0 && (
           <div>
             <Button
@@ -491,7 +505,7 @@ const RfiDetails = ({ id }) => {
           (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
             <Alert severity="success">
-              Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.
+              RFI is submitted successfully!.
             </Alert>
           )}
 
@@ -518,13 +532,13 @@ const RfiDetails = ({ id }) => {
           </Typography>
         </StyledCard>
         <StyledCard>
-          <Typography className="submittalTitle">Submitted Date</Typography>
+          <Typography className="submittalTitle">Created Date</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {createdDate && fDateISO(createdDate)}
           </Typography>
         </StyledCard>
         <StyledCard>
-          <Typography className="submittalTitle">Requested Return Date</Typography>
+          <Typography className="submittalTitle">Due Date</Typography>
           <Typography
             sx={{
               // color: (theme) => (isTomorrow(parseISO(dueDate)) ? 'red' : theme.palette.primary),

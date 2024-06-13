@@ -87,6 +87,7 @@ export const subscriberRoutes = [
           { path: 'new', element: <RfiCreatePage /> },
           { path: ':id', element: <RfiDetailsPage /> },
           { path: ':id/edit', element: <RfiEditPage /> },
+          // { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
         ],
       },
 

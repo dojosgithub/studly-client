@@ -47,15 +47,15 @@ import SubmittalAttachments from './rfi-attachment';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
+export default function RfiResponseForm({ currentRfi, id }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
-  // const currentSubmittal = useSelector(state => state.submittal.current)
+  // const currentRfi = useSelector(state => state.submittal.current)
 
   const existingAttachments = useMemo(
-    () => (currentSubmittal?.response?.attachments ? currentSubmittal?.response?.attachments : []),
-    [currentSubmittal?.response]
+    () => (currentRfi?.response?.attachments ? currentRfi?.response?.attachments : []),
+    [currentRfi?.response]
   );
 
   const [files, setFiles] = useState(existingAttachments)
@@ -82,11 +82,11 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
   const defaultValues = useMemo(
     () => ({
-      comment: currentSubmittal?.response?.comment || '',
-      status: currentSubmittal?.response?.status || '',
+      comment: currentRfi?.response?.comment || '',
+      status: currentRfi?.response?.status || '',
 
     }),
-    [currentSubmittal]
+    [currentRfi]
   );
 
   const methods = useForm({
@@ -107,16 +107,16 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
 
   useEffect(() => {
-    // dispatch(setSubmittalResponse(currentSubmittal?.response))
-    console.log("currentSubmittal", currentSubmittal?.response)
+    // dispatch(setSubmittalResponse(currentRfi?.response))
+    console.log("currentRfi", currentRfi?.response)
     console.log("submittalIdResponse--->", id)
     reset(defaultValues)
-  }, [dispatch, currentSubmittal, id, reset, defaultValues])
+  }, [dispatch, currentRfi, id, reset, defaultValues])
 
 
 
   const onSubmit = handleSubmit(async (data, value) => {
-    // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
+    // enqueueSnackbar(currentRfi ? 'Update success!' : 'Create success!');
     try {
       if (isEmpty(params)) {
         enqueueSnackbar('Submittal Id not Found', { variant: "error" });
@@ -144,11 +144,11 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
 
       let error;
       let payload;
-      if (currentSubmittal?.isResponseSubmitted && value === "update" && params?.id) {
+      if (currentRfi?.isResponseSubmitted && value === "update" && params?.id) {
         const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
         error = res.error
         payload = res.payload
-      } else if (!currentSubmittal?.isResponseSubmitted && value === "save" && params?.id) {
+      } else if (!currentRfi?.isResponseSubmitted && value === "save" && params?.id) {
         console.log('inside')
         const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
         error = res.error
@@ -163,11 +163,11 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
         return
       }
       // reset();
-      // let message = currentSubmittal?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!'
+      // let message = currentRfi?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!'
       let message = ''
-      if (currentSubmittal?.isResponseSubmitted && value === "update") {
+      if (currentRfi?.isResponseSubmitted && value === "update") {
         message = 'Submittal response updated successfully!';
-      } else if (!currentSubmittal?.isResponseSubmitted && value === "save") {
+      } else if (!currentRfi?.isResponseSubmitted && value === "save") {
         message = 'Submittal response saved successfully!';
       } else {
         message = 'Submittal response submitted successfully!';
@@ -179,7 +179,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      // enqueueSnackbar(`Error ${currentSubmittal?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
+      // enqueueSnackbar(`Error ${currentRfi?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });
 
@@ -203,7 +203,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
                 name="status"
                 label="Status"
                 chip
-                disabled={currentSubmittal?.isResponseSubmitted}
+                disabled={currentRfi?.isResponseSubmitted}
               >
 
                 {REVIEW_STATUS?.map(item => (
@@ -224,12 +224,12 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
               <Box display='flex' justifyContent='flex-end' gap={2}>
 
-                {!currentSubmittal?.isResponseSubmitted &&
+                {!currentRfi?.isResponseSubmitted &&
                   <LoadingButton type="button" onClick={() => onSubmit('save')} variant="outlined" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
                     Save
                   </LoadingButton>
                 }
-                {currentSubmittal?.isResponseSubmitted ?
+                {currentRfi?.isResponseSubmitted ?
 
                   <LoadingButton type="button" onClick={() => onSubmit('update')} variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
                     Update
@@ -248,7 +248,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   );
 }
 
-SubmittalsReviewRespondForm.propTypes = {
-  currentSubmittal: PropTypes.object,
+RfiResponseForm.propTypes = {
+  currentRfi: PropTypes.object,
   id: PropTypes.string,
 };

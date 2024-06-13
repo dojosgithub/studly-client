@@ -11,39 +11,35 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import { setSubmittalResponse } from 'src/redux/slices/submittalSlice';
-import RfiReviewRespondForm from '../rfi-review-respond-form';
+import RfiResponseForm from '../rfi-response-form';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalsReviewRespondView({ id }) {
+export default function RfiResponseView({ id }) {
   const settings = useSettingsContext();
   const dispatch = useDispatch()
-  // // const submittalList = useSelector(state => state.submittal?.list?.docs)
-  // // const currentSubmittal = submittalList?.find(item => item.id === id)
-  const currentSubmittal = useSelector(state => state.submittal.current)
+  const currentRfi = useSelector(state => state.rfi.current)
   useEffect(() => {
-    // dispatch(setSubmittalResponse(currentSubmittal))
-    console.log("currentSubmittal", currentSubmittal)
-    console.log("submittalIdResponse", id)
+    console.log("currentRfi", currentRfi)
+    console.log("rfiIdResponse", id)
 
-  }, [dispatch, currentSubmittal, id])
+  }, [dispatch, currentRfi, id])
 
-  // console.log("currentSubmittalResponse", currentSubmittal)
+  // console.log("currentRfiResponse", currentRfi)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       {/* <Typography fontSize="1.5rem" fontWeight="bold" my={2}>Review and Respond</Typography> */}
       <CustomBreadcrumbs
         // heading="Add Submittal Response"
-        heading="Review and Respond"
+        heading="Response"
         links={[
           {
-            name: 'Submittals',
-            href: paths.subscriber.submittals.list,
+            name: 'RFI',
+            href: paths.subscriber.rfi.list,
           },
           {
             name: 'Details',
-            href: paths.subscriber.submittals.details(id),
+            href: paths.subscriber.rfi.details(id),
           },
           { name: 'Response' },
         ]}
@@ -51,10 +47,10 @@ export default function SubmittalsReviewRespondView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <RfiReviewRespondForm currentSubmittal={currentSubmittal}  id={id}/>
+      {/* <RfiResponseForm currentRfi={currentRfi}  id={id}/> */}
     </Container>
   );
 }
-SubmittalsReviewRespondView.propTypes = {
+RfiResponseView.propTypes = {
   id: PropTypes.string,
 };
