@@ -44,7 +44,7 @@ export default function RfiEditView({ id }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit Submittal"
+        heading="Edit RFI"
         links={[
           {
             name: 'Dashboard',

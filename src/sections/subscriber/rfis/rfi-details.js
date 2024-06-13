@@ -250,13 +250,13 @@ const RfiDetails = ({ id }) => {
     setIsSubmitting(false)
     if (!isEmpty(error)) {
       enqueueSnackbar(
-        `Error submitting RFI to architect/Engineer.`,
+        `Error submitting RFI to architect/engineer.`,
         { variant: 'error' }
       );
       return;
     }
     enqueueSnackbar(
-      `RFI is submitted to architect/Engineer.`,
+      `RFI is submitted to architect/engineer.`,
       { variant: 'success' }
     );
     await dispatch(getRfiDetails(id))

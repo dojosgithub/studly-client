@@ -89,8 +89,8 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     drawingSheet: Yup.string().required('Drawing sheet is required'),
-    createdDate: Yup.date()
-      .required('Created Date is required'),
+    // createdDate: Yup.date()
+    //   .required('Created Date is required'),
     dueDate: Yup.date()
       .required('Due Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Due Date must be later than today'),
@@ -105,7 +105,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     const name = currentRfi ? currentRfi?.name : '';
     const description = currentRfi ? currentRfi?.description : '';
     const drawingSheet = currentRfi ? currentRfi?.drawingSheet : '';
-    const createdDate = currentRfi ? new Date(currentRfi?.createdDate) : null;
+    // const createdDate = currentRfi ? new Date(currentRfi?.createdDate) : null;
     const dueDate = currentRfi ? new Date(currentRfi?.dueDate) : null;
     const costImpact = currentRfi ? currentRfi?.costImpact : '';
     const scheduleDelay = currentRfi ? currentRfi?.scheduleDelay : '';
@@ -118,7 +118,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       name,
       description,
       drawingSheet,
-      createdDate,
+      // createdDate,
       dueDate,
       costImpact,
       scheduleDelay,
@@ -290,13 +290,13 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                 display="grid"
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(4, 1fr)',
+                  sm: 'repeat(3, 1fr)',
                 }}
               >
 
 
 
-                <Controller
+                {/* <Controller
                   name="createdDate"
                   control={control}
                   defaultValue={new Date()}
@@ -334,7 +334,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                       />
                     );
                   }}
-                />
+                /> */}
                 <Controller
                   name="dueDate"
                   control={control}
@@ -375,12 +375,14 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                   }}
                 />
                 <RHFSelect name="costImpact" label="Cost Impact">
-                  <MenuItem value='yes'>Yes</MenuItem>
-                  <MenuItem value='no'>No</MenuItem>
+                  <MenuItem value='Yes'>Yes</MenuItem>
+                  <MenuItem value='No'>No</MenuItem>
+                  <MenuItem value='TBD'>TBD</MenuItem>
                 </RHFSelect>
                 <RHFSelect name="scheduleDelay" label="Schedule Delay">
-                  <MenuItem value='yes'>Yes</MenuItem>
-                  <MenuItem value='no'>No</MenuItem>
+                  <MenuItem value='Yes'>Yes</MenuItem>
+                  <MenuItem value='No'>No</MenuItem>
+                  <MenuItem value='TBD'>TBD</MenuItem>
                 </RHFSelect>
               </Box>
 
