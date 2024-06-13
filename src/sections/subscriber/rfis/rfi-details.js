@@ -119,7 +119,7 @@ const getActions = (props) => {
             variant="outlined"
             //   size="large"
             loading={isSubmitting}
-          // color="info"
+            // color="info"
           >
             Send To
           </LoadingButton>
@@ -133,7 +133,7 @@ const getActions = (props) => {
             variant="outlined"
             //   size="large"
             loading={isSubmitting}
-          // color="error"
+            // color="error"
           >
             VOID
           </LoadingButton>
@@ -148,7 +148,7 @@ const getActions = (props) => {
             variant="outlined"
             //   size="large"
             loading={isSubmitting}
-          // color="primary"
+            // color="primary"
           >
             Resend to Subcontractor
           </LoadingButton>
@@ -188,7 +188,7 @@ const getActions = (props) => {
       </MenuItem>
     );
   }
-  setMenuItems(optionsArray)
+  setMenuItems(optionsArray);
   // return optionsArray;
 };
 
@@ -234,7 +234,6 @@ const RfiDetails = ({ id }) => {
   //   ? Object.prototype.hasOwnProperty.call(trade, 'subcontractorId')
   //   : null;
 
-
   useEffect(() => {
     console.log('currentRfi', currentRfi);
     console.log('OwnerList', currentRfi?.owner);
@@ -244,26 +243,18 @@ const RfiDetails = ({ id }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRfi, id, currentUser, isSubmitting]);
   const handleSubmitToArchitect = async () => {
-    console.log("ID==>", id)
-    setIsSubmitting(true)
-    const { error, payload } = await dispatch(submitRfiToArchitect(id))
-    setIsSubmitting(false)
+    console.log('ID==>', id);
+    setIsSubmitting(true);
+    const { error, payload } = await dispatch(submitRfiToArchitect(id));
+    setIsSubmitting(false);
     if (!isEmpty(error)) {
-      enqueueSnackbar(
-        `Error submitting RFI to architect/engineer.`,
-        { variant: 'error' }
-      );
+      enqueueSnackbar(`Error submitting RFI to architect/engineer.`, { variant: 'error' });
       return;
     }
-    enqueueSnackbar(
-      `RFI is submitted to architect/engineer.`,
-      { variant: 'success' }
-    );
-    await dispatch(getRfiDetails(id))
+    enqueueSnackbar(`RFI is submitted to architect/engineer.`, { variant: 'success' });
+    await dispatch(getRfiDetails(id));
     navigate(paths.subscriber.rfi.list);
-
-  }
-
+  };
 
   // const getMenus = () => {
 
@@ -445,13 +436,17 @@ const RfiDetails = ({ id }) => {
           }}
           label={status}
         />
-        {(
-          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
-        ) &&
-          (status === 'Draft') &&
-          <LoadingButton loading={isSubmitting} variant='contained' onClick={handleSubmitToArchitect}>Submit for Review</LoadingButton>
-        }
+        {(currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) &&
+          status === 'Draft' && (
+            <LoadingButton
+              loading={isSubmitting}
+              variant="contained"
+              onClick={handleSubmitToArchitect}
+            >
+              Submit for Review
+            </LoadingButton>
+          )}
         {/* {menuItems.length > 0 && (
           <div>
             <Button
@@ -503,9 +498,6 @@ const RfiDetails = ({ id }) => {
         {/* {isResponseSubmitted && isIncluded(currentRfi?.owner, currentUser?._id) && (
           <Alert severity="success">Your response to the submittal was submitted. Thankyou!</Alert>
         )} */}
-
-
-
 
         <StyledCard>
           <Typography className="submittalTitle">Title</Typography>
