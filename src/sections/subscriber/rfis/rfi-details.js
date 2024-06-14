@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -45,7 +44,8 @@ import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
-import RfiSendAllDialog from './rfi-send-all-dialog';
+import Editor from 'src/components/editor/editor';
+import RfiResponseDialog from './rfi-response-dialog';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -196,12 +196,13 @@ const RfiDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
+  const confirm = useBoolean();
+
   const { id: parentSubmittalId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentRfi = useSelector((state) => state.rfi?.current);
-  const sentToAllModal = useBoolean();
 
   // const  = useBoolean();
   const [menuItems, setMenuItems] = useState([]);
@@ -228,6 +229,8 @@ const RfiDetails = ({ id }) => {
     creator,
     owner,
     ccList,
+    isResponseSubmitted,
+    response,
     docStatus,
   } = currentRfi;
   // const hasSubcontractorId = !isEmpty(trade)
@@ -450,12 +453,14 @@ const RfiDetails = ({ id }) => {
         {
           (
             status === 'Submitted' &&
+            !isResponseSubmitted &&
             isIncluded(currentRfi?.owner, currentUser?._id)
           ) &&
           <LoadingButton
             loading={isSubmitting}
             variant="contained"
-            onClick={() => navigate(paths.subscriber.rfi.response(id))}
+            // onClick={() => navigate(paths.subscriber.rfi.response(id))}
+            onClick={() => confirm.onToggle()}
           >
             Add Response
           </LoadingButton>
@@ -648,14 +653,22 @@ const RfiDetails = ({ id }) => {
             )}
           </Box>
         </StyledCard>
+        {isResponseSubmitted &&
+          <StyledCard>
+            <Typography className="submittalTitle">Response</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+              <Box dangerouslySetInnerHTML={{__html: response?.text}}/>
+            </Box>
+          </StyledCard>
+        }
       </Stack>
-      {/* {sentToAllModal?.value && (
-        <RfiSendAllDialog
-          open={sentToAllModal.value}
-          onClose={() => sentToAllModal.onFalse()}
-        // userList={userList}
-        />
-      )} */}
+
+      <RfiResponseDialog
+        open={confirm.value}
+        onClose={() => confirm.onFalse()}
+      />
+
+
     </>
   );
 };

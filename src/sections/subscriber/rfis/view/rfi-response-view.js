@@ -11,6 +11,7 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
+import Editor from 'src/components/editor/editor';
 import RfiResponseForm from '../rfi-response-form';
 
 // ----------------------------------------------------------------------
@@ -48,6 +49,7 @@ export default function RfiResponseView({ id }) {
         }}
       />
       {/* <RfiResponseForm currentRfi={currentRfi}  id={id}/> */}
+      <Editor/>
     </Container>
   );
 }

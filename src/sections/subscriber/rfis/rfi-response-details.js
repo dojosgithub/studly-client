@@ -36,7 +36,7 @@ import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
-import SubmittalSendAllDialog from './rfi-send-all-dialog';
+import SubmittalSendAllDialog from './rfi-response-dialog';
 
 const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',

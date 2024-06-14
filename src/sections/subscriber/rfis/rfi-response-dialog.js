@@ -33,6 +33,8 @@ import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMem
 // inviteSubcontractor, 
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 import { sendToAll } from 'src/redux/slices/submittalSlice';
+import Editor from 'src/components/editor/editor';
+import { submitRfiResponse } from 'src/redux/slices/rfiSlice';
 // components
 
 // ----------------------------------------------------------------------
@@ -46,24 +48,25 @@ export default function SubmittalSendAllDialog({
 }) {
   const { id } = useParams();
   const userList = useSelector((state) => state?.submittal?.projectUsersAll) || [];
+  const userId = useSelector((state) => state?.user?.user?._id) || '';
 
 
   const dispatch = useDispatch()
-  console.log('id--->', id);
+  console.log('userId--->', userId);
   console.log('userList--->', userList);
-  const SendtoAllSchema = Yup.object().shape({
-    users: Yup.array(Yup.string()).min(1, "Minimum 1 user is required").required("Users are required"),
-    submittalId: Yup.string().required('submittalId is required'),
+  const RfiResponseSchema = Yup.object().shape({
+    text: Yup.string().required('text is required'),
+    respondedBy: Yup.string().required('user id is required'),
 
   });
 
   const defaultValues = useMemo(() => ({
-    users: [],
-    submittalId: id || ''
-  }), [id]);
+    text: '',
+    respondedBy: userId || ''
+  }), [userId]);
 
   const methods = useForm({
-    resolver: yupResolver(SendtoAllSchema),
+    resolver: yupResolver(RfiResponseSchema),
     defaultValues,
   });
 
@@ -76,6 +79,20 @@ export default function SubmittalSendAllDialog({
     formState: { isSubmitting, isValid, errors },
   } = methods;
 
+  const handleEditorChange = (content, delta, source, editor) => {
+    // You can get the entire content in HTML format
+    const htmlContent = editor.getHTML();
+    // Or you can get it in other formats, like Delta
+    const deltaContent = editor.getContents();
+    // Or plain text
+    const textContent = editor.getText();
+
+    console.log('htmlContent', htmlContent)
+    console.log('deltaContent', deltaContent)
+    console.log('textContent', textContent)
+
+    setValue("text", htmlContent);
+  };
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -83,14 +100,19 @@ export default function SubmittalSendAllDialog({
 
 
       console.log('data', data)
-
-      const { error, payload } = await dispatch(sendToAll(data))
+      const finalData = {
+        id,
+        formData: data
+        }
+      console.log('finalData', finalData)
+      const { error, payload } = await dispatch(submitRfiResponse(finalData))
       console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
         return;
       }
-      enqueueSnackbar(payload || 'Email send to users successfully', { variant: 'success' });
+      enqueueSnackbar('RFI response submitted successfully', { variant: 'success' });
+      reset()
       onClose()
 
 
@@ -101,24 +123,12 @@ export default function SubmittalSendAllDialog({
 
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
-      <DialogTitle> Send To: </DialogTitle>
+      <DialogTitle> Add RFI Response: </DialogTitle>
 
       <DialogContent sx={{ overflow: 'unset' }}>
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Box
-            sx={{ display: 'flex', flexDirection: "column", gap: '1rem', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
-          >
-
-            {userList.length > 0 && (
-              <RHFMultiSelect
-                name="users"
-                label="Users"
-                chip
-                options={userList.map((item) => ({ label: item.email, value: item.email }))}
-              />
-            )}
-          </Box>
+          <Editor onChange={handleEditorChange} simple />
 
         </FormProvider>
       </DialogContent>
@@ -131,7 +141,7 @@ export default function SubmittalSendAllDialog({
           </Button>
         )}
         <LoadingButton loading={isSubmitting} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
-          Send To All
+          Submit Response
         </LoadingButton>
       </DialogActions>
     </Dialog>

@@ -125,6 +125,27 @@ export const getRfiDetails = createAsyncThunk(
   }
 );
 
+export const submitRfiResponse = createAsyncThunk(
+  'rfi/response',
+  async (rfiData, { getState, rejectWithValue }) => {
+    try {
+      const { id, formData } = rfiData;
+      console.log('rfiId', id);
+      console.log('formData', formData);
+
+      const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while submitting RFI response.');
+    }
+  }
+);
+
 
 export const getRFILogPDF = createAsyncThunk(
   'rfi/pdf',
@@ -257,6 +278,19 @@ const rfi = createSlice({
       state.error = null;
     });
     builder.addCase(getRfiDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(submitRfiResponse.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(submitRfiResponse.fulfilled, (state, action) => {
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(submitRfiResponse.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });
