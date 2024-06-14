@@ -293,7 +293,7 @@ export default function ProjectStepperForm() {
         return
       }
 
-      const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
+      const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
       console.log("updatedTrades", updatedTrades)
       // // const teams = processInviteUsers(inviteUsers);
       // // const members = teamMembers?.map(({ _id, ...rest }) => rest);
@@ -410,7 +410,7 @@ export default function ProjectStepperForm() {
         case 'name':
           dispatch(setProjectName(formValues?.name));
           dispatch(setProjectWorkflow(formValues?.workflow));
-          console.log('formValuesNAME',formValues);
+          console.log('formValuesNAME', formValues);
           break;
         case 'trades':
           dispatch(setProjectTrades(formValues?.trades));

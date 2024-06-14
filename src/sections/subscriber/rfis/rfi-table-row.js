@@ -44,6 +44,7 @@ export default function RfiTableRow({
   // companyName, address, adminName, adminEmail, phoneNumber
   const {
     id,
+    rfiId,
     name,
     description,
     drawingSheet,
@@ -102,6 +103,7 @@ export default function RfiTableRow({
               {submittalId}
             </Box>
           </TableCell> */}
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{rfiId}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(description, { length: 20, omission: '...' })}

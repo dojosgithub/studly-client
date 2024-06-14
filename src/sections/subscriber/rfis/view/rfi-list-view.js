@@ -52,7 +52,7 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  // { id: 'id', label: 'Submittal ID', minWidth: 150, width: 150, },
+  { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
   { id: 'name', label: 'Title', minWidth: 150, width: 220 },
   { id: 'description', label: 'Description',minWidth: 170, width: 220 },
   { id: 'drawingSheet', label: 'Drawing Sheet', minWidth: 170, width: 170 },

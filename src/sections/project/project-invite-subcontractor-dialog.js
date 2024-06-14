@@ -118,7 +118,7 @@ export default function ProjectInviteSubcontractorDialog({
     //   enqueueSnackbar('email already exists!', { variant: 'error' });
     //   return true
     // }
-    const data = { email }
+    const data = { email, firstName, lastName }
     console.log('handleSelect', data);
 
     const modifiedTrades = trades.map(trade => {
@@ -144,7 +144,7 @@ export default function ProjectInviteSubcontractorDialog({
       if (tradeIds.length === 0 || !prevOptions[tradeId]) {
         // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
         // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-        return { ...prevOptions, [tradeId]: { tradeId, email,firstName,lastName } };
+        return { ...prevOptions, [tradeId]: { tradeId, email, firstName, lastName } };
       }
 
       // Check if there's already an option with the same tradeId

@@ -20,8 +20,8 @@ const ProjectSubcontractor = () => {
     const subcontractorsInvitedList = useSelector(state => state.project?.subcontractors?.invited)
     const subcontractors = useMemo(() => [...subcontractorsList, ...subcontractorsInvitedList], [subcontractorsList, subcontractorsInvitedList]);
     const trades = useSelector(state => state.project.create.trades)
-    const initialOptions = trades.reduce((acc, { tradeId, }) => {
-        acc[tradeId] = { tradeId, subcontractorId: "", email: "", firstName: '', lastName: '' };
+    const initialOptions = trades.reduce((acc, { tradeId, email, firstName, lastName }) => {
+        acc[tradeId] = { tradeId, subcontractorId: "", email: email ?? "", firstName: firstName ?? '', lastName: lastName ?? '' };
         return acc;
     }, {});
 
@@ -134,22 +134,22 @@ const ProjectSubcontractor = () => {
 
         setOptions(prevOptions => {
             const tradeIds = Object.keys(prevOptions);
-      
+
             // Check if there's already an option with the same tradeId
             const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
-      
+
             if (existingTradeIndex !== -1) {
-              // If an option with the same tradeId exists, update its subcontractorId
-              const updatedOptions = { ...prevOptions };
-              
-              updatedOptions[tradeId].email = '';
-              updatedOptions[tradeId].firstName = '';
-              updatedOptions[tradeId].lastName = '';
-              return updatedOptions;
+                // If an option with the same tradeId exists, update its subcontractorId
+                const updatedOptions = { ...prevOptions };
+
+                updatedOptions[tradeId].email = '';
+                updatedOptions[tradeId].firstName = '';
+                updatedOptions[tradeId].lastName = '';
+                return updatedOptions;
             }
-      
-            return prevOptions; 
-          });
+
+            return prevOptions;
+        });
     }
 
 
