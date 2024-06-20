@@ -44,11 +44,7 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStrTradeId } from 'src/utils/split-string';
-import {
-  createRfi,
-  editRfi,
-  submitRfiToArchitect,
-} from 'src/redux/slices/rfiSlice';
+import { createRfi, editRfi, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
 import RfiAttachments from './rfi-attachment';
 
 // ----------------------------------------------------------------------
@@ -102,13 +98,13 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   });
 
   const defaultValues = useMemo(() => {
-    const name = currentRfi ? currentRfi?.name : '';
-    const description = currentRfi ? currentRfi?.description : '';
-    const drawingSheet = currentRfi ? currentRfi?.drawingSheet : '';
+    const name = currentRfi?.name ? currentRfi?.name : '';
+    const description = currentRfi?.description ? currentRfi?.description : '';
+    const drawingSheet = currentRfi?.drawingSheet ? currentRfi?.drawingSheet : '';
     // const createdDate = currentRfi ? new Date(currentRfi?.createdDate) : null;
     const dueDate = currentRfi ? new Date(currentRfi?.dueDate) : null;
-    const costImpact = currentRfi ? currentRfi?.costImpact : '';
-    const scheduleDelay = currentRfi ? currentRfi?.scheduleDelay : '';
+    const costImpact = currentRfi?.costImpact ? currentRfi?.costImpact : '';
+    const scheduleDelay = currentRfi?.scheduleDelay ? currentRfi?.scheduleDelay : '';
     // let owner = [];
     // let ccListInside = [];
     const owner = currentRfi?.owner?.map((item) => item.email) || [];
@@ -141,7 +137,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     formState: { isSubmitting, errors },
   } = methods;
 
-
   useEffect(() => {
     if (!isEmpty(currentRfi)) {
       reset(defaultValues);
@@ -152,13 +147,12 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     window.scrollTo(0, 0);
   }
 
-
   const onSubmit = handleSubmit(async (data, val) => {
     try {
+      if (val === 'review') isSubmittingRef.current = true;
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
         .map((item) => item.user);
-
 
       let finalData;
       const { _id, firstName, lastName, email } = currentUser;
@@ -188,7 +182,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
       let error;
       let payload;
-      if (!isEmpty(currentRfi) && val === "update" && id) {
+      if ((!isEmpty(currentRfi) && val === 'update' && id) || val === 'review') {
         const res = await dispatch(editRfi({ formData, id }));
         error = res.error;
         payload = res.payload;
@@ -203,32 +197,23 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       }
       let message;
       if (val === 'review') {
-        message = `submitted`
+        message = `submitted`;
       } else if (val === 'draft') {
-        message = `saved`
+        message = `saved`;
       } else {
-        message = `updated`
-
+        message = `updated`;
       }
 
-
       if (val !== 'review') {
-        enqueueSnackbar(
-          `RFI ${message} successfully!`,
-          { variant: 'success' }
-        );
+        enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
         router.push(paths.subscriber.rfi.details(payload?.id));
         return;
       }
       await dispatch(submitRfiToArchitect(payload?.id));
-      enqueueSnackbar(
-        `RFI ${message} successfully!`,
-        { variant: 'success' }
-      );
+      enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       console.log('payload', payload);
       reset();
-
-
+      isSubmittingRef.current = false;
       router.push(paths.subscriber.rfi.list);
     } catch (error) {
       console.log('error-->', error);
@@ -255,48 +240,61 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   // );
 
   return (
-
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Grid container spacing={3}>
-        <Grid xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={4}
-              // columnGap={2}
-              // gridTemplateColumns={{
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              // }}
-              my={3}
-              display="flex"
-              flexDirection="column"
+    <>
+      {currentRfi &&
+        currentRfi?.status === 'Draft' &&
+        (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+          <Box width="100%" display="flex" justifyContent="end">
+            <LoadingButton
+              type="button"
+              variant="contained"
+              size="large"
+              loading={isSubmittingRef?.current}
+              onClick={() => onSubmit('review', 'sendForReviewFromEditPage')}
             >
+              Submit for Review
+            </LoadingButton>
+          </Box>
+        )}
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Grid container spacing={3}>
+          <Grid xs={12} md={12}>
+            <Card sx={{ p: 3 }}>
               <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                }}
+                rowGap={4}
+                // columnGap={2}
+                // gridTemplateColumns={{
+                //   xs: 'repeat(1, 1fr)',
+                //   sm: 'repeat(2, 1fr)',
+                // }}
+                my={3}
+                display="flex"
+                flexDirection="column"
               >
-                <RHFTextField name="name" label="Name" />
-                <RHFTextField name="drawingSheet" label="Drawing Sheet" />
-              </Box>
-              <RHFTextField name="description" multiline rows={3} label="Description" />
-              <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(3, 1fr)',
-                }}
-              >
-
-
-
-                {/* <Controller
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                  }}
+                >
+                  <RHFTextField name="name" label="Name" />
+                  <RHFTextField name="drawingSheet" label="Drawing Sheet" />
+                </Box>
+                <RHFTextField name="description" multiline rows={3} label="Description" />
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                  }}
+                >
+                  {/* <Controller
                   name="createdDate"
                   control={control}
                   defaultValue={new Date()}
@@ -335,139 +333,138 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                     );
                   }}
                 /> */}
-                <Controller
-                  name="dueDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => {
-                    const selectedDate = field.value || null;
-                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                    const dateStyle = isDateNextDay
-                      ? {
-                        '.MuiInputBase-root.MuiOutlinedInput-root': {
-                          color: 'red',
-                          borderColor: 'red',
-                          border: '1px solid',
-                        },
-                      }
-                      : {};
-                    console.log(isDateNextDay);
-                    return (
-                      <DatePicker
-                        label="Due Date"
-                        views={['day']}
-                        value={selectedDate}
-                        minDate={startOfDay(addDays(new Date(), 1))}
-                        onChange={(date) => field.onChange(date)}
-                        format="MM/dd/yyyy" // Specify the desired date format
-                        error={!!error}
-                        helperText={error && error?.message}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                        }}
-                      // sx={dateStyle} // Apply conditional style based on the date comparison
-                      />
-                    );
-                  }}
+                  <Controller
+                    name="dueDate"
+                    control={control}
+                    defaultValue={new Date()}
+                    render={({ field, fieldState: { error } }) => {
+                      const selectedDate = field.value || null;
+                      const isDateNextDay = selectedDate && isTomorrow(selectedDate);
+                      const dateStyle = isDateNextDay
+                        ? {
+                            '.MuiInputBase-root.MuiOutlinedInput-root': {
+                              color: 'red',
+                              borderColor: 'red',
+                              border: '1px solid',
+                            },
+                          }
+                        : {};
+                      console.log(isDateNextDay);
+                      return (
+                        <DatePicker
+                          label="Due Date"
+                          views={['day']}
+                          value={selectedDate}
+                          minDate={startOfDay(addDays(new Date(), 1))}
+                          onChange={(date) => field.onChange(date)}
+                          format="MM/dd/yyyy" // Specify the desired date format
+                          error={!!error}
+                          helperText={error && error?.message}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
+                          // sx={dateStyle} // Apply conditional style based on the date comparison
+                        />
+                      );
+                    }}
+                  />
+                  <RHFSelect name="costImpact" label="Cost Impact">
+                    <MenuItem value="Yes">Yes</MenuItem>
+                    <MenuItem value="No">No</MenuItem>
+                    <MenuItem value="TBD">TBD</MenuItem>
+                  </RHFSelect>
+                  <RHFSelect name="scheduleDelay" label="Schedule Delay">
+                    <MenuItem value="Yes">Yes</MenuItem>
+                    <MenuItem value="No">No</MenuItem>
+                    <MenuItem value="TBD">TBD</MenuItem>
+                  </RHFSelect>
+                </Box>
+
+                <RfiAttachments files={files} setFiles={setFiles} />
+
+                <RHFMultiSelect
+                  name="owner"
+                  label="Assignee/Owner"
+                  disabled={
+                    pathname.includes('revision')
+                      ? false
+                      : currentRfi && currentRfi?.status !== 'Draft'
+                  }
+                  // placeholder="Select multiple options"
+                  chip
+                  options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
                 />
-                <RHFSelect name="costImpact" label="Cost Impact">
-                  <MenuItem value='Yes'>Yes</MenuItem>
-                  <MenuItem value='No'>No</MenuItem>
-                  <MenuItem value='TBD'>TBD</MenuItem>
-                </RHFSelect>
-                <RHFSelect name="scheduleDelay" label="Schedule Delay">
-                  <MenuItem value='Yes'>Yes</MenuItem>
-                  <MenuItem value='No'>No</MenuItem>
-                  <MenuItem value='TBD'>TBD</MenuItem>
-                </RHFSelect>
+                <RHFMultiSelect
+                  name="ccList"
+                  label="CC List"
+                  disabled={
+                    pathname.includes('revision')
+                      ? false
+                      : currentRfi && currentRfi?.status !== 'Draft'
+                  }
+                  // placeholder="Select multiple options"
+                  chip
+                  options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
+                  // options={[
+                  //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
+                  //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
+                  // ]}
+                />
               </Box>
 
-              <RfiAttachments files={files} setFiles={setFiles} />
-
-              <RHFMultiSelect
-                name="owner"
-                label="Assignee/Owner"
-                disabled={
-                  pathname.includes('revision')
-                    ? false
-                    : currentRfi && currentRfi?.status !== 'Draft'
-                }
-                // placeholder="Select multiple options"
-                chip
-                options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
-              />
-              <RHFMultiSelect
-                name="ccList"
-                label="CC List"
-                disabled={
-                  pathname.includes('revision')
-                    ? false
-                    : currentRfi && currentRfi?.status !== 'Draft'
-                }
-                // placeholder="Select multiple options"
-                chip
-                options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-              // options={[
-              //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-              //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-              // ]}
-              />
-            </Box>
-
-
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-              gap="2rem"
-              sx={{ my: 3 }}
-            >
-              {(!currentRfi || (currentRfi && pathname.includes('revision'))) &&
-                (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-                  currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                  <>
-                    <LoadingButton
-                      type="button"
-                      onClick={() => onSubmit('draft')}
-                      variant="outlined"
-                      size="large"
-                      loading={isSubmitting}
-                    >
-                      Save Draft
-                    </LoadingButton>
-                    <LoadingButton
-                      type="button"
-                      onClick={() => onSubmit('review')}
-                      variant="contained"
-                      size="large"
-                      loading={isSubmitting}
-                    >
-                      Submit for Review
-                    </LoadingButton>
-                  </>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+                gap="2rem"
+                sx={{ my: 3 }}
+              >
+                {(!currentRfi || (currentRfi && pathname.includes('revision'))) &&
+                  (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                    currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+                    <>
+                      <LoadingButton
+                        type="button"
+                        onClick={() => onSubmit('draft')}
+                        variant="outlined"
+                        size="large"
+                        loading={isSubmitting}
+                      >
+                        Save Draft
+                      </LoadingButton>
+                      <LoadingButton
+                        type="button"
+                        onClick={() => onSubmit('review')}
+                        variant="contained"
+                        size="large"
+                        loading={isSubmitting}
+                      >
+                        Submit for Review
+                      </LoadingButton>
+                    </>
+                  )}
+                {/* && !pathname.includes('revision') */}
+                {!isEmpty(currentRfi) && (
+                  <LoadingButton
+                    type="button"
+                    onClick={() => onSubmit('update')}
+                    variant="contained"
+                    size="large"
+                    loading={isSubmitting}
+                  >
+                    Save Changes
+                  </LoadingButton>
                 )}
-              {/* && !pathname.includes('revision') */}
-              {!isEmpty(currentRfi) && (
-                <LoadingButton
-                  type="button"
-                  onClick={() => onSubmit('update')}
-                  variant="contained"
-                  size="large"
-                  loading={isSubmitting}
-                >
-                  Save Changes
-                </LoadingButton>
-              )}
-
-            </Stack>
-          </Card>
+              </Stack>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </FormProvider>
+      </FormProvider>
+    </>
   );
 }
 

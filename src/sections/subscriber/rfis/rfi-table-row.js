@@ -82,7 +82,7 @@ export default function RfiTableRow({
           }}
         >
 
-          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
             <Box
               onClick={
                 (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
@@ -100,10 +100,10 @@ export default function RfiTableRow({
               }}
             >
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              {submittalId}
+              {rfiId}
             </Box>
-          </TableCell> */}
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{rfiId}</TableCell>
+          </TableCell>
+          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{rfiId}</TableCell> */}
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(description, { length: 20, omission: '...' })}
