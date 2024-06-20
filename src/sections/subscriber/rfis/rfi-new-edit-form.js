@@ -182,7 +182,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
       let error;
       let payload;
-      if ((!isEmpty(currentRfi) && val === 'update' && id) || val === 'review') {
+      if ((!isEmpty(currentRfi) && val === 'update' && id) || val === 'review' && id) {
         const res = await dispatch(editRfi({ formData, id }));
         error = res.error;
         payload = res.payload;
