@@ -54,11 +54,11 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 const TABLE_HEAD = [
   { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
   { id: 'name', label: 'Title', minWidth: 150, width: 220 },
-  { id: 'description', label: 'Description',minWidth: 170, width: 220 },
+  { id: 'description', label: 'Description', minWidth: 170, width: 220 },
   { id: 'drawingSheet', label: 'Drawing Sheet', minWidth: 170, width: 170 },
   { id: 'createdDate', label: 'Created Date', minWidth: 170, width: 170 },
   { id: 'dueDate', label: 'Due Date', minWidth: 150, width: 150 },
-  { id: 'costImpact', label: 'Cost Impact',  minWidth: 150,width: 180 },
+  { id: 'costImpact', label: 'Cost Impact', minWidth: 150, width: 180 },
   { id: 'scheduleDelay', label: 'Schedule Delay', minWidth: 150, width: 200 },
   { id: 'owner', label: 'Owner / Assignee', minWidth: 200, width: 400 },
   { id: 'status', label: 'Status', width: 100 },
@@ -82,12 +82,20 @@ export default function RfiListView() {
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
+  const [sortDir, setSortDir] = useState('asc');
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
   }
-
+  const handleSortChange = () => {
+    if (sortDir === 'asc') {
+      setSortDir('desc');
+    } else {
+      setSortDir('asc');
+    }
+  };
   const settings = useSettingsContext();
 
   const router = useRouter();
@@ -95,11 +103,15 @@ export default function RfiListView() {
 
   const confirm = useBoolean();
 
+  // useEffect(() => {
+  //   console.log('filters.status', filters.status);
+  //   dispatch(getRfiList({ search: filters.query, page, status: filters.status }))
+  // }, [dispatch, filters.query, filters.status, page])
+
   useEffect(() => {
     console.log('filters.status', filters.status);
-    dispatch(getRfiList({ search: filters.query, page, status: filters.status }))
-  }, [dispatch, filters.query, filters.status, page])
-
+    dispatch(getRfiList({ search: filters.query, page, sortDir, status: filters.status }));
+  }, [dispatch, filters.query, filters.status, page, sortDir]);
 
   const dataFiltered = applyFilter({
     inputData: listData?.docs,
@@ -252,7 +264,7 @@ export default function RfiListView() {
             onFilters={handleFilters}
             //
             // roleOptions={_roles}
-            roleOptions={STATUS_WORKFLOW?.slice(0,2)}
+            roleOptions={STATUS_WORKFLOW?.slice(0, 2)}
           />
 
           {/* {canReset && (
@@ -295,17 +307,22 @@ export default function RfiListView() {
                   headLabel={TABLE_HEAD}
                   // onSort={table.onSort}
                   rowCount={listData?.docs?.length}
-                // numSelected={table.selected.length}
-                // onSelectAllRows={(checked) =>
-                //   table.onSelectAllRows(
-                //     checked,
-                //     tableData.map((row) => row.id)
-                //   )
-                // }
+                  // numSelected={table.selected.length}
+                  // onSelectAllRows={(checked) =>
+                  //   table.onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
+                  handleSortChange={handleSortChange}
+                  sortDir={sortDir}
                 />
 
                 <TableBody>
-                  {dataFiltered && dataFiltered?.map((row) => (
+                  {
+                  // dataFiltered && dataFiltered?
+                  listData?.docs &&
+                    listData?.docs?.map((row) => (
                     <RfiTableRow
                       key={row.id}
                       row={row}

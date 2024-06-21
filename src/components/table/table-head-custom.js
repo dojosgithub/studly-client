@@ -56,7 +56,7 @@ export default function TableHeadCustom({
             sortDirection
             sx={{ width: headCell.width, minWidth: headCell.minWidth }}
           >
-            {headCell.id === 'id' ? (
+            {(headCell.id === 'id' || headCell.id === 'rfiId') ? (
               <TableSortLabel
                 hideSortIcon
                 active

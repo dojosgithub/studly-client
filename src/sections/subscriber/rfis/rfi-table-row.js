@@ -100,7 +100,7 @@ export default function RfiTableRow({
               }}
             >
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              {rfiId}
+              <span>{rfiId}</span>
             </Box>
           </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{rfiId}</TableCell> */}
