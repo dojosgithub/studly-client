@@ -30,6 +30,13 @@ const RfiEditPage = lazy(() => import('src/pages/subscriber/rfis/edit'));
 const RfiDetailsPage = lazy(() => import('src/pages/subscriber/rfis/details'));
 const RfiResponseDetailsPage = lazy(() => import('src/pages/subscriber/rfis/response-details'));
 
+// PlanRooms
+const PlanRoomListPage = lazy(() => import('src/pages/subscriber/plan-room/list'));
+const PlanRoomCreatePage = lazy(() => import('src/pages/subscriber/plan-room/new'));
+const PlanRoomEditPage = lazy(() => import('src/pages/subscriber/plan-room/edit'));
+const PlanRoomDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/details'));
+const PlanRoomResponseDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/response-details'));
+
 
 
 // Project
@@ -78,9 +85,9 @@ export const subscriberRoutes = [
           // ? done in index routes
           { path: ':id/response/details', element: <SubmittalsResponseDetailsPage /> },
           { path: ':id/revision', element: <SubmittalsRevisionPage /> },
-          ],
-          },
-          {
+        ],
+      },
+      {
         path: 'rfi',
         children: [
           { element: <RfiListPage />, index: true },
@@ -90,6 +97,18 @@ export const subscriberRoutes = [
           { path: ':id/edit', element: <RfiEditPage /> },
           { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
           // { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
+        ],
+      },
+      {
+        path: 'plan-room',
+        children: [
+          { element: <PlanRoomListPage />, index: true },
+          { path: 'list', element: <PlanRoomListPage /> },
+          { path: 'new', element: <PlanRoomCreatePage /> },
+          { path: ':id', element: <PlanRoomDetailsPage /> },
+          { path: ':id/edit', element: <PlanRoomEditPage /> },
+          { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
+          // { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
         ],
       },
 
