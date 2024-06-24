@@ -19,8 +19,8 @@ export default function PlanRoomAttachments({
   onCreate,
   onUpdate,
   //
-  // files,
-  // setFiles,
+  files,
+  setFiles,
   error,
   helperText,
   // preview=true,
@@ -28,8 +28,8 @@ export default function PlanRoomAttachments({
   ...other
 }) {
   const { enqueueSnackbar } = useSnackbar();
-  const { setValue, getValues } = useFormContext()
-  const { attachments: files } = getValues()
+  // const { setValue, getValues } = useFormContext()
+  // const { attachments: files } = getValues()
 
   // useEffect(() => {
   //     setFiles([]);
@@ -54,21 +54,21 @@ export default function PlanRoomAttachments({
         })
       );
 
-      // setFiles([...files, ...newFiles]);
-      setValue('attachments', [...files, ...newFiles])
+      setFiles([...files, ...newFiles]);
+      // setValue('attachments', [...files, ...newFiles])
     },
-    [files, setValue, enqueueSnackbar]
+    [files, setFiles, enqueueSnackbar]
   );
 
   const handleRemoveFile = (inputFile) => {
     const filtered = files.filter((file) => file !== inputFile);
-    // setFiles(filtered);
-    setValue('attachments', filtered)
+    setFiles(filtered);
+    // setValue('attachments', filtered)
   };
   
   const handleRemoveAllFiles = () => {
-    setValue('attachments', [])
-    // setFiles([]);
+    // setValue('attachments', [])
+    setFiles([]);
   };
 
   return (

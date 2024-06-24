@@ -175,6 +175,10 @@ export const getAllSubcontractorList = createAsyncThunk(
 // const outsideUser ={ name: '', _id: '', email: '', role: '' }
 const projectInitialState = {
   name: '',
+  address: '',
+  state: '',
+  city: '',
+  zipCode: '',
   trades: [],
   workflow: {
     name: '',
@@ -217,7 +221,12 @@ const project = createSlice({
   initialState,
   reducers: {
     setProjectName: (state, action) => {
-      state.create.name = action.payload
+      // state.create.name = action.payload
+      state.create.name = action.payload.name
+      state.create.address = action.payload.address
+      state.create.state = action.payload.state
+      state.create.city = action.payload.city
+      state.create.zipCode = action.payload.zipCode
     },
     setProjectTrades: (state, action) => {
       state.create.trades = action.payload

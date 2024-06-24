@@ -53,7 +53,8 @@ import ProjectCreateWorkflow from './project-create-workflow';
 
 const steps = [
   {
-    label: 'Project Name',
+    // label: 'Project Name',
+    label: 'Project Info',
     description: `Name your Project`,
     description2: `Enter and press next`,
     value: 'name',
@@ -90,6 +91,8 @@ export default function ProjectStepperForm() {
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
   const [open, setOpen] = useState(false)
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false)
+  
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -149,6 +152,10 @@ export default function ProjectStepperForm() {
 
   const ProjectSchema = Yup.object().shape({
     name: Yup.string().required('Project Name is required'),
+    address: Yup.string().required('Address is required'),
+    state: Yup.string().required('State is required'),
+    city: Yup.string().required('City is required'),
+    zipCode: Yup.string().required('Zip code is required'),
     trades: Yup.array()
       .of(
         Yup.object().shape({
@@ -214,6 +221,10 @@ export default function ProjectStepperForm() {
     // TODO: currentSelectedTemplate from redux 
     return {
       name: '',
+      address: '',
+      state: '',
+      city: '',
+      zipCode: '',
       trades: activeTab === "create" ? [{
         name: '',
         tradeId: '',
@@ -261,6 +272,7 @@ export default function ProjectStepperForm() {
   } = methods;
 
   const formValues = getValues();
+  const { name, address, state, city, zipCode } = formValues;
   const watchValues = watch();
   console.log('formValues', formValues)
   function processInviteUsers() {
@@ -292,7 +304,7 @@ export default function ProjectStepperForm() {
       if (!companies) {
         return
       }
-
+      setIsFormSubmitting(true);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
       console.log("updatedTrades", updatedTrades)
       // // const teams = processInviteUsers(inviteUsers);
@@ -311,6 +323,7 @@ export default function ProjectStepperForm() {
         enqueueSnackbar(error.message, { variant: "error" });
         return
       }
+      setIsFormSubmitting(false)
       handleReset()
       enqueueSnackbar('Project created successfully!', { variant: 'success' });
       await dispatch(getProjectList())
@@ -337,7 +350,22 @@ export default function ProjectStepperForm() {
 
   const getFormValidation = async () => {
     const currentStepValue = steps[activeStep].value
-    const isFormValid = await trigger(currentStepValue);
+    let isFormValid;
+    // refers to project stepper form value 'name'
+    if (currentStepValue === "name") {
+      const isNameValid = await trigger('name');
+      const isAddressValid = await trigger('address');
+      const isStateValid = await trigger('state');
+      const isCityValid = await trigger('city');
+      const isZipCodeValid = await trigger('zipCode');
+      isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
+
+
+    } else {
+      isFormValid = await trigger(currentStepValue);
+
+    }
+    console.log('isformvalid', isFormValid)
     return { isFormValid, currentStepValue }
   }
 
@@ -397,7 +425,10 @@ export default function ProjectStepperForm() {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-
+    // const isValid = await methods.trigger();
+    // if (isValid) {
+    //   setActiveStep((prevStep) => prevStep + 1);
+    // }
     const { isFormValid, currentStepValue } = await getFormValidation();
 
     if (!isFormValid && currentStepValue === "trades") {
@@ -408,7 +439,7 @@ export default function ProjectStepperForm() {
     if (isFormValid) {
       switch (currentStepValue) {
         case 'name':
-          dispatch(setProjectName(formValues?.name));
+          dispatch(setProjectName({ name, address, state, city, zipCode }));
           dispatch(setProjectWorkflow(formValues?.workflow));
           console.log('formValuesNAME', formValues);
           break;
@@ -610,7 +641,7 @@ export default function ProjectStepperForm() {
                 {/* steps.length - 1 new change */}
                 {activeStep === steps.length ? (
                   // <Button type="submit" variant="contained">Finish</Button>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting} >
+                  <LoadingButton type="submit" variant="contained" disabled={isFormSubmitting} loading={isFormSubmitting} onClick={()=>setIsFormSubmitting(true)}>
                     Finish
                   </LoadingButton>
                 ) : (

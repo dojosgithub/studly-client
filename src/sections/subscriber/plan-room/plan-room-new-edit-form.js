@@ -18,6 +18,7 @@ import Radio from '@mui/material/Radio';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import { addDays, isAfter, isTomorrow, startOfDay } from 'date-fns';
 // @mui
@@ -65,6 +66,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   );
   const [files, setFiles] = useState(existingAttachments);
   const [versionType, setVersionType] = useState('new');
+  const [attachmentsError, setAttachmentsError] = useState(false);
 
   const handleChange = (event) => {
     setVersionType(event.target.value);
@@ -86,19 +88,19 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     issueDate: Yup.date()
       .required('Issue Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
-    attachments: Yup.array().required('File is required').min(1, "Min 1 file is required"),
+    // attachments: Yup.array().required('File is required').min(1, "Min 1 file is required"),
     // creator
   });
 
   const defaultValues = useMemo(() => {
     const planName = currentPlanSet?.name ? currentPlanSet?.name : '';
     const issueDate = currentPlanSet?.issueDate ? new Date(currentPlanSet.issueDate) : null;
-    const attachments = currentPlanSet?.attachments ? currentPlanSet?.attachments : [];
+    // const attachments = currentPlanSet?.attachments ? currentPlanSet?.attachments : [];
 
     return {
       planName,
       issueDate,
-      attachments,
+      // attachments,
     };
   }, [currentPlanSet]);
 
@@ -118,18 +120,20 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('errors', errors)
   console.log('getValues', getValues())
   useEffect(() => {
-    // if (!isEmpty(currentPlanSet)) {
-    reset(defaultValues);
-    setFiles(existingAttachments)
-    // }
-  }, [reset, currentPlanSet, defaultValues, versionType, existingAttachments]);
-  useEffect(() => {
-    setFiles(existingAttachments)
-    trigger('attachments')
-  }, [existingAttachments, trigger]);
+    if (!isEmpty(currentPlanSet || versionType)) {
+      reset(defaultValues);
+      setFiles(existingAttachments)
+    }
+    if (files.length > 0) {
+      setAttachmentsError(false)
+    }
+  }, [reset, currentPlanSet, defaultValues, versionType, existingAttachments, files]);
+  // useEffect(() => {
+  //   setFiles(existingAttachments)
+  //   trigger('attachments')
+  // }, [existingAttachments, trigger]);
 
 
 
@@ -139,16 +143,20 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
 
   const onSubmit = handleSubmit(async (data, val) => {
     try {
+      console.log('data ', data);
+      if (files.length <= 0) {
+        // enqueueSnackbar("Min 1 File is required", { variant: 'error' });
+        return
+      }
       console.log('val', val);
       console.log('files ', files);
-      console.log('data ', data);
 
       // if (val === 'review') isSubmittingRef.current = true;
       // const owner = ownerList
       //   .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
       //   .map((item) => item.user);
 
-      // let finalData;
+      let finalData;
       // const { _id, firstName, lastName, email } = currentUser;
       // const creator = _id;
       // if (isEmpty(currentPlanSet)) {
@@ -157,22 +165,22 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       //   finalData = { ...currentPlanSet, ...data, creator, owner };
       // }
 
-      // const formData = new FormData();
-      // const attachments = [];
-      // for (let index = 0; index < files.length; index += 1) {
-      //   const file = files[index];
-      //   if (file instanceof File) {
-      //     formData.append('attachments', file);
-      //   } else {
-      //     attachments.push(file);
-      //   }
-      // }
-      // finalData.attachments = attachments;
-      // formData.append('body', JSON.stringify(finalData));
+      const formData = new FormData();
+      const attachments = [];
+      for (let index = 0; index < files.length; index += 1) {
+        const file = files[index];
+        if (file instanceof File) {
+          formData.append('attachments', file);
+        } else {
+          attachments.push(file);
+        }
+      }
+      finalData.attachments = attachments;
+      formData.append('body', JSON.stringify(finalData));
 
-      // console.log('Final DATA', finalData);
-      // console.log('files ', files);
-      // console.log('formData ', formData);
+      console.log('Final DATA', finalData);
+      console.log('files ', files);
+      console.log('formData ', formData);
 
       // let error;
       // let payload;
@@ -354,10 +362,13 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 )}
 
                 <PlanRoomAttachments
-                  // files={files}
-                  //  setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }} 
-                  error={(errors && errors?.attachments) ? errors?.attachments : null}
+                  files={files}
+                  setFiles={setFiles}
+                  error={attachmentsError ? { message: 'Min 1 file is required' } : null}
+                // setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }}
+                // error={(errors && errors?.attachments) ? errors?.attachments : null}
                 />
+
 
 
               </Box>
@@ -384,7 +395,12 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                       </LoadingButton> */}
                       <LoadingButton
                         type="button"
-                        onClick={() => onSubmit('review')}
+                        onClick={() => {
+                          onSubmit('review')
+                          if (files.length <= 0) {
+                            setAttachmentsError(true)
+                          }
+                        }}
                         variant="contained"
                         size="large"
                         loading={isSubmitting}
