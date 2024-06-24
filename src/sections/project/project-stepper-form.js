@@ -92,7 +92,7 @@ export default function ProjectStepperForm() {
 
   const [open, setOpen] = useState(false)
   const [isFormSubmitting, setIsFormSubmitting] = useState(false)
-  
+
   const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -296,9 +296,7 @@ export default function ProjectStepperForm() {
     };
   }
 
-  const onSubmit = handleSubmit(async (data, e) => {
-    e.preventDefault()
-
+  const onSubmit = handleSubmit(async (data) => {
     try {
       console.log('data->', data);
       if (!companies) {
@@ -508,6 +506,10 @@ export default function ProjectStepperForm() {
     dispatch(resetCreateProject())
   };
 
+  const handleFinish = () => {
+    methods.handleSubmit(onSubmit)();
+  };
+
   const handleSelect = (val) => {
     // if (val === "create") {
     //   setOpenNewTemplateDrawer(true)
@@ -607,10 +609,15 @@ export default function ProjectStepperForm() {
             <>
               <ProjectFinal />
 
-              <Box sx={{ display: 'flex', gap: 5 }}>
+              <Box sx={{ display: 'flex', gap: 2,mb:2 }}>
+                <Button color="inherit" variant='outlined' disabled={isSubmitting} onClick={handleBack} sx={{ mr: 1 }}>
+                  Back
+                </Button>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button onClick={handleReset}>Reset</Button>
-                <Button type="submit" variant="contained">Finish</Button>
+                <Button onClick={handleReset} disabled={isSubmitting}>Reset</Button>
+                <LoadingButton type="button" variant="contained" disabled={isSubmitting} loading={isSubmitting} onClick={handleFinish}>
+                  Finish
+                </LoadingButton>
               </Box>
             </>
           ) : (
@@ -628,7 +635,7 @@ export default function ProjectStepperForm() {
                 {getComponent()}
               </Paper>
               <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
-                {activeStep !== 0 && <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+                {activeStep !== 0 && <Button variant='outlined' color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                   Back
                 </Button>}
                 <Box sx={{ flexGrow: 1 }} />
@@ -639,12 +646,8 @@ export default function ProjectStepperForm() {
                   </Button>
                 )}
                 {/* steps.length - 1 new change */}
-                {activeStep === steps.length ? (
-                  // <Button type="submit" variant="contained">Finish</Button>
-                  <LoadingButton type="submit" variant="contained" disabled={isFormSubmitting} loading={isFormSubmitting} onClick={()=>setIsFormSubmitting(true)}>
-                    Finish
-                  </LoadingButton>
-                ) : (
+
+                {activeStep !== steps.length && (
                   <Button onClick={handleNext} variant="contained">Next</Button>
                 )}
               </Box>
