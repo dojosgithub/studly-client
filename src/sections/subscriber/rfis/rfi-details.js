@@ -57,6 +57,7 @@ const StyledCard = styled(Card, {
     fontWeight: 'bold',
   },
   display: 'flex',
+  alignItems: 'center',
   borderRadius: '10px',
   padding: '1rem',
   gap: '1rem',
@@ -530,6 +531,14 @@ const RfiDetails = ({ id }) => {
             {description}
           </Typography>
         </StyledCard>
+        {isResponseSubmitted &&
+          <StyledCard >
+            <Typography className="submittalTitle" sx={{ color: 'green', fontWeight: 'bold' }}>Official Response</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+              <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+            </Box>
+          </StyledCard>
+        }
         <StyledCard>
           <Typography className="submittalTitle">Drawing Sheet</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
@@ -653,14 +662,7 @@ const RfiDetails = ({ id }) => {
             )}
           </Box>
         </StyledCard>
-        {isResponseSubmitted &&
-          <StyledCard>
-            <Typography className="submittalTitle">Response</Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <Box dangerouslySetInnerHTML={{__html: response?.text}}/>
-            </Box>
-          </StyledCard>
-        }
+
       </Stack>
 
       <RfiResponseDialog

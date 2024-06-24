@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import FormHelperText from '@mui/material/FormHelperText';
 //
 import { useFormContext } from 'react-hook-form';
 import { useSnackbar } from 'src/components/snackbar';
@@ -13,18 +14,22 @@ import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalAttachments({
+export default function PlanRoomAttachments({
   //
   onCreate,
   onUpdate,
   //
-  files,
-  setFiles,
+  // files,
+  // setFiles,
+  error,
+  helperText,
   // preview=true,
   //
   ...other
 }) {
   const { enqueueSnackbar } = useSnackbar();
+  const { setValue, getValues } = useFormContext()
+  const { attachments: files } = getValues()
 
   // useEffect(() => {
   //     setFiles([]);
@@ -49,18 +54,21 @@ export default function SubmittalAttachments({
         })
       );
 
-      setFiles([...files, ...newFiles]);
+      // setFiles([...files, ...newFiles]);
+      setValue('attachments', [...files, ...newFiles])
     },
-    [files, setFiles, enqueueSnackbar]
+    [files, setValue, enqueueSnackbar]
   );
 
   const handleRemoveFile = (inputFile) => {
     const filtered = files.filter((file) => file !== inputFile);
-    setFiles(filtered);
+    // setFiles(filtered);
+    setValue('attachments', filtered)
   };
-
+  
   const handleRemoveAllFiles = () => {
-    setFiles([]);
+    setValue('attachments', [])
+    // setFiles([]);
   };
 
   return (
@@ -73,17 +81,25 @@ export default function SubmittalAttachments({
         onRemove={handleRemoveFile}
         accept={{
           'application/pdf': ['.pdf'],
-          'image/jpeg': ['.jpeg', '.jpg'],
-          'image/png': ['.png'],
-          'image/gif': ['.gif'],
-          'application/msword': ['.doc'],
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-          'application/vnd.ms-excel': ['.xls'],
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+          // 'image/jpeg': ['.jpeg', '.jpg'],
+          // 'image/png': ['.png'],
+          // 'image/gif': ['.gif'],
+          // 'application/msword': ['.doc'],
+          // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+          // 'application/vnd.ms-excel': ['.xls'],
+          // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
         }}
         {...other}
         maxFiles={10}
         maxSize={20000000}
+        error={!!error}
+        helperText={
+          (!!error || helperText) && (
+            <FormHelperText error={!!error} sx={{ px: 2 }}>
+              {error ? error?.message : helperText}
+            </FormHelperText>
+          )
+        }
       />
 
       {!!files.length && (
@@ -95,10 +111,12 @@ export default function SubmittalAttachments({
   );
 }
 
-SubmittalAttachments.propTypes = {
+PlanRoomAttachments.propTypes = {
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
   files: PropTypes.array,
   setFiles: PropTypes.func,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
   preview: PropTypes.bool,
 };
