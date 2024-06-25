@@ -47,7 +47,11 @@ import FormProvider, {
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStrTradeId } from 'src/utils/split-string';
 import { createRfi, editRfi, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useBoolean } from 'src/hooks/use-boolean';
 import PlanRoomAttachments from './plan-room-attachment';
+import PlanRoomPdfConverter from './plan-room-pdf-converter';
+import PlanRoomPDFSheetsDialog from './plan-room-response-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -55,6 +59,8 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   console.log('currentPlanSet', currentPlanSet);
   const router = useRouter();
   const params = useParams();
+  const confirm = useBoolean();
+
   const { pathname } = useLocation();
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
@@ -121,15 +127,25 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     formState: { isSubmitting, errors, isValid },
   } = methods;
   console.log('getValues', getValues())
+  // useEffect(() => {
+  //   if (!isEmpty(currentPlanSet)) {
+  //     reset(defaultValues);
+  //     setFiles(existingAttachments)
+  //   }
+  //   if (files.length > 0) {
+  //     setAttachmentsError(false)
+  //   }
+  // }, [reset, currentPlanSet, defaultValues, existingAttachments, files]);
   useEffect(() => {
-    if (!isEmpty(currentPlanSet || versionType)) {
-      reset(defaultValues);
-      setFiles(existingAttachments)
-    }
+    reset(defaultValues);
+    setFiles(existingAttachments)
+    setAttachmentsError(false)
+  }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
+  useEffect(() => {
     if (files.length > 0) {
       setAttachmentsError(false)
     }
-  }, [reset, currentPlanSet, defaultValues, versionType, existingAttachments, files]);
+  }, [files]);
   // useEffect(() => {
   //   setFiles(existingAttachments)
   //   trigger('attachments')
@@ -145,18 +161,19 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     try {
       console.log('data ', data);
       if (files.length <= 0) {
-        // enqueueSnackbar("Min 1 File is required", { variant: 'error' });
+        enqueueSnackbar("Min 1 File is required", { variant: 'error' });
         return
       }
       console.log('val', val);
       console.log('files ', files);
+      confirm.onTrue()
 
       // if (val === 'review') isSubmittingRef.current = true;
       // const owner = ownerList
       //   .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
       //   .map((item) => item.user);
 
-      let finalData;
+      // let finalData;
       // const { _id, firstName, lastName, email } = currentUser;
       // const creator = _id;
       // if (isEmpty(currentPlanSet)) {
@@ -165,22 +182,22 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       //   finalData = { ...currentPlanSet, ...data, creator, owner };
       // }
 
-      const formData = new FormData();
-      const attachments = [];
-      for (let index = 0; index < files.length; index += 1) {
-        const file = files[index];
-        if (file instanceof File) {
-          formData.append('attachments', file);
-        } else {
-          attachments.push(file);
-        }
-      }
-      finalData.attachments = attachments;
-      formData.append('body', JSON.stringify(finalData));
+      // const formData = new FormData();
+      // const attachments = [];
+      // for (let index = 0; index < files.length; index += 1) {
+      //   const file = files[index];
+      //   if (file instanceof File) {
+      //     formData.append('attachments', file);
+      //   } else {
+      //     attachments.push(file);
+      //   }
+      // }
+      // finalData.attachments = attachments;
+      // formData.append('body', JSON.stringify(finalData));
 
-      console.log('Final DATA', finalData);
-      console.log('files ', files);
-      console.log('formData ', formData);
+      // console.log('Final DATA', finalData);
+      // console.log('files ', files);
+      // console.log('formData ', formData);
 
       // let error;
       // let payload;
@@ -224,6 +241,14 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       });
     }
   });
+
+  const handeFormSubmit = (sheets) => {
+    const formValues = getValues();
+    console.log("formValues", formValues)
+    console.log("sheets", sheets)
+    const finalData={...formValues,sheets}
+    console.log('finalData-->',finalData)
+  }
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {
@@ -426,6 +451,13 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
           </Grid>
         </Grid>
       </FormProvider>
+      {(isValid && files.length > 0) && (
+        <PlanRoomPDFSheetsDialog
+          open={confirm.value}
+          onClose={confirm.onFalse}
+          files={files}
+          onFormSubmit={handeFormSubmit}
+        />)}
     </>
   );
 }

@@ -28,45 +28,47 @@ import FormProvider, {
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
-// inviteSubcontractor, 
-import CustomAutoComplete from 'src/components/custom-automcomplete';
-import { sendToAll } from 'src/redux/slices/submittalSlice';
-import Editor from 'src/components/editor/editor';
-import { submitRfiResponse } from 'src/redux/slices/rfiSlice';
+import PlanRoomPdfConverter from './plan-room-pdf-converter';
 // components
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalSendAllDialog({
+export default function PlanRoomPDFSheetsDialog({
   //
   open,
   onClose,
-  // userList,
+  files,
+  onFormSubmit,
   ...other
 }) {
   const { id } = useParams();
-  const userList = useSelector((state) => state?.submittal?.projectUsersAll) || [];
-  const userId = useSelector((state) => state?.user?.user?._id) || '';
 
 
   const dispatch = useDispatch()
-  console.log('userId--->', userId);
-  console.log('userList--->', userList);
-  const RfiResponseSchema = Yup.object().shape({
-    text: Yup.string().required('text is required'),
-    respondedBy: Yup.string().required('user id is required'),
-
+  const NewPlanSheetSchema = Yup.object().shape({
+    sheets: Yup.array()
+      .of(
+        Yup.object().shape({
+          title: Yup.string()
+            .required('Sheet title is required'),
+          url: Yup.string().required('Url is required'),
+        })
+      )
+      .min(1, 'At least one trade is required'),
   });
 
-  const defaultValues = useMemo(() => ({
-    text: '',
-    respondedBy: userId || ''
-  }), [userId]);
+  const defaultValues = useMemo(() => {
+    const data = { title: '', url: '' };
+    
+    return {
+      sheets: Array.from({ length: files.length }, () => ({ ...data })),
+    };
+  }, [files]);
+
+
 
   const methods = useForm({
-    resolver: yupResolver(RfiResponseSchema),
+    resolver: yupResolver(NewPlanSheetSchema),
     defaultValues,
   });
 
@@ -79,40 +81,20 @@ export default function SubmittalSendAllDialog({
     formState: { isSubmitting, isValid, errors },
   } = methods;
 
-  const handleEditorChange = (content, delta, source, editor) => {
-    // You can get the entire content in HTML format
-    const htmlContent = editor.getHTML();
-    // Or you can get it in other formats, like Delta
-    const deltaContent = editor.getContents();
-    // Or plain text
-    const textContent = editor.getText();
-
-    console.log('htmlContent', htmlContent)
-    console.log('deltaContent', deltaContent)
-    console.log('textContent', textContent)
-
-    setValue("text", htmlContent);
-  };
-
 
   const onSubmit = handleSubmit(async (data) => {
     try {
 
 
       console.log('data', data)
-      const finalData = {
-        id,
-        formData: data
-        }
-      console.log('finalData', finalData)
-      const { error, payload } = await dispatch(submitRfiResponse(finalData))
-      console.log('e-p', { error, payload });
-      if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-        return;
-      }
-      enqueueSnackbar('RFI response submitted successfully', { variant: 'success' });
-      reset()
+      // console.log('e-p', { error, payload });
+      // if (!isEmpty(error)) {
+        // enqueueSnackbar(error.message, { variant: 'error' });
+      //   return;
+      // }
+      enqueueSnackbar('Sheets Title', { variant: 'success' });
+      onFormSubmit(data?.sheets)
+      // reset()
       onClose()
 
 
@@ -120,16 +102,15 @@ export default function SubmittalSendAllDialog({
       console.error(e);
     }
   });
-
+  console.log('dialog',getValues())
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
-      <DialogTitle> Add RFI Response: </DialogTitle>
+    <Dialog fullWidth maxWidth="xl" open={open} onClose={onClose} {...other}>
+      <DialogTitle>Plan Sheet: </DialogTitle>
 
-      <DialogContent sx={{ overflow: 'unset' }}>
+      <DialogContent >
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Editor onChange={handleEditorChange} simple />
-
+          <PlanRoomPdfConverter files={files} />
         </FormProvider>
       </DialogContent>
 
@@ -141,15 +122,16 @@ export default function SubmittalSendAllDialog({
           </Button>
         )}
         <LoadingButton loading={isSubmitting} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
-          Submit Response
+          Upload
         </LoadingButton>
       </DialogActions>
     </Dialog>
   );
 }
 
-SubmittalSendAllDialog.propTypes = {
+PlanRoomPDFSheetsDialog.propTypes = {
   onClose: PropTypes.func,
+  onFormSubmit: PropTypes.func,
   open: PropTypes.bool,
-  // userList: PropTypes.array,
+  files: PropTypes.arrayOf(PropTypes.file),
 };
