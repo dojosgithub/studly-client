@@ -45,6 +45,8 @@ import Lightbox from 'src/components/lightbox/lightbox';
 import { useLightBox } from 'src/components/lightbox';
 //
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
+import { getPlanRoomList } from 'src/redux/slices/planRoomSlice';
+//
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
 import PlanRoomTableFiltersResult from '../plan-room-table-filters-result';
@@ -101,8 +103,8 @@ const slides = [
 
 export default function PlanRoomListView() {
   const table = useTable();
-  const listData = useSelector(state => state?.rfi?.list)
-  // const listData = useSelector(state => state?.planRoom?.list)
+  // const listData = useSelector(state => state?.rfi?.list)
+  const listData = useSelector(state => state?.planRoom?.list)
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
@@ -125,7 +127,9 @@ export default function PlanRoomListView() {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const lightbox = useLightBox(slides);
+  const newSlides = listData?.docs?.map(item => ({ title: item.title, src: item.src.preview })) || [];
+  console.log('newSlides',newSlides);
+  const lightbox = useLightBox(newSlides);
 
   const confirm = useBoolean();
 
@@ -136,7 +140,7 @@ export default function PlanRoomListView() {
 
   useEffect(() => {
     console.log('filters.status', filters.status);
-    dispatch(getRfiList({ search: filters.query, page, sortDir, status: filters.status }));
+    dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
   const dataFiltered = applyFilter({
@@ -171,7 +175,7 @@ export default function PlanRoomListView() {
     async (id, onDelete) => {
       console.log('id', id)
       await dispatch(deleteRfi(id))
-      const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }))
+      const { error, payload } = await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
       console.log('payload', payload)
       onDelete.onFalse()
       enqueueSnackbar('PlanRoom Deleted Successfully', { variant: "success" });
@@ -201,9 +205,10 @@ export default function PlanRoomListView() {
       // router.push(paths.subscriber.planRoom.details(id));
       // confirm.onTrue()
       console.log('handleViewRow', id)
-      lightbox.onOpen(`${slides[0].src}`)
+      const index = listData.docs.findIndex(item => item._id === id);
+      lightbox.onOpen(`${listData.docs[index]?.src?.preview}`)
     },
-    [lightbox]
+    [lightbox, listData.docs]
   );
 
   // const handleFilterStatus = useCallback(
@@ -358,8 +363,8 @@ export default function PlanRoomListView() {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                        onEditRow={() => handleEditRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
+                        onEditRow={() => handleEditRow(row?._id)}
+                        onViewRow={() => handleViewRow(row?._id)}
                       />
                     ))}
 
@@ -394,15 +399,16 @@ export default function PlanRoomListView() {
         </Card>
       </Container>
 
-      <Lightbox
-        open={lightbox.open}
-        close={lightbox.onClose}
-        slides={slides}
-        index={lightbox.selected}
-        // disabledTotal
-        disabledSlideshow
+      {listData && listData?.docs.length > 0 &&
+        (<Lightbox
+          open={lightbox.open}
+          close={lightbox.onClose}
+          slides={listData?.docs?.map(item => ({ title: item.title, src: item.src.preview }))}
+          index={lightbox.selected}
+          // disabledTotal
+          disabledSlideshow
 
-      />
+        />)}
 
 
       {/* <ConfirmDialog

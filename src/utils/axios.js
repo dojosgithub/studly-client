@@ -103,6 +103,16 @@ export const endpoints = {
     response: (id) => `/api/user/rfi/${id}/response`,
     pdf: (id, exptype) => `/api/user/rfi-report/${id}/${exptype}`,
   },
+  planRoom: {
+    list: (id) => `/api/user/plan-room/${id}`,
+    create: '/api/user/plan-room',
+    submit: (id) => `/api/user/plan-room/${id}/submit`,
+    edit: (id) => `/api/user/plan-room/${id}`,
+    delete: (id) => `/api/user/plan-room/${id}`,
+    details: (id) => `/api/user/plan-room/${id}/details`,
+    response: (id) => `/api/user/plan-room/${id}/response`,
+    pdf: (id, exptype) => `/api/user/plan-room-report/${id}/${exptype}`,
+  },
   template: {
     list: '/api/user/template',
     create: '/api/user/template',

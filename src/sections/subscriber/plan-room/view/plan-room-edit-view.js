@@ -27,10 +27,10 @@ export default function PlanRoomEditView({ id }) {
   // const rfiList = useSelector(state => state.rfi?.list?.docs)
   // const currentPlan = rfiList?.find(item => item.id === id)
   // const dispatch = useDispatch()
-  const currentPlan = useSelector((state) => state.rfi.current);
+  const currentPlan = useSelector((state) => state.plan.current);
 
   console.log("currentPlanEdit", currentPlan)
-  console.log("rfiId", id)
+  console.log("planId", id)
   
   // useEffect(() => {
   //   // if (id) {

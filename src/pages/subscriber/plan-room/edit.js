@@ -16,20 +16,20 @@ export default function PlanRoomEditPage() {
 
   const dispatch = useDispatch()
   const projectId = useSelector(state => state?.project?.current?.id);
-  console.log('projectId Submittal Edit', projectId)
+  console.log('projectId planRoom ', projectId)
 
+  //   console.log('edit', id)
   // getting users list of project
-  useEffect(() => {
-    console.log('edit', id)
-    dispatch(getProjectUsersList())
-    dispatch(getProjectAssigneeUsers())
-    async function getDetails(){
+  // useEffect(() => {
+  //   dispatch(getProjectUsersList())
+  //   dispatch(getProjectAssigneeUsers())
+  //   async function getDetails(){
 
-      await dispatch(getRfiDetails(id));
-    }
-    getDetails()
+  //     await dispatch(getRfiDetails(id));
+  //   }
+  //   getDetails()
 
-  }, [id, dispatch])
+  // }, [id, dispatch])
   return (
     <>
       <Helmet>

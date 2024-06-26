@@ -44,9 +44,9 @@ export default function PlanRoomTableRow({
   // companyName, address, adminName, adminEmail, phoneNumber
   const {
     id,
-    name: sheetTitle,
-    description: planName,
-    createdDate: issueDate,
+    title,
+    planName,
+    issueDate,
     // // attachments,
     status,
     creator,
@@ -96,7 +96,7 @@ export default function PlanRoomTableRow({
               }}
             >
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              <span>{sheetTitle}</span>
+              <span>{title}</span>
             </Box>
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>

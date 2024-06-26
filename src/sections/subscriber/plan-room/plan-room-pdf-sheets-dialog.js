@@ -16,7 +16,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import MenuItem from '@mui/material/MenuItem';
-import { AppBar, Stack, Table, Typography,Toolbar, IconButton, } from '@mui/material';
+import { AppBar, Stack, Table, Typography, Toolbar, IconButton, } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
@@ -95,7 +95,7 @@ export default function PlanRoomPDFSheetsDialog({
       enqueueSnackbar('Sheets Title', { variant: 'success' });
       onFormSubmit(data?.sheets)
       // reset()
-      onClose()
+      // onClose()
 
 
     } catch (e) {
@@ -131,8 +131,8 @@ export default function PlanRoomPDFSheetsDialog({
             Close
           </Button>
         )}
-        <LoadingButton loading={isSubmitting} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
-          Upload
+        <LoadingButton loading={isSubmitting && open} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
+          Publish
         </LoadingButton>
       </DialogActions>
     </Dialog>
