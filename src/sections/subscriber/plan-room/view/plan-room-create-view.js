@@ -8,7 +8,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import PlanRoomNewEditForm from '../plan-room-new-edit-form';
-import PlanRoomPdfConverter from '../plan-room-pdf-converter';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +35,6 @@ export default function PlanRoomCreateView() {
       />
 
       <PlanRoomNewEditForm />
-      {/* <PlanRoomPdfConverter/> */}
     </Container>
   );
 }

@@ -9,6 +9,8 @@ import projectReducer from './slices/projectSlice'
 import companyReducer from './slices/companySlice'
 import submittalReducer from './slices/submittalSlice'
 import rfiReducer from './slices/rfiSlice'
+import planRoomReducer from './slices/planRoomSlice'
+//
 import templateReducer from './slices/templateSlice'
 import workflowReducer from './slices/workflowSlice'
 import inviteReducer from './slices/inviteSlice'
@@ -36,6 +38,7 @@ const rootReducer = combineReducers({
   company: companyReducer,
   submittal: submittalReducer,
   rfi: rfiReducer,
+  planRoom: planRoomReducer,
   template: templateReducer,
   workflow: workflowReducer,
   invite: inviteReducer,

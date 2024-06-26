@@ -20,7 +20,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -41,6 +41,9 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
+import Lightbox from 'src/components/lightbox/lightbox';
+import { useLightBox } from 'src/components/lightbox';
+//
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
@@ -52,13 +55,13 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
-  { id: 'name', label: 'Sheet Title', minWidth: 150, width: 220 },
-  { id: 'description', label: 'Plan set', minWidth: 200, width: 400 },
-  { id: 'createdDate', label: 'Issue date', minWidth: 170, width: 170 },
-  { id: 'creator', label: 'Uploaded by', minWidth: 170,  },
+  // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
+  { id: 'name', label: 'Sheet Title', width: "15%" }, // minWidth: 150, width: 220,
+  { id: 'description', label: 'Plan set', width: "50%" }, // minWidth: 400, width: 500 
+  { id: 'createdDate', label: 'Issue date', width: "15%" }, // minWidth: 170, width: 170 
+  { id: 'creator', label: 'Uploaded by', width: "15%" }, // minWidth: 170,  
   // { id: 'status', label: 'Status', width: 100 },
-  { id: '', width: 88 },
+  { id: '', width: "5%" }, // width: 88 
 ];
 
 const defaultFilters = {
@@ -71,9 +74,35 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
+
+const images = [...Array(4)].map((_, index) => ({
+  src: _mock.image.cover(index + 1),
+  title: 'Flamingo',
+  // description: 'Vicko Mozara \n Veliki zali, Dubravica, Croatia',
+}));
+
+const slides = [
+  ...images,
+  {
+    type: 'video',
+    width: 1280,
+    height: 720,
+    poster:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
+    sources: [
+      {
+        src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        type: 'video/mp4',
+      },
+    ],
+  },
+];
+
+
 export default function PlanRoomListView() {
   const table = useTable();
   const listData = useSelector(state => state?.rfi?.list)
+  // const listData = useSelector(state => state?.planRoom?.list)
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
@@ -96,6 +125,7 @@ export default function PlanRoomListView() {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const lightbox = useLightBox(slides);
 
   const confirm = useBoolean();
 
@@ -162,15 +192,18 @@ export default function PlanRoomListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.subscriber.rfi.edit(id));
+      router.push(paths.subscriber.planRoom.edit(id));
     },
     [router]
   );
   const handleViewRow = useCallback(
     (id) => {
-      router.push(paths.subscriber.rfi.details(id));
+      // router.push(paths.subscriber.planRoom.details(id));
+      // confirm.onTrue()
+      console.log('handleViewRow', id)
+      lightbox.onOpen(`${slides[0].src}`)
     },
-    [router]
+    [lightbox]
   );
 
   // const handleFilterStatus = useCallback(
@@ -361,7 +394,18 @@ export default function PlanRoomListView() {
         </Card>
       </Container>
 
-      <ConfirmDialog
+      <Lightbox
+        open={lightbox.open}
+        close={lightbox.onClose}
+        slides={slides}
+        index={lightbox.selected}
+        // disabledTotal
+        disabledSlideshow
+
+      />
+
+
+      {/* <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
@@ -382,7 +426,7 @@ export default function PlanRoomListView() {
             Delete
           </Button>
         }
-      />
+      /> */}
     </>
   );
 }

@@ -170,7 +170,7 @@ function PlanRoomPdfConverter({ files }) {
                         />
                     </Box>
                     <RHFTextField name={`sheets[${index}].title`} label="Sheet Title" InputLabelProps={{ shrink: true }} />
-                    {setValue(`sheets[${index}].url`, image.fullPage)}
+                    {setValue(`sheets[${index}].src`, image.fullPage)}
                 </Box>
             ))}
 

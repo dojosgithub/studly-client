@@ -48,10 +48,12 @@ import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStrTradeId } from 'src/utils/split-string';
 import { createRfi, editRfi, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+//
+import { setPlanRoomList } from 'src/redux/slices/planRoomSlice';
+//
 import { useBoolean } from 'src/hooks/use-boolean';
 import PlanRoomAttachments from './plan-room-attachment';
-import PlanRoomPdfConverter from './plan-room-pdf-converter';
-import PlanRoomPDFSheetsDialog from './plan-room-response-dialog';
+import PlanRoomPDFSheetsDialog from './plan-room-pdf-sheets-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -65,6 +67,8 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user?.user);
+  const fullName = useSelector(state => `${state?.user?.user?.firstName} ${state?.user?.user?.lastName}`);
+
   const projectId = useSelector((state) => state.project?.current?.id);
   const existingAttachments = useMemo(
     () => (currentPlanSet?.attachments ? currentPlanSet?.attachments : []),
@@ -95,20 +99,28 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       .required('Issue Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
     // attachments: Yup.array().required('File is required').min(1, "Min 1 file is required"),
-    // creator
+    // creator: Yup.string(),
+    creator: Yup.object().shape({
+      _id: Yup.string(),
+      firstName: Yup.string(),
+      lastName: Yup.string(),
+    }),
   });
 
   const defaultValues = useMemo(() => {
     const planName = currentPlanSet?.name ? currentPlanSet?.name : '';
     const issueDate = currentPlanSet?.issueDate ? new Date(currentPlanSet.issueDate) : null;
+    const creator = { _id: currentUser._id, firstName: currentUser?.firstName, lastName: currentUser?.lastName } || null;
+
     // const attachments = currentPlanSet?.attachments ? currentPlanSet?.attachments : [];
 
     return {
       planName,
       issueDate,
       // attachments,
+      creator
     };
-  }, [currentPlanSet]);
+  }, [currentPlanSet, currentUser]);
 
 
 
@@ -152,7 +164,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   // }, [existingAttachments, trigger]);
 
 
-
+  console.log('errors', errors)
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
   }
@@ -246,8 +258,10 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     const formValues = getValues();
     console.log("formValues", formValues)
     console.log("sheets", sheets)
-    const finalData={...formValues,sheets}
-    console.log('finalData-->',finalData)
+    const finalData = { ...formValues, sheets }
+    console.log('finalData-->', finalData)
+    dispatch(setPlanRoomList(finalData))
+    router.push(paths.subscriber.planRoom.list);
   }
 
   // const handleDrop = useCallback(
@@ -451,7 +465,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
           </Grid>
         </Grid>
       </FormProvider>
-      {(isValid && files.length > 0) && (
+      {(isValid && files.length > 0 && confirm.value) && (
         <PlanRoomPDFSheetsDialog
           open={confirm.value}
           onClose={confirm.onFalse}

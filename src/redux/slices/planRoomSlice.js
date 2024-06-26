@@ -2,188 +2,188 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
-// * Submittal
-export const createRfi = createAsyncThunk(
-  'rfi/create',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.rfi.create, rfiData);
+// * PLAN ROOM
+// export const createPlanRoom = createAsyncThunk(
+//   'rfi/create',
+//   async (rfiData, { getState, rejectWithValue }) => {
+//     try {
+//       const response = await axiosInstance.post(endpoints.rfi.create, rfiData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the rfi.');
-    }
-  }
-);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while creating the rfi.');
+//     }
+//   }
+// );
 
-export const submitRfiToArchitect = createAsyncThunk(
-  'rfi/submitToArchitect',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      console.log('rfiId', id);
+// export const submitPlanRoomToArchitect = createAsyncThunk(
+//   'rfi/submitToArchitect',
+//   async (id, { getState, rejectWithValue }) => {
+//     try {
+//       console.log('rfiId', id);
 
-      const response = await axiosInstance.post(endpoints.rfi.submit(id));
+//       const response = await axiosInstance.post(endpoints.rfi.submit(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while submitting rfi for review.');
-    }
-  }
-);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while submitting rfi for review.');
+//     }
+//   }
+// );
 
-export const editRfi = createAsyncThunk(
-  'rfi/edit',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const { id, formData } = rfiData;
-      console.log('rfiId', id);
-      console.log('formData', formData);
+// export const editPlanRoom = createAsyncThunk(
+//   'rfi/edit',
+//   async (rfiData, { getState, rejectWithValue }) => {
+//     try {
+//       const { id, formData } = rfiData;
+//       console.log('rfiId', id);
+//       console.log('formData', formData);
 
-      const response = await axiosInstance.put(endpoints.rfi.edit(id), formData);
+//       const response = await axiosInstance.put(endpoints.rfi.edit(id), formData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while updating the rfi.');
-    }
-  }
-);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while updating the rfi.');
+//     }
+//   }
+// );
 
-export const getRfiList = createAsyncThunk(
-  'rfi/list',
-  async (listOptions, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
+// export const getPlanRoomList = createAsyncThunk(
+//   'rfi/list',
+//   async (listOptions, { getState, rejectWithValue }) => {
+//     try {
+//       const projectId = getState().project?.current?.id;
+//       console.log('projectId', projectId);
 
-      const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
-      // const projectId = getState().projectId.id
-      const response = await axiosInstance.post(
-        endpoints.rfi.list(projectId),
-        { status },
-        {
-          params: data,
-        }
-      );
+//       const { status, ...data } = listOptions;
+//       console.log('status', status);
+//       console.log('data', data);
+//       // const projectId = getState().projectId.id
+//       const response = await axiosInstance.post(
+//         endpoints.rfi.list(projectId),
+//         { status },
+//         {
+//           params: data,
+//         }
+//       );
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching rfi list.');
-    }
-  }
-);
-export const deleteRfi = createAsyncThunk(
-  'rfi/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      console.log('rfiId', id);
-      const response = await axiosInstance.delete(endpoints.rfi.delete(id));
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while fetching rfi list.');
+//     }
+//   }
+// );
+// export const deletePlanRoom = createAsyncThunk(
+//   'rfi/delete',
+//   async (id, { getState, rejectWithValue }) => {
+//     try {
+//       console.log('rfiId', id);
+//       const response = await axiosInstance.delete(endpoints.rfi.delete(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the rfi.');
-    }
-  }
-);
-export const getRfiDetails = createAsyncThunk(
-  'submittal/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      console.log('submittalId', id);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while creating the rfi.');
+//     }
+//   }
+// );
+// export const getPlanRoomDetails = createAsyncThunk(
+//   'submittal/details',
+//   async (id, { getState, rejectWithValue }) => {
+//     try {
+//       console.log('submittalId', id);
 
-      const response = await axiosInstance.get(endpoints.rfi.details(id));
+//       const response = await axiosInstance.get(endpoints.rfi.details(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
-    }
-  }
-);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while fetching submittal details.');
+//     }
+//   }
+// );
 
-export const submitRfiResponse = createAsyncThunk(
-  'rfi/response',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const { id, formData } = rfiData;
-      console.log('rfiId', id);
-      console.log('formData', formData);
+// export const submitPlanRoomResponse = createAsyncThunk(
+//   'rfi/response',
+//   async (rfiData, { getState, rejectWithValue }) => {
+//     try {
+//       const { id, formData } = rfiData;
+//       console.log('rfiId', id);
+//       console.log('formData', formData);
 
-      const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
+//       const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while submitting RFI response.');
-    }
-  }
-);
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while submitting RFI response.');
+//     }
+//   }
+// );
 
 
-export const getRFILogPDF = createAsyncThunk(
-  'rfi/pdf',
-  async (exptype, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
+// export const getRFILogPDF = createAsyncThunk(
+//   'rfi/pdf',
+//   async (exptype, { getState, rejectWithValue }) => {
+//     try {
+//       const projectId = getState().project?.current?.id;
+//       console.log('projectId', projectId);
 
-      const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
-        responseType: 'blob',
-      });
+//       const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
+//         responseType: 'blob',
+//       });
 
-      const buffer = response.data;
-      console.log('buffer', response.data);
+//       const buffer = response.data;
+//       console.log('buffer', response.data);
 
-      const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
-      console.log('blob', blob);
-      const url = URL.createObjectURL(blob);
+//       const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
+//       console.log('blob', blob);
+//       const url = URL.createObjectURL(blob);
 
-      // Create a temporary link and trigger a download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'rfi_logs';
-      a.click();
+//       // Create a temporary link and trigger a download
+//       const a = document.createElement('a');
+//       a.href = url;
+//       a.download = 'rfi_logs';
+//       a.click();
 
-      // Cleanup
-      URL.revokeObjectURL(url);
+//       // Cleanup
+//       URL.revokeObjectURL(url);
 
-      return response.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal list.');
-    }
-  }
-);
+//       return response.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while fetching submittal list.');
+//     }
+//   }
+// );
 
 
 const initialState = {
@@ -194,113 +194,114 @@ const initialState = {
   error: null,
 };
 
-const rfi = createSlice({
-  name: 'rfi',
+const planRoom = createSlice({
+  name: 'planRoom',
   initialState,
   reducers: {
-    setRfiList: (state, action) => {
-      state.list = action.payload;
+    setPlanRoomList: (state, action) => {
+      // state.list = action.payload;
+      state.list = [...state.list, action.payload];
     },
-    setCurrentRfi: (state, action) => {
+    setCurrentPlanRoom: (state, action) => {
       state.current = action.payload;
     },
-    setCreateRfi: (state, action) => {
+    setCreatePlanRoom: (state, action) => {
       state.create = action.payload;
     },
-    resetRfiState: () => initialState,
+    resetPlanRoomState: () => initialState,
   },
   extraReducers: (builder) => {
-    // * Create New Submittal
-    builder.addCase(createRfi.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(createRfi.fulfilled, (state, action) => {
-      state.create = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(createRfi.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // * Edit Submittal
-    builder.addCase(editRfi.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(editRfi.fulfilled, (state, action) => {
-      state.create = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(editRfi.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // * Delete Submittal
-    builder.addCase(deleteRfi.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(deleteRfi.fulfilled, (state, action) => {
-      // state.create = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(deleteRfi.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
+    // // * Create New PlanRoom
+    // builder.addCase(createPlanRoom.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(createPlanRoom.fulfilled, (state, action) => {
+    //   state.create = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(createPlanRoom.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
+    // // * Edit PlanRoom
+    // builder.addCase(editPlanRoom.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(editPlanRoom.fulfilled, (state, action) => {
+    //   state.create = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(editPlanRoom.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
+    // // * Delete PlanRoom
+    // builder.addCase(deletePlanRoom.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(deletePlanRoom.fulfilled, (state, action) => {
+    //   // state.create = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(deletePlanRoom.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
 
-    // * Get Submittal List
-    builder.addCase(getRfiList.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getRfiList.fulfilled, (state, action) => {
-      state.list = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getRfiList.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    // Get Submittal Details
-    builder.addCase(getRfiDetails.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(getRfiDetails.fulfilled, (state, action) => {
-      state.current = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(getRfiDetails.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
-    builder.addCase(submitRfiResponse.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(submitRfiResponse.fulfilled, (state, action) => {
-      state.current = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(submitRfiResponse.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
+    // // * Get PlanRoom List
+    // builder.addCase(getPlanRoomList.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(getPlanRoomList.fulfilled, (state, action) => {
+    //   state.list = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(getPlanRoomList.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
+    // // Get PlanRoom Details
+    // builder.addCase(getPlanRoomDetails.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(getPlanRoomDetails.fulfilled, (state, action) => {
+    //   state.current = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(getPlanRoomDetails.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
+    // builder.addCase(submitPlanRoomResponse.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(submitPlanRoomResponse.fulfilled, (state, action) => {
+    //   state.current = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(submitPlanRoomResponse.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
   },
 });
 
 export const {
-  setRfiList,
-  setCurrentRfi,
-  setCreateRfi,
-  resetRfiState,
-} = rfi.actions;
-export default rfi.reducer;
+  setPlanRoomList,
+  setCurrentPlanRoom,
+  setCreatePlanRoom,
+  resetPlanRoomState,
+} = planRoom.actions;
+export default planRoom.reducer;

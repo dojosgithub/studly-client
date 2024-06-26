@@ -44,7 +44,6 @@ export default function PlanRoomTableRow({
   // companyName, address, adminName, adminEmail, phoneNumber
   const {
     id,
-    rfiId: planId,
     name: sheetTitle,
     description: planName,
     createdDate: issueDate,
@@ -56,7 +55,7 @@ export default function PlanRoomTableRow({
   } = row;
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
-  const isDisabled = status === 'Void';
+  // const isDisabled = status === 'Void';
   const quickEdit = useBoolean();
 
 
@@ -67,22 +66,23 @@ export default function PlanRoomTableRow({
     <>
       {
         <TableRow
-          hover={!isDisabled}
           selected={selected}
-          sx={{
-            ...(isDisabled && {
-              cursor: 'not-allowed',
-              pointerEvents: 'none',
-              opacity: 0.5,
-            }),
-          }}
+        // hover={!isDisabled}
+        // sx={{
+        //   ...(isDisabled && {
+        //     cursor: 'not-allowed',
+        //     pointerEvents: 'none',
+        //     opacity: 0.5,
+        //   }),
+        // }}
         >
 
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             <Box
-              onClick={
-                (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
-              }
+              // onClick={
+              //   (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
+              // }
+              onClick={onViewRow}
               sx={{
                 cursor: 'pointer',
                 color: 'blue',
@@ -96,10 +96,9 @@ export default function PlanRoomTableRow({
               }}
             >
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              <span>{planId}</span>
+              <span>{sheetTitle}</span>
             </Box>
           </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{sheetTitle}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(planName, { length: 20, omission: '...' })}
           </TableCell>
@@ -121,7 +120,7 @@ export default function PlanRoomTableRow({
             {creator?.firstName} {creator?.lastName}
           </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}> */}
-            {/* <Box display="flex">
+          {/* <Box display="flex">
               <AvatarGroup max={4}>
                 {owner?.map((item, index) => (
                   <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
@@ -135,7 +134,7 @@ export default function PlanRoomTableRow({
                 ))}
               </AvatarGroup>
             </Box> */}
-            {/* {owner?.map((item, index) => (
+          {/* {owner?.map((item, index) => (
               <Typography>
                 {item.firstName} {owner.length === 1 && item.lastName}
                 {index < owner.length - 1 && ' / '}

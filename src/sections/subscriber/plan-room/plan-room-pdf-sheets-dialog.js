@@ -16,7 +16,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import MenuItem from '@mui/material/MenuItem';
-import { Stack, Table, Typography } from '@mui/material';
+import { AppBar, Stack, Table, Typography,Toolbar, IconButton, } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
@@ -51,15 +51,15 @@ export default function PlanRoomPDFSheetsDialog({
         Yup.object().shape({
           title: Yup.string()
             .required('Sheet title is required'),
-          url: Yup.string().required('Url is required'),
+          src: Yup.string().required('Image src is required'),
         })
       )
       .min(1, 'At least one trade is required'),
   });
 
   const defaultValues = useMemo(() => {
-    const data = { title: '', url: '' };
-    
+    const data = { title: '', src: '' };
+
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
     };
@@ -89,7 +89,7 @@ export default function PlanRoomPDFSheetsDialog({
       console.log('data', data)
       // console.log('e-p', { error, payload });
       // if (!isEmpty(error)) {
-        // enqueueSnackbar(error.message, { variant: 'error' });
+      // enqueueSnackbar(error.message, { variant: 'error' });
       //   return;
       // }
       enqueueSnackbar('Sheets Title', { variant: 'success' });
@@ -102,11 +102,21 @@ export default function PlanRoomPDFSheetsDialog({
       console.error(e);
     }
   });
-  console.log('dialog',getValues())
+  console.log('dialog', getValues())
   return (
-    <Dialog fullWidth maxWidth="xl" open={open} onClose={onClose} {...other}>
-      <DialogTitle>Plan Sheet: </DialogTitle>
+    <Dialog fullScreen fullWidth maxWidth="xl" open={open} onClose={onClose} {...other}>
+      <AppBar position="relative" color="default">
+        <Toolbar>
 
+          <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+            Plan Sheet:
+          </Typography>
+
+          <IconButton color="inherit" edge="start" onClick={onClose}>
+            <Iconify icon="mingcute:close-line" />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
       <DialogContent >
 
         <FormProvider methods={methods} onSubmit={onSubmit}>

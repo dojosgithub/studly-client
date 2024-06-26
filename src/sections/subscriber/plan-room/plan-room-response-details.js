@@ -36,7 +36,7 @@ import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
-import SubmittalSendAllDialog from './plan-room-response-dialog';
+import SubmittalSendAllDialog from './plan-room-pdf-sheets-dialog';
 
 const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
