@@ -28,66 +28,74 @@ import FormProvider, {
 function PlanRoomPdfConverter({ files }) {
     const [images, setImages] = useState([]);
     const canvasRef = useRef(null);
-  
+
     const { setValue } = useFormContext()
     const theme = useTheme();
 
 
-    // const handleUpload = async (event) => {
-    //     // const file = event.target.files[0];
-    //     if (files.length <= 0) {
-    //         return;
-    //     }
-    //     const file = files[0];
-    //     if (file) {
-    //         const arrayBuffer = await file.arrayBuffer();
-    //         const pdfDoc = await PDFDocument.load(arrayBuffer);
-
-    //         const numPages = pdfDoc.getPageCount();
-    //         // const pageImages = [];
-
-    //         // for (let i = 0; i < numPages; i++) {
-    //         //     const page = await renderPage(arrayBuffer, i + 1);
-    //         //     const { fullPage, corner } = await extractCorner(page);
-
-    //         //     pageImages.push({ fullPage, corner });
-    //         // }
-    //         const pageImages = await Promise.all(
-    //             Array.from({ length: numPages }, (_, i) => i + 1).map(async (pageNumber) => {
-    //                 const page = await renderPage(arrayBuffer, pageNumber);
-    //                 const { fullPage, corner } = await extractCorner(page);
-    //                 return { fullPage, corner };
-    //             })
-    //         );
-
-    //         setImages(pageImages);
-    //     }
-    // };
+    const renderAndExtractPage = useCallback(async (arrayBuffer, pageNumber) => {
+        const pageImage = await renderPage(arrayBuffer, pageNumber);
+        const { fullPage, corner } = await extractCorner(pageImage);
+        return { fullPage, corner };
+    }, []);
     const handleUpload = useCallback(
         async (event) => {
-            // const file = event.target.files[0];
-            if (files.length <= 0) {
-                return;
-            }
-            const file = files[0];
-            if (file) {
-                const arrayBuffer = await file.arrayBuffer();
-                const pdfDoc = await PDFDocument.load(arrayBuffer);
+            // const files = Array.from(event.target.files);
 
-                const numPages = pdfDoc.getPageCount();
-                const pageImages = await Promise.all(
-                    Array.from({ length: numPages }, (_, i) => i + 1).map(async (pageNumber) => {
-                        const page = await renderPage(arrayBuffer, pageNumber);
-                        const { fullPage, corner } = await extractCorner(page);
-                        return { fullPage, corner };
-                    })
-                );
-
-                setImages(pageImages);
+            if (files.length === 0) {
+                return; // Exit early if there are no files
             }
+
+            const allPageImages = await Promise.all(
+                files.map(async (file) => {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(arrayBuffer);
+                    const numPages = pdfDoc.getPageCount();
+
+                    const pageImages = await Promise.all(
+                        Array.from({ length: numPages }, (_, i) =>
+                            renderAndExtractPage(arrayBuffer, i + 1)
+                        )
+                    );
+
+                    return pageImages;
+                })
+            );
+
+            // Flatten the array of arrays
+            const flattenedPageImages = allPageImages.flat();
+
+            setImages(flattenedPageImages);
         },
-        [files]
+        [files, renderAndExtractPage]
     );
+
+
+    // const handleUpload = useCallback(
+    //     async (event) => {
+    //         // const file = event.target.files[0];
+    //         if (files.length <= 0) {
+    //             return;
+    //         }
+    //         const file = files[0];
+    //         if (file) {
+    //             const arrayBuffer = await file.arrayBuffer();
+    //             const pdfDoc = await PDFDocument.load(arrayBuffer);
+
+    //             const numPages = pdfDoc.getPageCount();
+    //             const pageImages = await Promise.all(
+    //                 Array.from({ length: numPages }, (_, i) => i + 1).map(async (pageNumber) => {
+    //                     const page = await renderPage(arrayBuffer, pageNumber);
+    //                     const { fullPage, corner } = await extractCorner(page);
+    //                     return { fullPage, corner };
+    //                 })
+    //             );
+
+    //             setImages(pageImages);
+    //         }
+    //     },
+    //     [files]
+    // );
 
     const renderPage = async (pdfData, pageNumber) => {
         const loadingTask = pdfjsLib.getDocument({ data: pdfData });
@@ -137,8 +145,6 @@ function PlanRoomPdfConverter({ files }) {
     console.log('fiels', files)
     return (
         <>
-            {/* <input type="file" onChange={handleUpload} multiple /> */}
-            {/* <FormProvider methods={methods} onSubmit={onSubmit}> */}
             {images.map((image, index) => (
                 <Box
                     gap={3}
@@ -168,7 +174,6 @@ function PlanRoomPdfConverter({ files }) {
                 </Box>
             ))}
 
-            {/* </FormProvider> */}
         </>
     );
 }
