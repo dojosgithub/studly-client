@@ -108,6 +108,13 @@ export const STATUS_WORKFLOW = [
   "Custom",
   "Sent to Subcontractor"
 ];
+export const FILTER_CATEGORIES_PLANROOM = [
+    'Architectural',
+    'Mechanical',
+    'Electrical',
+    'Plumbing',
+    'Structural'
+];
 
 
 export const PROJECT_TEMPLATE_OPTIONS = [

@@ -20,7 +20,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock, FILTER_CATEGORIES_PLANROOM } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -297,7 +297,7 @@ export default function PlanRoomListView() {
             onFilters={handleFilters}
             //
             // roleOptions={_roles}
-            roleOptions={STATUS_WORKFLOW?.slice(0, 2)}
+            roleOptions={FILTER_CATEGORIES_PLANROOM}
           />
 
           {/* {canReset && (

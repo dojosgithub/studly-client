@@ -15,6 +15,7 @@ import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
+import { CircularProgress } from '@mui/material';
 // utils
 import { fDate } from 'src/utils/format-time';
 // components
@@ -143,6 +144,15 @@ function PlanRoomPdfConverter({ files }) {
 
 
     console.log('fiels', files)
+    if (images?.length <= 0) {
+        return (
+            <Box
+                sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}
+            >
+                <CircularProgress color="primary" />
+            </Box>
+        )
+    }
     return (
         <>
             {images.map((image, index) => (

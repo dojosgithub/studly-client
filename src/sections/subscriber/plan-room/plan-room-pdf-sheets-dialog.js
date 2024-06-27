@@ -20,6 +20,7 @@ import { AppBar, Stack, Table, Typography, Toolbar, IconButton, } from '@mui/mat
 import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
+import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import FormProvider, {
   RHFMultiSelect,
@@ -45,6 +46,7 @@ export default function PlanRoomPDFSheetsDialog({
 
 
   const dispatch = useDispatch()
+  const confirmIsFormDisabled = useBoolean(false)
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
       .of(
@@ -92,7 +94,7 @@ export default function PlanRoomPDFSheetsDialog({
       // enqueueSnackbar(error.message, { variant: 'error' });
       //   return;
       // }
-      enqueueSnackbar('Sheets Title', { variant: 'success' });
+      confirmIsFormDisabled.onTrue()
       onFormSubmit(data?.sheets)
       // reset()
       // onClose()
@@ -120,7 +122,7 @@ export default function PlanRoomPDFSheetsDialog({
       <DialogContent >
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <PlanRoomPdfConverter files={files} />
+            <PlanRoomPdfConverter files={files} />
         </FormProvider>
       </DialogContent>
 
@@ -131,7 +133,7 @@ export default function PlanRoomPDFSheetsDialog({
             Close
           </Button>
         )}
-        <LoadingButton loading={isSubmitting && open} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
+        <LoadingButton disabled={confirmIsFormDisabled.value} loading={confirmIsFormDisabled.value} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
           Publish
         </LoadingButton>
       </DialogActions>
