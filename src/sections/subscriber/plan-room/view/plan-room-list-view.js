@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -127,8 +127,8 @@ export default function PlanRoomListView() {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const newSlides = listData?.docs?.map(item => ({ title: item.title, src: item.src.preview })) || [];
-  console.log('newSlides',newSlides);
+  const newSlides = useMemo(() => listData?.docs?.map(item => ({ title: item.title, src: item.src.preview })) || [], [listData]);
+  console.log('newSlides', newSlides);
   const lightbox = useLightBox(newSlides);
 
   const confirm = useBoolean();
@@ -143,11 +143,10 @@ export default function PlanRoomListView() {
     dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
-  const dataFiltered = applyFilter({
+  const dataFiltered = useMemo(() => applyFilter({
     inputData: listData?.docs,
     comparator: getComparator(table.order, table.orderBy),
-    // filters,
-  });
+  }), [listData?.docs, table.order, table.orderBy]);
 
   // const dataInPage = dataFiltered.slice(
   //   table.page * table.rowsPerPage,
@@ -201,14 +200,14 @@ export default function PlanRoomListView() {
     [router]
   );
   const handleViewRow = useCallback(
-    (id) => {
-      // router.push(paths.subscriber.planRoom.details(id));
+    (title) => {
+      // router.push(paths.subscriber.planRoom.details(title));
       // confirm.onTrue()
-      console.log('handleViewRow', id)
-      const index = listData.docs.findIndex(item => item._id === id);
-      lightbox.onOpen(`${listData.docs[index]?.src?.preview}`)
+      console.log('handleViewRow', title)
+      const index = newSlides.findIndex(item => item.title === title);
+      lightbox.onOpen(newSlides[index]?.src)
     },
-    [lightbox, listData.docs]
+    [lightbox, newSlides]
   );
 
   // const handleFilterStatus = useCallback(
@@ -364,7 +363,8 @@ export default function PlanRoomListView() {
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
                         onEditRow={() => handleEditRow(row?._id)}
-                        onViewRow={() => handleViewRow(row?._id)}
+                        // onViewRow={() => handleViewRow(row?._id)}
+                        onViewRow={() => handleViewRow(row?.title)}
                       />
                     ))}
 
@@ -399,11 +399,11 @@ export default function PlanRoomListView() {
         </Card>
       </Container>
 
-      {listData && listData?.docs?.length > 0 &&
+      {newSlides && newSlides?.length > 0 &&
         (<Lightbox
           open={lightbox.open}
           close={lightbox.onClose}
-          slides={listData?.docs?.map(item => ({ title: item.title, src: item.src.preview }))}
+          slides={newSlides}
           index={lightbox.selected}
           // disabledTotal
           disabledSlideshow

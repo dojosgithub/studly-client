@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 // @mui
@@ -32,14 +33,14 @@ import UserQuickEditForm from './plan-room-quick-edit-form';
 // ----------------------------------------------------------------------
 const COLORS = ['default', 'primary', 'secondary', 'info', 'success', 'warning', 'error'];
 
-export default function PlanRoomTableRow({
+const PlanRoomTableRow = memo(({
   row,
   selected,
   onEditRow,
   onSelectRow,
   onDeleteRow,
   onViewRow,
-}) {
+}) => {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   // companyName, address, adminName, adminEmail, phoneNumber
   const {
@@ -238,7 +239,9 @@ export default function PlanRoomTableRow({
       />
     </>
   );
-}
+});
+
+export default PlanRoomTableRow;
 
 PlanRoomTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
