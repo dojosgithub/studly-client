@@ -399,7 +399,7 @@ export default function PlanRoomListView() {
         </Card>
       </Container>
 
-      {listData && listData?.docs.length > 0 &&
+      {listData && listData?.docs?.length > 0 &&
         (<Lightbox
           open={lightbox.open}
           close={lightbox.onClose}
