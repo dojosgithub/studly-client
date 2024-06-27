@@ -48,6 +48,27 @@ export const getPlanRoomList = createAsyncThunk(
     }
   }
 );
+export const getExistingPlanRoomList = createAsyncThunk(
+  'existingPlanRoom/list',
+  async (listOptions, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const response = await axiosInstance.get(
+        endpoints.planRoom.existinglist(projectId),
+      );
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
 
 
 // export const submitPlanRoomToArchitect = createAsyncThunk(
@@ -190,6 +211,7 @@ export const getPlanRoomList = createAsyncThunk(
 
 const initialState = {
   list: [],
+  existingList: [],
   create: {},
   current: {},
   isLoading: false,
@@ -242,6 +264,20 @@ const planRoom = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
+    // * Get Exisiting PlanRoom List
+    builder.addCase(getExistingPlanRoomList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getExistingPlanRoomList.fulfilled, (state, action) => {
+      state.existingList = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getExistingPlanRoomList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     // // * Edit PlanRoom
     // builder.addCase(editPlanRoom.pending, (state) => {
     //   state.isLoading = true;
@@ -271,7 +307,7 @@ const planRoom = createSlice({
     //   state.error = action.error.message;
     // });
 
-    
+
     // // Get PlanRoom Details
     // builder.addCase(getPlanRoomDetails.pending, (state) => {
     //   state.isLoading = true;

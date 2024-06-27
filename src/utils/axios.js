@@ -105,6 +105,7 @@ export const endpoints = {
   },
   planRoom: {
     list: (id) => `/api/user/plan-room/${id}`,
+    existinglist: (id) => `/api/user/existing-plan-room/${id}`,
     create: '/api/user/plan-room',
     submit: (id) => `/api/user/plan-room/${id}/submit`,
     edit: (id) => `/api/user/plan-room/${id}`,

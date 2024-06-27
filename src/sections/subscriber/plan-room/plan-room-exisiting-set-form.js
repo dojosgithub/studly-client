@@ -59,7 +59,7 @@ import PlanRoomPDFSheetsDrawer from './plan-room-pdf-sheets-drawer';
 
 // ----------------------------------------------------------------------
 
-export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
+export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   console.log('currentPlanSet', currentPlanSet);
   const router = useRouter();
   const params = useParams();
@@ -67,7 +67,9 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
 
   const { pathname } = useLocation();
   const isSubmittingRef = useRef();
+  const existingNameRef = useRef();
   const dispatch = useDispatch();
+  const existingPlanList = useSelector((state) => state.planRoom?.existingList);
   const currentUser = useSelector((state) => state.user?.user);
   const projectId = useSelector((state) => state.project?.current?.id);
   const existingAttachments = useMemo(
@@ -75,29 +77,30 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     [currentPlanSet]
   );
   const [files, setFiles] = useState(existingAttachments);
+  const [versionType, setVersionType] = useState('new');
   const [attachmentsError, setAttachmentsError] = useState(false);
+
+  const handleChange = (event) => {
+    setVersionType(event.target.value);
+  };
+
 
 
   const { enqueueSnackbar } = useSnackbar();
 
 
-  const NewPlanRoomSchema = Yup.object().shape({
+  const ExistingPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date()
       .required('Issue Date is required'),
-      // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
-    creator: Yup.object().shape({
-      _id: Yup.string(),
-      firstName: Yup.string(),
-      lastName: Yup.string(),
-    }),
-   
+    // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
+    existingVersionSet: Yup.string().required("Existing Version is required")
   });
 
   const defaultValues = useMemo(() => {
     const planName = currentPlanSet?.name ? currentPlanSet?.name : '';
     const issueDate = currentPlanSet?.issueDate ? new Date(currentPlanSet.issueDate) : null;
-    const creator = { _id: currentUser._id, firstName: currentUser?.firstName, lastName: currentUser?.lastName } || null;
+    const existingVersionSet = '';
 
     // const attachments = currentPlanSet?.attachments ? currentPlanSet?.attachments : [];
 
@@ -105,14 +108,15 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       // attachments,
-      creator
+      existingVersionSet
+
     };
-  }, [currentPlanSet, currentUser]);
+  }, [currentPlanSet]);
 
 
 
   const methods = useForm({
-    resolver: yupResolver(NewPlanRoomSchema),
+    resolver: yupResolver(ExistingPlanRoomSchema),
     defaultValues,
   });
 
@@ -126,17 +130,24 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     formState: { isSubmitting, errors, isValid },
   } = methods;
   console.log('getValues', getValues())
-
   // useEffect(() => {
-  //   reset(defaultValues);
-  //   setFiles(existingAttachments)
-  //   setAttachmentsError(false)
-  // }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
+  //   if (!isEmpty(currentPlanSet)) {
+  //     reset(defaultValues);
+  //     setFiles(existingAttachments)
+  //   }
+  //   if (files.length > 0) {
+  //     setAttachmentsError(false)
+  //   }
+  // }, [reset, currentPlanSet, defaultValues, existingAttachments, files]);
+  useEffect(() => {
+    reset(defaultValues);
+    setFiles(existingAttachments)
+    setAttachmentsError(false)
+  }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
   useEffect(() => {
     if (files.length > 0) {
       setAttachmentsError(false)
     }
-    setAttachmentsError(false)
   }, [files]);
 
 
@@ -243,15 +254,10 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     });
     console.log('modifiedSheets', modifiedSheets)
 
-    let finalData;
     const data = { ...formValues, sheets: modifiedSheets }
     const { _id, firstName, lastName, email } = currentUser;
     const creator = _id;
-    if (isEmpty(currentPlanSet)) {
-      finalData = { ...data, creator, projectId };
-    } else {
-      finalData = { ...currentPlanSet, ...data, creator };
-    }
+    const finalData = { ...data, creator, projectId };
     console.log('finalData-->', finalData)
     const formData = new FormData();
     const attachments = [];
@@ -292,40 +298,20 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     console.log('e-p', payload);
     enqueueSnackbar("Sheets Published Successfully!", { variant: 'success' });
 
-    // let error;
-    // let payload;
-    // if ((!isEmpty(currentPlanSet) && val === 'update' && id) || val === 'review' && id) {
-    //   const res = await dispatch(editRfi({ formData, id }));
-    //   error = res.error;
-    //   payload = res.payload;
-    // } else {
-    //   const res = await dispatch(createRfi(formData));
-    //   error = res.error;
-    //   payload = res.payload;
-    // }
-    // if (!isEmpty(error)) {
-    //   enqueueSnackbar(error.message, { variant: 'error' });
-    //   return;
-    // }
     router.push(paths.subscriber.planRoom.list);
   }
-
-  // const handleDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     const file = acceptedFiles[0];
-
-  //     const newFile = Object.assign(file, {
-  //       preview: URL.createObjectURL(file),
-  //     });
-
-  //     if (file) {
-  //       console.log("newFile", newFile)
-  //       setValue('attachment', newFile, { shouldValidate: true });
-  //     }
-  //   },
-  //   [setValue]
-  // );
-
+  const handleSelectExisting = useCallback(
+    (option) => {
+      console.log('option', option)
+      const { planName, issueDate, id: versionId } = option
+      existingNameRef.current = planName
+      setValue(`planName`, planName);
+      setValue(`issueDate`, issueDate);
+      setValue(`existingVersionSet`, versionId);
+    },
+    [setValue]
+  );
+  
   return (
     <>
 
@@ -339,57 +325,16 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 display="flex"
                 flexDirection="column"
               >
-                  <Box
-                    rowGap={3}
-                    columnGap={2}
-                    display="grid"
-                    gridTemplateColumns={{
-                      xs: 'repeat(1, 1fr)',
-                      sm: 'repeat(2, 1fr)',
-                    }}
-                  >
-                    <RHFTextField name="planName" label="Plan Set Name" />
-                    <Controller
-                      name="issueDate"
-                      control={control}
-                      defaultValue={new Date()}
-                      render={({ field, fieldState: { error } }) => {
-                        const selectedDate = field.value || null;
-                        const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                        const dateStyle = isDateNextDay
-                          ? {
-                            '.MuiInputBase-root.MuiOutlinedInput-root': {
-                              color: 'red',
-                              borderColor: 'red',
-                              border: '1px solid',
-                            },
-                          }
-                          : {};
-                        console.log(isDateNextDay);
-                        return (
-                          <DatePicker
-                            label="Issue Date"
-                            views={['day']}
-                            value={selectedDate}
-                            // minDate={startOfDay(addDays(new Date(), 1))}
-                            onChange={(date) => field.onChange(date)}
-                            format="MM/dd/yyyy" // Specify the desired date format
-                            error={!!error}
-                            helperText={error && error?.message}
-                            slotProps={{
-                              textField: {
-                                fullWidth: true,
-                                error: !!error,
-                                helperText: error?.message,
-                              },
-                            }}
-                          // sx={dateStyle} // Apply conditional style based on the date comparison
-                          />
-                        );
-                      }}
-                    />
-                  </Box>
-                
+
+                <Box display='flex' sx={{ maxWidth: { xs: '100%', md: '40%' } }}>
+                  <RHFSelect name="planName" label="Choose Existing Version Set">
+                    {/* <MenuItem value="" disabled selected>Choose Existing Version Set</MenuItem> */}
+                    {console.log("existingPlanList", existingPlanList)}
+                    {existingPlanList?.map(item => (
+                      <MenuItem key={item.id} value={item.planName} onClick={() => handleSelectExisting(item)}>{item.planName}</MenuItem>
+                    ))}
+                  </RHFSelect>
+                </Box>
 
                 <PlanRoomAttachments
                   files={files}
@@ -410,34 +355,23 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {(!currentPlanSet ) &&
+                {(!currentPlanSet) &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                    <>
-                      {/* <LoadingButton
-                        type="button"
-                        onClick={() => onSubmit('draft')}
-                        variant="outlined"
-                        size="large"
-                        loading={isSubmitting}
-                      >
-                        Save Draft
-                      </LoadingButton> */}
-                      <LoadingButton
-                        type="button"
-                        onClick={() => {
-                          onSubmit('review')
-                          if (files.length <= 0) {
-                            setAttachmentsError(true)
-                          }
-                        }}
-                        variant="contained"
-                        size="large"
-                        loading={isSubmitting}
-                      >
-                        Upload
-                      </LoadingButton>
-                    </>
+                    <LoadingButton
+                      type="button"
+                      onClick={() => {
+                        onSubmit('review')
+                        if (files.length <= 0) {
+                          setAttachmentsError(true)
+                        }
+                      }}
+                      variant="contained"
+                      size="large"
+                      loading={isSubmitting}
+                    >
+                      Upload
+                    </LoadingButton>
                   )}
                 {/* && !pathname.includes('revision') */}
                 {!isEmpty(currentPlanSet) && (
@@ -467,7 +401,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   );
 }
 
-PlanRoomNewEditForm.propTypes = {
+PlanRoomExistingSetForm.propTypes = {
   currentPlanSet: PropTypes.object,
   id: PropTypes.string,
 };
