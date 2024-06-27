@@ -309,12 +309,12 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     const res = await dispatch(createPlanRoom(formData));
     const { error, payload } = res;
     if (!isEmpty(error)) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar("Error Publishing Sheets", { variant: 'error' });
       return;
     }
     confirm.onFalse()
     console.log('e-p', payload);
-    enqueueSnackbar("New Plan created successfully!", { variant: 'success' });
+    enqueueSnackbar("Sheets Published Successfully!", { variant: 'success' });
 
     // let error;
     // let payload;
