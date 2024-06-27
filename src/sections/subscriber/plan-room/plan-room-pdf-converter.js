@@ -29,6 +29,7 @@ import FormProvider, {
 function PlanRoomPdfConverter({ files }) {
     const [images, setImages] = useState([]);
     const canvasRef = useRef(null);
+    const isLoadingRef = useRef(null);
 
     const { setValue } = useFormContext()
     const theme = useTheme();
@@ -65,7 +66,7 @@ function PlanRoomPdfConverter({ files }) {
 
             // Flatten the array of arrays
             const flattenedPageImages = allPageImages.flat();
-
+            isLoadingRef.current = false;
             setImages(flattenedPageImages);
         },
         [files, renderAndExtractPage]
@@ -139,12 +140,13 @@ function PlanRoomPdfConverter({ files }) {
         }))
 
     useEffect(() => {
+        isLoadingRef.current = true;
         handleUpload()
     }, [handleUpload])
 
 
     console.log('fiels', files)
-    if (images?.length <= 0) {
+    if (images?.length <= 0 || isLoadingRef?.current) {
         return (
             <Box
                 sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}
@@ -161,17 +163,17 @@ function PlanRoomPdfConverter({ files }) {
                     display="grid"
                     gridTemplateColumns={{
                         xs: 'repeat(1, 1fr)',
-                        md: 'repeat(3, 1fr)',
+                        md: 'repeat(2, 1fr)',
                     }}
                     alignItems="center"
                     key={image.fullPage}
                     my={5}
                 >
 
-                    <CustomImage
+                    {/* <CustomImage
                         alt={`Full page ${index + 1}`}
                         src={image.fullPage}
-                    />
+                    /> */}
                     <Box p={4}>
                         <CustomImage
                             alt={`Corner of page ${index + 1}`}

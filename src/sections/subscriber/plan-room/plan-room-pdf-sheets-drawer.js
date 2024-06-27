@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
 
 // @mui
-import { isEmpty } from 'lodash';
+import { isEmpty, parseInt } from 'lodash';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -16,8 +16,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import MenuItem from '@mui/material/MenuItem';
-import { AppBar, Stack, Table, Typography, Toolbar, IconButton, } from '@mui/material';
+import Drawer, { drawerClasses } from '@mui/material/Drawer';
+import { AppBar, Stack, Table, Typography, Toolbar, IconButton, Divider } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+
 // components
 import { enqueueSnackbar } from 'notistack';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -52,7 +54,7 @@ export default function PlanRoomPDFSheetsDialog({
       .of(
         Yup.object().shape({
           title: Yup.string()
-            .required('Sheet title is required'),
+          .required('Sheet title is required'),
           src: Yup.string().required('Image src is required'),
         })
       )
@@ -105,39 +107,63 @@ export default function PlanRoomPDFSheetsDialog({
     }
   });
   console.log('dialog', getValues())
+  const renderHead = (
+    <AppBar position="sticky" top="0" color="default">
+      <Toolbar>
+
+        <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+          Plan Sheet:
+        </Typography>
+
+        <IconButton color="inherit" edge="start" onClick={onClose}>
+          <Iconify icon="mingcute:close-line" />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
+  )
   return (
-    <Dialog fullScreen fullWidth maxWidth="xl" open={open} onClose={onClose} {...other}>
-      <AppBar position="relative" color="default">
-        <Toolbar>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        slotProps={{
+          backdrop: { invisible: true },
+        }}
+        sx={{
+          [`& .${drawerClasses.paper}`]: {
+            // ...paper({ theme, bgcolor: theme.palette.background.default }),
+            width: `calc(100% - ${280}px)`,
+            'background': 'white',
+            // ...isOnboarding && {
+            //   width: '100%',
+            // }
+          },
+          position: 'relative'
+        }}
+      >
+        {renderHead}
 
-          <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
-            Plan Sheet:
-          </Typography>
+        <Divider sx={{ borderStyle: 'dashed' }} />
 
-          <IconButton color="inherit" edge="start" onClick={onClose}>
-            <Iconify icon="mingcute:close-line" />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent >
-
-        <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Box height="100%" width='100%' paddingX="2rem">
+          <FormProvider methods={methods} onSubmit={onSubmit}>
             <PlanRoomPdfConverter files={files} />
-        </FormProvider>
-      </DialogContent>
+          </FormProvider>
+        </Box>
 
-      <DialogActions sx={{ justifyContent: 'space-between' }}>
 
-        {onClose && (
-          <Button variant="outlined" color="inherit" onClick={onClose}>
-            Close
-          </Button>
-        )}
-        <LoadingButton disabled={confirmIsFormDisabled.value} loading={confirmIsFormDisabled.value} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
-          Publish
-        </LoadingButton>
-      </DialogActions>
-    </Dialog>
+        <Box sx={{ position: "sticky", bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'right', gap: '1.5rem', padding: '2rem',  backgroundColor: 'white',zIndex:10 }}>
+
+          {onClose && (
+            <Button variant="outlined" disabled={confirmIsFormDisabled.value} color="inherit" onClick={onClose}>
+              Cancel
+            </Button>
+          )}
+          <LoadingButton disabled={confirmIsFormDisabled.value} loading={confirmIsFormDisabled.value} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
+            Publish
+          </LoadingButton>
+        </Box>
+      </Drawer>
   );
 }
 

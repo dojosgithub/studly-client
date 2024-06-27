@@ -55,7 +55,7 @@ import { base64ToFile } from 'src/utils/base64toFile';
 //
 import { useBoolean } from 'src/hooks/use-boolean';
 import PlanRoomAttachments from './plan-room-attachment';
-import PlanRoomPDFSheetsDialog from './plan-room-pdf-sheets-dialog';
+import PlanRoomPDFSheetsDrawer from './plan-room-pdf-sheets-drawer';
 
 // ----------------------------------------------------------------------
 
@@ -489,7 +489,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {(!currentPlanSet || (currentPlanSet && pathname.includes('revision'))) &&
+                {(!currentPlanSet ) &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                     <>
@@ -536,7 +536,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
         </Grid>
       </FormProvider>
       {(isValid && files.length > 0 && confirm.value) && (
-        <PlanRoomPDFSheetsDialog
+        <PlanRoomPDFSheetsDrawer
           open={confirm.value}
           onClose={confirm.onFalse}
           files={files}

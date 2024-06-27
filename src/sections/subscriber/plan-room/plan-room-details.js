@@ -45,7 +45,7 @@ import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
-import RfiResponseDialog from './plan-room-pdf-sheets-dialog';
+import RfiResponseDialog from './plan-room-pdf-sheets-drawer';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
