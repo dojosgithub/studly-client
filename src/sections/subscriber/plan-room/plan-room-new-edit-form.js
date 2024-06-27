@@ -96,10 +96,8 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   const NewSubmittalSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date()
-      .required('Issue Date is required')
-      .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
-    // attachments: Yup.array().required('File is required').min(1, "Min 1 file is required"),
-    // creator: Yup.string(),
+      .required('Issue Date is required'),
+      // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
     creator: Yup.object().shape({
       _id: Yup.string(),
       firstName: Yup.string(),
@@ -440,7 +438,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                             label="Issue Date"
                             views={['day']}
                             value={selectedDate}
-                            minDate={startOfDay(addDays(new Date(), 1))}
+                            // minDate={startOfDay(addDays(new Date(), 1))}
                             onChange={(date) => field.onChange(date)}
                             format="MM/dd/yyyy" // Specify the desired date format
                             error={!!error}

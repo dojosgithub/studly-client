@@ -109,11 +109,14 @@ export default function PlanRoomPDFSheetsDialog({
   });
   console.log('dialog', getValues())
   const renderHead = (
-    <AppBar position="sticky" top="0" color="default">
+    <AppBar position="sticky" top="0" color="primary">
       <Toolbar>
 
         <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
-          Plan Sheet:
+          Sheet Thumbnail
+        </Typography>
+        <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+          Sheet Title
         </Typography>
 
         <IconButton color="inherit" edge="start" onClick={onClose}>
