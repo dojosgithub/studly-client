@@ -184,7 +184,7 @@ const PlanRoomTableRow = memo(({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {(role === 'CAD' || role === 'PWU') && (
+        {/* {(role === 'CAD' || role === 'PWU') && (
           <>
             <MenuItem
               onClick={() => {
@@ -207,7 +207,7 @@ const PlanRoomTableRow = memo(({
               Edit
             </MenuItem>
           </>
-        )}
+        )} */}
 
         <MenuItem
           onClick={() => {
