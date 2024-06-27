@@ -31,6 +31,7 @@ import FormProvider, {
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
+import Scrollbar from 'src/components/scrollbar';
 import PlanRoomPdfConverter from './plan-room-pdf-converter';
 // components
 
@@ -138,17 +139,20 @@ export default function PlanRoomPDFSheetsDialog({
             //   width: '100%',
             // }
           },
-          position: 'relative'
+          position: 'relative',
+          height:'100%'
         }}
       >
         {renderHead}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Box height="100%" width='100%' paddingX="2rem">
-          <FormProvider methods={methods} onSubmit={onSubmit}>
-            <PlanRoomPdfConverter files={files} />
-          </FormProvider>
+        <Box flex={1} width='100%' paddingX="2rem">
+          {/* <Scrollbar> */}
+            <FormProvider methods={methods} onSubmit={onSubmit}>
+              <PlanRoomPdfConverter files={files} />
+            </FormProvider>
+          {/* </Scrollbar> */}
         </Box>
 
 
