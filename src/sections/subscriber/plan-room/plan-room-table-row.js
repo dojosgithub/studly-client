@@ -108,10 +108,11 @@ const PlanRoomTableRow = memo(({
             sx={{
               whiteSpace: 'nowrap',
               minWidth: 140,
-              color: (theme) =>
-                isBefore(new Date(issueDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
-                  ? 'red'
-                  : theme.palette.secondary,
+              color: (theme) => theme.palette.secondary,
+              // color: (theme) =>
+              //   isBefore(new Date(issueDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
+              //     ? 'red'
+              //     : theme.palette.secondary,
             }}
           >
             {fDateISO(issueDate)}
