@@ -112,10 +112,10 @@ export default function PlanRoomPDFSheetsDialog({
     <AppBar position="sticky" top="0" color="primary">
       <Toolbar>
 
-        <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+        <Typography variant="h6" sx={{ flex: 1, ml: 2,color:'black' }}>
           Sheet Thumbnail
         </Typography>
-        <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+        <Typography variant="h6" sx={{ flex: 1, ml: 2,color:'black' }}>
           Sheet Title
         </Typography>
 
