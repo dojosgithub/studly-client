@@ -1,23 +1,14 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 //
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // @mui
-import { isEmpty } from 'lodash';
-import { LoadingButton } from '@mui/lab';
-import Box from '@mui/material/Box';
-import { useSnackbar } from 'notistack';
 import Container from '@mui/material/Container';
 // routes
 import { paths } from 'src/routes/paths';
-// _mock
-import { SUBSCRIBER_USER_ROLE_STUDLY, _userList } from 'src/_mock';
 // components
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
-import { useRouter } from 'src/routes/hooks';
 import MeetingMinutesNewEditForm from '../meeting-minutes-new-edit-form';
 
 // ----------------------------------------------------------------------
