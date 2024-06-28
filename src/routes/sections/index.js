@@ -43,8 +43,7 @@ export default function Router() {
   const currentSubmittal = useSelector((state) => state.submittal.current);
 
   useEffect(() => {
-    console.log('currentSubmittal:', currentSubmittal);
-    console.log('currentUser:', currentUser);
+
     if (currentSubmittal && currentUser) {
       const isNotEmpty = isIncluded(currentSubmittal?.owner, currentUser?._id);
       console.log('isNotEmpty:', isNotEmpty);

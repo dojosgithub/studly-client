@@ -128,7 +128,6 @@ export default function PlanRoomListView() {
   const router = useRouter();
   const dispatch = useDispatch();
   const newSlides = useMemo(() => listData?.docs?.map(item => ({ title: item.title, src: item.src.preview })) || [], [listData]);
-  console.log('newSlides', newSlides);
   const lightbox = useLightBox(newSlides);
 
   const confirm = useBoolean();

@@ -114,6 +114,14 @@ export const endpoints = {
     response: (id) => `/api/user/plan-room/${id}/response`,
     pdf: (id, exptype) => `/api/user/plan-room-report/${id}/${exptype}`,
   },
+  meetingMinutes: {
+    list: (id) => `/api/user/meeting-minutes/${id}`,
+    create: '/api/user/meeting-minutes',
+    submit: (id) => `/api/user/meeting-minutes/${id}/submit`,
+    edit: (id) => `/api/user/meeting-minutes/${id}`,
+    delete: (id) => `/api/user/meeting-minutes/${id}`,
+    details: (id) => `/api/user/meeting-minutes/${id}/details`,
+  },
   template: {
     list: '/api/user/template',
     create: '/api/user/template',

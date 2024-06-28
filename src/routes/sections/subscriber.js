@@ -37,6 +37,12 @@ const PlanRoomEditPage = lazy(() => import('src/pages/subscriber/plan-room/edit'
 const PlanRoomDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/details'));
 const PlanRoomResponseDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/response-details'));
 
+// MeetingMinutes
+const MeetingMinutesListPage = lazy(() => import('src/pages/subscriber/meeting-minutes/list'));
+const MeetingMinutesCreatePage = lazy(() => import('src/pages/subscriber/meeting-minutes/new'));
+const MeetingMinutesEditPage = lazy(() => import('src/pages/subscriber/meeting-minutes/edit'));
+const MeetingMinutesDetailsPage = lazy(() => import('src/pages/subscriber/meeting-minutes/details'));
+
 
 
 // Project
@@ -64,13 +70,6 @@ export const subscriberRoutes = [
       </AuthGuard>
     ),
     children: [
-      //   { element: <IndexPage />, index: true },
-      //   { path: 'submittals', element: <OverviewEcommercePage /> },
-      //   { path: 'rfis', element: <OverviewAnalyticsPage /> },
-      //   { path: 'meeting-minutes', element: <OverviewBankingPage /> },
-      //   { path: 'plan-room', element: <OverviewBookingPage /> },
-      //   { path: 'Documents', element: <OverviewBookingPage /> },
-      //   { path: 'Subcontractors', element: <OverviewBookingPage /> },
 
       { path: 'settings', element: <ProjectSettingsPage /> },
       {
@@ -109,6 +108,16 @@ export const subscriberRoutes = [
           { path: ':id/edit', element: <PlanRoomEditPage /> },
           { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
           // { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
+        ],
+      },
+      {
+        path: 'meeting-minutes',
+        children: [
+          { element: <MeetingMinutesListPage />, index: true },
+          { path: 'list', element: <MeetingMinutesListPage /> },
+          { path: 'new', element: <MeetingMinutesCreatePage /> },
+          { path: ':id', element: <MeetingMinutesDetailsPage /> },
+          { path: ':id/edit', element: <MeetingMinutesEditPage /> },
         ],
       },
 
