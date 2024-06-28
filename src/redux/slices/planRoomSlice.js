@@ -69,7 +69,23 @@ export const getExistingPlanRoomList = createAsyncThunk(
     }
   }
 );
+export const deletePlanRoomSheet = createAsyncThunk(
+  'planRoomSheet/delete',
+  async ({projectId,planRoomId,sheetId}, { getState, rejectWithValue }) => {
+    try {
+      console.log('ids', {projectId,planRoomId,sheetId});
+      const response = await axiosInstance.delete(endpoints.planRoom.delete(projectId,planRoomId,sheetId));
 
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while deleting planroom sheet.');
+    }
+  }
+);
 
 // export const submitPlanRoomToArchitect = createAsyncThunk(
 //   'rfi/submitToArchitect',
@@ -278,6 +294,20 @@ const planRoom = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
+     // * Delete PlanRoom
+    builder.addCase(deletePlanRoomSheet.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(deletePlanRoomSheet.fulfilled, (state, action) => {
+      // state.create = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(deletePlanRoomSheet.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     // // * Edit PlanRoom
     // builder.addCase(editPlanRoom.pending, (state) => {
     //   state.isLoading = true;
@@ -292,21 +322,6 @@ const planRoom = createSlice({
     //   state.isLoading = false;
     //   state.error = action.error.message;
     // });
-    // // * Delete PlanRoom
-    // builder.addCase(deletePlanRoom.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(deletePlanRoom.fulfilled, (state, action) => {
-    //   // state.create = action.payload;
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
-    // builder.addCase(deletePlanRoom.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message;
-    // });
-
 
     // // Get PlanRoom Details
     // builder.addCase(getPlanRoomDetails.pending, (state) => {

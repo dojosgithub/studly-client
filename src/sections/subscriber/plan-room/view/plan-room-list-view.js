@@ -45,7 +45,7 @@ import Lightbox from 'src/components/lightbox/lightbox';
 import { useLightBox } from 'src/components/lightbox';
 //
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
-import { getPlanRoomList } from 'src/redux/slices/planRoomSlice';
+import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
 //
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
@@ -171,15 +171,17 @@ export default function PlanRoomListView() {
   );
 
   const handleDeleteRow = useCallback(
-    async (id, onDelete) => {
-      console.log('id', id)
-      await dispatch(deleteRfi(id))
-      const { error, payload } = await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
-      console.log('payload', payload)
+    async (row, onDelete) => {
+      console.log('row', row)
+      const { projectId, planRoomId, _id: sheetId } = row
+      console.log('id-->', projectId, planRoomId, sheetId)
+      const { error, payload } = await dispatch(deletePlanRoomSheet({projectId, planRoomId, sheetId}));
+      await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
+      console.log('e-p', error, payload)
       onDelete.onFalse()
-      enqueueSnackbar('PlanRoom Deleted Successfully', { variant: "success" });
+      enqueueSnackbar('PlanRoom Sheet Deleted Successfully', { variant: "success" });
     },
-    [dispatch, enqueueSnackbar]
+    [enqueueSnackbar, dispatch]
   );
 
   // const handleDeleteRows = useCallback(() => {
@@ -357,11 +359,11 @@ export default function PlanRoomListView() {
                     listData?.docs &&
                     listData?.docs?.map((row) => (
                       <PlanRoomTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
                         onEditRow={() => handleEditRow(row?._id)}
                         // onViewRow={() => handleViewRow(row?._id)}
                         onViewRow={() => handleViewRow(row?.title)}

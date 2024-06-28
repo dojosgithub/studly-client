@@ -109,7 +109,7 @@ export const endpoints = {
     create: '/api/user/plan-room',
     submit: (id) => `/api/user/plan-room/${id}/submit`,
     edit: (id) => `/api/user/plan-room/${id}`,
-    delete: (id) => `/api/user/plan-room/${id}`,
+    delete: (projectId,planRoomId,sheetId) => `/api/user/plan-room/${projectId}/${planRoomId}/${sheetId}`,
     details: (id) => `/api/user/plan-room/${id}/details`,
     response: (id) => `/api/user/plan-room/${id}/response`,
     pdf: (id, exptype) => `/api/user/plan-room-report/${id}/${exptype}`,

@@ -185,7 +185,7 @@ const PlanRoomTableRow = memo(({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {/* {(role === 'CAD' || role === 'PWU') && (
+        {(role === 'CAD' || role === 'PWU') && (
           <>
             <MenuItem
               onClick={() => {
@@ -198,7 +198,7 @@ const PlanRoomTableRow = memo(({
               Delete
             </MenuItem>
 
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 onEditRow();
                 popover.onClose();
@@ -206,9 +206,9 @@ const PlanRoomTableRow = memo(({
             >
               <Iconify icon="solar:pen-bold" />
               Edit
-            </MenuItem>
+            </MenuItem> */}
           </>
-        )} */}
+        )}
 
         <MenuItem
           onClick={() => {
