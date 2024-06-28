@@ -179,7 +179,7 @@ export default function PlanRoomListView() {
       await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
       console.log('e-p', error, payload)
       onDelete.onFalse()
-      enqueueSnackbar('PlanRoom Sheet Deleted Successfully', { variant: "success" });
+      enqueueSnackbar('Sheet Deleted Successfully', { variant: "success" });
     },
     [enqueueSnackbar, dispatch]
   );
