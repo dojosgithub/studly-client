@@ -27,7 +27,7 @@ const MeetingMinutesInviteAttendeeView = () => {
                 >
                     Invite Attendee
                 </Button>
-                <MeetingMinutesInviteAttendeeListView type='internal' />
+                <MeetingMinutesInviteAttendeeListView />
 
             </Stack>
             <MeetingMinutesInviteAttendeeDialog

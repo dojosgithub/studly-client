@@ -42,23 +42,20 @@ import {
     TablePaginationCustom,
 } from 'src/components/table';
 //
-import { removeMember, setExternalUsers, setInternalUsers, setRemoveExternalUser, setRemoveInternalUser } from 'src/redux/slices/projectSlice';
+import { removeMember, setExternalUsers, setInternalUsers,  } from 'src/redux/slices/projectSlice';
 //
 import MeetingMinutesTableRow from './meeting-minutes-table-row';
 
 // ----------------------------------------------------------------------
 
-// // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
     // { id: '', width: 50 },
+    { id: 'name', label: 'Name', },
+    { id: 'company', label: 'Company', },
     { id: 'email', label: 'Email', },
-    { id: 'role', label: 'Role' },
+    { id: 'attended', label: 'Attended' },
     { id: '', },
-    { id: '', },
-    // //  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
-    // //  { id: 'company', label: 'Company', width: 220 },
-    // //  { id: 'status', label: 'Status', width: 100 },
 ];
 
 const defaultFilters = {
@@ -69,21 +66,18 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function MeetingMinutesInviteAttendeeListView({ type }) {
+export default function MeetingMinutesInviteAttendeeListView() {
     const table = useTable();
     const dispatch = useDispatch();
     const { control, setValue, getValues, watch, resetField } = useFormContext();
 
-    const internal = useSelector(state => state?.project?.inviteUsers?.internal);
-    const external = useSelector(state => state?.project?.inviteUsers?.external);
-    // const userList = type === 'internal' ? internal : external;
     const members = useSelector(state => state?.project?.members);
 
     useEffect(() => {
-        const userList = members.filter(member => member.team === type);
+        const userList = members.filter(member => member.team);
         setTableData(userList);
         console.log('userList updated:', userList);
-    }, [members, type]);
+    }, [members]);
 
 
 
@@ -132,9 +126,6 @@ export default function MeetingMinutesInviteAttendeeListView({ type }) {
             console.log('email', email)
             const filteredRows = tableData.filter((row) => row.email !== email);
             console.log('filteredRows', filteredRows)
-            // enqueueSnackbar('User removed from the team successfully!');
-            // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
-            // dispatch(setUsersActions(email))
             dispatch(removeMember(email))
 
             setTableData(filteredRows);
@@ -143,45 +134,6 @@ export default function MeetingMinutesInviteAttendeeListView({ type }) {
         [dataInPage.length, table, tableData, dispatch]
     );
 
-    const handleResetFilters = useCallback(() => {
-        setFilters(defaultFilters);
-    }, []);
-
-    const handleEditRow = useCallback(
-        (id) => {
-            router.push(paths.dashboard.user.edit(id));
-        },
-        [router]
-    );
-
-    function handleCheckedChange(checked) {
-        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
-        if (checked) {
-            const rowSelected = tableData.map(row => row.id);
-            setValue(`inviteUsers.inside[${type}]`, rowSelected)
-            dispatch(setUsersAction(rowSelected));
-        } else {
-            setValue(`inviteUsers.inside[${type}]`, [])
-            dispatch(setUsersAction([]));
-        }
-    }
-    function handleUserUpdate(rowId) {
-        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
-        const updatedUsers = type === 'internal' ? [...internal] : [...external];
-        const userIndex = updatedUsers.indexOf(rowId);
-
-        if (userIndex !== -1) {
-            // Remove the rowId if it exists
-            const updatedUsersFiltered = updatedUsers.filter(id => id !== rowId);
-            setValue(`inviteUsers.inside[${type}]`, updatedUsersFiltered)
-            dispatch(setUsersAction(updatedUsersFiltered));
-        } else {
-            // Add the rowId if it doesn't exist
-            const updatedUsersConcat = [...updatedUsers, rowId];
-            setValue(`inviteUsers.inside[${type}]`, updatedUsersConcat)
-            dispatch(setUsersAction(updatedUsersConcat));
-        }
-    }
 
 
     return (
@@ -270,6 +222,5 @@ function applyFilter({ inputData, comparator, filters }) {
 }
 
 
-MeetingMinutesInviteAttendeeListView.propTypes = {
-    type: PropTypes.string,
-};
+// MeetingMinutesInviteAttendeeListView.propTypes = {
+// };

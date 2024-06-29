@@ -7,10 +7,6 @@ import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-
 
 const MeetingMinutesInviteAttendees = () => {
     const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(getCompanyUserList())
-    }, [dispatch])
-
     return (
         <Box position='relative'>
             <Box sx={{ mt: 1, mb: 4, display: 'flex', justifyContent: 'space-between' }}>

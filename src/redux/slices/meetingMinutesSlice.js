@@ -50,10 +50,10 @@ export const getMeetingMinutesList = createAsyncThunk(
 );
 export const MeetingMinutes = createAsyncThunk(
   'meetingMinutesSheet/delete',
-  async ({projectId,meetingMinutesId,sheetId}, { getState, rejectWithValue }) => {
+  async ({ projectId, meetingMinutesId, sheetId }, { getState, rejectWithValue }) => {
     try {
-      console.log('ids', {projectId,meetingMinutesId,sheetId});
-      const response = await axiosInstance.delete(endpoints.meetingMinutes.delete(projectId,meetingMinutesId,sheetId));
+      console.log('ids', { projectId, meetingMinutesId, sheetId });
+      const response = await axiosInstance.delete(endpoints.meetingMinutes.delete(projectId, meetingMinutesId, sheetId));
 
       return response.data.data;
     } catch (err) {
@@ -203,10 +203,61 @@ export const MeetingMinutes = createAsyncThunk(
 //   }
 // );
 
+const inviteAttendeeInitialState={
+  name: '',
+  company: '',
+  email: '',
+  attended: false,
+  // _id: uuidv4(),
+}
+const topicInitialState={
+  topic: '',
+  action: '',
+  date: null,
+  description: '',
+  // _id: uuidv4(),
+}
+const noteInitialState={
+  subject: '',
+  topics: [{...topicInitialState}],
+  // _id: uuidv4(),
+}
+const permitInitialState={
+  status: '',
+  date: null,
+  permitNumber: '',
+  // _id: uuidv4(),
+}
+const planTrackingInitialState={
+  planTracking: '',
+  stampDate: null,
+  dateRecieved: null,
+  // _id: uuidv4(),
+}
+const meetingMinutesInitialState = {
+  description: {
+    meetingNumber: '',
+    name: '',
+    title: '',
+    site: '',
+    date: null,
+    time: '',
+    minutesBy: '',
+    conferenceCall: '',
+    meetingID: '',
+    url: '',
+  },
+  inviteAttendee: [{...inviteAttendeeInitialState}],
+  notes: [{...noteInitialState}],
+  permit: [{...permitInitialState}],
+  plan: [{...planTrackingInitialState}],
+  projectId: '', // Assuming you want a unique ID
+  company: '', // Assuming you want a unique ID
+}
 
 const initialState = {
   list: [],
-  create: {},
+  create: {...meetingMinutesInitialState},
   current: {},
   isLoading: false,
   error: null,
@@ -226,6 +277,23 @@ const meetingMinutes = createSlice({
     setCreateMeetingMinutes: (state, action) => {
       state.create = action.payload;
     },
+    setMeetingMinutesDescription: (state, action) => {
+      state.create.description = action.payload
+    },
+    setMeetingMinutesInviteAttendee: (state, action) => {
+      state.create.inviteAttendee = action.payload
+    },
+    setMeetingMinutesNotes: (state, action) => {
+      state.create.notes = action.payload
+    },
+    setMeetingMinutesPermit: (state, action) => {
+      state.create.permit = action.payload
+    },
+    setMeetingMinutesPlanTracking: (state, action) => {
+      state.create.plan = action.payload
+    },
+    
+    resetMeetingMinutesCreateState: () => meetingMinutesInitialState,
     resetMeetingMinutesState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -258,8 +326,8 @@ const meetingMinutes = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-   
-     // * Delete PlanRoom
+
+    // * Delete PlanRoom
     builder.addCase(MeetingMinutes.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -322,6 +390,12 @@ export const {
   setMeetingMinutesList,
   setCurrentMeetingMinutes,
   setCreateMeetingMinutes,
+  setMeetingMinutesDescription,
+  setMeetingMinutesInviteAttendee,
+  setMeetingMinutesNotes,
+  setMeetingMinutesPermit,
+  setMeetingMinutesPlanTracking,
   resetMeetingMinutesState,
+  resetMeetingMinutesCreateState,
 } = meetingMinutes.actions;
 export default meetingMinutes.reducer;

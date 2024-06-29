@@ -34,9 +34,8 @@ import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
-import { getTemplateList, resetTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
-import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
-import { getSubmittalList } from 'src/redux/slices/submittalSlice';
+// redux
+import { setMeetingMinutesDescription, setMeetingMinutesInviteAttendee, setMeetingMinutesNotes, setMeetingMinutesPermit, setMeetingMinutesPlanTracking } from 'src/redux/slices/meetingMinutesSlice';
 //
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
@@ -80,7 +79,7 @@ const steps = [
 
 
 export default function MeetingMinutesStepperForm() {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
@@ -162,9 +161,9 @@ export default function MeetingMinutesStepperForm() {
     trigger
   } = methods;
 
-  const formValues = getValues();
+  const { description, inviteAttendee, notes, permit, plan } = getValues();
   // const { name, address, state, city, zipCode } = formValues;
-  console.log('formValues', formValues)
+  console.log('formValues', { description, inviteAttendee, notes, permit, plan })
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -235,33 +234,28 @@ export default function MeetingMinutesStepperForm() {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
-    if (!isFormValid && currentStepValue === "trades") {
-      enqueueSnackbar('Please add a trade', { variant: "warning" });
-      return
-    }
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
         case 'description':
-          // dispatch(setProjectName({ name, address, state, city, zipCode }));
-          // dispatch(setProjectWorkflow(formValues?.workflow));
-          console.log('formValues-Desc', formValues);
+          console.log('formValues-Desc', description);
+          dispatch(setMeetingMinutesDescription(description));
           break;
         case 'inviteAttendee':
-          console.log('formValues-Invite', formValues);
-          // dispatch(setProjectTrades(formValues?.trades));
+          console.log('formValues-Invite', inviteAttendee);
+          dispatch(setMeetingMinutesInviteAttendee(inviteAttendee));
           break;
         case 'notes':
-          // dispatch(setProjectWorkflow(formValues?.workflow));
-          console.log('formValues-Notes', formValues);
+          console.log('formValues-Notes', notes);
+          dispatch(setMeetingMinutesNotes(notes));
           break;
         case 'permit':
-          console.log('formValues-permit', formValues);
-          // dispatch(setProjectWorkflow(formValues?.workflow));
+          console.log('formValues-permit', permit);
+          dispatch(setMeetingMinutesPermit(permit));
           break;
         case 'plan':
-          console.log('formValues-plan', formValues);
-          // dispatch(setProjectWorkflow(formValues?.workflow));
+          console.log('formValues-plan', plan);
+          dispatch(setMeetingMinutesPlanTracking(plan));
           break;
         default:
           break;

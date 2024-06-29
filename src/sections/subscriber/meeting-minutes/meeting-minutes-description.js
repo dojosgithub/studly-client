@@ -32,21 +32,21 @@ const MeetingMinutesDescription = () => {
         }}
         my={5}
       >
-        <RHFTextField name="meetingNumber" label="Meeting Number" onBlur={() => trigger('meetingNumber')} />
-        <RHFTextField name="title" label="Meeting Title" onBlur={() => trigger('title')} />
+        <RHFTextField name="description.meetingNumber" label="Meeting Number" onBlur={() => trigger('description.meetingNumber')} />
+        <RHFTextField name="description.title" label="Meeting Title" onBlur={() => trigger('description.title')} />
 
-        <RHFTextField name="name" label="Project Name" onBlur={() => trigger('name')} />
-        <RHFTextField name="site" label="Meeting Site" onBlur={() => trigger('site')} />
+        <RHFTextField name="description.name" label="Project Name" onBlur={() => trigger('description.name')} />
+        <RHFTextField name="description.site" label="Meeting Site" onBlur={() => trigger('description.site')} />
 
         
-        <MeetingMinutesDatePicker sx={{alignSelf:"center"}} name='date' label='Meeting Date' onBlur={() => trigger('date')}/>
+        <MeetingMinutesDatePicker sx={{alignSelf:"center"}} name='description.date' label='Meeting Date' onBlur={() => trigger('description.date')}/>
         
-        <MeetingMinutesTimePicker name='time' label='Meeting Time' onBlur={() => trigger('time')} />
-        <RHFTextField name="minutesBy" label="Minutes By" onBlur={() => trigger('minutesBy')} />
-        <RHFTextField name="conferenceCall" label="Conference Call" onBlur={() => trigger('conferenceCall')} />
+        <MeetingMinutesTimePicker name='description.time' label='Meeting Time' onBlur={() => trigger('description.time')} />
+        <RHFTextField name="description.minutesBy" label="Minutes By" onBlur={() => trigger('description.minutesBy')} />
+        <RHFTextField name="description.conferenceCall" label="Conference Call" onBlur={() => trigger('description.conferenceCall')} />
 
-        <RHFTextField name="meetingID" label="Meeting ID" onBlur={() => trigger('meetingID')} />
-        <RHFTextField name="url" label="Meeting URL" onBlur={() => trigger('url')} />
+        <RHFTextField name="description.meetingID" label="Meeting ID" onBlur={() => trigger('description.meetingID')} />
+        <RHFTextField name="description.url" label="Meeting URL" onBlur={() => trigger('description.url')} />
       </Box>
     </>)
 }
