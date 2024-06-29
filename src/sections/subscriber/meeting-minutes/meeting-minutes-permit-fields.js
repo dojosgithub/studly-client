@@ -14,6 +14,7 @@ import {
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
+import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -41,7 +42,7 @@ const MeetingMinutesPermitFields = () => {
 
     const handleAdd = useCallback(() => {
         append({
-            permitStatus: '',
+            status: '',
             permitNumber: '',
             date: null,
             _id: uuidv4(),
@@ -75,7 +76,7 @@ const MeetingMinutesPermitFields = () => {
 
     const handleClearService = useCallback(
         (index) => {
-            resetField(`trades[${index}].permitStatus`);
+            resetField(`trades[${index}].status`);
             resetField(`trades[${index}].date`);
             resetField(`trades[${index}].permitNumber`);
         },
@@ -89,8 +90,9 @@ const MeetingMinutesPermitFields = () => {
     return (
         <>
             <Box sx={{ marginBottom: '2rem' }}>
+            <Typography sx={{ mt: 2,mb:4 }} fontSize='1.5rem' fontWeight='bold'>Permit</Typography>
 
-                <Box
+                {/* <Box
                     sx={{ display: 'grid', marginBottom: '2rem', gridTemplateColumns: 'repeat(3, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                 >
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Permit Status</Typography>
@@ -98,7 +100,7 @@ const MeetingMinutesPermitFields = () => {
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Permit Number</Typography>
                     <Typography>{" "}</Typography>
 
-                </Box>
+                </Box> */}
                 <Stack gap='1.5rem'>
                     {fields && fields?.map(({ _id, name, tradeId }, index) => (
                         <Box
@@ -107,8 +109,8 @@ const MeetingMinutesPermitFields = () => {
                         >
 
 
-                            <RHFTextField name={`trades[${index}].permitStatus`} label="Permit Status" InputLabelProps={{ shrink: true }} />
-                            <RHFTextField name={`trades[${index}].date`} label="Date" InputLabelProps={{ shrink: true }} />
+                            <RHFTextField name={`trades[${index}].status`} label="Permit Status" InputLabelProps={{ shrink: true }} />
+                            <MeetingMinutesDatePicker name={`trades[${index}].date`} label='Date'/>
                             <RHFTextField name={`trades[${index}].permitNumber`} label="Permit Number" InputLabelProps={{ shrink: true }} />
                             <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                 <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />

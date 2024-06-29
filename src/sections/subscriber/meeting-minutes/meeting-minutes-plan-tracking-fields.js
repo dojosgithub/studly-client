@@ -14,6 +14,7 @@ import {
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
+import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -89,8 +90,9 @@ const MeetingMinutesPlanTrackingFields = () => {
     return (
         <>
             <Box sx={{ marginBottom: '2rem' }}>
+                <Typography sx={{ mt: 2, mb: 4 }} fontSize='1.5rem' fontWeight='bold'>Plan/Ask Tracking</Typography>
 
-                <Box
+                {/* <Box
                     sx={{ display: 'grid', marginBottom: '2rem', gridTemplateColumns: 'repeat(3, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                 >
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Plan Tracking</Typography>
@@ -98,7 +100,7 @@ const MeetingMinutesPlanTrackingFields = () => {
                     <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Date Recieved</Typography>
                     <Typography>{" "}</Typography>
 
-                </Box>
+                </Box> */}
                 <Stack gap='1.5rem'>
                     {fields && fields?.map(({ _id, name, tradeId }, index) => (
                         <Box
@@ -108,8 +110,9 @@ const MeetingMinutesPlanTrackingFields = () => {
 
 
                             <RHFTextField name={`trades[${index}].planTracking`} label="Plan Tracking" InputLabelProps={{ shrink: true }} />
-                            <RHFTextField name={`trades[${index}].stampDate`} label="Stamp Date" InputLabelProps={{ shrink: true }} />
-                            <RHFTextField name={`trades[${index}].dateRecieved`} label="Date Recieved" InputLabelProps={{ shrink: true }} />
+                            <MeetingMinutesDatePicker sx={{ alignSelf: "center" }} name={`trades[${index}].stampDate`} label='Stamp Date' />
+                            <MeetingMinutesDatePicker sx={{ alignSelf: "center" }} name={`trades[${index}].dateRecieved`} label='Date Recieved' />
+
                             <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                                 <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
                             </StyledIconButton>

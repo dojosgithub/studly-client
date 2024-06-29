@@ -47,7 +47,6 @@ export default function MeetingMinutesInviteAttendeeDialog({
     email: Yup.string().email('Invalid email').required('Email is required'),
     attended: Yup.string().required('Attended is required'),
     _id: Yup.string(),
-    status: Yup.string(),
     // })
 
   });
@@ -58,7 +57,6 @@ export default function MeetingMinutesInviteAttendeeDialog({
     email: '',
     attended: '',
     _id: uuidv4(),
-    status: 'invited'
   }), []);
 
   const methods = useForm({

@@ -43,6 +43,8 @@ import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
 import MeetingMinutesInviteAttendee from './meeting-minutes-invite-attendee';
 import ProjectFinal from './project-final';
 import MeetingMinutesPlanTrackingFields from './meeting-minutes-plan-tracking-fields';
+import MeetingMinutesNotes from './meeting-minutes-notes';
+import meetingMinutesSchema from './meeting-minutes-schema';
 
 
 
@@ -50,37 +52,35 @@ import MeetingMinutesPlanTrackingFields from './meeting-minutes-plan-tracking-fi
 
 const steps = [
   {
-    // label: 'Project Name',
-    label: 'Project Info',
-    description: `Name your Project`,
-    description2: `Enter and press next`,
-    value: 'name',
+    label: 'Meeting Description',
+    // description: `Name your Project`,
+    value: 'description',
   },
   {
-    label: 'Trades',
-    description: 'Create trades for your project',
-    value: 'trades',
+    label: 'Meeting Attendees',
+    // description: 'Create trades for your project',
+    value: 'inviteAttendee',
   },
   {
-    label: 'Workflow',
-    description: `Create  your project workflow`,
-    value: 'workflow',
+    label: 'Meeting Notes',
+    // description: `Create  your project workflow`,
+    value: 'notes',
   },
   {
-    label: 'Assign Subcontractors',
-    description: `Assign subcontractors to your project`,
-    value: 'subcontractors',
+    label: 'Permit',
+    // description: `Assign subcontractors to your project`,
+    value: 'permit',
   },
   {
-    label: 'Invite Users',
-    description: `Invite users to project`,
-    value: 'invite-users',
+    label: 'Plan Tracking',
+    // description: `Invite users to project`,
+    value: 'plan',
   },
 ];
 
 
 export default function MeetingMinutesStepperForm() {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(2);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
@@ -94,65 +94,60 @@ export default function MeetingMinutesStepperForm() {
 
   const selectedTradeTemplate = useSelector(state => state.project.create.selectedTradeTemplate);
 
-  const isStepOptional = (step) => (step === 2 || step === 3);
+  const isStepOptional = (step) => (step === 3 || step === 4);
 
   const isStepSkipped = (step) => skipped?.has(step);
 
 
-  const ProjectSchema = Yup.object().shape({
-    name: Yup.string().required('Project Name is required'),
-    address: Yup.string().required('Address is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    trades: Yup.array()
-      .of(
-        Yup.object().shape({
-          // tradeId: Yup.string().required('Trade ID is required'),
-          tradeId: Yup.string()
-            .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
-            .required('Trade id is required'),
-          name: Yup.string().required('Trade Name is required'),
-          _id: Yup.string(),
-          subcontractorId: Yup.string()
-        })
-      )
-      .min(1, 'At least one trade is required'),
-    workflow: Yup.object().shape({
-      name: Yup.string().required('Workflow Name is required'),
-      statuses: Yup.array().min(1, 'At least one status is required'),
-      // returnDate: Yup.date().min(addDays(new Date(), 1)), 
-      returnDate: Yup.string().required('Date is required'),
-    }),
-
-
-  });
-
-  const defaultValues = useMemo(() => {
-    const isNewEntry = activeStep === 2 || activeStep === 3;
-    // TODO: currentSelectedTemplate from redux 
-    return {
+  const defaultValues = useMemo(() => ({
+    description: {
+      meetingNumber: '',
       name: '',
-      address: '',
-      state: '',
-      city: '',
-      zipCode: '',
-      trades: [{
-        name: '',
-        tradeId: '',
-        _id: uuidv4(),
+      title: '',
+      site: '',
+      date: new Date(),
+      time: '',
+      minutesBy: '',
+      conferenceCall: '',
+      meetingID: '',
+      url: '',
+    },
+    inviteAttendee: [{
+      name: '',
+      company: '',
+      email: '',
+      attended: false,
+      // _id: uuidv4(),
+    }],
+    notes: [{
+      subject: '',
+      topics: [{
+        topic: '',
+        action: '',
+        date: new Date(),
+        description: '',
+        // _id: uuidv4(),
       }],
-      workflow: {
-        name: 'default',
-        statuses: ['Draft', 'Submitted'],
-        returnDate: new Date()
-      },
-
-    };
-  }, [activeStep]);
+      // _id: uuidv4(),
+    }],
+    permit: [{
+      status: '',
+      date: null,
+      permitNumber: '',
+      // _id: uuidv4(),
+    }],
+    plan: [{
+      planTracking: '',
+      stampDate: null,
+      dateRecieved: null,
+      // _id: uuidv4(),
+    }],
+    projectId: '', // Assuming you want a unique ID
+    company: '', // Assuming you want a unique ID
+  }), []);
 
   const methods = useForm({
-    resolver: yupResolver(ProjectSchema),
+    resolver: yupResolver(meetingMinutesSchema),
     defaultValues,
   });
 
@@ -168,7 +163,7 @@ export default function MeetingMinutesStepperForm() {
   } = methods;
 
   const formValues = getValues();
-  const { name, address, state, city, zipCode } = formValues;
+  // const { name, address, state, city, zipCode } = formValues;
   console.log('formValues', formValues)
 
 
@@ -209,21 +204,21 @@ export default function MeetingMinutesStepperForm() {
 
   const getFormValidation = async () => {
     const currentStepValue = steps[activeStep].value
-    let isFormValid;
+    // let isFormValid;
     // refers to project stepper form value 'name'
-    if (currentStepValue === "name") {
-      const isNameValid = await trigger('name');
-      const isAddressValid = await trigger('address');
-      const isStateValid = await trigger('state');
-      const isCityValid = await trigger('city');
-      const isZipCodeValid = await trigger('zipCode');
-      isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
+    // if (currentStepValue === "name") {
+    //   const isNameValid = await trigger('name');
+    //   const isAddressValid = await trigger('address');
+    //   const isStateValid = await trigger('state');
+    //   const isCityValid = await trigger('city');
+    //   const isZipCodeValid = await trigger('zipCode');
+    //   isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
 
 
-    } else {
-      isFormValid = await trigger(currentStepValue);
+    // } else {
+    const isFormValid = await trigger(currentStepValue);
 
-    }
+    // }
     console.log('isformvalid', isFormValid)
     return { isFormValid, currentStepValue }
   }
@@ -247,16 +242,26 @@ export default function MeetingMinutesStepperForm() {
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
-        case 'name':
-          dispatch(setProjectName({ name, address, state, city, zipCode }));
-          dispatch(setProjectWorkflow(formValues?.workflow));
-          console.log('formValuesNAME', formValues);
+        case 'description':
+          // dispatch(setProjectName({ name, address, state, city, zipCode }));
+          // dispatch(setProjectWorkflow(formValues?.workflow));
+          console.log('formValues-Desc', formValues);
           break;
-        case 'trades':
-          dispatch(setProjectTrades(formValues?.trades));
+        case 'inviteAttendee':
+          console.log('formValues-Invite', formValues);
+          // dispatch(setProjectTrades(formValues?.trades));
           break;
-        case 'workflow':
-          dispatch(setProjectWorkflow(formValues?.workflow));
+        case 'notes':
+          // dispatch(setProjectWorkflow(formValues?.workflow));
+          console.log('formValues-Notes', formValues);
+          break;
+        case 'permit':
+          console.log('formValues-permit', formValues);
+          // dispatch(setProjectWorkflow(formValues?.workflow));
+          break;
+        case 'plan':
+          console.log('formValues-plan', formValues);
+          // dispatch(setProjectWorkflow(formValues?.workflow));
           break;
         default:
           break;
@@ -292,7 +297,7 @@ export default function MeetingMinutesStepperForm() {
   const handleReset = () => {
     setActiveStep(0);
     reset();
-    dispatch(resetCreateProject())
+    // dispatch(resetCreateProject())
   };
 
   const handleFinish = () => {
@@ -312,7 +317,7 @@ export default function MeetingMinutesStepperForm() {
         break;
 
       case 2:
-        component = <Box>Step 3</Box>;
+        component = <MeetingMinutesNotes />;
         break;
       case 3:
         component = <MeetingMinutesPermitFields />;
@@ -321,7 +326,7 @@ export default function MeetingMinutesStepperForm() {
         component = <MeetingMinutesPlanTrackingFields />;
         break;
       default:
-        component = <Box>Step 3</Box>;
+        component = <MeetingMinutesDescription />;
     }
     return component;
   }
@@ -342,9 +347,8 @@ export default function MeetingMinutesStepperForm() {
           return (
             <Step key={step.label} {...stepProps}>
               <StepLabel
-                // onClick={() => handleBack(index)}
                 {...labelProps}
-                optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
+              // optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
               >
                 {step.label}
               </StepLabel>
