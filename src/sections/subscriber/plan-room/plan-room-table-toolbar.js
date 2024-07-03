@@ -43,6 +43,9 @@ export default function RfiTableToolbar({
     setAnchorEl(null);
   };
 
+  const planRoomCategories = useSelector(state => state.project.current.planRoomCategories);
+
+
   // const handleFilterName = useCallback(
   //   (event) => {
   //     onFilters('name', event.target.value);
@@ -143,10 +146,10 @@ export default function RfiTableToolbar({
               },
             }}
           >
-            {roleOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.status.includes(option)} />
-                {option}
+            {planRoomCategories.map((option) => (
+              <MenuItem key={option.id} value={option.name}>
+                <Checkbox disableRipple size="small" checked={filters.status.includes(option.name)} />
+                {option.name}
               </MenuItem>
             ))}
           </Select>

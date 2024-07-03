@@ -57,6 +57,7 @@ export default function PlanRoomPDFSheetsDialog({
           title: Yup.string()
           .required('Sheet title is required'),
           src: Yup.string().required('Image src is required'),
+          category: Yup.array()
         })
       )
       .min(1, 'At least one trade is required'),

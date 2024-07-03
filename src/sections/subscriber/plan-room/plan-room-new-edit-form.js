@@ -54,6 +54,7 @@ import { createPlanRoom, setPlanRoomList } from 'src/redux/slices/planRoomSlice'
 import { base64ToFile } from 'src/utils/base64toFile';
 //
 import { useBoolean } from 'src/hooks/use-boolean';
+import { getProjectList } from 'src/redux/slices/projectSlice';
 import PlanRoomAttachments from './plan-room-attachment';
 import PlanRoomPDFSheetsDrawer from './plan-room-pdf-sheets-drawer';
 
@@ -290,6 +291,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     }
     confirm.onFalse()
     console.log('e-p', payload);
+    await dispatch(getProjectList())
     enqueueSnackbar("Sheets Published Successfully!", { variant: 'success' });
 
     // let error;
