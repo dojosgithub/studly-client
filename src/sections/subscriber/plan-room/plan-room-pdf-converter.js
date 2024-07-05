@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { nanoid } from 'nanoid';
 import { capitalCase } from 'change-case';
+import { useSelector } from 'react-redux';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty, concat } from 'lodash';
@@ -49,6 +50,7 @@ function PlanRoomPdfConverter({ files }) {
   const { setValue, control } = useFormContext();
   const theme = useTheme();
   const filter = createFilterOptions();
+  const planRoomCategories = useSelector(state => state.project.current.planRoomCategories);
 
   const renderAndExtractPage = useCallback(async (arrayBuffer, pageNumber) => {
     const pageImage = await renderPage(arrayBuffer, pageNumber);
@@ -209,6 +211,7 @@ function PlanRoomPdfConverter({ files }) {
                   clearOnBlur
                   handleHomeEndKeys
                   onChange={(event, newValue) => {
+                    console.log('newValue:', newValue)
                     if (typeof newValue[newValue.length - 1] === 'string') {
                       const newValueObj = {
                         id: nanoid(),
@@ -217,6 +220,7 @@ function PlanRoomPdfConverter({ files }) {
                       newValue[newValue.length - 1] = newValueObj;
                       field.onChange(newValue);
                     } else {
+                      console.log('newValue', newValue)
                       field.onChange(newValue);
                     }
                   }}
@@ -238,7 +242,7 @@ function PlanRoomPdfConverter({ files }) {
 
                     return filtered;
                   }}
-                  options={categoryOptions}
+                  options={planRoomCategories}
                   getOptionLabel={(option) => {
                     // Value selected with enter, right from the input
                     if (typeof option === 'string') {

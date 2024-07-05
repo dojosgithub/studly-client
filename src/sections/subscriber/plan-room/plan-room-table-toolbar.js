@@ -132,13 +132,13 @@ export default function RfiTableToolbar({
             width: { xs: 1, md:400 },
           }}
         >
-          <InputLabel>Category</InputLabel>
+          <InputLabel>Tags</InputLabel>
 
           <Select
             multiple
             value={filters.status}
             onChange={handleFilterStatus}
-            input={<OutlinedInput label="Category" />}
+            input={<OutlinedInput label="Tags" />}
             renderValue={(selected) => selected.map((value) => value).join(', ')}
             MenuProps={{
               PaperProps: {

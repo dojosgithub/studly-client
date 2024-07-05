@@ -37,7 +37,7 @@ import PlanRoomPdfConverter from './plan-room-pdf-converter';
 
 // ----------------------------------------------------------------------
 
-export default function PlanRoomPDFSheetsDialog({
+export default function PlanRoomPDFSheetsDrawer({
   //
   open,
   onClose,
@@ -175,7 +175,7 @@ export default function PlanRoomPDFSheetsDialog({
   );
 }
 
-PlanRoomPDFSheetsDialog.propTypes = {
+PlanRoomPDFSheetsDrawer.propTypes = {
   onClose: PropTypes.func,
   onFormSubmit: PropTypes.func,
   open: PropTypes.bool,

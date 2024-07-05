@@ -78,27 +78,28 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   const [files, setFiles] = useState(existingAttachments);
   const [attachmentsError, setAttachmentsError] = useState(false);
 
-
   const { enqueueSnackbar } = useSnackbar();
-
 
   const NewPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
-    issueDate: Yup.date()
-      .required('Issue Date is required'),
-      // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
+    issueDate: Yup.date().required('Issue Date is required'),
+    // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
     creator: Yup.object().shape({
       _id: Yup.string(),
       firstName: Yup.string(),
       lastName: Yup.string(),
     }),
-   
   });
 
   const defaultValues = useMemo(() => {
     const planName = currentPlanSet?.name ? currentPlanSet?.name : '';
     const issueDate = currentPlanSet?.issueDate ? new Date(currentPlanSet.issueDate) : null;
-    const creator = { _id: currentUser._id, firstName: currentUser?.firstName, lastName: currentUser?.lastName } || null;
+    const creator =
+      {
+        _id: currentUser._id,
+        firstName: currentUser?.firstName,
+        lastName: currentUser?.lastName,
+      } || null;
 
     // const attachments = currentPlanSet?.attachments ? currentPlanSet?.attachments : [];
 
@@ -106,11 +107,9 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       // attachments,
-      creator
+      creator,
     };
   }, [currentPlanSet, currentUser]);
-
-
 
   const methods = useForm({
     resolver: yupResolver(NewPlanRoomSchema),
@@ -126,7 +125,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('getValues', getValues())
+  console.log('getValues', getValues());
 
   // useEffect(() => {
   //   reset(defaultValues);
@@ -135,13 +134,12 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   // }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
   useEffect(() => {
     if (files.length > 0) {
-      setAttachmentsError(false)
+      setAttachmentsError(false);
     }
-    setAttachmentsError(false)
+    setAttachmentsError(false);
   }, [files]);
 
-
-  console.log('errors', errors)
+  console.log('errors', errors);
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
   }
@@ -150,12 +148,12 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     try {
       console.log('data ', data);
       if (files.length <= 0) {
-        enqueueSnackbar("Min 1 File is required", { variant: 'error' });
-        return
+        enqueueSnackbar('Min 1 File is required', { variant: 'error' });
+        return;
       }
       console.log('val', val);
       console.log('files ', files);
-      confirm.onTrue()
+      confirm.onTrue();
 
       // if (val === 'review') isSubmittingRef.current = true;
 
@@ -230,22 +228,26 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
 
   const handeFormSubmit = async (sheets) => {
     const formValues = getValues();
-    console.log("formValues", formValues)
-    console.log("sheets", sheets)
+    console.log('formValues', formValues);
+    console.log('sheets', sheets);
     const mimeType = 'image/png';
-    const sheetsFileArray = sheets.map(sheet => {
+    const sheetsFileArray = sheets.map((sheet) => {
       const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
-      return file
+      return file;
     });
-    console.log('sheetFileArray', sheetsFileArray)
-    const modifiedSheets = sheets.map(sheet => {
+    console.log('sheetFileArray', sheetsFileArray);
+    const modifiedSheets = sheets.map((sheet) => {
+      sheet.category = sheet.category.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+      }));
       const { src, ...rest } = sheet;
       return rest;
     });
-    console.log('modifiedSheets', modifiedSheets)
+    console.log('modifiedSheets', modifiedSheets);
 
     let finalData;
-    const data = { ...formValues, sheets: modifiedSheets }
+    const data = { ...formValues, sheets: modifiedSheets };
     const { _id, firstName, lastName, email } = currentUser;
     const creator = _id;
     if (isEmpty(currentPlanSet)) {
@@ -253,7 +255,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     } else {
       finalData = { ...currentPlanSet, ...data, creator };
     }
-    console.log('finalData-->', finalData)
+    console.log('finalData-->', finalData);
     const formData = new FormData();
     const attachments = [];
     for (let index = 0; index < files.length; index += 1) {
@@ -286,13 +288,13 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     const res = await dispatch(createPlanRoom(formData));
     const { error, payload } = res;
     if (!isEmpty(error)) {
-      enqueueSnackbar("Error Publishing Sheets", { variant: 'error' });
+      enqueueSnackbar('Error Publishing Sheets', { variant: 'error' });
       return;
     }
-    confirm.onFalse()
+    confirm.onFalse();
     console.log('e-p', payload);
-    await dispatch(getProjectList())
-    enqueueSnackbar("Sheets Published Successfully!", { variant: 'success' });
+    await dispatch(getProjectList());
+    enqueueSnackbar('Sheets Published Successfully!', { variant: 'success' });
 
     // let error;
     // let payload;
@@ -310,7 +312,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     //   return;
     // }
     router.push(paths.subscriber.planRoom.list);
-  }
+  };
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {
@@ -330,79 +332,69 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
 
   return (
     <>
-
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
-              <Box
-                rowGap={4}
-                my={3}
-                display="flex"
-                flexDirection="column"
-              >
-                  <Box
-                    rowGap={3}
-                    columnGap={2}
-                    display="grid"
-                    gridTemplateColumns={{
-                      xs: 'repeat(1, 1fr)',
-                      sm: 'repeat(2, 1fr)',
-                    }}
-                  >
-                    <RHFTextField name="planName" label="Plan Set Name" />
-                    <Controller
-                      name="issueDate"
-                      control={control}
-                      defaultValue={new Date()}
-                      render={({ field, fieldState: { error } }) => {
-                        const selectedDate = field.value || null;
-                        const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                        const dateStyle = isDateNextDay
-                          ? {
+              <Box rowGap={4} my={3} display="flex" flexDirection="column">
+                <Box
+                  rowGap={3}
+                  columnGap={2}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                  }}
+                >
+                  <RHFTextField name="planName" label="Plan Set Name" />
+                  <Controller
+                    name="issueDate"
+                    control={control}
+                    defaultValue={new Date()}
+                    render={({ field, fieldState: { error } }) => {
+                      const selectedDate = field.value || null;
+                      const isDateNextDay = selectedDate && isTomorrow(selectedDate);
+                      const dateStyle = isDateNextDay
+                        ? {
                             '.MuiInputBase-root.MuiOutlinedInput-root': {
                               color: 'red',
                               borderColor: 'red',
                               border: '1px solid',
                             },
                           }
-                          : {};
-                        console.log(isDateNextDay);
-                        return (
-                          <DatePicker
-                            label="Issue Date"
-                            views={['day']}
-                            value={selectedDate}
-                            // minDate={startOfDay(addDays(new Date(), 1))}
-                            onChange={(date) => field.onChange(date)}
-                            format="MM/dd/yyyy" // Specify the desired date format
-                            error={!!error}
-                            helperText={error && error?.message}
-                            slotProps={{
-                              textField: {
-                                fullWidth: true,
-                                error: !!error,
-                                helperText: error?.message,
-                              },
-                            }}
+                        : {};
+                      console.log(isDateNextDay);
+                      return (
+                        <DatePicker
+                          label="Issue Date"
+                          views={['day']}
+                          value={selectedDate}
+                          // minDate={startOfDay(addDays(new Date(), 1))}
+                          onChange={(date) => field.onChange(date)}
+                          format="MM/dd/yyyy" // Specify the desired date format
+                          error={!!error}
+                          helperText={error && error?.message}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
                           // sx={dateStyle} // Apply conditional style based on the date comparison
-                          />
-                        );
-                      }}
-                    />
-                  </Box>
-                
+                        />
+                      );
+                    }}
+                  />
+                </Box>
 
                 <PlanRoomAttachments
                   files={files}
                   setFiles={setFiles}
                   error={attachmentsError ? { message: 'Min 1 file is required' } : null}
-                // setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }}
-                // error={(errors && errors?.attachments) ? errors?.attachments : null}
+                  // setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }}
+                  // error={(errors && errors?.attachments) ? errors?.attachments : null}
                 />
-
-
-
               </Box>
 
               <Stack
@@ -412,7 +404,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {(!currentPlanSet ) &&
+                {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                     <>
@@ -428,9 +420,9 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                       <LoadingButton
                         type="button"
                         onClick={() => {
-                          onSubmit('review')
+                          onSubmit('review');
                           if (files.length <= 0) {
-                            setAttachmentsError(true)
+                            setAttachmentsError(true);
                           }
                         }}
                         variant="contained"
@@ -458,13 +450,14 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
           </Grid>
         </Grid>
       </FormProvider>
-      {(isValid && files.length > 0 && confirm.value) && (
+      {isValid && files.length > 0 && confirm.value && (
         <PlanRoomPDFSheetsDrawer
           open={confirm.value}
           onClose={confirm.onFalse}
           files={files}
           onFormSubmit={handeFormSubmit}
-        />)}
+        />
+      )}
     </>
   );
 }

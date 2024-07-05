@@ -60,6 +60,7 @@ const TABLE_HEAD = [
   // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
   { id: 'name', label: 'Sheet Title', width: "15%" }, // minWidth: 150, width: 220,
   { id: 'description', label: 'Plan set', width: "50%" }, // minWidth: 400, width: 500 
+  { id: 'tags', label: 'Tags', width: "50%" }, // minWidth: 400, width: 500 
   { id: 'createdDate', label: 'Issue date', width: "15%" }, // minWidth: 170, width: 170 
   { id: 'creator', label: 'Uploaded by', width: "15%" }, // minWidth: 170,  
   // { id: 'status', label: 'Status', width: 100 },
