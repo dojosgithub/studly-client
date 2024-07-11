@@ -110,9 +110,10 @@ export const endpoints = {
     submit: (id) => `/api/user/plan-room/${id}/submit`,
     edit: (id) => `/api/user/plan-room/${id}`,
     delete: (projectId,planRoomId,sheetId) => `/api/user/plan-room/${projectId}/${planRoomId}/${sheetId}`,
-    details: (id) => `/api/user/plan-room/${id}/details`,
+    details: (id) => `/api/user/plan-room/details/${id}`,
     response: (id) => `/api/user/plan-room/${id}/response`,
     pdf: (id, exptype) => `/api/user/plan-room-report/${id}/${exptype}`,
+    pdfThumbnails: (id) => `/api/user/split-pdf/${id}`,
   },
   meetingMinutes: {
     list: (id) => `/api/user/meeting-minutes/${id}`,

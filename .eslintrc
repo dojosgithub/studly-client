@@ -112,6 +112,7 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
+        "packageDir": "./",
         "devDependencies": [
           "test/**", // Add any other relevant directories here
           "src/setupTests.js" // Adjust this path if necessary

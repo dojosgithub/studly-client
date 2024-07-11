@@ -19,6 +19,7 @@ export const createPlanRoom = createAsyncThunk(
     }
   }
 );
+
 export const getPlanRoomList = createAsyncThunk(
   'planRoom/list',
   async (listOptions, { getState, rejectWithValue }) => {
@@ -48,16 +49,18 @@ export const getPlanRoomList = createAsyncThunk(
     }
   }
 );
-export const getExistingPlanRoomList = createAsyncThunk(
-  'existingPlanRoom/list',
+
+export const getPlanRoomPDFSThumbnails = createAsyncThunk(
+  'split-pdf',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
       console.log('projectId', projectId);
 
-      const response = await axiosInstance.get(
-        endpoints.planRoom.existinglist(projectId),
-      );
+      const { data } = listOptions;
+      console.log('data', data);
+      // const projectId = getState().projectId.id
+      const response = await axiosInstance.post(endpoints.planRoom.pdfThumbnails(projectId), data);
 
       return response.data.data;
     } catch (err) {
@@ -69,12 +72,35 @@ export const getExistingPlanRoomList = createAsyncThunk(
     }
   }
 );
+
+export const getExistingPlanRoomList = createAsyncThunk(
+  'existingPlanRoom/list',
+  async (listOptions, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+
+      const response = await axiosInstance.get(endpoints.planRoom.existinglist(projectId));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
+
 export const deletePlanRoomSheet = createAsyncThunk(
   'planRoomSheet/delete',
-  async ({projectId,planRoomId,sheetId}, { getState, rejectWithValue }) => {
+  async ({ projectId, planRoomId, sheetId }, { getState, rejectWithValue }) => {
     try {
-      console.log('ids', {projectId,planRoomId,sheetId});
-      const response = await axiosInstance.delete(endpoints.planRoom.delete(projectId,planRoomId,sheetId));
+      console.log('ids', { projectId, planRoomId, sheetId });
+      const response = await axiosInstance.delete(
+        endpoints.planRoom.delete(projectId, planRoomId, sheetId)
+      );
 
       return response.data.data;
     } catch (err) {
@@ -127,7 +153,6 @@ export const deletePlanRoomSheet = createAsyncThunk(
 //   }
 // );
 
-
 // export const deletePlanRoom = createAsyncThunk(
 //   'rfi/delete',
 //   async (id, { getState, rejectWithValue }) => {
@@ -145,24 +170,24 @@ export const deletePlanRoomSheet = createAsyncThunk(
 //     }
 //   }
 // );
-// export const getPlanRoomDetails = createAsyncThunk(
-//   'submittal/details',
-//   async (id, { getState, rejectWithValue }) => {
-//     try {
-//       console.log('submittalId', id);
+export const getPlanRoomDetails = createAsyncThunk(
+  'planRoom/details',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      console.log('planRoom id', id);
 
-//       const response = await axiosInstance.get(endpoints.rfi.details(id));
+      const response = await axiosInstance.get(endpoints.planRoom.details(id));
 
-//       return response.data.data;
-//     } catch (err) {
-//       console.error('errSlice', err);
-//       if (err && err.message) {
-//         throw Error(err.message);
-//       }
-//       throw Error('An error occurred while fetching submittal details.');
-//     }
-//   }
-// );
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
+    }
+  }
+);
 
 // export const submitPlanRoomResponse = createAsyncThunk(
 //   'rfi/response',
@@ -184,7 +209,6 @@ export const deletePlanRoomSheet = createAsyncThunk(
 //     }
 //   }
 // );
-
 
 // export const getRFILogPDF = createAsyncThunk(
 //   'rfi/pdf',
@@ -223,7 +247,6 @@ export const deletePlanRoomSheet = createAsyncThunk(
 //     }
 //   }
 // );
-
 
 const initialState = {
   list: [],
@@ -294,7 +317,7 @@ const planRoom = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-     // * Delete PlanRoom
+    // * Delete PlanRoom
     builder.addCase(deletePlanRoomSheet.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -324,19 +347,19 @@ const planRoom = createSlice({
     // });
 
     // // Get PlanRoom Details
-    // builder.addCase(getPlanRoomDetails.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(getPlanRoomDetails.fulfilled, (state, action) => {
-    //   state.current = action.payload;
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
-    // builder.addCase(getPlanRoomDetails.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message;
-    // });
+    builder.addCase(getPlanRoomDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getPlanRoomDetails.fulfilled, (state, action) => {
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getPlanRoomDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     // builder.addCase(submitPlanRoomResponse.pending, (state) => {
     //   state.isLoading = true;
     //   state.error = null;
@@ -353,10 +376,6 @@ const planRoom = createSlice({
   },
 });
 
-export const {
-  setPlanRoomList,
-  setCurrentPlanRoom,
-  setCreatePlanRoom,
-  resetPlanRoomState,
-} = planRoom.actions;
+export const { setPlanRoomList, setCurrentPlanRoom, setCreatePlanRoom, resetPlanRoomState } =
+  planRoom.actions;
 export default planRoom.reducer;

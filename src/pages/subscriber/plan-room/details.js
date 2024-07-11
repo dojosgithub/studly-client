@@ -7,6 +7,7 @@ import { getRfiDetails  } from 'src/redux/slices/rfiSlice';
 import { useParams } from 'src/routes/hooks';
 // sections
 import { PlanRoomDetailsView } from 'src/sections/subscriber/plan-room/view';
+import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 
 // ----------------------------------------------------------------------
 
@@ -17,9 +18,9 @@ export default function RfiDetailsPage() {
     const { id } = params;
     console.log('details', id)
     useEffect(() => {
-        dispatch(getRfiDetails(id))
+        dispatch(getPlanRoomDetails(id))
         // getting users list of project
-        dispatch(getAllProjectUsersList())
+        // dispatch(getAllProjectUsersList())
         // dispatch(getProjectUsersList())
         // dispatch(getProjectAssigneeUsers())
     }, [dispatch, id])

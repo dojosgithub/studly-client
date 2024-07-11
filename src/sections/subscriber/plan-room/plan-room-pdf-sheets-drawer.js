@@ -56,11 +56,12 @@ export default function PlanRoomPDFSheetsDrawer({
         Yup.object().shape({
           title: Yup.string()
           .required('Sheet title is required'),
-          src: Yup.string().required('Image src is required'),
+          src: Yup.object().required('Image src is required'),
           category: Yup.array()
         })
       )
       .min(1, 'At least one trade is required'),
+      attachments: Yup.array()
   });
 
   const defaultValues = useMemo(() => {
@@ -68,6 +69,7 @@ export default function PlanRoomPDFSheetsDrawer({
 
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
+      attachments: []
     };
   }, [files]);
 
@@ -99,7 +101,7 @@ export default function PlanRoomPDFSheetsDrawer({
       //   return;
       // }
       confirmIsFormDisabled.onTrue()
-      onFormSubmit(data?.sheets)
+      onFormSubmit(data?.sheets, data?.attachments)
       // reset()
       // onClose()
 

@@ -125,7 +125,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('getValues', getValues());
+  console.log('getValues', getValues(), errors);
 
   // useEffect(() => {
   //   reset(defaultValues);
@@ -226,23 +226,25 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     }
   });
 
-  const handeFormSubmit = async (sheets) => {
+  const handeFormSubmit = async (sheets, attachments) => {
     const formValues = getValues();
     console.log('formValues', formValues);
     console.log('sheets', sheets);
-    const mimeType = 'image/png';
-    const sheetsFileArray = sheets.map((sheet) => {
-      const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
-      return file;
-    });
-    console.log('sheetFileArray', sheetsFileArray);
+    // const mimeType = 'image/png';
+    // const sheetsFileArray = sheets.map((sheet) => {
+    //   const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
+    //   return file;
+    // });
+    // console.log('sheetFileArray', sheetsFileArray);
     const modifiedSheets = sheets.map((sheet) => {
-      sheet.category = sheet.category.map((cat) => ({
+      // console.log(sheet);
+      sheet.category = sheet.category?.map((cat) => ({
         id: cat.id,
         name: cat.name,
       }));
-      const { src, ...rest } = sheet;
-      return rest;
+      // const { src, ...rest } = sheet;
+      // return rest;
+      return sheet;
     });
     console.log('modifiedSheets', modifiedSheets);
 
@@ -257,28 +259,28 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
     }
     console.log('finalData-->', finalData);
     const formData = new FormData();
-    const attachments = [];
-    for (let index = 0; index < files.length; index += 1) {
-      const file = files[index];
-      if (file instanceof File) {
-        formData.append('attachments', file);
-      } else {
-        attachments.push(file);
-      }
-    }
+    // const attachments = [];
+    // for (let index = 0; index < files.length; index += 1) {
+    //   const file = files[index];
+    //   if (file instanceof File) {
+    //     formData.append('attachments', file);
+    //   } else {
+    //     attachments.push(file);
+    //   }
+    // }
     finalData.attachments = attachments;
     // ? SHEET
-    const sheetAttachments = [];
+    // const sheetAttachments = [];
 
-    for (let index = 0; index < sheetsFileArray.length; index += 1) {
-      const file = sheetsFileArray[index];
-      if (file instanceof File) {
-        formData.append('sheetAttachments', file);
-      } else {
-        sheetAttachments.push(file);
-      }
-    }
-    finalData.sheetAttachments = sheetAttachments;
+    // for (let index = 0; index < sheetsFileArray.length; index += 1) {
+    //   const file = sheetsFileArray[index];
+    //   if (file instanceof File) {
+    //     formData.append('sheetAttachments', file);
+    //   } else {
+    //     sheetAttachments.push(file);
+    //   }
+    // }
+    // finalData.sheetAttachments = sheetAttachments;
     formData.append('body', JSON.stringify(finalData));
 
     console.log('Final DATA', finalData);

@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
+
 import { isEmpty } from 'lodash';
 import { useSnackbar } from 'notistack';
 // routes
@@ -20,7 +21,15 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock, FILTER_CATEGORIES_PLANROOM } from 'src/_mock';
+import {
+  _userList,
+  _submittalsList,
+  _roles,
+  USER_STATUS_OPTIONS,
+  STATUS_WORKFLOW,
+  _mock,
+  FILTER_CATEGORIES_PLANROOM,
+} from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -45,11 +54,21 @@ import Lightbox from 'src/components/lightbox/lightbox';
 import { useLightBox } from 'src/components/lightbox';
 //
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
-import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
+import {
+  deletePlanRoomSheet,
+  getPlanRoomList,
+  setCurrentPlanRoom,
+} from 'src/redux/slices/planRoomSlice';
+import CustomSlides from 'src/components/lighboxcustom/CustomLightBox';
+import SimpleSlider from 'src/components/lighboxcustom/CustomReactSwipe';
+import { CustomDrawerPlanRoom } from 'src/components/custom-drawer-planroom';
+
+import PdfViewer from 'src/components/lighboxcustom/PdfViewer';
 //
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
 import PlanRoomTableFiltersResult from '../plan-room-table-filters-result';
+import PdfModifier from '../../pdfs/annotator';
 
 // ----------------------------------------------------------------------
 
@@ -58,13 +77,13 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
-  { id: 'name', label: 'Sheet Title', width: "15%" }, // minWidth: 150, width: 220,
-  { id: 'description', label: 'Plan set', width: "50%" }, // minWidth: 400, width: 500 
-  { id: 'tags', label: 'Tags', width: "50%" }, // minWidth: 400, width: 500 
-  { id: 'createdDate', label: 'Issue date', width: "15%" }, // minWidth: 170, width: 170 
-  { id: 'creator', label: 'Uploaded by', width: "15%" }, // minWidth: 170,  
+  { id: 'name', label: 'Sheet Title', width: '20%' }, // minWidth: 150, width: 220,
+  { id: 'description', label: 'Plan set', width: '30%' }, // minWidth: 400, width: 500
+  { id: 'tags', label: 'Tags', width: '40%' }, // minWidth: 400, width: 500
+  { id: 'createdDate', label: 'Issue date', width: '15%' }, // minWidth: 170, width: 170
+  { id: 'creator', label: 'Uploaded by', width: '15%' }, // minWidth: 170,
   // { id: 'status', label: 'Status', width: 100 },
-  { id: '', width: "5%" }, // width: 88 
+  { id: '', width: '5%' }, // width: 88
 ];
 
 const defaultFilters = {
@@ -72,11 +91,10 @@ const defaultFilters = {
   role: [],
   status: [],
   // status: 'all',
-  query: ''
+  query: '',
 };
 
 // ----------------------------------------------------------------------
-
 
 const images = [...Array(4)].map((_, index) => ({
   src: _mock.image.cover(index + 1),
@@ -101,22 +119,22 @@ const slides = [
   },
 ];
 
-
 export default function PlanRoomListView() {
   const table = useTable();
   // const listData = useSelector(state => state?.rfi?.list)
-  const listData = useSelector(state => state?.planRoom?.list)
-  const role = useSelector(state => state?.user?.user?.role?.shortName);
+  const listData = useSelector((state) => state?.planRoom?.list);
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
+  const [activeRow, setActiveRow] = useState(null);
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
-  }
+  };
   const handleSortChange = () => {
     if (sortDir === 'asc') {
       setSortDir('desc');
@@ -128,7 +146,10 @@ export default function PlanRoomListView() {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const newSlides = useMemo(() => listData?.docs?.map(item => ({ title: item.title, src: item.src.preview })) || [], [listData]);
+  const newSlides = useMemo(
+    () => listData?.docs?.map((item) => ({ title: item.title, src: item.src.preview })) || [],
+    [listData]
+  );
   const lightbox = useLightBox(newSlides);
 
   const confirm = useBoolean();
@@ -143,10 +164,14 @@ export default function PlanRoomListView() {
     dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
-  const dataFiltered = useMemo(() => applyFilter({
-    inputData: listData?.docs,
-    comparator: getComparator(table.order, table.orderBy),
-  }), [listData?.docs, table.order, table.orderBy]);
+  const dataFiltered = useMemo(
+    () =>
+      applyFilter({
+        inputData: listData?.docs,
+        comparator: getComparator(table.order, table.orderBy),
+      }),
+    [listData?.docs, table.order, table.orderBy]
+  );
 
   // const dataInPage = dataFiltered.slice(
   //   table.page * table.rowsPerPage,
@@ -157,29 +182,28 @@ export default function PlanRoomListView() {
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = listData?.totalDocs === 0
+  const notFound = listData?.totalDocs === 0;
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      // table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleFilters = useCallback((name, value) => {
+    // table.onResetPage();
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
 
   const handleDeleteRow = useCallback(
     async (row, onDelete) => {
-      console.log('row', row)
-      const { projectId, planRoomId, _id: sheetId } = row
-      console.log('id-->', projectId, planRoomId, sheetId)
-      const { error, payload } = await dispatch(deletePlanRoomSheet({projectId, planRoomId, sheetId}));
-      await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
-      console.log('e-p', error, payload)
-      onDelete.onFalse()
-      enqueueSnackbar('Sheet Deleted Successfully', { variant: "success" });
+      console.log('row', row);
+      const { projectId, planRoomId, _id: sheetId } = row;
+      console.log('id-->', projectId, planRoomId, sheetId);
+      const { error, payload } = await dispatch(
+        deletePlanRoomSheet({ projectId, planRoomId, sheetId })
+      );
+      await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }));
+      console.log('e-p', error, payload);
+      onDelete.onFalse();
+      enqueueSnackbar('Sheet Deleted Successfully', { variant: 'success' });
     },
     [enqueueSnackbar, dispatch]
   );
@@ -201,15 +225,29 @@ export default function PlanRoomListView() {
     },
     [router]
   );
+  console.log('LISTDATA', listData);
+  
   const handleViewRow = useCallback(
-    (title) => {
+    (row) => {
       // router.push(paths.subscriber.planRoom.details(title));
-      // confirm.onTrue()
-      console.log('handleViewRow', title)
-      const index = newSlides.findIndex(item => item.title === title);
-      lightbox.onOpen(newSlides[index]?.src)
+      console.log('handleViewRow', row);
+      // const index = newSlides.findIndex((item) => item.title === title);
+      // lightbox.onOpen(newSlides[index]?.src);
+      // const index = listData.docs.findIndex((item) => item._id === id);
+      // if (index !== -1) {
+      //   dispatch(setCurrentPlanRoom(listData.docs[index]));
+      //   confirm.onTrue();
+      // }
+      setActiveRow(row);
+      confirm.onTrue();
     },
-    [lightbox, newSlides]
+    [confirm]
+  );
+  const handleViewRowOld = useCallback(
+    (id) => {
+      router.push(paths.subscriber.planRoom.details(id));
+    },
+    [router]
   );
 
   // const handleFilterStatus = useCallback(
@@ -222,6 +260,11 @@ export default function PlanRoomListView() {
   // const handleResetFilters = useCallback(() => {
   //   setFilters(defaultFilters);
   // }, []);
+
+  const closePlanRoomView = () => {
+    confirm.onFalse();
+    setActiveRow(null);
+  };
 
   return (
     <>
@@ -237,14 +280,16 @@ export default function PlanRoomListView() {
             { name: 'Logs' },
           ]}
           action={
-            ((role === "CAD" || role === "PWU") && <Button
-              component={RouterLink}
-              href={paths.subscriber.planRoom.new}
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              Upload Plans
-            </Button>)
+            (role === 'CAD' || role === 'PWU') && (
+              <Button
+                component={RouterLink}
+                href={paths.subscriber.planRoom.new}
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                Upload Plans
+              </Button>
+            )
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -357,18 +402,19 @@ export default function PlanRoomListView() {
                   {
                     // dataFiltered && dataFiltered?
                     listData?.docs &&
-                    listData?.docs?.map((row) => (
-                      <PlanRoomTableRow
-                        key={row._id}
-                        row={row}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
-                        onEditRow={() => handleEditRow(row?._id)}
-                        // onViewRow={() => handleViewRow(row?._id)}
-                        onViewRow={() => handleViewRow(row?.title)}
-                      />
-                    ))}
+                      listData?.docs?.map((row) => (
+                        <PlanRoomTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
+                          onEditRow={() => handleEditRow(row?._id)}
+                          onViewRow={() => handleViewRow(row)}
+                          // onViewRow={() => handleViewRow(row?.title)}
+                        />
+                      ))
+                  }
 
                   <TableEmptyRows
                     height={denseHeight}
@@ -401,18 +447,20 @@ export default function PlanRoomListView() {
         </Card>
       </Container>
 
-      {newSlides && newSlides?.length > 0 &&
-        (<Lightbox
+      {/* {newSlides && newSlides?.length > 0 && (
+        <Lightbox
           open={lightbox.open}
           close={lightbox.onClose}
           slides={newSlides}
           index={lightbox.selected}
           // disabledTotal
           disabledSlideshow
-
-        />)}
-
-
+        />
+      )} */}
+      {/* <PdfModifier /> */}
+      {/* <CustomSlides /> */}
+      {/* <PdfViewer /> */}
+      {/* <SimpleSlider /> */}
       {/* <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
@@ -435,6 +483,11 @@ export default function PlanRoomListView() {
           </Button>
         }
       /> */}
+      {confirm.value && <CustomDrawerPlanRoom
+        open={confirm.value}
+        onClose={closePlanRoomView}
+        activeRow={activeRow}
+      />}
     </>
   );
 }
