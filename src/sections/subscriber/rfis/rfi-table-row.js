@@ -103,6 +103,23 @@ export default function RfiTableRow({
               <span>{rfiId}</span>
             </Box>
           </TableCell>
+          <TableCell>
+            {/* <Label
+            variant="soft"
+            color={
+              (status === 'approved' && 'success') ||
+              (status === 'pending' && 'warning') ||
+              (status === 'rejected' && 'error') ||
+              (status === 'mcnr' && 'error') ||
+              'default'
+            }
+          >
+            {status}
+          </Label> */}
+            <Label color={getStatusColor(status)} variant="soft">
+              {status}
+            </Label>
+          </TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{rfiId}</TableCell> */}
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
@@ -155,23 +172,7 @@ export default function RfiTableRow({
             ))}
           </TableCell>
 
-          <TableCell>
-            {/* <Label
-            variant="soft"
-            color={
-              (status === 'approved' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'rejected' && 'error') ||
-              (status === 'mcnr' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label> */}
-            <Label color={getStatusColor(status)} variant="soft">
-              {status}
-            </Label>
-          </TableCell>
+         
 
 
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>

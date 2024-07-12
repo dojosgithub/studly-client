@@ -58,7 +58,7 @@ const CustomDrawerPlanRoom = React.memo(
       >
         <>
           <Typography fontSize="1.5rem" fontWeight="bold">
-            Plan Room Sheets
+            {planroom?.planName}
           </Typography>
           {/* <Logo /> */}
           <IconButton onClick={onClose}>
