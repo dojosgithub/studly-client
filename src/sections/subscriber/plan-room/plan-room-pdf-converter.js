@@ -158,24 +158,27 @@ function PlanRoomPdfConverter({ files }) {
     });
 
   const handleUpload = useCallback(async () => {
-    const formData = new FormData()
-    console.log('FILES:', files)
+    const formData = new FormData();
+    console.log('FILES:', files);
     for (let index = 0; index < files.length; index += 1) {
       const file = files[index];
       if (file instanceof File) {
-        console.log('INSIDEEES')
+        console.log('INSIDEEES');
         formData.append('files', file);
       }
     }
-    const data  = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
-    console.log(data)
-    setImages(data.payload.thumbails)
-    setValue('attachments', data.payload.files)
-    setSheets(data.payload.sheets)
+    const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
+    if (data.payload) {
+      console.log(data);
+      setImages(data.payload.thumbails);
+      setValue('attachments', data.payload.files);
+      setSheets(data.payload.sheets);
+    }
+
     isLoadingRef.current = false;
   }, [dispatch, files, setValue]);
 
-  console.log('SHEETS', sheets)
+  console.log('SHEETS', sheets);
   useEffect(() => {
     isLoadingRef.current = true;
     handleUpload();

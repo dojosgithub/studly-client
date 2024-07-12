@@ -242,6 +242,11 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
         id: cat.id,
         name: cat.name,
       }));
+      const alphaMatch = sheet.title.match(/^[A-Za-z]+/);
+      const numericMatch = sheet.title.match(/\d+/);
+      sheet.titleAlpha = alphaMatch ? alphaMatch[0] : '';
+      sheet.titleNumeric = numericMatch ? parseInt(numericMatch[0], 10) : 0;
+
       // const { src, ...rest } = sheet;
       // return rest;
       return sheet;
