@@ -31,7 +31,8 @@ export default function PlanRoomDetailsView({ id }) {
         }}
       />
 
-      <RfiDetails id={id}/>
+      {/* <RfiDetails id={id}/> */}
+      Hello
     </Container>
   );
 }

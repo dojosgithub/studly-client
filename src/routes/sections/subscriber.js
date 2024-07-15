@@ -106,7 +106,7 @@ export const subscriberRoutes = [
           { path: 'new', element: <PlanRoomCreatePage /> },
           { path: ':id', element: <PlanRoomDetailsPage /> },
           { path: ':id/edit', element: <PlanRoomEditPage /> },
-          { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
+          // { path: ':id/details', element: <PlanRoomResponseDetailsPage /> },
           // { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
         ],
       },

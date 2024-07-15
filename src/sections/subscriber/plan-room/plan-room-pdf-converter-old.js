@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { nanoid } from 'nanoid';
 import { capitalCase } from 'change-case';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty, concat } from 'lodash';
@@ -32,7 +32,6 @@ import { fDate } from 'src/utils/format-time';
 import CustomImage from 'src/components/image';
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { getPlanRoomPDFSThumbnails } from 'src/redux/slices/planRoomSlice';
 
 const categoryOptions = [
   { id: 1, name: 'Loading' },
@@ -45,23 +44,20 @@ const categoryOptions = [
 ];
 function PlanRoomPdfConverter({ files }) {
   const [images, setImages] = useState([]);
-  const [sheets, setSheets] = useState([]);
   const canvasRef = useRef(null);
   const isLoadingRef = useRef(null);
-  const dispatch = useDispatch();
 
   const { setValue, control } = useFormContext();
   const theme = useTheme();
   const filter = createFilterOptions();
-  const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
+  const planRoomCategories = useSelector(state => state.project.current.planRoomCategories);
 
   const renderAndExtractPage = useCallback(async (arrayBuffer, pageNumber) => {
     const pageImage = await renderPage(arrayBuffer, pageNumber);
     const { fullPage, corner } = await extractCorner(pageImage);
     return { fullPage, corner };
   }, []);
-
-  const handleUploadOld = useCallback(
+  const handleUpload = useCallback(
     async (event) => {
       // const files = Array.from(event.target.files);
 
@@ -157,35 +153,13 @@ function PlanRoomPdfConverter({ files }) {
       };
     });
 
-  const handleUpload = useCallback(async () => {
-    const formData = new FormData();
-    console.log('FILES:', files);
-    for (let index = 0; index < files.length; index += 1) {
-      const file = files[index];
-      if (file instanceof File) {
-        console.log('INSIDEEES');
-        formData.append('files', file);
-      }
-    }
-    const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
-    if (data.payload) {
-      console.log(data);
-      setImages(data.payload.thumbails);
-      setValue('attachments', data.payload.files);
-      setSheets(data.payload.sheets);
-    }
-
-    isLoadingRef.current = false;
-  }, [dispatch, files, setValue]);
-
-  console.log('SHEETS', sheets);
   useEffect(() => {
     isLoadingRef.current = true;
     handleUpload();
   }, [handleUpload]);
 
   console.log('fiels', files);
-  if (sheets?.length <= 0 || images?.length <= 0 || isLoadingRef?.current) {
+  if (images?.length <= 0 || isLoadingRef?.current) {
     return (
       <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
         <CircularProgress color="primary" />
@@ -203,7 +177,7 @@ function PlanRoomPdfConverter({ files }) {
             md: 'repeat(2, 1fr)',
           }}
           alignItems="center"
-          key={index}
+          key={image.fullPage}
           my={5}
         >
           {/* <CustomImage
@@ -214,7 +188,7 @@ function PlanRoomPdfConverter({ files }) {
             <CustomImage
               alt={`Corner of page ${index + 1}`}
               // ratio="1/1"
-              src={image}
+              src={image.corner}
             />
           </Box>
           <span>
@@ -237,7 +211,7 @@ function PlanRoomPdfConverter({ files }) {
                   clearOnBlur
                   handleHomeEndKeys
                   onChange={(event, newValue) => {
-                    console.log('newValue:', newValue);
+                    console.log('newValue:', newValue)
                     if (typeof newValue[newValue.length - 1] === 'string') {
                       const newValueObj = {
                         id: nanoid(),
@@ -246,7 +220,7 @@ function PlanRoomPdfConverter({ files }) {
                       newValue[newValue.length - 1] = newValueObj;
                       field.onChange(newValue);
                     } else {
-                      console.log('newValue', newValue);
+                      console.log('newValue', newValue)
                       field.onChange(newValue);
                     }
                   }}
@@ -296,7 +270,7 @@ function PlanRoomPdfConverter({ files }) {
               )}
             />
           </span>
-          {setValue(`sheets[${index}].src`, sheets[index])}
+          {setValue(`sheets[${index}].src`, image.fullPage)}
         </Box>
       ))}
     </>

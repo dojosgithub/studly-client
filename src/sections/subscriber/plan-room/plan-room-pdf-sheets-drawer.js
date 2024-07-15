@@ -37,7 +37,7 @@ import PlanRoomPdfConverter from './plan-room-pdf-converter';
 
 // ----------------------------------------------------------------------
 
-export default function PlanRoomPDFSheetsDialog({
+export default function PlanRoomPDFSheetsDrawer({
   //
   open,
   onClose,
@@ -56,11 +56,12 @@ export default function PlanRoomPDFSheetsDialog({
         Yup.object().shape({
           title: Yup.string()
           .required('Sheet title is required'),
-          src: Yup.string().required('Image src is required'),
+          src: Yup.object().required('Image src is required'),
           category: Yup.array()
         })
       )
       .min(1, 'At least one trade is required'),
+      attachments: Yup.array()
   });
 
   const defaultValues = useMemo(() => {
@@ -68,6 +69,7 @@ export default function PlanRoomPDFSheetsDialog({
 
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
+      attachments: []
     };
   }, [files]);
 
@@ -99,7 +101,7 @@ export default function PlanRoomPDFSheetsDialog({
       //   return;
       // }
       confirmIsFormDisabled.onTrue()
-      onFormSubmit(data?.sheets)
+      onFormSubmit(data?.sheets, data?.attachments)
       // reset()
       // onClose()
 
@@ -175,7 +177,7 @@ export default function PlanRoomPDFSheetsDialog({
   );
 }
 
-PlanRoomPDFSheetsDialog.propTypes = {
+PlanRoomPDFSheetsDrawer.propTypes = {
   onClose: PropTypes.func,
   onFormSubmit: PropTypes.func,
   open: PropTypes.bool,

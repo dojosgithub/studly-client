@@ -85,17 +85,13 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     setVersionType(event.target.value);
   };
 
-
-
   const { enqueueSnackbar } = useSnackbar();
-
 
   const ExistingPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
-    issueDate: Yup.date()
-      .required('Issue Date is required'),
+    issueDate: Yup.date().required('Issue Date is required'),
     // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
-    existingVersionSet: Yup.string().required("Existing Version is required")
+    existingVersionSet: Yup.string().required('Existing Version is required'),
   });
 
   const defaultValues = useMemo(() => {
@@ -109,12 +105,9 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       // attachments,
-      existingVersionSet
-
+      existingVersionSet,
     };
   }, [currentPlanSet]);
-
-
 
   const methods = useForm({
     resolver: yupResolver(ExistingPlanRoomSchema),
@@ -130,7 +123,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('getValues', getValues())
+  console.log('getValues', getValues());
   // useEffect(() => {
   //   if (!isEmpty(currentPlanSet)) {
   //     reset(defaultValues);
@@ -142,17 +135,16 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   // }, [reset, currentPlanSet, defaultValues, existingAttachments, files]);
   useEffect(() => {
     reset(defaultValues);
-    setFiles(existingAttachments)
-    setAttachmentsError(false)
+    setFiles(existingAttachments);
+    setAttachmentsError(false);
   }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
   useEffect(() => {
     if (files.length > 0) {
-      setAttachmentsError(false)
+      setAttachmentsError(false);
     }
   }, [files]);
 
-
-  console.log('errors', errors)
+  console.log('errors', errors);
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
   }
@@ -161,12 +153,12 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     try {
       console.log('data ', data);
       if (files.length <= 0) {
-        enqueueSnackbar("Min 1 File is required", { variant: 'error' });
-        return
+        enqueueSnackbar('Min 1 File is required', { variant: 'error' });
+        return;
       }
       console.log('val', val);
       console.log('files ', files);
-      confirm.onTrue()
+      confirm.onTrue();
 
       // if (val === 'review') isSubmittingRef.current = true;
 
@@ -239,50 +231,64 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     }
   });
 
-  const handeFormSubmit = async (sheets) => {
+  const handeFormSubmit = async (sheets, attachments) => {
     const formValues = getValues();
-    console.log("formValues", formValues)
-    console.log("sheets", sheets)
-    const mimeType = 'image/png';
-    const sheetsFileArray = sheets.map(sheet => {
-      const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
-      return file
+    console.log('formValues', formValues);
+    console.log('sheets', sheets);
+    // const mimeType = 'image/png';
+    // const sheetsFileArray = sheets.map(sheet => {
+    //   const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
+    //   return file
+    // });
+    // console.log('sheetFileArray', sheetsFileArray)
+    // const modifiedSheets = sheets.map(sheet => {
+    //   const { src, ...rest } = sheet;
+    //   return rest;
+    // });
+    const modifiedSheets = sheets.map((sheet) => {
+      // console.log(sheet);
+      sheet.category = sheet.category?.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+      }));
+      const alphaMatch = sheet.title.match(/^[A-Za-z]+/);
+      const numericMatch = sheet.title.match(/\d+/);
+      sheet.titleAlpha = alphaMatch ? alphaMatch[0] : '';
+      sheet.titleNumeric = numericMatch ? parseInt(numericMatch[0], 10) : 0;
+      // const { src, ...rest } = sheet;
+      // return rest;
+      return sheet;
     });
-    console.log('sheetFileArray', sheetsFileArray)
-    const modifiedSheets = sheets.map(sheet => {
-      const { src, ...rest } = sheet;
-      return rest;
-    });
-    console.log('modifiedSheets', modifiedSheets)
+    console.log('modifiedSheets', modifiedSheets);
 
-    const data = { ...formValues, sheets: modifiedSheets }
+    const data = { ...formValues, sheets: modifiedSheets };
     const { _id, firstName, lastName, email } = currentUser;
     const creator = _id;
     const finalData = { ...data, creator, projectId };
-    console.log('finalData-->', finalData)
+    console.log('finalData-->', finalData);
     const formData = new FormData();
-    const attachments = [];
-    for (let index = 0; index < files.length; index += 1) {
-      const file = files[index];
-      if (file instanceof File) {
-        formData.append('attachments', file);
-      } else {
-        attachments.push(file);
-      }
-    }
+    // const attachments = [];
+    // for (let index = 0; index < files.length; index += 1) {
+    //   const file = files[index];
+    //   if (file instanceof File) {
+    //     formData.append('attachments', file);
+    //   } else {
+    //     attachments.push(file);
+    //   }
+    // }
     finalData.attachments = attachments;
     // ? SHEET
-    const sheetAttachments = [];
+    // const sheetAttachments = [];
 
-    for (let index = 0; index < sheetsFileArray.length; index += 1) {
-      const file = sheetsFileArray[index];
-      if (file instanceof File) {
-        formData.append('sheetAttachments', file);
-      } else {
-        sheetAttachments.push(file);
-      }
-    }
-    finalData.sheetAttachments = sheetAttachments;
+    // for (let index = 0; index < sheetsFileArray.length; index += 1) {
+    //   const file = sheetsFileArray[index];
+    //   if (file instanceof File) {
+    //     formData.append('sheetAttachments', file);
+    //   } else {
+    //     sheetAttachments.push(file);
+    //   }
+    // }
+    // finalData.sheetAttachments = sheetAttachments;
     formData.append('body', JSON.stringify(finalData));
 
     console.log('Final DATA', finalData);
@@ -292,48 +298,47 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     const res = await dispatch(createPlanRoom(formData));
     const { error, payload } = res;
     if (!isEmpty(error)) {
-      enqueueSnackbar("Error Publishing Sheets", { variant: 'error' });
+      enqueueSnackbar('Error Publishing Sheets', { variant: 'error' });
       return;
     }
-    confirm.onFalse()
+    confirm.onFalse();
     console.log('e-p', payload);
-    await dispatch(getProjectList())
-    enqueueSnackbar("Sheets Published Successfully!", { variant: 'success' });
+    await dispatch(getProjectList());
+    enqueueSnackbar('Sheets Published Successfully!', { variant: 'success' });
 
     router.push(paths.subscriber.planRoom.list);
-  }
+  };
   const handleSelectExisting = useCallback(
     (option) => {
-      console.log('option', option)
-      const { planName, issueDate, id: versionId } = option
-      existingNameRef.current = planName
+      console.log('option', option);
+      const { planName, issueDate, id: versionId } = option;
+      existingNameRef.current = planName;
       setValue(`planName`, planName);
       setValue(`issueDate`, issueDate);
       setValue(`existingVersionSet`, versionId);
     },
     [setValue]
   );
-  
+
   return (
     <>
-
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
-              <Box
-                rowGap={4}
-                my={3}
-                display="flex"
-                flexDirection="column"
-              >
-
-                <Box display='flex' sx={{ maxWidth: { xs: '100%', md: '40%' } }}>
+              <Box rowGap={4} my={3} display="flex" flexDirection="column">
+                <Box display="flex" sx={{ maxWidth: { xs: '100%', md: '40%' } }}>
                   <RHFSelect name="planName" label="Choose Existing Version Set">
                     {/* <MenuItem value="" disabled selected>Choose Existing Version Set</MenuItem> */}
-                    {console.log("existingPlanList", existingPlanList)}
-                    {existingPlanList?.map(item => (
-                      <MenuItem key={item.id} value={item.planName} onClick={() => handleSelectExisting(item)}>{item.planName}</MenuItem>
+                    {console.log('existingPlanList', existingPlanList)}
+                    {existingPlanList?.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.planName}
+                        onClick={() => handleSelectExisting(item)}
+                      >
+                        {item.planName}
+                      </MenuItem>
                     ))}
                   </RHFSelect>
                 </Box>
@@ -342,12 +347,9 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
                   files={files}
                   setFiles={setFiles}
                   error={attachmentsError ? { message: 'Min 1 file is required' } : null}
-                // setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }}
-                // error={(errors && errors?.attachments) ? errors?.attachments : null}
+                  // setFiles={(nFiles) => { setFiles(nFiles); setValue('attachments', nFiles) }}
+                  // error={(errors && errors?.attachments) ? errors?.attachments : null}
                 />
-
-
-
               </Box>
 
               <Stack
@@ -357,15 +359,15 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                {(!currentPlanSet) &&
+                {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                     <LoadingButton
                       type="button"
                       onClick={() => {
-                        onSubmit('review')
+                        onSubmit('review');
                         if (files.length <= 0) {
-                          setAttachmentsError(true)
+                          setAttachmentsError(true);
                         }
                       }}
                       variant="contained"
@@ -392,13 +394,14 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
           </Grid>
         </Grid>
       </FormProvider>
-      {(isValid && files.length > 0 && confirm.value) && (
+      {isValid && files.length > 0 && confirm.value && (
         <PlanRoomPDFSheetsDrawer
           open={confirm.value}
           onClose={confirm.onFalse}
           files={files}
           onFormSubmit={handeFormSubmit}
-        />)}
+        />
+      )}
     </>
   );
 }

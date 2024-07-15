@@ -53,6 +53,7 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
+  { id: 'status', label: 'Status', width: 100 },
   { id: 'name', label: 'Title', minWidth: 150, width: 220 },
   { id: 'description', label: 'Description', minWidth: 170, width: 220 },
   { id: 'drawingSheet', label: 'Drawing Sheet', minWidth: 170, width: 170 },
@@ -61,7 +62,6 @@ const TABLE_HEAD = [
   { id: 'costImpact', label: 'Cost Impact', minWidth: 150, width: 180 },
   { id: 'scheduleDelay', label: 'Schedule Delay', minWidth: 150, width: 200 },
   { id: 'owner', label: 'Owner / Assignee', minWidth: 200, width: 400 },
-  { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
 

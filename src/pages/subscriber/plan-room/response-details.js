@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
-import { getRfiDetails } from 'src/redux/slices/rfiSlice';
+import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 import { getSubmittalDetails, getSubmittalResponseDetails } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
@@ -18,7 +18,7 @@ export default function PlanRoomResponseDetailsPage() {
     console.log('rfiResponseDetails', id)
     useEffect(() => {
         async function fetchDetails() {
-            await dispatch(getRfiDetails(id))
+            await dispatch(getPlanRoomDetails(id))
             // await dispatch(getSubmittalResponseDetails(id))
             // const { error, payload } = await dispatch(getSubmittalResponseDetails(id))
             // console.log('error', error)
