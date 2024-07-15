@@ -20,7 +20,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock, FILTER_CATEGORIES_PLANROOM } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, _mock, FILTER_CATEGORIES_MEETINGROOM } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -54,10 +54,10 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
-  { id: 'name', label: 'Sheet Title', width: "15%" }, // minWidth: 150, width: 220,
-  { id: 'description', label: 'Plan set', width: "50%" }, // minWidth: 400, width: 500 
-  { id: 'createdDate', label: 'Issue date', width: "15%" }, // minWidth: 170, width: 170 
-  { id: 'creator', label: 'Uploaded by', width: "15%" }, // minWidth: 170,  
+  { id: 'name', label: 'Meeting No', width: "15%" }, // minWidth: 150, width: 220,
+  { id: 'description', label: 'Meeting id', width: "50%" }, // minWidth: 400, width: 500 
+  { id: 'createdDate', label: 'Meeting Date', width: "15%" }, // minWidth: 170, width: 170 
+  { id: 'creator', label: 'Status', width: "15%" }, // minWidth: 170,  
   // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: "5%" }, // width: 88 
 ];
@@ -210,7 +210,7 @@ export default function MeetingMinutesListView() {
           onFilters={handleFilters}
           //
           // roleOptions={_roles}
-          roleOptions={FILTER_CATEGORIES_PLANROOM}
+          roleOptions={FILTER_CATEGORIES_MEETINGROOM}
         />
 
 

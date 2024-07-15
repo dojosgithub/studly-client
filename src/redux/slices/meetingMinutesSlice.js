@@ -1,13 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 // * Meeting Minutes
+
 export const createMeetingMinutes = createAsyncThunk(
   'meetingMinutes/create',
   async (meetingMinutesData, { getState, rejectWithValue }) => {
+    if (isEmpty(meetingMinutesData)) {
+      return rejectWithValue('Meeting minutes data cannot be empty.');
+    }
     try {
-      const response = await axiosInstance.post(endpoints.meetingMinutes.create, meetingMinutesData);
+      const response = await axiosInstance.post(
+        endpoints.meetingMinutes.create,
+        meetingMinutesData
+      );
 
       return response.data.data;
     } catch (err) {
@@ -19,6 +26,7 @@ export const createMeetingMinutes = createAsyncThunk(
     }
   }
 );
+
 export const getMeetingMinutesList = createAsyncThunk(
   'meetingMinutes/list',
   async (listOptions, { getState, rejectWithValue }) => {
@@ -53,7 +61,9 @@ export const MeetingMinutes = createAsyncThunk(
   async ({ projectId, meetingMinutesId, sheetId }, { getState, rejectWithValue }) => {
     try {
       console.log('ids', { projectId, meetingMinutesId, sheetId });
-      const response = await axiosInstance.delete(endpoints.meetingMinutes.delete(projectId, meetingMinutesId, sheetId));
+      const response = await axiosInstance.delete(
+        endpoints.meetingMinutes.delete(projectId, meetingMinutesId, sheetId)
+      );
 
       return response.data.data;
     } catch (err) {
@@ -105,7 +115,6 @@ export const MeetingMinutes = createAsyncThunk(
 //     }
 //   }
 // );
-
 
 // export const deletePlanRoom = createAsyncThunk(
 //   'rfi/delete',
@@ -164,7 +173,6 @@ export const MeetingMinutes = createAsyncThunk(
 //   }
 // );
 
-
 // export const getRFILogPDF = createAsyncThunk(
 //   'rfi/pdf',
 //   async (exptype, { getState, rejectWithValue }) => {
@@ -203,37 +211,41 @@ export const MeetingMinutes = createAsyncThunk(
 //   }
 // );
 
-const inviteAttendeeInitialState={
+const inviteAttendeeInitialState = {
   name: '',
   company: '',
   email: '',
   attended: false,
   // _id: uuidv4(),
-}
-const topicInitialState={
+};
+const topicInitialState = {
   topic: '',
   action: '',
   date: null,
   description: '',
+  assignee: null,
+  status: 'Open',
+  priority: null,
+
   // _id: uuidv4(),
-}
-const noteInitialState={
+};
+const noteInitialState = {
   subject: '',
-  topics: [{...topicInitialState}],
+  topics: [{ ...topicInitialState }],
   // _id: uuidv4(),
-}
-const permitInitialState={
+};
+const permitInitialState = {
   status: '',
   date: null,
   permitNumber: '',
   // _id: uuidv4(),
-}
-const planTrackingInitialState={
+};
+const planTrackingInitialState = {
   planTracking: '',
   stampDate: null,
   dateRecieved: null,
   // _id: uuidv4(),
-}
+};
 const meetingMinutesInitialState = {
   description: {
     meetingNumber: '',
@@ -247,17 +259,18 @@ const meetingMinutesInitialState = {
     meetingID: '',
     url: '',
   },
-  inviteAttendee: [{...inviteAttendeeInitialState}],
-  notes: [{...noteInitialState}],
-  permit: [{...permitInitialState}],
-  plan: [{...planTrackingInitialState}],
+  inviteAttendee: [{ ...inviteAttendeeInitialState }],
+  notes: [{ ...noteInitialState }],
+  permit: [{ ...permitInitialState }],
+  plan: [{ ...planTrackingInitialState }],
   projectId: '', // Assuming you want a unique ID
   company: '', // Assuming you want a unique ID
-}
+};
 
 const initialState = {
+  notes: '',
   list: [],
-  create: {...meetingMinutesInitialState},
+  create: { ...meetingMinutesInitialState },
   current: {},
   isLoading: false,
   error: null,
@@ -278,21 +291,21 @@ const meetingMinutes = createSlice({
       state.create = action.payload;
     },
     setMeetingMinutesDescription: (state, action) => {
-      state.create.description = action.payload
+      state.create.description = action.payload;
     },
     setMeetingMinutesInviteAttendee: (state, action) => {
-      state.create.inviteAttendee = action.payload
+      state.create.inviteAttendee = action.payload;
     },
     setMeetingMinutesNotes: (state, action) => {
-      state.create.notes = action.payload
+      state.create.notes = action.payload;
     },
     setMeetingMinutesPermit: (state, action) => {
-      state.create.permit = action.payload
+      state.create.permit = action.payload;
     },
     setMeetingMinutesPlanTracking: (state, action) => {
-      state.create.plan = action.payload
+      state.create.plan = action.payload;
     },
-    
+
     resetMeetingMinutesCreateState: () => meetingMinutesInitialState,
     resetMeetingMinutesState: () => initialState,
   },

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -39,7 +39,7 @@ import { setMeetingMinutesDescription, setMeetingMinutesInviteAttendee, setMeeti
 //
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
-import MeetingMinutesInviteAttendee from './meeting-minutes-invite-attendee';
+import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog'
 import ProjectFinal from './project-final';
 import MeetingMinutesPlanTrackingFields from './meeting-minutes-plan-tracking-fields';
 import MeetingMinutesNotes from './meeting-minutes-notes';
@@ -52,7 +52,7 @@ import meetingMinutesSchema from './meeting-minutes-schema';
 const steps = [
   {
     label: 'Meeting Description',
-    // description: `Name your Project`,
+    // description: Name your Project,
     value: 'description',
   },
   {
@@ -62,23 +62,24 @@ const steps = [
   },
   {
     label: 'Meeting Notes',
-    // description: `Create  your project workflow`,
+    // description: Create  your project workflow,
     value: 'notes',
   },
   {
     label: 'Permit',
-    // description: `Assign subcontractors to your project`,
+    // description: Assign subcontractors to your project,
     value: 'permit',
   },
   {
     label: 'Plan Tracking',
-    // description: `Invite users to project`,
+    // description: Invite users to project,
     value: 'plan',
   },
 ];
 
 
 export default function MeetingMinutesStepperForm() {
+  
   const [activeStep, setActiveStep] = useState(0);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
@@ -102,12 +103,12 @@ export default function MeetingMinutesStepperForm() {
     description: {
       meetingNumber: '',
       name: '',
-      title: '',
+      // title: '',
       site: '',
       date: new Date(),
       time: '',
       minutesBy: '',
-      conferenceCall: '',
+      // conferenceCall: '',
       meetingID: '',
       url: '',
     },
@@ -122,9 +123,12 @@ export default function MeetingMinutesStepperForm() {
       subject: '',
       topics: [{
         topic: '',
-        action: '',
-        date: new Date(),
-        description: '',
+      action: '',
+      date: new Date(),
+      assignee: null,
+      status: 'Open',
+      priority: null,
+      description: '',
         // _id: uuidv4(),
       }],
       // _id: uuidv4(),
@@ -164,7 +168,7 @@ export default function MeetingMinutesStepperForm() {
   const { description, inviteAttendee, notes, permit, plan } = getValues();
   // const { name, address, state, city, zipCode } = formValues;
   console.log('formValues', { description, inviteAttendee, notes, permit, plan })
-
+  
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -196,7 +200,7 @@ export default function MeetingMinutesStepperForm() {
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      enqueueSnackbar(`Error Updating Password`, { variant: "error" });
+      enqueueSnackbar('Error Updating Password', { variant: "error" });
     }
   });
 
@@ -234,28 +238,30 @@ export default function MeetingMinutesStepperForm() {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
+    console.log('isFormValid', isFormValid)
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
         case 'description':
           console.log('formValues-Desc', description);
-          dispatch(setMeetingMinutesDescription(description));
+          dispatch(setMeetingMinutesDescription(cloneDeep(description)));
           break;
         case 'inviteAttendee':
           console.log('formValues-Invite', inviteAttendee);
-          dispatch(setMeetingMinutesInviteAttendee(inviteAttendee));
+          dispatch(setMeetingMinutesInviteAttendee(cloneDeep(inviteAttendee)));
           break;
         case 'notes':
           console.log('formValues-Notes', notes);
-          dispatch(setMeetingMinutesNotes(notes));
+          dispatch(setMeetingMinutesNotes(cloneDeep(notes)));
+          console.log('raahim');
           break;
         case 'permit':
           console.log('formValues-permit', permit);
-          dispatch(setMeetingMinutesPermit(permit));
+          dispatch(setMeetingMinutesPermit(cloneDeep(permit)));
           break;
         case 'plan':
           console.log('formValues-plan', plan);
-          dispatch(setMeetingMinutesPlanTracking(plan));
+          dispatch(setMeetingMinutesPlanTracking(cloneDeep(plan)));
           break;
         default:
           break;
@@ -295,9 +301,19 @@ export default function MeetingMinutesStepperForm() {
   };
 
   const handleFinish = () => {
+    // Clone the plan array using lodash's cloneDeep
+    const clonedPlan = cloneDeep(plan);
+  
+    // Dispatch the clonedPlan to your Redux store or perform other actions
+    dispatch(setMeetingMinutesPlanTracking(clonedPlan));
+    console.log('Form Data:', { description, inviteAttendee, notes, permit, plan });
+    
+    // Optionally, you can submit the form
     methods.handleSubmit(onSubmit)();
-  };
 
+  };
+  
+ 
 
 
   function getComponent() {
@@ -307,7 +323,7 @@ export default function MeetingMinutesStepperForm() {
         component = <MeetingMinutesDescription />;
         break;
       case 1:
-        component = <MeetingMinutesInviteAttendee />;
+        component = <MeetingMinutesInviteAttendeeView />;
         break;
 
       case 2:
@@ -316,9 +332,8 @@ export default function MeetingMinutesStepperForm() {
       case 3:
         component = <MeetingMinutesPermitFields />;
         break;
-      case 4:
-        component = <MeetingMinutesPlanTrackingFields />;
-        break;
+      
+       
       default:
         component = <MeetingMinutesDescription />;
     }
@@ -356,11 +371,11 @@ export default function MeetingMinutesStepperForm() {
       <Stack flex={1} position='relative'>
         <FormProvider methods={methods} onSubmit={onSubmit}>
 
-          {activeStep === steps.length ? (
+          {activeStep === steps.length-1 ? (
             <>
-              <ProjectFinal />
-
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <MeetingMinutesPlanTrackingFields />
+       
+              <Box sx={{ display: 'flex', gap: 2 , mb: 2 }}>
                 <Button color="inherit" variant='outlined' disabled={isSubmitting} onClick={handleBack} sx={{ mr: 1 }}>
                   Back
                 </Button>
@@ -397,7 +412,7 @@ export default function MeetingMinutesStepperForm() {
                 )}
                 {/* steps.length - 1 new change */}
 
-                {activeStep !== steps.length && (
+                {activeStep !== steps.length-1 && (
                   <Button onClick={handleNext} variant="contained">Next</Button>
                 )}
               </Box>
@@ -410,4 +425,5 @@ export default function MeetingMinutesStepperForm() {
 
     </>
   );
+  
 }

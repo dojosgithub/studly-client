@@ -1,140 +1,123 @@
-import { useSelector } from 'react-redux';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
-// @mui 
-import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material'
-
-
-// hook-form 
-import {
-    RHFTextField,
-} from 'src/components/hook-form';
-// utils
+import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material';
+import { RHFTextField } from 'src/components/hook-form';
 import uuidv4 from 'src/utils/uuidv4';
-//
 import Iconify from 'src/components/iconify';
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
-
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
-    width: 50,
-    height: 50,
+  width: 50,
+  height: 50,
+  opacity: 1,
+  borderRadius: '10px',
+  outline: `1px solid ${alpha(theme.palette.grey[700], 0.2)}`,
+  '&:hover': {
     opacity: 1,
-    borderRadius: '10px',
-    outline: `1px solid ${alpha(theme.palette.grey[700], .2)} `,
-    '&:hover': {
-        opacity: 1,
-        outline: `1px solid ${alpha(theme.palette.grey[700], 1)} `,
-
-    },
+    outline: `1px solid ${alpha(theme.palette.grey[700], 1)}`,
+  },
 }));
 
-
 const MeetingMinutesPlanTrackingFields = () => {
+  const { control, resetField, trigger } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'plan',
+  });
 
-    const { control, setValue, getValues, watch, resetField } = useFormContext();
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'trades',
+  const handleAdd = useCallback(() => {
+    append({
+      planTracking: '',
+      dateRecieved: null,
+      stampDate: null,
+      _id: uuidv4(),
     });
+  }, [append]);
 
-    const handleAdd = useCallback(() => {
-        append({
-            planTracking: '',
-            dateRecieved: null,
-            stampDate: null,
-            _id: uuidv4(),
-        });
-    }, [append]);
-
-    useEffect(() => {
-        const handleKeyPress = (event) => {
-            if (event.key === 'Tab') {
-                console.log('Tab key pressed');
-
-                handleAdd();
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyPress);
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress);
-        };
-    }, [handleAdd]);
-
-    const values = watch();
-
-
-
-
-    const handleRemove = (index) => {
-        remove(index);
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Tab') {
+        console.log('Tab key pressed');
+        handleAdd();
+      }
     };
 
-    const handleClearService = useCallback(
-        (index) => {
-            resetField(`trades[${index}].planTracking`);
-            resetField(`trades[${index}].stampDate`);
-            resetField(`trades[${index}].dateRecieved`);
-        },
-        [resetField]
-    );
+    document.addEventListener('keydown', handleKeyPress);
 
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleAdd]);
 
+  const handleRemove = (index) => {
+    remove(index);
+  };
 
+//   const handleClearService = useCallback(
+//     (index) => {
+//       resetField(`plan[${index}].planTracking`);
+//       resetField(`plan[${index}].stampDate`);
+//       resetField(`plan[${index}].dateRecieved`);
+//     },
+//     [resetField]
+//   );
 
-
-    return (
-        <>
-            <Box sx={{ marginBottom: '2rem' }}>
-                <Typography sx={{ mt: 2, mb: 4 }} fontSize='1.5rem' fontWeight='bold'>Plan/Ask Tracking</Typography>
-
-                {/* <Box
-                    sx={{ display: 'grid', marginBottom: '2rem', gridTemplateColumns: 'repeat(3, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
-                >
-                    <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Plan Tracking</Typography>
-                    <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Stamp Date</Typography>
-                    <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Date Recieved</Typography>
-                    <Typography>{" "}</Typography>
-
-                </Box> */}
-                <Stack gap='1.5rem'>
-                    {fields && fields?.map(({ _id, name, tradeId }, index) => (
-                        <Box
-                            key={_id}
-                            sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(3, 1fr) 50px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
-                        >
-
-
-                            <RHFTextField name={`trades[${index}].planTracking`} label="Plan Tracking" InputLabelProps={{ shrink: true }} />
-                            <MeetingMinutesDatePicker sx={{ alignSelf: "center" }} name={`trades[${index}].stampDate`} label='Stamp Date' />
-                            <MeetingMinutesDatePicker sx={{ alignSelf: "center" }} name={`trades[${index}].dateRecieved`} label='Date Recieved' />
-
-                            <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
-                                <Iconify icon='ic:sharp-remove-circle-outline' width='40px' height='40px' />
-                            </StyledIconButton>
-                        </Box>
-
-                    ))}
-                </Stack>
-
-            </Box >
-
-            <Button
-                component='button'
-                variant="outlined"
-                startIcon={<Iconify icon="mingcute:add-line" />}
-                color='secondary'
-                onClick={handleAdd}
+  return (
+    <>
+      <Box sx={{ marginBottom: '2rem' }}>
+        <Typography sx={{ mt: 2, mb: 4 }} fontSize="1.5rem" fontWeight="bold">
+          Plan/Ask Tracking
+        </Typography>
+        <Stack gap="1.5rem">
+          {fields.map(({ _id }, index) => (
+            <Box
+              key={_id}
+              sx={{
+                display: 'grid',
+                gap: '1rem',
+                gridTemplateColumns: 'repeat(3, 1fr) 50px',
+                flexWrap: { xs: 'wrap', md: 'nowrap' },
+              }}
             >
-                Add Another Trade
-            </Button>
-        </>
-    )
-}
+              <RHFTextField
+                name={`plan[${index}].planTracking`}
+                label="Plan Tracking"
+                InputLabelProps={{ shrink: true }}
+                onBlur={() => trigger(`plan[${index}].planTracking`)}
+              />
+              <MeetingMinutesDatePicker
+                sx={{ alignSelf: 'center' }}
+                name={`plan[${index}].stampDate`}
+                label="Stamp Date"
+                onBlur={() => trigger(`plan[${index}].stampDate`)}
+              />
+              <MeetingMinutesDatePicker
+                sx={{ alignSelf: 'center' }}
+                name={`plan[${index}].dateRecieved`}
+                label="Date Received"
+                onBlur={() => trigger(`plan[${index}].dateRecieved`)}
+              />
+              <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
+                <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+              </StyledIconButton>
+            </Box>
+          ))}
+        </Stack>
+      </Box>
 
-export default MeetingMinutesPlanTrackingFields
+      <Button
+        component="button"
+        variant="outlined"
+        startIcon={<Iconify icon="mingcute:add-line" />}
+        color="secondary"
+        onClick={handleAdd}
+        style={{ marginBottom: '20px' }} // Adjust the value as needed
+      >
+        Add Another Plan
+      </Button>
+    </>
+  );
+};
 
+export default MeetingMinutesPlanTrackingFields;
