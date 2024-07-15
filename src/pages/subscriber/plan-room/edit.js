@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRfiDetails } from 'src/redux/slices/rfiSlice';
-import { getProjectAssigneeUsers, getProjectUsersList, getSubmittalDetails } from 'src/redux/slices/submittalSlice';
+import { getProjectAssigneeUsers, getProjectUsersList } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections

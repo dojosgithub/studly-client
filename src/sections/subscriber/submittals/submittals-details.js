@@ -247,25 +247,7 @@ const SubmittalsDetails = ({ id }) => {
   }, [currentSubmittal, id, currentUser, isSubmitting]);
 
   const getMenus = () => {
-    // getActions({
-    //   currentSubmittal,
-    //   currentUser,
-    //   status,
-    //   isSubmitting,
-    //   navigate,
-    //   paths,
-    //   id,
-    //   isResponseSubmitted,
-    //   parentSubmittalId,
-    //   sentToAllModal,
-    //   handleSubmitToArchitect,
-    //   handleVoid,
-    //   handleResendEmailSubcontractor,
-    //   handleEditResponse,
-    //   handleViewResponse,
-    //   handleSubmittalResponse,
-    //   setMenuItems
-    // });
+   
     const optionsArray = [];
 
   if (
@@ -371,6 +353,7 @@ const SubmittalsDetails = ({ id }) => {
   }
   setMenuItems(optionsArray)
   };
+  
   const handleSubmitToArchitect = async () => {
     console.log('SubmittalId', id);
     setIsSubmitting(true);

@@ -29,100 +29,75 @@ import { getInitialsWithColor } from 'src/utils/get-initials';
 import { getStatusColor } from 'src/utils/constants';
 import { fDate, fDateISO } from 'src/utils/format-time';
 
-
 // ----------------------------------------------------------------------
 const COLORS = ['default', 'primary', 'secondary', 'info', 'success', 'warning', 'error'];
 
-const MeetingMinutesTableRow = memo(({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-  onViewRow,
-}) => {
-  // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
-  // companyName, address, adminName, adminEmail, phoneNumber
-  const {
-    id,
-    title,
-    planName,
-    issueDate,
-    // // attachments,
-    status,
-    creator,
-    // // owner,
-    // // docStatus,
-  } = row;
-  const role = useSelector((state) => state?.user?.user?.role?.shortName);
-  const confirm = useBoolean();
-  // const isDisabled = status === 'Void';
-  const quickEdit = useBoolean();
+const MeetingMinutesTableRow = memo(
+  ({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) => {
+    // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+    // companyName, address, adminName, adminEmail, phoneNumber
+    const {
+      id,
+      description,
+      status,
+      // // owner,
+      // // docStatus,
+    } = row;
+    const role = useSelector((state) => state?.user?.user?.role?.shortName);
+    const confirm = useBoolean();
+    // const isDisabled = status === 'Void';
+    const quickEdit = useBoolean();
 
+    // setHours(0, 0, 0, 0);
+    const popover = usePopover();
 
-  // setHours(0, 0, 0, 0);
-  const popover = usePopover();
-
-  return (
-    <>
-      {
-        <TableRow
-          selected={selected}
-        // hover={!isDisabled}
-        // sx={{
-        //   ...(isDisabled && {
-        //     cursor: 'not-allowed',
-        //     pointerEvents: 'none',
-        //     opacity: 0.5,
-        //   }),
-        // }}
-        >
-
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            <Box
-              // onClick={
-              //   (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
-              // }
-              onClick={onViewRow}
-              sx={{
-                cursor: 'pointer',
-                color: 'blue',
-                textDecoration: 'underline',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '.25rem',
-                // '&:hover': {
-                //   textDecoration: 'underline',
-                // },
-              }}
-            >
-              <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              <span>{title}</span>
-            </Box>
-          </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {truncate(planName, { length: 20, omission: '...' })}
-          </TableCell>
-
-          <TableCell
-            sx={{
-              whiteSpace: 'nowrap',
-              minWidth: 140,
-              color: (theme) => theme.palette.secondary,
-              // color: (theme) =>
-              //   isBefore(new Date(issueDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
-              //     ? 'red'
-              //     : theme.palette.secondary,
-            }}
+    return (
+      <>
+        {
+          <TableRow
+            selected={selected}
+            // hover={!isDisabled}
+            // sx={{
+            //   ...(isDisabled && {
+            //     cursor: 'not-allowed',
+            //     pointerEvents: 'none',
+            //     opacity: 0.5,
+            //   }),
+            // }}
           >
-            {fDateISO(issueDate)}
-          </TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+              <Box
+                // onClick={
+                //   (role === 'CAD' || role === 'PWU') && status === 'Draft' ? onEditRow : onViewRow
+                // }
+                onClick={onViewRow}
+                sx={{
+                  cursor: 'pointer',
+                  color: 'blue',
+                  textDecoration: 'underline',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '.25rem',
+                  // '&:hover': {
+                  //   textDecoration: 'underline',
+                  // },
+                }}
+              >
+                <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
+                <span>{description?.meetingNumber}</span>
+              </Box>
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+              {/* {truncate(planName, { length: 20, omission: '...' })} */}
+              {fDateISO(description?.date)}
+            </TableCell>
 
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {creator?.firstName} {creator?.lastName}
-          </TableCell>
-          {/* <TableCell sx={{ whiteSpace: 'nowrap' }}> */}
-          {/* <Box display="flex">
+
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+              {status}
+            </TableCell>
+            {/* <TableCell sx={{ whiteSpace: 'nowrap' }}> */}
+            {/* <Box display="flex">
               <AvatarGroup max={4}>
                 {owner?.map((item, index) => (
                   <Tooltip key={item._id} title={`${item?.firstName} ${item?.lastName}`}>
@@ -136,15 +111,15 @@ const MeetingMinutesTableRow = memo(({
                 ))}
               </AvatarGroup>
             </Box> */}
-          {/* {owner?.map((item, index) => (
+            {/* {owner?.map((item, index) => (
               <Typography>
                 {item.firstName} {owner.length === 1 && item.lastName}
                 {index < owner.length - 1 && ' / '}
               </Typography>
             ))} */}
-          {/* </TableCell> */}
+            {/* </TableCell> */}
 
-          {/* <TableCell>
+            {/* <TableCell>
             <Label
             variant="soft"
             color={
@@ -162,43 +137,42 @@ const MeetingMinutesTableRow = memo(({
             </Label>
           </TableCell> */}
 
-
-          <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-            {/* <Tooltip title="Quick Edit" placement="top" arrow>
+            <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+              {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip> */}
 
-            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-              <Iconify icon="eva:more-vertical-fill" />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      }
+              <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        }
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
+        {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 140 }}
-      >
-        {(role === 'CAD' || role === 'PWU') && (
-          <>
-            <MenuItem
-              onClick={() => {
-                confirm.onTrue();
-                popover.onClose();
-              }}
-              sx={{ color: 'error.main' }}
-            >
-              <Iconify icon="solar:trash-bin-trash-bold" />
-              Delete
-            </MenuItem>
+        <CustomPopover
+          open={popover.open}
+          onClose={popover.onClose}
+          arrow="right-top"
+          sx={{ width: 140 }}
+        >
+          {(role === 'CAD' || role === 'PWU') && (
+            <>
+              <MenuItem
+                onClick={() => {
+                  confirm.onTrue();
+                  popover.onClose();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon="solar:trash-bin-trash-bold" />
+                Delete
+              </MenuItem>
 
-            {/* <MenuItem
+              {/* <MenuItem
               onClick={() => {
                 onEditRow();
                 popover.onClose();
@@ -207,40 +181,41 @@ const MeetingMinutesTableRow = memo(({
               <Iconify icon="solar:pen-bold" />
               Edit
             </MenuItem> */}
-          </>
-        )}
+            </>
+          )}
 
-        <MenuItem
-          onClick={() => {
-            onViewRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="ion:eye" style={{ color: 'grey' }} />
-          View
-        </MenuItem>
-      </CustomPopover>
-
-      <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
-        action={
-          <Button
-            variant="contained"
-            color="error"
+          <MenuItem
             onClick={() => {
-              onDeleteRow(confirm);
+              onViewRow();
+              popover.onClose();
             }}
           >
-            Delete
-          </Button>
-        }
-      />
-    </>
-  );
-});
+            <Iconify icon="ion:eye" style={{ color: 'grey' }} />
+            View
+          </MenuItem>
+        </CustomPopover>
+
+        <ConfirmDialog
+          open={confirm.value}
+          onClose={confirm.onFalse}
+          title="Delete"
+          content="Are you sure want to delete?"
+          action={
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                onDeleteRow(confirm);
+              }}
+            >
+              Delete
+            </Button>
+          }
+        />
+      </>
+    );
+  }
+);
 
 export default MeetingMinutesTableRow;
 

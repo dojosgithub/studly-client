@@ -23,29 +23,45 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setDefaultTemplateModified, setProjectDrawerState, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import {
+  createNewProject,
+  getAllSubcontractorList,
+  getCompanySubcontractorList,
+  getProjectList,
+  resetCreateProject,
+  resetMembers,
+  setCreateTemplate,
+  setDefaultTemplateModified,
+  setProjectDrawerState,
+  setProjectName,
+  setProjectTrades,
+  setProjectWorkflow,
+} from 'src/redux/slices/projectSlice';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 import { PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // form
-import FormProvider, {
-  RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
 // redux
-import { setMeetingMinutesDescription, setMeetingMinutesInviteAttendee, setMeetingMinutesNotes, setMeetingMinutesPermit, setMeetingMinutesPlanTracking } from 'src/redux/slices/meetingMinutesSlice';
+import {
+  createMeetingMinutes,
+  setMeetingMinutesDescription,
+  setMeetingMinutesInviteAttendee,
+  setMeetingMinutesNotes,
+  setMeetingMinutesPermit,
+  setMeetingMinutesPlanTracking,
+} from 'src/redux/slices/meetingMinutesSlice';
 //
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
-import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog'
+import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog';
 import ProjectFinal from './project-final';
 import MeetingMinutesPlanTrackingFields from './meeting-minutes-plan-tracking-fields';
 import MeetingMinutesNotes from './meeting-minutes-notes';
 import meetingMinutesSchema from './meeting-minutes-schema';
-
-
 
 // ----------------------------------------------------------------------
 
@@ -77,77 +93,87 @@ const steps = [
   },
 ];
 
-
 export default function MeetingMinutesStepperForm() {
-  
   const [activeStep, setActiveStep] = useState(0);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
-
+  const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const members = useSelector(state => state.project.members);
-  const companies = useSelector(state => state.user.user.companies);
+  const members = useSelector((state) => state.project.members);
+  const companies = useSelector((state) => state.user.user.companies);
 
-  const selectedTradeTemplate = useSelector(state => state.project.create.selectedTradeTemplate);
+  const selectedTradeTemplate = useSelector((state) => state.project.create.selectedTradeTemplate);
 
-  const isStepOptional = (step) => (step === 3 || step === 4);
+  const isStepOptional = (step) => step === 3 || step === 4;
 
   const isStepSkipped = (step) => skipped?.has(step);
 
-
-  const defaultValues = useMemo(() => ({
-    description: {
-      meetingNumber: '',
-      name: '',
-      // title: '',
-      site: '',
-      date: new Date(),
-      time: '',
-      minutesBy: '',
-      // conferenceCall: '',
-      meetingID: '',
-      url: '',
-    },
-    inviteAttendee: [{
-      name: '',
-      company: '',
-      email: '',
-      attended: false,
-      // _id: uuidv4(),
-    }],
-    notes: [{
-      subject: '',
-      topics: [{
-        topic: '',
-      action: '',
-      date: new Date(),
-      assignee: null,
-      status: 'Open',
-      priority: null,
-      description: '',
-        // _id: uuidv4(),
-      }],
-      // _id: uuidv4(),
-    }],
-    permit: [{
-      status: '',
-      date: null,
-      permitNumber: '',
-      // _id: uuidv4(),
-    }],
-    plan: [{
-      planTracking: '',
-      stampDate: null,
-      dateRecieved: null,
-      // _id: uuidv4(),
-    }],
-    projectId: '', // Assuming you want a unique ID
-    company: '', // Assuming you want a unique ID
-  }), []);
+  const defaultValues = useMemo(
+    () => ({
+      description: {
+        meetingNumber: '',
+        name: '',
+        // title: '',
+        site: '',
+        date: new Date(),
+        time: '',
+        minutesBy: '',
+        // conferenceCall: '',
+        meetingID: '',
+        url: '',
+      },
+      inviteAttendee: [
+        {
+          name: '',
+          company: '',
+          email: '',
+          attended: false,
+          // _id: uuidv4(),
+        },
+      ],
+      notes: [
+        {
+          subject: '',
+          topics: [
+            {
+              topic: '',
+              action: '',
+              date: new Date(),
+              assignee: null,
+              status: 'Open',
+              priority: null,
+              description: '',
+              // _id: uuidv4(),
+            },
+          ],
+          // _id: uuidv4(),
+        },
+      ],
+      permit: [
+        {
+          status: '',
+          date: null,
+          permitNumber: '',
+          // _id: uuidv4(),
+        },
+      ],
+      plan: [
+        {
+          planTracking: '',
+          stampDate: null,
+          dateRecieved: null,
+          // _id: uuidv4(),
+        },
+      ],
+      projectId: '', // Assuming you want a unique ID
+      company: '', // Assuming you want a unique ID
+    }),
+    []
+  );
 
   const methods = useForm({
     resolver: yupResolver(meetingMinutesSchema),
@@ -162,18 +188,16 @@ export default function MeetingMinutesStepperForm() {
     getValues,
     handleSubmit,
     formState: { isSubmitting, isValid },
-    trigger
+    trigger,
   } = methods;
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
   // const { name, address, state, city, zipCode } = formValues;
-  console.log('formValues', { description, inviteAttendee, notes, permit, plan })
-  
+  console.log('formValues', { description, inviteAttendee, notes, permit, plan });
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       console.log('data->', data);
-
 
       // const { error, payload } = await dispatch(createNewProject(finalData))
       // console.log('e-p', { error, payload });
@@ -195,18 +219,15 @@ export default function MeetingMinutesStepperForm() {
       // // }
       // // router.push(paths.subscriber.submittals.list);
       // navigate(paths.subscriber.submittals.list)
-
-
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      enqueueSnackbar('Error Updating Password', { variant: "error" });
+      enqueueSnackbar('Error Updating Password', { variant: 'error' });
     }
   });
 
-
   const getFormValidation = async () => {
-    const currentStepValue = steps[activeStep].value
+    const currentStepValue = steps[activeStep].value;
     // let isFormValid;
     // refers to project stepper form value 'name'
     // if (currentStepValue === "name") {
@@ -217,14 +238,13 @@ export default function MeetingMinutesStepperForm() {
     //   const isZipCodeValid = await trigger('zipCode');
     //   isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
 
-
     // } else {
     const isFormValid = await trigger(currentStepValue);
 
     // }
-    console.log('isformvalid', isFormValid)
-    return { isFormValid, currentStepValue }
-  }
+    console.log('isformvalid', isFormValid);
+    return { isFormValid, currentStepValue };
+  };
 
   const handleNext = async () => {
     if (activeStep === steps.length) return; // Prevent submission if already on last step
@@ -238,7 +258,7 @@ export default function MeetingMinutesStepperForm() {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
-    console.log('isFormValid', isFormValid)
+    console.log('isFormValid', isFormValid);
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
@@ -272,7 +292,6 @@ export default function MeetingMinutesStepperForm() {
     if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-
   };
 
   const handleBack = () => {
@@ -285,14 +304,13 @@ export default function MeetingMinutesStepperForm() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped((prevSkipped) => {
-      console.log('prevSkipped', prevSkipped)
+      console.log('prevSkipped', prevSkipped);
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
-      console.log('newSkipped', newSkipped)
+      console.log('newSkipped', newSkipped);
       return newSkipped;
     });
   };
-
 
   const handleReset = () => {
     setActiveStep(0);
@@ -303,18 +321,26 @@ export default function MeetingMinutesStepperForm() {
   const handleFinish = () => {
     // Clone the plan array using lodash's cloneDeep
     const clonedPlan = cloneDeep(plan);
-  
+
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
+    dispatch(
+      createMeetingMinutes({
+        description,
+        inviteAttendee,
+        notes,
+        permit,
+        plan: clonedPlan,
+      })
+    );
+    enqueueSnackbar('Meeting created successfully!', { variant: 'success' });
+    router.push(paths.subscriber.meetingMinutes.list);
+
     console.log('Form Data:', { description, inviteAttendee, notes, permit, plan });
-    
+
     // Optionally, you can submit the form
-    methods.handleSubmit(onSubmit)();
-
+    // methods.handleSubmit(onSubmit)();
   };
-  
- 
-
 
   function getComponent() {
     let component;
@@ -332,18 +358,25 @@ export default function MeetingMinutesStepperForm() {
       case 3:
         component = <MeetingMinutesPermitFields />;
         break;
-      
-       
+
       default:
         component = <MeetingMinutesDescription />;
     }
     return component;
   }
 
-
   return (
     <>
-      <Stepper activeStep={activeStep} orientation="vertical" sx={{ maxHeight: '360px', marginTop: "2rem", "&.MuiStepper-root .MuiStepConnector-line": { height: '100%' }, "& .MuiStepLabel-root": { gap: '.75rem' } }}>
+      <Stepper
+        activeStep={activeStep}
+        orientation="vertical"
+        sx={{
+          maxHeight: '360px',
+          marginTop: '2rem',
+          '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
+          '& .MuiStepLabel-root': { gap: '.75rem' },
+        }}
+      >
         {steps.map((step, index) => {
           const stepProps = {};
           const labelProps = {};
@@ -357,31 +390,44 @@ export default function MeetingMinutesStepperForm() {
             <Step key={step.label} {...stepProps}>
               <StepLabel
                 {...labelProps}
-              // optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
+                // optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
               >
                 {step.label}
               </StepLabel>
-
-            </Step>)
+            </Step>
+          );
         })}
       </Stepper>
 
-      <Divider sx={{ width: '1px', background: "rgb(145 158 171 / 20%)" }} />
+      <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
 
-      <Stack flex={1} position='relative'>
+      <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>
-
-          {activeStep === steps.length-1 ? (
+          {activeStep === steps.length - 1 ? (
             <>
               <MeetingMinutesPlanTrackingFields />
-       
-              <Box sx={{ display: 'flex', gap: 2 , mb: 2 }}>
-                <Button color="inherit" variant='outlined' disabled={isSubmitting} onClick={handleBack} sx={{ mr: 1 }}>
+
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  disabled={isSubmitting}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
                   Back
                 </Button>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button onClick={handleReset} disabled={isSubmitting}>Reset</Button>
-                <LoadingButton type="button" variant="contained" disabled={isSubmitting} loading={isSubmitting} onClick={handleFinish}>
+                <Button onClick={handleReset} disabled={isSubmitting}>
+                  Reset
+                </Button>
+                <LoadingButton
+                  type="button"
+                  variant="contained"
+                  disabled={isSubmitting}
+                  loading={isSubmitting}
+                  onClick={handleFinish}
+                >
                   Finish
                 </LoadingButton>
               </Box>
@@ -393,16 +439,33 @@ export default function MeetingMinutesStepperForm() {
                   // py: 3,
                   my: 3,
                   minHeight: 120,
-                  background: 'transparent'
+                  background: 'transparent',
                   // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 }}
               >
                 {getComponent()}
               </Paper>
-              <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
-                {activeStep !== 0 && <Button variant='outlined' color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-                  Back
-                </Button>}
+              <Box
+                sx={{
+                  display: 'flex',
+                  position: 'sticky',
+                  bottom: 0,
+                  p: '1rem 0',
+                  width: '100%',
+                  bgcolor: '#fff',
+                }}
+              >
+                {activeStep !== 0 && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                )}
                 <Box sx={{ flexGrow: 1 }} />
 
                 {isStepOptional(activeStep) && (
@@ -412,18 +475,16 @@ export default function MeetingMinutesStepperForm() {
                 )}
                 {/* steps.length - 1 new change */}
 
-                {activeStep !== steps.length-1 && (
-                  <Button onClick={handleNext} variant="contained">Next</Button>
+                {activeStep !== steps.length - 1 && (
+                  <Button onClick={handleNext} variant="contained">
+                    Next
+                  </Button>
                 )}
               </Box>
             </>
           )}
         </FormProvider>
       </Stack>
-
-
-
     </>
   );
-  
 }

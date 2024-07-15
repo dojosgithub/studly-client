@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
+import { getMeetingMinutesDetails } from 'src/redux/slices/meetingMinutesSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
@@ -14,9 +15,9 @@ export default function MeetingMinutesDetailsPage() {
 
     const { id } = params;
     console.log('details', id)
-    // useEffect(() => {
-    //     dispatch(getRfiDetails(id))
-    // }, [dispatch, id])
+    useEffect(() => {
+        dispatch(getMeetingMinutesDetails(id))
+    }, [dispatch, id])
 
     return (
         <>

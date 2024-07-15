@@ -43,6 +43,7 @@ import {
 //
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
 import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
+import { getMeetingMinutesList } from 'src/redux/slices/meetingMinutesSlice';
 //
 import PlanRoomTableRow from '../meeting-minutes-table-row';
 import MeetingMinutesTableToolbar from '../meeting-minutes-table-toolbar';
@@ -54,10 +55,9 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
-  { id: 'name', label: 'Meeting No', width: "15%" }, // minWidth: 150, width: 220,
-  { id: 'description', label: 'Meeting id', width: "50%" }, // minWidth: 400, width: 500 
-  { id: 'createdDate', label: 'Meeting Date', width: "15%" }, // minWidth: 170, width: 170 
-  { id: 'creator', label: 'Status', width: "15%" }, // minWidth: 170,  
+  { id: 'name', label: 'Meeting No', width: "25%" }, // minWidth: 150, width: 220,
+  { id: 'createdDate', label: 'Meeting Date', width: "25%" }, // minWidth: 170, width: 170 
+  { id: 'creator', label: 'Status', width: "25%" }, // minWidth: 170,  
   // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: "5%" }, // width: 88 
 ];
@@ -76,7 +76,7 @@ const defaultFilters = {
 
 export default function MeetingMinutesListView() {
   const table = useTable();
-  const listData = useSelector(state => state?.planRoom?.list)
+  const listData = useSelector(state => state?.meetingMinutes?.list)
   const role = useSelector(state => state?.user?.user?.role?.shortName);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
@@ -105,7 +105,7 @@ export default function MeetingMinutesListView() {
 
   useEffect(() => {
     console.log('filters.status', filters.status);
-    dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
+    dispatch(getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
   const dataFiltered = useMemo(() => applyFilter({
@@ -158,11 +158,11 @@ export default function MeetingMinutesListView() {
   );
   const handleViewRow = useCallback(
     (id) => {
-      // router.push(paths.subscriber.planRoom.details(id));
+      router.push(paths.subscriber.meetingMinutes.details(id));
       // confirm.onTrue()
       console.log('handleViewRow', id)
     },
-    []
+    [router]
   );
 
   // const handleFilterStatus = useCallback(
@@ -234,13 +234,13 @@ export default function MeetingMinutesListView() {
                   listData?.docs &&
                   listData?.docs?.map((row) => (
                     <PlanRoomTableRow
-                      key={row._id}
+                      key={row.id}
                       row={row}
-                      selected={table.selected.includes(row._id)}
-                      onSelectRow={() => table.onSelectRow(row._id)}
-                      onDeleteRow={(onDelete) => handleDeleteRow(row._id, onDelete)}
+                      selected={table.selected.includes(row.id)}
+                      onSelectRow={() => table.onSelectRow(row.id)}
+                      onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
                       onEditRow={() => handleEditRow(row?._id)}
-                      onViewRow={() => handleViewRow(row?._id)}
+                      onViewRow={() => handleViewRow(row?.id)}
                     />
                   ))}
 

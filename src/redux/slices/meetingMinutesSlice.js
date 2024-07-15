@@ -10,6 +10,11 @@ export const createMeetingMinutes = createAsyncThunk(
     if (isEmpty(meetingMinutesData)) {
       return rejectWithValue('Meeting minutes data cannot be empty.');
     }
+
+    const projectId = getState().project?.current?.id;
+    console.log('projectId', projectId);
+
+    meetingMinutesData.projectId = projectId;
     try {
       const response = await axiosInstance.post(
         endpoints.meetingMinutes.create,
@@ -56,6 +61,7 @@ export const getMeetingMinutesList = createAsyncThunk(
     }
   }
 );
+
 export const MeetingMinutes = createAsyncThunk(
   'meetingMinutesSheet/delete',
   async ({ projectId, meetingMinutesId, sheetId }, { getState, rejectWithValue }) => {
@@ -72,6 +78,25 @@ export const MeetingMinutes = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while deleting planroom sheet.');
+    }
+  }
+);
+
+export const getMeetingMinutesDetails = createAsyncThunk(
+  'meetingMinutes/details',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      console.log('meetingMinutes', id);
+
+      const response = await axiosInstance.get(endpoints.meetingMinutes.details(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
     }
   }
 );
@@ -370,19 +395,19 @@ const meetingMinutes = createSlice({
     // });
 
     // // Get PlanRoom Details
-    // builder.addCase(getPlanRoomDetails.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(getPlanRoomDetails.fulfilled, (state, action) => {
-    //   state.current = action.payload;
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
-    // builder.addCase(getPlanRoomDetails.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message;
-    // });
+    builder.addCase(getMeetingMinutesDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getMeetingMinutesDetails.fulfilled, (state, action) => {
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getMeetingMinutesDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     // builder.addCase(submitPlanRoomResponse.pending, (state) => {
     //   state.isLoading = true;
     //   state.error = null;

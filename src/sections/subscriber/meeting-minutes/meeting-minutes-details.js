@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,9 +15,12 @@ import {
   MenuItem,
   Paper,
   Stack,
+  Tab,
+  Tabs,
   Typography,
   alpha,
   styled,
+  tabsClasses,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate, useParams } from 'react-router';
@@ -45,6 +48,7 @@ import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
+import Description from './meeting-minutes-details-description';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -64,18 +68,41 @@ const StyledCard = styled(Card, {
   }),
 }));
 
+const TABS = [
+  {
+    value: 'description',
+    label: 'Description',
+  },
+  {
+    value: 'attendees',
+    label: 'Attendees',
+  },
+  {
+    value: 'agenda',
+    label: 'Agenda',
+  },
+  {
+    value: 'permit',
+    label: 'Permit',
+  },
+  {
+    value: 'plan',
+    label: 'Plan',
+  },
+];
 
 const MeetingMinutesDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const confirm = useBoolean();
+  const [currentTab, setCurrentTab] = useState('description');
 
   const { id: parentSubmittalId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
-  const currentRfi = useSelector((state) => state.rfi?.current);
+  const currentMeeting = useSelector((state) => state.meetingMinutes?.current);
 
   // const  = useBoolean();
   const [menuItems, setMenuItems] = useState([]);
@@ -88,6 +115,10 @@ const MeetingMinutesDetails = ({ id }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleChangeTab = useCallback((event, newValue) => {
+    setCurrentTab(newValue);
+  }, []);
 
   const {
     name,
@@ -105,34 +136,59 @@ const MeetingMinutesDetails = ({ id }) => {
     isResponseSubmitted,
     response,
     docStatus,
-  } = currentRfi;
-  // const hasSubcontractorId = !isEmpty(trade)
-  //   ? Object.prototype.hasOwnProperty.call(trade, 'subcontractorId')
-  //   : null;
+  } = currentMeeting;
 
   useEffect(() => {
-    console.log('currentRfi', currentRfi);
-    console.log('OwnerList', currentRfi?.owner);
-    console.log('currentUser:?._id', currentUser?._id);
-    console.log('id', id);
-    // getMenus();
+    getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentRfi, id, currentUser, isSubmitting]);
-  const handleSubmitToArchitect = async () => {
-    console.log('ID==>', id);
-    setIsSubmitting(true);
-    const { error, payload } = await dispatch(submitRfiToArchitect(id));
-    setIsSubmitting(false);
-    if (!isEmpty(error)) {
-      enqueueSnackbar(`Error submitting RFI to architect/engineer.`, { variant: 'error' });
-      return;
-    }
-    enqueueSnackbar(`RFI is submitted to architect/engineer.`, { variant: 'success' });
-    await dispatch(getRfiDetails(id));
-    navigate(paths.subscriber.rfi.list);
-  };
+  }, []);
 
-  
+  const getMenus = () => {
+    const optionsArray = [];
+
+    if (
+      currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+      currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
+    ) {
+      optionsArray.push(
+        <MenuItem onClick={() => console.log('INSIDE')}>
+          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+            Export To PDF
+          </LoadingButton>
+        </MenuItem>
+      );
+      if (status === 'Draft') {
+        optionsArray.push(
+          <MenuItem onClick={() => console.log('INSIDE')}>
+            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+              Create Follow-up
+            </LoadingButton>
+          </MenuItem>
+        );
+      }
+      if (status === 'Draft') {
+        optionsArray.push(
+          <MenuItem onClick={() => console.log('INSIDE')}>
+            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+              Send to Attendees
+            </LoadingButton>
+          </MenuItem>
+        );
+      }
+
+      if (status === 'Draft') {
+        optionsArray.push(
+          <MenuItem onClick={() => console.log('INSIDE')}>
+            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+              Change to Minutes
+            </LoadingButton>
+          </MenuItem>
+        );
+      }
+
+      setMenuItems(optionsArray);
+    }
+  };
 
   return (
     <>
@@ -149,173 +205,66 @@ const MeetingMinutesDetails = ({ id }) => {
               width: '100%',
               paddingInline: '.75rem',
             },
+            // mr: 1
           }}
           label={status}
         />
-        {(currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-          currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) &&
-          status === 'Draft' && (
-            <LoadingButton
-              loading={isSubmitting}
-              variant="contained"
-              onClick={handleSubmitToArchitect}
+        {menuItems.length > 0 && (
+          <div>
+            <Button
+              size="large"
+              variant="outlined"
+              id="demo-positioned-button"
+              aria-controls={open ? 'demo-positioned-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
             >
-              Submit for Review
-            </LoadingButton>
-          )}
-        {
-          (
-            status === 'Submitted' &&
-            !isResponseSubmitted &&
-            isIncluded(currentRfi?.owner, currentUser?._id)
-          ) &&
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            // onClick={() => navigate(paths.subscriber.rfi.response(id))}
-            onClick={() => confirm.onToggle()}
-          >
-            Add Response
-          </LoadingButton>
-
-        }
-       
+              Actions
+            </Button>
+            <Menu
+              id="demo-positioned-menu"
+              aria-labelledby="demo-positioned-button"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              {menuItems}
+            </Menu>
+          </div>
+        )}
       </Box>
-      <Stack
+      <Tabs
+        value={currentTab}
+        onChange={handleChangeTab}
         sx={{
-          mt: 3,
-          mb: 5,
-          gap: 2,
+          width: 1,
+          bottom: 0,
+          zIndex: 9,
+          // position: 'absolute',
+          bgcolor: 'background.paper',
+          // [`& .${tabsClasses.flexContainer}`]: {
+          //   pr: { md: 3 },
+          //   justifyContent: {
+          //     sm: 'center',
+          //     md: 'flex-end',
+          //   },
+          // },
         }}
       >
-        {/* // ? If General Contractor has submitted Submittal to the (Architect || Engineer || Sub Contractor) */}
-        {status === 'Submitted' &&
-          (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-            <Alert severity="success">
-              RFI is submitted successfully!.
-            </Alert>
-          )}
-
-       
-        <StyledCard>
-          <Typography className="submittalTitle">Title</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {name}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Description</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {description}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Drawing Sheet</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {drawingSheet}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Created Date</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {createdDate && fDateISO(createdDate)}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Due Date</Typography>
-          <Typography
-            sx={{
-              // color: (theme) => (isTomorrow(parseISO(dueDate)) ? 'red' : theme.palette.primary),
-              color: (theme) =>
-                isBefore(new Date(dueDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
-                  ? 'red'
-                  : theme.palette.secondary,
-              flex: 0.75,
-              px: 2,
-            }}
-          >
-            {dueDate && fDateISO(dueDate)}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Cost Impact</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {costImpact}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Schedule Delay</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {scheduleDelay}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Status</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            <Label color={getStatusColor(status)} variant="soft">
-              {status}
-            </Label>
-          
-          </Box>
-        </StyledCard>
-
-        <StyledCard>
-          <Typography className="submittalTitle">Creator</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {creator?.firstName} {creator?.lastName}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Attachments</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            <MultiFilePreview files={attachments} thumbnail onDownload />
-          </Box>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Assignee / Owner</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {owner?.length > 0 &&
-              owner.map((item, index) => (
-                <span key={index}>
-                  {item?.firstName} {item?.lastName}
-                  {index < owner.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">CC List</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            {ccList?.length > 0 &&
-              ccList
-                ?.slice(0, 4)
-                .map((item) => (
-                  <Chip key={item} size="small" color="secondary" variant="outlined" label={item} />
-                ))}
-            {ccList?.length > 4 && (
-              <Chip
-                size="small"
-                variant="outlined"
-                color="secondary"
-                label={`${ccList.length - 4} +`}
-              />
-            )}
-          </Box>
-        </StyledCard>
-        {isResponseSubmitted &&
-          <StyledCard>
-            <Typography className="submittalTitle">Response</Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <Box dangerouslySetInnerHTML={{__html: response?.text}}/>
-            </Box>
-          </StyledCard>
-        }
-      </Stack>
-
-      
-
-
+        {TABS.map((tab) => (
+          <Tab key={tab.value} value={tab.value} label={tab.label} />
+        ))}
+      </Tabs>
+      {currentTab === 'description' && <Description data={currentMeeting?.description} />}
     </>
   );
 };
