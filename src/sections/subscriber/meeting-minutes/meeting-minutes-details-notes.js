@@ -1,69 +1,110 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-// @mui
-
+import React, { useState } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
- import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Paper from '@mui/material/Paper';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { styled } from '@mui/material/styles';
 
+// Styled Components
+const TopicContainer = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  padding: theme.spacing(3),  // Increased padding
+  border: '1px solid #ddd',
+  borderRadius: theme.shape.borderRadius,
+}));
 
+const Notes = ({ data }) => {
+  const [expanded, setExpanded] = useState(false);
 
-// ----------------------------------------------------------------------
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
-const Notes = ({ data }) => (
-  <div>
-    {data.map((note, noteIndex) => (
-      <Accordion key={noteIndex}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls={`panel${noteIndex}-content`}
-          id={`panel${noteIndex}-header`}
+  return (
+    <div>
+      {data.map((note, noteIndex) => (
+        <Accordion
+          key={noteIndex}
+          expanded={expanded === `panel${noteIndex}`}
+          onChange={handleChange(`panel${noteIndex}`)}
         >
-          <Typography>{note.subject}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <TableContainer component={Paper}>
-            <Table aria-label="collapsible table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Topic</TableCell>
-                  <TableCell>Action</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Assignee</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Priority</TableCell>
-                  <TableCell>Description</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {note.topics.map((topic, topicIndex) => (
-                  <TableRow key={topicIndex}>
-                    <TableCell>{topic.topic}</TableCell>
-                    <TableCell>{topic.action}</TableCell>
-                    <TableCell>{new Date(topic.date).toLocaleDateString()}</TableCell>
-                    <TableCell>{topic.assignee}</TableCell>
-                    <TableCell>{topic.status}</TableCell>
-                    <TableCell>{topic.priority}</TableCell>
-                    <TableCell>{topic.description}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </AccordionDetails>
-      </Accordion>
-    ))}
-  </div>
-);
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${noteIndex}-content`}
+            id={`panel${noteIndex}-header`}
+          >
+            <Typography sx={{ fontSize: '1.6rem' }} fontWeight="bold">
+              {note.subject}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {note.topics.map((topic, topicIndex) => (
+              <TopicContainer key={topicIndex}>
+                <div>
+                  <Typography sx={{ fontSize: '1.4rem' }} fontWeight="bold" marginBottom={3}>
+                    {topic.topic}
+                  </Typography>
+                  <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                    Description:
+                  </Typography>
+                  <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                    {topic.description}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                    Action:
+                  </Typography>
+                  <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                    {topic.action}
+                  </Typography>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div>
+                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      Due Date:
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      {new Date(topic.date).toLocaleDateString()}
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      Status:
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      {topic.status}
+                    </Typography>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div>
+                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      Assignee:
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      {topic.assignee}
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      Priority:
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      {topic.priority}
+                    </Typography>
+                  </div>
+                </div>
+              </TopicContainer>
+            ))}
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </div>
+  );
+};
 
 Notes.propTypes = {
   data: PropTypes.arrayOf(
