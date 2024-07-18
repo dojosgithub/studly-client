@@ -31,7 +31,7 @@ const MeetingMinutesPermitFields = () => {
       status: '',
       permitNumber: '',
       date: null,
-      _id: uuidv4(),
+      // _id: uuidv4(),
     });
   }, [append]);
 
