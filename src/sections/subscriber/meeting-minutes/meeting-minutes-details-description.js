@@ -41,9 +41,8 @@ const StyledCard = styled(Card, {
 //         date: new Date(),
 //         time: '',
 //         minutesBy: '',
-//         // conferenceCall: '',
-//         meetingID: '',
-//         url: '',
+//         conferenceCallId: '',
+//         conferenceCallLink: '',
 
 export default function Description({ data }) {
   console.log('DATA:', data);
@@ -66,7 +65,7 @@ export default function Description({ data }) {
       <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
         <Typography className="submittalTitle">Meeting ID</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {data?.meetingID}
+          {data?.conferenceCallId}
         </Typography>
       </StyledCard>
 
@@ -101,7 +100,7 @@ export default function Description({ data }) {
       <StyledCard sx={{ width: '100%',}}>
   <Typography className="submittalTitle">URL</Typography>
   <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-    {data?.url}
+    {data?.conferenceCallLink}
   </Typography>
 </StyledCard>
 

@@ -8,9 +8,8 @@ import * as Yup from 'yup';
 //   date: Yup.date().required('Date is required'),
 //   time: Yup.string().required('Time is required'),
 //   minutesBy: Yup.string().required('Minutes By is required'),
-//   conferenceCall: Yup.string().required('Conference Call is required'),
-//   meetingID: Yup.string().required('Meeting ID is required'),
-//   url: Yup.string().required('URL is required'),
+//   conferenceCallId: Yup.string().required('Meeting ID is required'),
+//   conferenceCallLink: Yup.string().required('URL is required'),
 // });
 // const inviteAttendeeSchema = Yup.object().shape({
 //   attendees: Yup.array().of(

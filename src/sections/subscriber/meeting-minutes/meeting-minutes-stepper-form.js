@@ -122,9 +122,8 @@ export default function MeetingMinutesStepperForm() {
         date: new Date(),
         time: '',
         minutesBy: '',
-        // conferenceCall: '',
-        meetingID: '',
-        url: '',
+        conferenceCallId: '',
+        conferenceCallLink: '',
       },
       inviteAttendee: [
         {
