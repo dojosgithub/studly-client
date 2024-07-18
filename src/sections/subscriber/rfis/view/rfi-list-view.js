@@ -20,7 +20,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW } from 'src/_mock';
+import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, STATUS_RFIS } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -59,6 +59,7 @@ const TABLE_HEAD = [
   { id: 'drawingSheet', label: 'Drawing Sheet', minWidth: 170, width: 170 },
   { id: 'createdDate', label: 'Created Date', minWidth: 170, width: 170 },
   { id: 'dueDate', label: 'Due Date', minWidth: 150, width: 150 },
+  { id: 'responseDate', label: 'Response Date', minWidth: 150, width: 180 },
   { id: 'costImpact', label: 'Cost Impact', minWidth: 150, width: 180 },
   { id: 'scheduleDelay', label: 'Schedule Delay', minWidth: 150, width: 200 },
   { id: 'owner', label: 'Owner / Assignee', minWidth: 200, width: 400 },
@@ -264,7 +265,7 @@ export default function RfiListView() {
             onFilters={handleFilters}
             //
             // roleOptions={_roles}
-            roleOptions={STATUS_WORKFLOW?.slice(0, 2)}
+            roleOptions={STATUS_RFIS}
           />
 
           {/* {canReset && (

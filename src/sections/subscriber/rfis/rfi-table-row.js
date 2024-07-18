@@ -57,6 +57,7 @@ export default function RfiTableRow({
     creator,
     owner,
     docStatus,
+    response
   } = row;
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const confirm = useBoolean();
@@ -141,6 +142,8 @@ export default function RfiTableRow({
           >
             {fDateISO(dueDate)}
           </TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{response?.date && fDateISO(response?.date)}</TableCell>
+          
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{costImpact}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{scheduleDelay}</TableCell>
           {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{attachments?.length > 0 ? 'attachments' : null}</TableCell> */}

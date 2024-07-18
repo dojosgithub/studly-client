@@ -24,10 +24,7 @@ import { LoadingButton } from '@mui/lab';
 import { enqueueSnackbar } from 'notistack';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
-import FormProvider, {
-  RHFMultiSelect,
-  RHFSelect, RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFMultiSelect, RHFSelect, RHFTextField } from 'src/components/hook-form';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
@@ -47,21 +44,19 @@ export default function PlanRoomPDFSheetsDrawer({
 }) {
   const { id } = useParams();
 
-
-  const dispatch = useDispatch()
-  const confirmIsFormDisabled = useBoolean(false)
+  const dispatch = useDispatch();
+  const confirmIsFormDisabled = useBoolean(false);
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
       .of(
         Yup.object().shape({
-          title: Yup.string()
-          .required('Sheet title is required'),
+          title: Yup.string().required('Sheet title is required'),
           src: Yup.object().required('Image src is required'),
-          category: Yup.array()
+          category: Yup.array(),
         })
       )
       .min(1, 'At least one trade is required'),
-      attachments: Yup.array()
+    attachments: Yup.array(),
   });
 
   const defaultValues = useMemo(() => {
@@ -69,11 +64,9 @@ export default function PlanRoomPDFSheetsDrawer({
 
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
-      attachments: []
+      attachments: [],
     };
   }, [files]);
-
-
 
   const methods = useForm({
     resolver: yupResolver(NewPlanSheetSchema),
@@ -89,36 +82,45 @@ export default function PlanRoomPDFSheetsDrawer({
     formState: { isSubmitting, isValid, errors },
   } = methods;
 
+  const hasDuplicateTitles = (items) => {
+    const titles = new Set();
+    return items.some((item) => {
+      if (titles.has(item.title)) {
+        return true; // Duplicate found
+      }
+      titles.add(item.title);
+      return false; // No duplicate
+    });
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-
-
-      console.log('data', data)
+      console.log('data', data);
       // console.log('e-p', { error, payload });
       // if (!isEmpty(error)) {
       // enqueueSnackbar(error.message, { variant: 'error' });
       //   return;
       // }
-      confirmIsFormDisabled.onTrue()
-      onFormSubmit(data?.sheets, data?.attachments)
+      if (hasDuplicateTitles(data?.sheets)) {
+        enqueueSnackbar('Sheet titles should be unique within a plan set', { variant: 'error' });
+        return;
+      }
+      confirmIsFormDisabled.onTrue();
+      onFormSubmit(data?.sheets, data?.attachments);
       // reset()
       // onClose()
-
-
     } catch (e) {
       console.error(e);
     }
   });
-  console.log('dialog', getValues())
+  console.log('dialog', getValues());
   const renderHead = (
     <AppBar position="sticky" top="0" color="primary">
       <Toolbar>
-
-        <Typography variant="h6" sx={{ flex: 1, ml: 2,color:'black' }}>
+        <Typography variant="h6" sx={{ flex: 1, ml: 2, color: 'black' }}>
           Sheet Thumbnail
         </Typography>
-        <Typography variant="h6" sx={{ flex: 1, ml: 2,color:'black' }}>
+        <Typography variant="h6" sx={{ flex: 1, ml: 2, color: 'black' }}>
           Sheet Title
         </Typography>
 
@@ -127,53 +129,74 @@ export default function PlanRoomPDFSheetsDrawer({
         </IconButton>
       </Toolbar>
     </AppBar>
-  )
+  );
   return (
-      <Drawer
-        anchor="right"
-        open={open}
-        onClose={onClose}
-        slotProps={{
-          backdrop: { invisible: true },
-        }}
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={onClose}
+      slotProps={{
+        backdrop: { invisible: true },
+      }}
+      sx={{
+        [`& .${drawerClasses.paper}`]: {
+          // ...paper({ theme, bgcolor: theme.palette.background.default }),
+          width: `calc(100% - ${280}px)`,
+          background: 'white',
+          // ...isOnboarding && {
+          //   width: '100%',
+          // }
+        },
+        position: 'relative',
+        height: '100%',
+      }}
+    >
+      {renderHead}
+
+      <Divider sx={{ borderStyle: 'dashed' }} />
+
+      <Box flex={1} width="100%" paddingX="2rem">
+        {/* <Scrollbar> */}
+        <FormProvider methods={methods} onSubmit={onSubmit}>
+          <PlanRoomPdfConverter files={files} />
+        </FormProvider>
+        {/* </Scrollbar> */}
+      </Box>
+
+      <Box
         sx={{
-          [`& .${drawerClasses.paper}`]: {
-            // ...paper({ theme, bgcolor: theme.palette.background.default }),
-            width: `calc(100% - ${280}px)`,
-            'background': 'white',
-            // ...isOnboarding && {
-            //   width: '100%',
-            // }
-          },
-          position: 'relative',
-          height:'100%'
+          position: 'sticky',
+          bottom: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'right',
+          gap: '1.5rem',
+          padding: '2rem',
+          backgroundColor: 'white',
+          zIndex: 10,
         }}
       >
-        {renderHead}
-
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box flex={1} width='100%' paddingX="2rem">
-          {/* <Scrollbar> */}
-            <FormProvider methods={methods} onSubmit={onSubmit}>
-              <PlanRoomPdfConverter files={files} />
-            </FormProvider>
-          {/* </Scrollbar> */}
-        </Box>
-
-
-        <Box sx={{ position: "sticky", bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'right', gap: '1.5rem', padding: '2rem',  backgroundColor: 'white',zIndex:10 }}>
-
-          {onClose && (
-            <Button variant="outlined" disabled={confirmIsFormDisabled.value} color="inherit" onClick={onClose}>
-              Cancel
-            </Button>
-          )}
-          <LoadingButton disabled={confirmIsFormDisabled.value} loading={confirmIsFormDisabled.value} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
-            Publish
-          </LoadingButton>
-        </Box>
-      </Drawer>
+        {onClose && (
+          <Button
+            variant="outlined"
+            disabled={confirmIsFormDisabled.value}
+            color="inherit"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+        )}
+        <LoadingButton
+          disabled={confirmIsFormDisabled.value}
+          loading={confirmIsFormDisabled.value}
+          color="inherit"
+          onClick={handleSubmit(onSubmit)}
+          variant="contained"
+        >
+          Publish
+        </LoadingButton>
+      </Box>
+    </Drawer>
   );
 }
 

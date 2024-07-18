@@ -36,7 +36,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   // const handleClose = () => {
   //     setOpen(!open);
   // };
-  const handleProject = (project) => {
+  const handleProject = (project, redirect) => {
     dispatch(setCurrentProject(project));
     // dispatch(getSubmittalList())
     const { members } = project;
@@ -49,12 +49,13 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
         dispatch(setCurrentProjectRole(projectRole?.role));
       }
     }
-    dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+    if (redirect) {
+      dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+      navigate(paths.subscriber.submittals.list);
+    }
     handleClose();
-    navigate(paths.subscriber.submittals.list);
   };
 
-  
   React.useEffect(() => {
     async function getProjects() {
       await dispatch(getProjectList());
@@ -64,13 +65,11 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   }, []);
 
   React.useEffect(() => {
-    console.log(currentProject)
-    const updatedCurrentProject = projects.findIndex(
-      (project) => project.id === currentProject.id
-    );
+    console.log(currentProject);
+    const updatedCurrentProject = projects.findIndex((project) => project.id === currentProject.id);
     console.log(updatedCurrentProject);
     if (updatedCurrentProject !== -1) {
-      handleProject(projects[updatedCurrentProject]);
+      handleProject(projects[updatedCurrentProject], false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects]);
@@ -211,7 +210,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
               <MenuItem
                 sx={{ justifyContent: 'center', border: '1px solid grey' }}
                 key={project._id}
-                onClick={() => handleProject(project)}
+                onClick={() => handleProject(project, true)}
               >
                 {project?.name}
               </MenuItem>

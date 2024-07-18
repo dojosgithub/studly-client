@@ -451,22 +451,18 @@ const RfiDetails = ({ id }) => {
               Submit for Review
             </LoadingButton>
           )}
-        {
-          (
-            status === 'Submitted' &&
-            !isResponseSubmitted &&
-            isIncluded(currentRfi?.owner, currentUser?._id)
-          ) &&
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            // onClick={() => navigate(paths.subscriber.rfi.response(id))}
-            onClick={() => confirm.onToggle()}
-          >
-            Add Response
-          </LoadingButton>
-
-        }
+        {status === 'Submitted' &&
+          !isResponseSubmitted &&
+          isIncluded(currentRfi?.owner, currentUser?._id) && (
+            <LoadingButton
+              loading={isSubmitting}
+              variant="contained"
+              // onClick={() => navigate(paths.subscriber.rfi.response(id))}
+              onClick={() => confirm.onToggle()}
+            >
+              Add Response
+            </LoadingButton>
+          )}
         {/* {menuItems.length > 0 && (
           <div>
             <Button
@@ -510,9 +506,7 @@ const RfiDetails = ({ id }) => {
         {status === 'Submitted' &&
           (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-            <Alert severity="success">
-              RFI is submitted successfully!.
-            </Alert>
+            <Alert severity="success">RFI is submitted successfully!.</Alert>
           )}
 
         {/* {isResponseSubmitted && isIncluded(currentRfi?.owner, currentUser?._id) && (
@@ -531,14 +525,33 @@ const RfiDetails = ({ id }) => {
             {description}
           </Typography>
         </StyledCard>
-        {isResponseSubmitted &&
-          <StyledCard >
-            <Typography className="submittalTitle" sx={{ color: 'green', fontWeight: 'bold' }}>Official Response</Typography>
+        {isResponseSubmitted && (
+          <StyledCard>
+            <Typography className="submittalTitle" sx={{ color: 'green', fontWeight: 'bold' }}>
+              Official Response
+            </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+              <Stack direction="column" >
+                <Chip
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                  // sx={{
+                  //   '&.MuiChip-root': {
+                  //     height: '50px',
+                  //     fontSize: '1rem',
+                  //     maxWidth: 'max-content',
+                  //     width: '100%',
+                  //     paddingInline: '.75rem',
+                  //   },
+                  // }}
+                  label={response?.date && fDateISO(response?.date)}
+                />
+                <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+              </Stack>
             </Box>
           </StyledCard>
-        }
+        )}
         <StyledCard>
           <Typography className="submittalTitle">Drawing Sheet</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
@@ -662,15 +675,9 @@ const RfiDetails = ({ id }) => {
             )}
           </Box>
         </StyledCard>
-
       </Stack>
 
-      <RfiResponseDialog
-        open={confirm.value}
-        onClose={() => confirm.onFalse()}
-      />
-
-
+      <RfiResponseDialog open={confirm.value} onClose={() => confirm.onFalse()} />
     </>
   );
 };
