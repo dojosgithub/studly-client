@@ -76,12 +76,6 @@ export default function Description({ data }) {
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
-        <Typography className="submittalTitle">Name</Typography>
-        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {data?.name}
-        </Typography>
-      </StyledCard>
 
       <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
         <Typography className="submittalTitle">Site</Typography>
