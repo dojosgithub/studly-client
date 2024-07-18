@@ -253,8 +253,10 @@ const MeetingMinutesDetails = ({ id }) => {
           width: 1,
           bottom: 0,
           zIndex: 9,
+          
           // position: 'absolute',
           bgcolor: 'background.paper',
+         
           // [`& .${tabsClasses.flexContainer}`]: {
           //   pr: { md: 3 },
           //   justifyContent: {
@@ -265,7 +267,18 @@ const MeetingMinutesDetails = ({ id }) => {
         }}
       >
         {TABS.map((tab) => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
+          <Tab
+          key={tab.value}
+          value={tab.value}
+          label={tab.label}
+          sx={{
+            width: 180,
+            '&.Mui-selected': {
+              bgcolor: '#ffcc3f',
+              borderRadius:'10px',
+            },
+          }}
+        />
         ))}
       </Tabs>
       {currentTab === 'description' && <Description data={currentMeeting?.description} />}
