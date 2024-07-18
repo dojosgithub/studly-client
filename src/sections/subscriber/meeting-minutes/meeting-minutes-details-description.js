@@ -12,16 +12,99 @@ import Divider from '@mui/material/Divider';
 import InputBase from '@mui/material/InputBase';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import { styled, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'isSubcontractor',
+})(({ isSubcontractor, theme }) => ({
+  '& .submittalTitle': {
+    color: theme.palette.primary,
+    flex: 0.25,
+    borderRight: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
+    fontWeight: 'bold',
+  },
+  display: 'flex',
+  borderRadius: '10px',
+  padding: '1rem',
+  gap: '1rem',
+  ...(isSubcontractor && {
+    maxHeight: 300,
+  }),
+}));
+
+// meetingNumber: '',
+//         name: '',
+//         // title: '',
+//         site: '',
+//         date: new Date(),
+//         time: '',
+//         minutesBy: '',
+//         // conferenceCall: '',
+//         meetingID: '',
+//         url: '',
+
 export default function Description({ data }) {
-  console.log('DATA:', data)
+  console.log('DATA:', data);
   return (
     <Grid container spacing={3}>
-      <Grid xs={12} md={4}>
-        Hello
-      </Grid>
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px',marginTop:'30px'}}>
+        <Typography className="submittalTitle">Title</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+          {data?.meetingNumber}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Date</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.date?.toString()}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Meeting ID</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.meetingID}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Minutes By</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.minutesBy}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Name</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.name}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Site</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.site}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+        <Typography className="submittalTitle">Time</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.time}
+        </Typography>
+      </StyledCard>
+
+      <StyledCard sx={{ width: '100%',}}>
+  <Typography className="submittalTitle">URL</Typography>
+  <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+    {data?.url}
+  </Typography>
+</StyledCard>
+
     </Grid>
   );
 }

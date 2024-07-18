@@ -11,7 +11,7 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 // import MeetingMinutesNewEditForm from '../meeting-minutes-new-edit-form';
-import MeetingMinutesStepperView from './meeting-minutes-stepper-view';
+import MeetingMinutesStepperView from './view/meeting-minutes-stepper-view';
 
 // ----------------------------------------------------------------------
 

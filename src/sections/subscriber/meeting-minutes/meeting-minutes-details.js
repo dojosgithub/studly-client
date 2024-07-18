@@ -49,6 +49,11 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
 import Description from './meeting-minutes-details-description';
+ import InviteAttendee from './meeting-minutes-details-inviteAttendee';
+import Notes from './meeting-minutes-details-notes';
+ import Permit from './meeting-minutes-details-permit';
+ import Plan from './meeting-minutes-details-plan';
+
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -106,7 +111,6 @@ const MeetingMinutesDetails = ({ id }) => {
 
   // const  = useBoolean();
   const [menuItems, setMenuItems] = useState([]);
-
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -265,6 +269,10 @@ const MeetingMinutesDetails = ({ id }) => {
         ))}
       </Tabs>
       {currentTab === 'description' && <Description data={currentMeeting?.description} />}
+      {currentTab === 'attendees' && <InviteAttendee data={currentMeeting?.inviteAttendee} />}
+      {currentTab === 'agenda' && <Notes data={currentMeeting?.notes} />}
+      {currentTab === 'permit' && <Permit data={currentMeeting?.permit} />}
+      {currentTab === 'plan' && <Plan data={currentMeeting?.plan} />}
     </>
   );
 };
