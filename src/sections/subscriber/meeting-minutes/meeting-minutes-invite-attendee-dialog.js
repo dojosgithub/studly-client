@@ -85,7 +85,7 @@ export default function MeetingMinutesInviteAttendeeView() {
       </Box>
       <Box sx={{ padding: '6px 6px' }}>
         {fields.map((attendee, index) => (
-          <Box key={attendee._id}>
+          <Box key={attendee.id}>
             <Box
               rowGap={5}
               columnGap={3}

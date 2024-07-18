@@ -70,9 +70,9 @@ const MeetingMinutesPlanTrackingFields = () => {
           Plan/Ask Tracking
         </Typography>
         <Stack gap="1.5rem">
-          {fields.map(({ _id }, index) => (
+          {fields.map(({ id }, index) => (
             <Box
-              key={_id}
+              key={id}
               sx={{
                 display: 'grid',
                 gap: '1rem',

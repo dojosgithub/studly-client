@@ -32,7 +32,6 @@ import Iconify from 'src/components/iconify';
 
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
-
 const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   width: 50,
   height: 50,
@@ -49,15 +48,11 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   zIndex: 10,
 }));
 
-
-
-
 const MeetingMinutesNotes = () => {
-  const inviteAttendee = useSelector(state => state.meetingMinutes.create.inviteAttendee);
-  
-  console.log('raahim',inviteAttendee);
+  const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
-  
+  console.log('raahim', inviteAttendee);
+
   const { control, setValue, getValues, watch, resetField } = useFormContext();
 
   const {
@@ -68,8 +63,6 @@ const MeetingMinutesNotes = () => {
     control,
     name: 'notes',
   });
-
-  
 
   // note
   const handleAddNote = useCallback(() => {
@@ -82,11 +75,9 @@ const MeetingMinutesNotes = () => {
   const handleRemoveNote = (index) => {
     removeNote(index);
   };
- const formContext = useFormContext();
-  
+  const formContext = useFormContext();
 
   return (
-    
     <Box sx={{ marginBottom: '2rem', position: 'relative' }}>
       <Typography sx={{ mt: 2, mb: 4 }} fontSize="1.5rem" fontWeight="bold">
         Meeting Notes
@@ -133,26 +124,25 @@ const MeetingMinutesNotes = () => {
 export default MeetingMinutesNotes;
 
 const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
-  const inviteAttendee = useSelector(state => state.meetingMinutes.create.inviteAttendee);
-  
-  const dropdownOptions1 = inviteAttendee.map(attendee => ({
-    value: attendee.email,  // Use a unique identifier for comparison
+  const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
+
+  const dropdownOptions1 = inviteAttendee.map((attendee) => ({
+    value: attendee.email, // Use a unique identifier for comparison
     label: attendee.name,
-    attendee,  // Keep the full object for later use
+    attendee, // Keep the full object for later use
   }));
-  
 
-const dropdownOptions2 = [
-  { value: 'Open', label: 'Open' },
-  { value: 'On Hold', label: 'On Hold' },
-  { value: 'Closed', label: 'Closed' },
-];
+  const dropdownOptions2 = [
+    { value: 'Open', label: 'Open' },
+    { value: 'On Hold', label: 'On Hold' },
+    { value: 'Closed', label: 'Closed' },
+  ];
 
-const dropdownOptions3 = [
-  { value: 'Low', label: 'Low' },
-  { value: 'Medium', label: 'Medium' },
-  { value: 'High', label: 'High' },
-];
+  const dropdownOptions3 = [
+    { value: 'Low', label: 'Low' },
+    { value: 'Medium', label: 'Medium' },
+    { value: 'High', label: 'High' },
+  ];
 
   const {
     fields: topicFields,
@@ -209,36 +199,37 @@ const dropdownOptions3 = [
                 name={`notes[${noteIndex}].topics[${topicIndex}].date`}
                 label="Date"
               />
-              
 
               {/* Dropdown 1 */}
-              
-<FormControl>
-  <InputLabel>Assignee</InputLabel>
-  <Controller
-    name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
-    control={control}
-    defaultValue={null}
-    render={({ field }) => (
-      <Select
-        {...field}
-        label="Assignee"
-        onChange={(event) => {
-          const selectedEmail = event.target.value;
-          const selectedAssignee = inviteAttendee.find(attendee => attendee.email === selectedEmail);
-          field.onChange(selectedAssignee);
-        }}
-        value={field.value?.email || ''}
-      >
-        {dropdownOptions1.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    )}
-  />
-</FormControl>
+
+              <FormControl>
+                <InputLabel>Assignee</InputLabel>
+                <Controller
+                  name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
+                  control={control}
+                  defaultValue={null}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label="Assignee"
+                      onChange={(event) => {
+                        const selectedEmail = event.target.value;
+                        const selectedAssignee = inviteAttendee.find(
+                          (attendee) => attendee.email === selectedEmail
+                        );
+                        field.onChange(selectedAssignee);
+                      }}
+                      value={field.value?.email || ''}
+                    >
+                      {dropdownOptions1.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
               {/* Dropdown 2 */}
               <FormControl>
                 <InputLabel>Status</InputLabel>
@@ -297,7 +288,6 @@ const dropdownOptions3 = [
         Add Another Topic
       </Button>
     </>
-
   );
 };
 
