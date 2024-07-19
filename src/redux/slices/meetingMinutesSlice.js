@@ -101,6 +101,42 @@ export const getMeetingMinutesDetails = createAsyncThunk(
   }
 );
 
+export const createFollowup = createAsyncThunk(
+  'meetingMinutes/followup',
+  async (id, { getState, rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.get(endpoints.meetingMinutes.followup(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
+export const sendToAttendees = createAsyncThunk(
+  'meetingMinutes/send',
+  async (id, { getState, rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.get(endpoints.meetingMinutes.sendToAttendees(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+); 
+
 // export const submitPlanRoomToArchitect = createAsyncThunk(
 //   'rfi/submitToArchitect',
 //   async (id, { getState, rejectWithValue }) => {
@@ -198,43 +234,44 @@ export const getMeetingMinutesDetails = createAsyncThunk(
 //   }
 // );
 
-// export const getRFILogPDF = createAsyncThunk(
-//   'rfi/pdf',
-//   async (exptype, { getState, rejectWithValue }) => {
-//     try {
-//       const projectId = getState().project?.current?.id;
-//       console.log('projectId', projectId);
+export const getMeetingMinutesPDF = createAsyncThunk(
+  'meetingMinutes/pdf',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('projectId', projectId);
+      console.log('id', id);
 
-//       const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
-//         responseType: 'blob',
-//       });
+      const response = await axiosInstance.get(endpoints.meetingMinutes.pdf(id), {
+        responseType: 'blob',
+      });
 
-//       const buffer = response.data;
-//       console.log('buffer', response.data);
+      const buffer = response.data;
+      console.log('buffer', response.data);
 
-//       const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
-//       console.log('blob', blob);
-//       const url = URL.createObjectURL(blob);
+      const blob = new Blob([buffer], { type: 'application/pdf' });
+      console.log('blob', blob);
+      const url = URL.createObjectURL(blob);
 
-//       // Create a temporary link and trigger a download
-//       const a = document.createElement('a');
-//       a.href = url;
-//       a.download = 'rfi_logs';
-//       a.click();
+      // Create a temporary link and trigger a download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'meeting_log';
+      a.click();
 
-//       // Cleanup
-//       URL.revokeObjectURL(url);
+      // Cleanup
+      URL.revokeObjectURL(url);
 
-//       return response.data;
-//     } catch (err) {
-//       console.error('errSlice', err);
-//       if (err && err.message) {
-//         throw Error(err.message);
-//       }
-//       throw Error('An error occurred while fetching submittal list.');
-//     }
-//   }
-// );
+      return response.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal list.');
+    }
+  }
+);
 
 const inviteAttendeeInitialState = {
   name: '',
