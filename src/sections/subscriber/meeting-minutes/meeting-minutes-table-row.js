@@ -92,10 +92,7 @@ const MeetingMinutesTableRow = memo(
               {fDateISO(description?.date)}
             </TableCell>
 
-
-            <TableCell sx={{ whiteSpace: 'nowrap' }}>
-              {status}
-            </TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>{status}</TableCell>
             {/* <TableCell sx={{ whiteSpace: 'nowrap' }}> */}
             {/* <Box display="flex">
               <AvatarGroup max={4}>
@@ -172,15 +169,15 @@ const MeetingMinutesTableRow = memo(
                 Delete
               </MenuItem>
 
-              {/* <MenuItem
-              onClick={() => {
-                onEditRow();
-                popover.onClose();
-              }}
-            >
-              <Iconify icon="solar:pen-bold" />
-              Edit
-            </MenuItem> */}
+              <MenuItem
+                onClick={() => {
+                  onEditRow();
+                  popover.onClose();
+                }}
+              >
+                <Iconify icon="solar:pen-bold" />
+                Edit
+              </MenuItem>
             </>
           )}
 
@@ -193,6 +190,16 @@ const MeetingMinutesTableRow = memo(
             <Iconify icon="ion:eye" style={{ color: 'grey' }} />
             View
           </MenuItem>
+
+          {/* <MenuItem
+            onClick={() => {
+              onEditRow();
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="ion:eye" style={{ color: 'grey' }} />
+            Edit
+          </MenuItem> */}
         </CustomPopover>
 
         <ConfirmDialog

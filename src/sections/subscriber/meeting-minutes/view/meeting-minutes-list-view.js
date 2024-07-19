@@ -152,7 +152,7 @@ export default function MeetingMinutesListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.subscriber.planRoom.edit(id));
+      router.push(paths.subscriber.meetingMinutes.edit(id));
     },
     [router]
   );
@@ -239,7 +239,7 @@ export default function MeetingMinutesListView() {
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                      onEditRow={() => handleEditRow(row?._id)}
+                      onEditRow={() => handleEditRow(row?.id)}
                       onViewRow={() => handleViewRow(row?.id)}
                     />
                   ))}

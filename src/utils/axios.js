@@ -125,6 +125,7 @@ export const endpoints = {
     pdf: (id) => `/api/user/meeting-minutes/export/${id}`,
     followup: (id) => `/api/user/meeting-minutes/followup/${id}`,
     sendToAttendees: (id) => `/api/user/meeting-minutes/send/${id}`,
+    toMinutes:  (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
   },
   template: {
     list: '/api/user/template',

@@ -5,6 +5,8 @@ import { getRfiDetails } from 'src/redux/slices/rfiSlice';
 import { getProjectAssigneeUsers, getProjectUsersList, } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
+import MeetingMinutesCreateView from 'src/sections/subscriber/meeting-minutes/meeting-minutes-create-view';
+import { MeetingMinutesEditView } from 'src/sections/subscriber/meeting-minutes/view';
 // sections
 import { PlanRoomEditView } from 'src/sections/subscriber/plan-room/view';
 
@@ -33,10 +35,13 @@ export default function PlanRoomEditPage() {
   return (
     <>
       <Helmet>
-        <title> Plan Room Edit</title>
+        <title> Meeting Minutes Edit</title>
       </Helmet>
 
-      <PlanRoomEditView id={`${id}`} />
+      {/* <PlanRoomEditView id={`${id}`} /> */}
+      {/* <MeetingMinutesCreateView /> */}
+      <MeetingMinutesEditView />
+
     </>
   );
 }

@@ -68,7 +68,7 @@ const MeetingMinutesNotes = () => {
   const handleAddNote = useCallback(() => {
     appendNote({
       subject: '',
-      topics: [{ topic: '', action: '', date: new Date(), description: '' }],
+      topics: [{ topic: '', date: new Date(), description: '' }],
     });
   }, [appendNote]);
 
@@ -156,7 +156,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
   const handleAddTopic = () => {
     appendTopic({
       topic: '',
-      action: '',
       date: new Date(),
       assignee: null,
       status: 'Open',
@@ -190,11 +189,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                 label="Topic"
                 InputLabelProps={{ shrink: true }}
               />
-              <RHFTextField
-                name={`notes[${noteIndex}].topics[${topicIndex}].action`}
-                label="Action"
-                InputLabelProps={{ shrink: true }}
-              />
+
               <MeetingMinutesDatePicker
                 name={`notes[${noteIndex}].topics[${topicIndex}].date`}
                 label="Date"
@@ -207,7 +202,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                 <Controller
                   name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
                   control={control}
-                  defaultValue={null}
+                  // defaultValue={null}
                   render={({ field }) => (
                     <Select
                       {...field}

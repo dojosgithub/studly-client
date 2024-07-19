@@ -10,15 +10,17 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import MeetingMinutesNewEditForm from '../meeting-minutes-new-edit-form';
+import MeetingMinutesStepperForm from '../meeting-minutes-stepper-form';
+import MeetingMinutesStepperView from './meeting-minutes-stepper-view';
 
 // ----------------------------------------------------------------------
 
 export default function MeetingMinutesEditView({ id }) {
   const settings = useSettingsContext();
-  const currentMeetingMinutes = useSelector((state) => state.plan.current);
+  // const currentMeetingMinutes = useSelector((state) => state.plan.current);
 
-  console.log("currentMeetingMinutesEdit", currentMeetingMinutes)
-  console.log("planId", id)
+  // console.log("currentMeetingMinutesEdit", currentMeetingMinutes)
+  console.log('meetingId', id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -39,8 +41,10 @@ export default function MeetingMinutesEditView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-    
-      <MeetingMinutesNewEditForm currentMeetingMinutes={currentMeetingMinutes} id={id} />
+
+      {/* <MeetingMinutesNewEditForm currentMeetingMinutes={currentMeetingMinutes} id={id} /> */}
+      {/* <MeetingMinutesStepperForm /> */}
+      <MeetingMinutesStepperView isEdit />
     </Container>
   );
 }

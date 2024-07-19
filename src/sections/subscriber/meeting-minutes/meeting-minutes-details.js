@@ -47,6 +47,7 @@ import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import {
+  changeToMinutes,
   createFollowup,
   getMeetingMinutesPDF,
   sendToAttendees,
@@ -187,7 +188,7 @@ const MeetingMinutesDetails = ({ id }) => {
 
       if (status === 'Draft') {
         optionsArray.push(
-          <MenuItem onClick={() => console.log('INSIDE')}>
+          <MenuItem onClick={() => handleChangeToMinutes()}>
             <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
               Change to Minutes
             </LoadingButton>
@@ -223,6 +224,16 @@ const MeetingMinutesDetails = ({ id }) => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     dispatch(sendToAttendees(currentMeeting?.id));
+    setIsSubmitting(false);
+    // handleClose();
+    enqueueSnackbar('Send to attendess successfully', { variant: 'success' });
+    navigate(paths.subscriber.meetingMinutes.list);
+  };
+
+  const handleChangeToMinutes = () => {
+    setIsSubmitting(true);
+    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
+    dispatch(changeToMinutes(currentMeeting?.id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('Send to attendess successfully', { variant: 'success' });

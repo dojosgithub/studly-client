@@ -104,7 +104,6 @@ export const getMeetingMinutesDetails = createAsyncThunk(
 export const createFollowup = createAsyncThunk(
   'meetingMinutes/followup',
   async (id, { getState, rejectWithValue }) => {
-
     try {
       const response = await axiosInstance.get(endpoints.meetingMinutes.followup(id));
 
@@ -122,7 +121,6 @@ export const createFollowup = createAsyncThunk(
 export const sendToAttendees = createAsyncThunk(
   'meetingMinutes/send',
   async (id, { getState, rejectWithValue }) => {
-
     try {
       const response = await axiosInstance.get(endpoints.meetingMinutes.sendToAttendees(id));
 
@@ -135,8 +133,24 @@ export const sendToAttendees = createAsyncThunk(
       throw Error('An error occurred while creating the plan.');
     }
   }
-); 
+);
 
+export const changeToMinutes = createAsyncThunk(
+  'meetingMinutes/changetominutes',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.meetingMinutes.toMinutes(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
 // export const submitPlanRoomToArchitect = createAsyncThunk(
 //   'rfi/submitToArchitect',
 //   async (id, { getState, rejectWithValue }) => {
