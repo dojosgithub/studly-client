@@ -118,6 +118,7 @@ export const endpoints = {
   meetingMinutes: {
     list: (id) => `/api/user/meeting-minutes/${id}`,
     create: '/api/user/meeting-minutes',
+    update: (id) => `/api/user/meeting-minutes/${id}`,
     submit: (id) => `/api/user/meeting-minutes/${id}/submit`,
     edit: (id) => `/api/user/meeting-minutes/${id}`,
     delete: (id) => `/api/user/meeting-minutes/${id}`,

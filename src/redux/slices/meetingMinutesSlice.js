@@ -32,6 +32,31 @@ export const createMeetingMinutes = createAsyncThunk(
   }
 );
 
+export const updateMeetingMinutes = createAsyncThunk(
+  'meetingMinutes/update',
+  async ({ data, id }, { getState, rejectWithValue }) => {
+    if (isEmpty(data)) {
+      return rejectWithValue('Meeting minutes data cannot be empty.');
+    }
+
+    const projectId = getState().project?.current?.id;
+    console.log('projectId', projectId);
+
+    data.projectId = projectId;
+    try {
+      const response = await axiosInstance.put(endpoints.meetingMinutes.update(id), data);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
 export const getMeetingMinutesList = createAsyncThunk(
   'meetingMinutes/list',
   async (listOptions, { getState, rejectWithValue }) => {
@@ -296,7 +321,6 @@ const inviteAttendeeInitialState = {
 };
 const topicInitialState = {
   topic: '',
-  action: '',
   date: null,
   description: '',
   assignee: null,

@@ -56,6 +56,7 @@ import {
   setMeetingMinutesNotes,
   setMeetingMinutesPermit,
   setMeetingMinutesPlanTracking,
+  updateMeetingMinutes,
 } from 'src/redux/slices/meetingMinutesSlice';
 //
 import MeetingMinutesDescription from './meeting-minutes-description';
@@ -144,7 +145,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
           topics: [
             {
               topic: '',
-              action: '',
               date: new Date(),
               assignee: null,
               status: 'Open',
@@ -210,13 +210,24 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       const meeting = cloneDeep(currentMeeting);
       meeting.description.time = new Date(meeting.description.time);
       meeting.description.date = new Date(meeting.description.date);
-      meeting.notes = meeting.notes?.map(note => ({
+      meeting.notes = meeting.notes?.map((note) => ({
         ...note,
-        topics: note.topics?.map(topic => ({
+        topics: note.topics?.map((topic) => ({
           ...topic,
-          date: new Date(topic.date)
-        }))
+          date: new Date(topic.date),
+        })),
       }));
+      meeting.permit = meeting.permit?.map((perm) => ({
+        ...perm,
+        date: new Date(perm.date),
+      }));
+
+      meeting.plan = meeting.plan?.map((pl) => ({
+        ...pl,
+        dateRecieved: new Date(pl.dateRecieved),
+        stampDate: new Date(pl.stampDate),
+      }));
+
       console.log('MEETING:', meeting);
       dispatch(setCreateMeetingMinutes(meeting));
       reset(meeting);
@@ -352,16 +363,34 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
-    dispatch(
-      createMeetingMinutes({
-        description,
-        inviteAttendee,
-        notes,
-        permit,
-        plan: clonedPlan,
-      })
-    );
-    enqueueSnackbar('Meeting created successfully!', { variant: 'success' });
+    if (isEdit) {
+      dispatch(
+        updateMeetingMinutes({
+          data: {
+            description,
+            inviteAttendee,
+            notes,
+            permit,
+            plan: clonedPlan,
+          },
+          id,
+        })
+      );
+    } else {
+      dispatch(
+        createMeetingMinutes({
+          description,
+          inviteAttendee,
+          notes,
+          permit,
+          plan: clonedPlan,
+        })
+      );
+    }
+
+    enqueueSnackbar(`Meeting ${isEdit ? 'updated' : 'created'} successfully!`, {
+      variant: 'success',
+    });
     router.push(paths.subscriber.meetingMinutes.list);
 
     console.log('Form Data:', { description, inviteAttendee, notes, permit, plan });
@@ -456,7 +485,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                   loading={isSubmitting}
                   onClick={handleFinish}
                 >
-                  Finish
+                  {isEdit ? 'Update' : 'Finish'}
                 </LoadingButton>
               </Box>
             </>

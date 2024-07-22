@@ -31,7 +31,6 @@ const inviteAttendeeSchema = Yup.object().shape({
 
 const topicSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
-  action: Yup.string().required('Action is required'),
   date: Yup.date().required('Date is required'),
   assignee: Yup.object(),
   // dropdown1: Yup.string().required('Assignee is required'), // Add validation for dropdown1
