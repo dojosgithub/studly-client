@@ -65,11 +65,7 @@ export default function MeetingMinutesInviteAttendeeView() {
 
   const { trigger, control, setValue, getValues, watch, resetField } = useFormContext();
   const { notes } = getValues();
-  const {
-    fields,
-    append,
-    remove,
-  } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'inviteAttendee',
   });
@@ -89,7 +85,7 @@ export default function MeetingMinutesInviteAttendeeView() {
       </Box>
       <Box sx={{ padding: '6px 6px' }}>
         {fields.map((attendee, index) => (
-          <Box key={attendee._id}>
+          <Box key={attendee.id}>
             <Box
               rowGap={5}
               columnGap={3}
@@ -101,19 +97,19 @@ export default function MeetingMinutesInviteAttendeeView() {
                 name={`inviteAttendee[${index}].name`}
                 label="Name"
                 InputLabelProps={{ shrink: true }}
-                 onBlur={() => trigger(`inviteAttendee[${index}].name`)}
+                onBlur={() => trigger(`inviteAttendee[${index}].name`)}
               />
               <RHFTextField
                 name={`inviteAttendee[${index}].company`}
                 label="Company"
                 InputLabelProps={{ shrink: true }}
-                 onBlur={() => trigger(`inviteAttendee[${index}].company`)}
+                onBlur={() => trigger(`inviteAttendee[${index}].company`)}
               />
               <RHFTextField
                 name={`inviteAttendee[${index}].email`}
                 label="Email"
                 InputLabelProps={{ shrink: true }}
-                  onBlur={() => trigger(`inviteAttendee[${index}].email`)}
+                onBlur={() => trigger(`inviteAttendee[${index}].email`)}
               />
               {/* Remove button */}
               <StyledIconButton color="inherit" onClick={() => handleRemoveAttendee(index)}>
@@ -131,16 +127,13 @@ export default function MeetingMinutesInviteAttendeeView() {
           startIcon={<Iconify icon="mingcute:add-line" />}
           color="secondary"
           onClick={() =>
-            append({ name: '', company: '', email: '', _id: uuidv4(), attended: false })
+            // append({ name: '', company: '', email: '', _id: uuidv4(), attended: false })
+            append({ name: '', company: '', email: '', attended: false })
           }
         >
           Add Another Attendee
         </Button>
-
-        
       </Box>
     </Box>
-    
   );
-  
 }

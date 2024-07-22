@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -21,7 +22,7 @@ import { LoadingButton } from '@mui/lab';
 //
 import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 //
 import {
   createNewProject,
@@ -48,11 +49,14 @@ import { paths } from 'src/routes/paths';
 // redux
 import {
   createMeetingMinutes,
+  getMeetingMinutesDetails,
+  setCreateMeetingMinutes,
   setMeetingMinutesDescription,
   setMeetingMinutesInviteAttendee,
   setMeetingMinutesNotes,
   setMeetingMinutesPermit,
   setMeetingMinutesPlanTracking,
+  updateMeetingMinutes,
 } from 'src/redux/slices/meetingMinutesSlice';
 //
 import MeetingMinutesDescription from './meeting-minutes-description';
@@ -93,7 +97,12 @@ const steps = [
   },
 ];
 
-export default function MeetingMinutesStepperForm() {
+export default function MeetingMinutesStepperForm({ isEdit }) {
+  const params = useParams();
+  const { id } = params;
+
+  const currentMeeting = useSelector((state) => state?.meetingMinutes?.current);
+
   const [activeStep, setActiveStep] = useState(0);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
@@ -103,10 +112,6 @@ export default function MeetingMinutesStepperForm() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const members = useSelector((state) => state.project.members);
-  const companies = useSelector((state) => state.user.user.companies);
-
-  const selectedTradeTemplate = useSelector((state) => state.project.create.selectedTradeTemplate);
 
   const isStepOptional = (step) => step === 3 || step === 4;
 
@@ -140,7 +145,6 @@ export default function MeetingMinutesStepperForm() {
           topics: [
             {
               topic: '',
-              action: '',
               date: new Date(),
               assignee: null,
               status: 'Open',
@@ -193,6 +197,42 @@ export default function MeetingMinutesStepperForm() {
   const { description, inviteAttendee, notes, permit, plan } = getValues();
   // const { name, address, state, city, zipCode } = formValues;
   console.log('formValues', { description, inviteAttendee, notes, permit, plan });
+
+  useEffect(() => {
+    if (isEdit) {
+      console.log('ISEDIT', id);
+      dispatch(getMeetingMinutesDetails(id));
+    }
+  }, [isEdit, id, dispatch]);
+
+  useEffect(() => {
+    if (isEdit && !isEmpty(currentMeeting)) {
+      const meeting = cloneDeep(currentMeeting);
+      meeting.description.time = new Date(meeting.description.time);
+      meeting.description.date = new Date(meeting.description.date);
+      meeting.notes = meeting.notes?.map((note) => ({
+        ...note,
+        topics: note.topics?.map((topic) => ({
+          ...topic,
+          date: new Date(topic.date),
+        })),
+      }));
+      meeting.permit = meeting.permit?.map((perm) => ({
+        ...perm,
+        date: new Date(perm.date),
+      }));
+
+      meeting.plan = meeting.plan?.map((pl) => ({
+        ...pl,
+        dateRecieved: new Date(pl.dateRecieved),
+        stampDate: new Date(pl.stampDate),
+      }));
+
+      console.log('MEETING:', meeting);
+      dispatch(setCreateMeetingMinutes(meeting));
+      reset(meeting);
+    }
+  }, [isEdit, currentMeeting, dispatch, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -323,16 +363,34 @@ export default function MeetingMinutesStepperForm() {
 
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
-    dispatch(
-      createMeetingMinutes({
-        description,
-        inviteAttendee,
-        notes,
-        permit,
-        plan: clonedPlan,
-      })
-    );
-    enqueueSnackbar('Meeting created successfully!', { variant: 'success' });
+    if (isEdit) {
+      dispatch(
+        updateMeetingMinutes({
+          data: {
+            description,
+            inviteAttendee,
+            notes,
+            permit,
+            plan: clonedPlan,
+          },
+          id,
+        })
+      );
+    } else {
+      dispatch(
+        createMeetingMinutes({
+          description,
+          inviteAttendee,
+          notes,
+          permit,
+          plan: clonedPlan,
+        })
+      );
+    }
+
+    enqueueSnackbar(`Meeting ${isEdit ? 'updated' : 'created'} successfully!`, {
+      variant: 'success',
+    });
     router.push(paths.subscriber.meetingMinutes.list);
 
     console.log('Form Data:', { description, inviteAttendee, notes, permit, plan });
@@ -427,7 +485,7 @@ export default function MeetingMinutesStepperForm() {
                   loading={isSubmitting}
                   onClick={handleFinish}
                 >
-                  Finish
+                  {isEdit ? 'Update' : 'Finish'}
                 </LoadingButton>
               </Box>
             </>
@@ -487,3 +545,7 @@ export default function MeetingMinutesStepperForm() {
     </>
   );
 }
+
+MeetingMinutesStepperForm.propTypes = {
+  isEdit: PropTypes.bool,
+};

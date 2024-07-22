@@ -118,10 +118,15 @@ export const endpoints = {
   meetingMinutes: {
     list: (id) => `/api/user/meeting-minutes/${id}`,
     create: '/api/user/meeting-minutes',
+    update: (id) => `/api/user/meeting-minutes/${id}`,
     submit: (id) => `/api/user/meeting-minutes/${id}/submit`,
     edit: (id) => `/api/user/meeting-minutes/${id}`,
     delete: (id) => `/api/user/meeting-minutes/${id}`,
     details: (id) => `/api/user/meeting-minutes/${id}/details`,
+    pdf: (id) => `/api/user/meeting-minutes/export/${id}`,
+    followup: (id) => `/api/user/meeting-minutes/followup/${id}`,
+    sendToAttendees: (id) => `/api/user/meeting-minutes/send/${id}`,
+    toMinutes:  (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
   },
   template: {
     list: '/api/user/template',

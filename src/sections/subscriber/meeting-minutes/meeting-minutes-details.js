@@ -46,14 +46,20 @@ import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
 import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import {
+  changeToMinutes,
+  createFollowup,
+  getMeetingMinutesPDF,
+  sendToAttendees,
+  setCreateMeetingMinutes,
+} from 'src/redux/slices/meetingMinutesSlice';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
 import Description from './meeting-minutes-details-description';
- import InviteAttendee from './meeting-minutes-details-inviteAttendee';
+import InviteAttendee from './meeting-minutes-details-inviteAttendee';
 import Notes from './meeting-minutes-details-notes';
- import Permit from './meeting-minutes-details-permit';
- import Plan from './meeting-minutes-details-plan';
-
+import Permit from './meeting-minutes-details-permit';
+import Plan from './meeting-minutes-details-plan';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -155,7 +161,7 @@ const MeetingMinutesDetails = ({ id }) => {
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
     ) {
       optionsArray.push(
-        <MenuItem onClick={() => console.log('INSIDE')}>
+        <MenuItem onClick={() => handleExportPDF()}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
             Export To PDF
           </LoadingButton>
@@ -163,7 +169,7 @@ const MeetingMinutesDetails = ({ id }) => {
       );
       if (status === 'Draft') {
         optionsArray.push(
-          <MenuItem onClick={() => console.log('INSIDE')}>
+          <MenuItem onClick={() => handleCreateFollowUp()}>
             <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
               Create Follow-up
             </LoadingButton>
@@ -172,7 +178,7 @@ const MeetingMinutesDetails = ({ id }) => {
       }
       if (status === 'Draft') {
         optionsArray.push(
-          <MenuItem onClick={() => console.log('INSIDE')}>
+          <MenuItem onClick={() => handleSendToAttendees()}>
             <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
               Send to Attendees
             </LoadingButton>
@@ -182,7 +188,7 @@ const MeetingMinutesDetails = ({ id }) => {
 
       if (status === 'Draft') {
         optionsArray.push(
-          <MenuItem onClick={() => console.log('INSIDE')}>
+          <MenuItem onClick={() => handleChangeToMinutes()}>
             <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
               Change to Minutes
             </LoadingButton>
@@ -192,6 +198,46 @@ const MeetingMinutesDetails = ({ id }) => {
 
       setMenuItems(optionsArray);
     }
+  };
+
+  const handleExportPDF = async () => {
+    // setIsSubmitting(true);
+    // dispatch(submitSubmittalToArchitect(id));
+    setIsSubmitting(true);
+    console.log(currentMeeting, currentMeeting?.id);
+    await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
+    setIsSubmitting(false);
+    handleClose();
+  };
+
+  const handleCreateFollowUp = async () => {
+    setIsSubmitting(true);
+    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
+    await dispatch(createFollowup(currentMeeting?.id));
+    setIsSubmitting(false);
+    // handleClose();
+    enqueueSnackbar('Follow up created successfully', { variant: 'success' });
+    navigate(paths.subscriber.meetingMinutes.list);
+  };
+
+  const handleSendToAttendees = () => {
+    setIsSubmitting(true);
+    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
+    dispatch(sendToAttendees(currentMeeting?.id));
+    setIsSubmitting(false);
+    // handleClose();
+    enqueueSnackbar('Send to attendess successfully', { variant: 'success' });
+    navigate(paths.subscriber.meetingMinutes.list);
+  };
+
+  const handleChangeToMinutes = () => {
+    setIsSubmitting(true);
+    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
+    dispatch(changeToMinutes(currentMeeting?.id));
+    setIsSubmitting(false);
+    // handleClose();
+    enqueueSnackbar('Send to attendess successfully', { variant: 'success' });
+    navigate(paths.subscriber.meetingMinutes.list);
   };
 
   return (
@@ -253,10 +299,10 @@ const MeetingMinutesDetails = ({ id }) => {
           width: 1,
           bottom: 0,
           zIndex: 9,
-          
+
           // position: 'absolute',
           bgcolor: 'background.paper',
-         
+
           // [`& .${tabsClasses.flexContainer}`]: {
           //   pr: { md: 3 },
           //   justifyContent: {
@@ -268,17 +314,17 @@ const MeetingMinutesDetails = ({ id }) => {
       >
         {TABS.map((tab) => (
           <Tab
-          key={tab.value}
-          value={tab.value}
-          label={tab.label}
-          sx={{
-            width: 180,
-            '&.Mui-selected': {
-              bgcolor: '#ffcc3f',
-              borderRadius:'10px',
-            },
-          }}
-        />
+            key={tab.value}
+            value={tab.value}
+            label={tab.label}
+            sx={{
+              width: 180,
+              '&.Mui-selected': {
+                bgcolor: '#ffcc3f',
+                borderRadius: '10px',
+              },
+            }}
+          />
         ))}
       </Tabs>
       {currentTab === 'description' && <Description data={currentMeeting?.description} />}
