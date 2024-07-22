@@ -167,15 +167,15 @@ const MeetingMinutesDetails = ({ id }) => {
           </LoadingButton>
         </MenuItem>
       );
-      // if (status === 'Draft') {
-      optionsArray.push(
-        <MenuItem onClick={() => handleCreateFollowUp()}>
-          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-            Create Follow-up
-          </LoadingButton>
-        </MenuItem>
-      );
-      // }
+      if (status === 'Minutes') {
+        optionsArray.push(
+          <MenuItem onClick={() => handleCreateFollowUp()}>
+            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+              Create Follow-up
+            </LoadingButton>
+          </MenuItem>
+        );
+      }
       // if (status === 'Draft') {
       optionsArray.push(
         <MenuItem onClick={() => handleSendToAttendees()}>

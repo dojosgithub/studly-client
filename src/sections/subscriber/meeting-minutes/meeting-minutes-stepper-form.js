@@ -102,6 +102,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
   const { id } = params;
 
   const currentMeeting = useSelector((state) => state?.meetingMinutes?.current);
+  const currentProject = useSelector((state) => state?.project?.current);
+
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -120,7 +122,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
   const defaultValues = useMemo(
     () => ({
       description: {
-        meetingNumber: '',
+        meetingNumber: currentProject ? currentProject.meetingsCount + 1 : '',
         name: '',
         // title: '',
         site: '',
@@ -175,7 +177,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       projectId: '', // Assuming you want a unique ID
       company: '', // Assuming you want a unique ID
     }),
-    []
+    [currentProject]
   );
 
   const methods = useForm({

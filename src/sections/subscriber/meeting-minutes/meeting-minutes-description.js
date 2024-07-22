@@ -12,7 +12,6 @@ const MeetingMinutesDescription = () => {
   const { trigger, getValues, setValue } = useFormContext();
 
   const handleBlur = (fieldName) => {
-
     trigger(`description.${fieldName}`);
   };
 
@@ -33,6 +32,7 @@ const MeetingMinutesDescription = () => {
         my={7} // Increase the top margin to create more space below the heading
       >
         <RHFTextField
+          disabled
           name="description.meetingNumber"
           label="Meeting Number"
           onBlur={() => handleBlur('meetingNumber')}
@@ -47,7 +47,7 @@ const MeetingMinutesDescription = () => {
           label="Meeting Site"
           onBlur={() => handleBlur('site')}
         />
-        
+
         <RHFTextField
           name="description.minutesBy"
           label="Minutes By"
@@ -74,7 +74,6 @@ const MeetingMinutesDescription = () => {
           label="Meeting Time"
           onBlur={() => handleBlur('time')}
         />
-        
       </Box>
     </>
   );
