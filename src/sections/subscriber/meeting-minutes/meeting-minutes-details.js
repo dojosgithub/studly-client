@@ -151,11 +151,11 @@ const MeetingMinutesDetails = ({ id }) => {
   useEffect(() => {
     getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentMeeting]);
 
   const getMenus = () => {
     const optionsArray = [];
-
+    console.log('STATUS:', status);
     if (
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
@@ -167,24 +167,24 @@ const MeetingMinutesDetails = ({ id }) => {
           </LoadingButton>
         </MenuItem>
       );
-      if (status === 'Draft') {
-        optionsArray.push(
-          <MenuItem onClick={() => handleCreateFollowUp()}>
-            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-              Create Follow-up
-            </LoadingButton>
-          </MenuItem>
-        );
-      }
-      if (status === 'Draft') {
-        optionsArray.push(
-          <MenuItem onClick={() => handleSendToAttendees()}>
-            <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-              Send to Attendees
-            </LoadingButton>
-          </MenuItem>
-        );
-      }
+      // if (status === 'Draft') {
+      optionsArray.push(
+        <MenuItem onClick={() => handleCreateFollowUp()}>
+          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+            Create Follow-up
+          </LoadingButton>
+        </MenuItem>
+      );
+      // }
+      // if (status === 'Draft') {
+      optionsArray.push(
+        <MenuItem onClick={() => handleSendToAttendees()}>
+          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+            Send to Attendees
+          </LoadingButton>
+        </MenuItem>
+      );
+      // }
 
       if (status === 'Draft') {
         optionsArray.push(
