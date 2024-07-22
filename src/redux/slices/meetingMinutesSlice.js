@@ -176,6 +176,24 @@ export const changeToMinutes = createAsyncThunk(
     }
   }
 );
+
+export const deleteMeeting  =  createAsyncThunk(
+  'meetingMinutes/delete',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(endpoints.meetingMinutes.delete(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
 // export const submitPlanRoomToArchitect = createAsyncThunk(
 //   'rfi/submitToArchitect',
 //   async (id, { getState, rejectWithValue }) => {
