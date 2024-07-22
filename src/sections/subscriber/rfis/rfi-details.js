@@ -536,16 +536,10 @@ const RfiDetails = ({ id }) => {
                   size="small"
                   color="secondary"
                   variant="outlined"
-                  // sx={{
-                  //   '&.MuiChip-root': {
-                  //     height: '50px',
-                  //     fontSize: '1rem',
-                  //     maxWidth: 'max-content',
-                  //     width: '100%',
-                  //     paddingInline: '.75rem',
-                  //   },
-                  // }}
                   label={response?.date && fDateISO(response?.date)}
+                  // sx={{ flexShrink: 0 }} // Prevent Chip from shrinking
+                  sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+
                 />
                 <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
               </Stack>
