@@ -98,7 +98,7 @@ export default function SubmittalSendAllDialog({
   const onSubmit = handleSubmit(async (data) => {
     try {
 
-
+      data.date = new Date()
       console.log('data', data)
       const finalData = {
         id,

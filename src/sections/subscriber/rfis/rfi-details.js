@@ -531,7 +531,7 @@ const RfiDetails = ({ id }) => {
               Official Response
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <Stack direction="column" >
+              <Stack direction="column">
                 <Chip
                   size="small"
                   color="secondary"
