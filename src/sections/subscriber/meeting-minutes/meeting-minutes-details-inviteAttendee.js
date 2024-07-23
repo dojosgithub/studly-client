@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
+import { yearsToMonths } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -43,15 +44,7 @@ export default function InviteAttendee({ data }) {
               </TableCell>
               <TableCell>{attendee.company}</TableCell>
               <TableCell>{attendee.email}</TableCell>
-              <TableCell>
-                {/* <Button
-                  variant="contained"
-                  color={attendee.attended ? 'success' : 'primary'}
-                  onClick={() => handleToggleAttendance(index)}
-                >
-                  {attendee.attended ? 'Yes' : 'No'}
-                </Button> */}
-              </TableCell>
+              <TableCell>{attendee.attended ? 'Yes' : 'No'}</TableCell>
             </TableRow>
           ))}
         </TableBody>

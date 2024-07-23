@@ -40,20 +40,19 @@ const topicSchema = Yup.object().shape({
   _id: Yup.string(),
 });
 
+// const permitSchema = Yup.object().shape({
+//   status: Yup.string().required('status is required'),
+//   date: Yup.date().required('date is requiered'),
+//   permitNumber: Yup.string().required('permit number is required'),
+//   _id: Yup.string(),
+// });
 
-const permitSchema = Yup.object().shape({
-  status: Yup.string().required('status is required'),
-  date: Yup.date().required('date is requiered'),
-  permitNumber: Yup.string().required('permit number is required'),
-  _id: Yup.string(),
-});
-
-const planSchema = Yup.object().shape({
-  planTracking: Yup.string().required('plan tracking is required'),
-  stampDate: Yup.date().required('stamp date is required'),
-  dateRecieved: Yup.date().required('data recieved is required'),
-  _id: Yup.string(),
-});
+// const planSchema = Yup.object().shape({
+//   planTracking: Yup.string().required('plan tracking is required'),
+//   stampDate: Yup.date().required('stamp date is required'),
+//   dateRecieved: Yup.date().required('data recieved is required'),
+//   _id: Yup.string(),
+// });
 
 const meetingMinutesSchema = Yup.object().shape({
   // description: descriptionSchema,
@@ -64,8 +63,8 @@ const meetingMinutesSchema = Yup.object().shape({
       topics: Yup.array().of(topicSchema),
     })
   ),
-  permit: Yup.array().of(permitSchema),
-  plan: Yup.array().of(planSchema).required('Plan is required'),
+  // permit: Yup.array().of(permitSchema),
+  // plan: Yup.array().of(planSchema).required('Plan is required'),
   // projectId: Yup.string().required('Project ID is required'),
   // company: Yup.string().required('Company is required'),
 });

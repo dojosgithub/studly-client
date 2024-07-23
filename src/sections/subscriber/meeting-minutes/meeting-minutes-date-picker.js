@@ -6,7 +6,7 @@ import { TextField } from '@mui/material';
 import { addDays, startOfDay, isTomorrow } from 'date-fns';
 
 const MeetingMinutesDatePicker = ({ name, label, ...other }) => {
-  const { control } = useFormContext()
+  const { control } = useFormContext();
 
   return (
     <Controller
@@ -18,19 +18,18 @@ const MeetingMinutesDatePicker = ({ name, label, ...other }) => {
         const isDateNextDay = selectedDate && isTomorrow(selectedDate);
         const dateStyle = isDateNextDay
           ? {
-            '.MuiInputBase-root.MuiOutlinedInput-root': {
-              color: 'red',
-              borderColor: 'red',
-              border: '1px solid',
-            },
-          }
+              '.MuiInputBase-root.MuiOutlinedInput-root': {
+                color: 'red',
+                borderColor: 'red',
+                border: '1px solid',
+              },
+            }
           : {};
         return (
           <DatePicker
             label={label}
             views={['day']}
             value={selectedDate}
-            minDate={startOfDay(addDays(new Date(), 1))}
             onChange={(date) => field.onChange(date)}
             format="MM/dd/yyyy" // Specify the desired date format
             error={!!error}
@@ -43,7 +42,7 @@ const MeetingMinutesDatePicker = ({ name, label, ...other }) => {
               },
             }}
             {...other}
-          // sx={dateStyle} // Apply conditional style based on the date comparison
+            // sx={dateStyle} // Apply conditional style based on the date comparison
           />
         );
       }}

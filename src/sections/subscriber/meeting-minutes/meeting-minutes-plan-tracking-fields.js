@@ -83,6 +83,7 @@ const MeetingMinutesPlanTrackingFields = () => {
                 value={watch(`plan[${index}].stampDate`)}
                 onChange={(newValue) => setValue(`plan[${index}].stampDate`, newValue)}
                 onBlur={() => trigger(`plan[${index}].stampDate`)}
+                disableFuture
               />
               <MeetingMinutesDatePicker
                 sx={{ alignSelf: 'center' }}
@@ -91,6 +92,7 @@ const MeetingMinutesPlanTrackingFields = () => {
                 value={watch(`plan[${index}].dateRecieved`)}
                 onChange={(newValue) => setValue(`plan[${index}].dateRecieved`, newValue)}
                 onBlur={() => trigger(`plan[${index}].dateRecieved`)}
+                disableFuture
               />
               <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />

@@ -164,7 +164,7 @@ const MeetingMinutesDetails = ({ id }) => {
     ) {
       optionsArray.push(
         <MenuItem onClick={() => handleExportPDF()}>
-          <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
+          <LoadingButton type="button" variant="outlined" fullWidth loading={isSubmitting}>
             Export To PDF
           </LoadingButton>
         </MenuItem>
@@ -202,9 +202,8 @@ const MeetingMinutesDetails = ({ id }) => {
     }
   };
 
-  const handleExportPDF = async () => {
-    // setIsSubmitting(true);
-    // dispatch(submitSubmittalToArchitect(id));
+  const handleExportPDF = async (e) => {
+    handleClose();
     setIsSubmitting(true);
     await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
     setIsSubmitting(false);
@@ -227,7 +226,7 @@ const MeetingMinutesDetails = ({ id }) => {
     dispatch(sendToAttendees(currentMeeting?.id));
     setIsSubmitting(false);
     // handleClose();
-    enqueueSnackbar('Send to attendess successfully', { variant: 'success' });
+    enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
@@ -237,7 +236,7 @@ const MeetingMinutesDetails = ({ id }) => {
     dispatch(changeToMinutes(currentMeeting?.id));
     setIsSubmitting(false);
     // handleClose();
-    enqueueSnackbar('Send to attendess successfully', { variant: 'success' });
+    enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
@@ -304,6 +303,9 @@ const MeetingMinutesDetails = ({ id }) => {
           marginBottom: '35px',
           borderBottom: '2px solid #FFCC3F',
           mt: 1,
+          '& .MuiTabs-indicator': {
+            display: 'none',
+          },
         }}
       >
         {TABS.map((tab) => (
