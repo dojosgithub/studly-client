@@ -238,10 +238,6 @@ const SubmittalsDetails = ({ id }) => {
   // const userList = [...ccListUser, ...ownerList];
 
   useEffect(() => {
-    console.log('currentSubmittal', currentSubmittal);
-    console.log('OwnerList', currentSubmittal?.owner);
-    console.log('currentUser:?._id', currentUser?._id);
-    console.log('id', id);
     getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSubmittal, id, currentUser, isSubmitting]);
@@ -355,10 +351,8 @@ const SubmittalsDetails = ({ id }) => {
   };
   
   const handleSubmitToArchitect = async () => {
-    console.log('SubmittalId', id);
     setIsSubmitting(true);
     const { error, payload } = await dispatch(submitSubmittalToArchitect(id));
-    console.log('e-p', { error, payload });
     setIsSubmitting(false);
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -370,22 +364,17 @@ const SubmittalsDetails = ({ id }) => {
   };
 
   const handleSubmittalResponse = () => {
-    console.log('handleSubmittalResponse', handleSubmittalResponse);
     navigate(paths.subscriber.submittals.review(id));
   };
   const handleViewResponse = () => {
-    console.log('handleViewResponse');
     navigate(paths.subscriber.submittals.responseDetails(id));
   };
   const handleEditResponse = () => {
-    console.log('handleEditResponse');
     navigate(paths.subscriber.submittals.review(id));
   };
   const handleResendEmailSubcontractor = async () => {
-    console.log('id', id);
     setIsSubmitting(true);
     const { error, payload } = await dispatch(resendToSubcontractor(id));
-    console.log('e-p', { error, payload });
     setIsSubmitting(false);
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -394,12 +383,10 @@ const SubmittalsDetails = ({ id }) => {
     enqueueSnackbar('Submittal response has been resent to subcontractor', { variant: 'success' });
   };
   const handleVoid = async () => {
-    console.log('id', id);
     setIsSubmitting(true);
     const { error, payload } = await dispatch(
       changeSubmittalStatus({ status: 'Void', submittalId: id })
     );
-    console.log('e-p', { error, payload });
     setIsSubmitting(false);
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });

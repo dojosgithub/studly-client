@@ -239,15 +239,10 @@ const RfiDetails = ({ id }) => {
   //   : null;
 
   useEffect(() => {
-    console.log('currentRfi', currentRfi);
-    console.log('OwnerList', currentRfi?.owner);
-    console.log('currentUser:?._id', currentUser?._id);
-    console.log('id', id);
     // getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRfi, id, currentUser, isSubmitting]);
   const handleSubmitToArchitect = async () => {
-    console.log('ID==>', id);
     setIsSubmitting(true);
     const { error, payload } = await dispatch(submitRfiToArchitect(id));
     setIsSubmitting(false);
@@ -536,16 +531,10 @@ const RfiDetails = ({ id }) => {
                   size="small"
                   color="secondary"
                   variant="outlined"
-                  // sx={{
-                  //   '&.MuiChip-root': {
-                  //     height: '50px',
-                  //     fontSize: '1rem',
-                  //     maxWidth: 'max-content',
-                  //     width: '100%',
-                  //     paddingInline: '.75rem',
-                  //   },
-                  // }}
                   label={response?.date && fDateISO(response?.date)}
+                  // sx={{ flexShrink: 0 }} // Prevent Chip from shrinking
+                  sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+
                 />
                 <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
               </Stack>

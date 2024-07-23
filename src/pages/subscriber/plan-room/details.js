@@ -16,7 +16,6 @@ export default function RfiDetailsPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('details', id)
     useEffect(() => {
         dispatch(getPlanRoomDetails(id))
         // getting users list of project

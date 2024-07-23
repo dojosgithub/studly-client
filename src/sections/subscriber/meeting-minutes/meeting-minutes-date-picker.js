@@ -25,7 +25,6 @@ const MeetingMinutesDatePicker = ({ name, label, ...other }) => {
             },
           }
           : {};
-        console.log(isDateNextDay);
         return (
           <DatePicker
             label={label}

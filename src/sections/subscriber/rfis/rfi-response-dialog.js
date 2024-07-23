@@ -52,8 +52,6 @@ export default function SubmittalSendAllDialog({
 
 
   const dispatch = useDispatch()
-  console.log('userId--->', userId);
-  console.log('userList--->', userList);
   const RfiResponseSchema = Yup.object().shape({
     text: Yup.string().required('text is required'),
     respondedBy: Yup.string().required('user id is required'),
@@ -87,9 +85,6 @@ export default function SubmittalSendAllDialog({
     // Or plain text
     const textContent = editor.getText();
 
-    console.log('htmlContent', htmlContent)
-    console.log('deltaContent', deltaContent)
-    console.log('textContent', textContent)
 
     setValue("text", htmlContent);
   };
@@ -99,14 +94,11 @@ export default function SubmittalSendAllDialog({
     try {
 
       data.date = new Date()
-      console.log('data', data)
       const finalData = {
         id,
         formData: data
         }
-      console.log('finalData', finalData)
       const { error, payload } = await dispatch(submitRfiResponse(finalData))
-      console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
         return;

@@ -28,9 +28,7 @@ const ProjectWorkflow = () => {
       setOpen(true)
       return
     }
-    console.log('handleSelect-->', val);
     const selectedWorkflow = workflows.filter(w => w.name === val)[0];
-    console.log('selectedWorkflow', selectedWorkflow);
 
     dispatch(setProjectWorkflow(selectedWorkflow))
     setValue('workflow', selectedWorkflow)

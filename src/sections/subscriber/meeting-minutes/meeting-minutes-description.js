@@ -32,6 +32,7 @@ const MeetingMinutesDescription = () => {
         my={7} // Increase the top margin to create more space below the heading
       >
         <RHFTextField
+          disabled
           name="description.meetingNumber"
           label="Meeting Number"
           onBlur={() => handleBlur('meetingNumber')}

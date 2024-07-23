@@ -15,7 +15,6 @@ export default function RfiDetailsPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('details', id)
     useEffect(() => {
         dispatch(getRfiDetails(id))
         // getting users list of project

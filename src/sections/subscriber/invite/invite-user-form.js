@@ -59,10 +59,7 @@ export default function InviteUserForm() {
     const onSubmit = handleSubmit(async (data) => {
         try {
 
-            console.log('params', params)
-            console.log('data', data)
             const { error, payload } = await dispatch(sendInviteUserCredentials({ inviteId: params?.inviteId, ...data }))
-            console.log('e-p', { error, payload });
             if (!isEmpty(error)) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return

@@ -15,11 +15,9 @@ export default function SubmittalsRevisionPage() {
 
   const dispatch = useDispatch()
   const projectId = useSelector(state => state?.project?.current?.id);
-  console.log('projectId Submittal Revision', projectId)
 
   // getting users list of project
   useEffect(() => {
-    console.log('Revision', id)
     dispatch(getProjectUsersList())
     dispatch(getProjectAssigneeUsers())
   }, [id, dispatch])

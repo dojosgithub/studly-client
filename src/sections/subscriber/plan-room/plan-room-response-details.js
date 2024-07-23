@@ -73,10 +73,6 @@ const RfiResponseDetails = ({ id }) => {
 
 
     useEffect(() => {
-        console.log('currentRfi', currentRfi);
-        console.log('OwnerList', currentRfi?.owner);
-        console.log('currentUser:?._id', currentUser?._id);
-        console.log('id', id);
     }, [currentRfi, id, currentUser]);
 
 

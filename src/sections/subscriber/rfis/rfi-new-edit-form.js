@@ -50,7 +50,6 @@ import RfiAttachments from './rfi-attachment';
 // ----------------------------------------------------------------------
 
 export default function RfiNewEditForm({ currentRfi, id }) {
-  console.log('currentRfi', currentRfi);
   const router = useRouter();
   const params = useParams();
   const { pathname } = useLocation();
@@ -74,12 +73,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   }, [pathname, existingAttachments]);
 
   const { enqueueSnackbar } = useSnackbar();
-  console.log('projectId', projectId);
-  console.log('submittalId ', id);
-  console.log('ccList ', ccList);
-  console.log('ownerList ', ownerList);
-  console.log('pathname ', pathname);
-  console.log('params ', params);
 
   const NewSubmittalSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -176,10 +169,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       finalData.attachments = attachments;
       formData.append('body', JSON.stringify(finalData));
 
-      console.log('Final DATA', finalData);
-      console.log('files ', files);
-      console.log('formData ', formData);
-
       let error;
       let payload;
       if ((!isEmpty(currentRfi) && val === 'update' && id) || val === 'review' && id) {
@@ -211,12 +200,10 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       }
       await dispatch(submitRfiToArchitect(payload?.id));
       enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      console.log('payload', payload);
       reset();
       isSubmittingRef.current = false;
       router.push(paths.subscriber.rfi.list);
     } catch (error) {
-      console.log('error-->', error);
       enqueueSnackbar(`Error ${currentRfi ? 'Updating' : 'Creating'} RFI`, {
         variant: 'error',
       });
@@ -349,7 +336,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                             },
                           }
                         : {};
-                      console.log(isDateNextDay);
                       return (
                         <DatePicker
                           label="Due Date"

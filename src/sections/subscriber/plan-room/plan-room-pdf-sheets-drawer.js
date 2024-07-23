@@ -95,8 +95,6 @@ export default function PlanRoomPDFSheetsDrawer({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data', data);
-      // console.log('e-p', { error, payload });
       // if (!isEmpty(error)) {
       // enqueueSnackbar(error.message, { variant: 'error' });
       //   return;
@@ -113,7 +111,6 @@ export default function PlanRoomPDFSheetsDrawer({
       console.error(e);
     }
   });
-  console.log('dialog', getValues());
   const renderHead = (
     <AppBar position="sticky" top="0" color="primary">
       <Toolbar>

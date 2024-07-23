@@ -52,7 +52,6 @@ export default function MeetingMinutesTableToolbar({
 
   const handleFilterStatus = useCallback(
     (event) => {
-      console.log('event.target.value', event.target.value);
       onFilters(
         'status',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value

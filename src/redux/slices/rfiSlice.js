@@ -24,7 +24,6 @@ export const submitRfiToArchitect = createAsyncThunk(
   'rfi/submitToArchitect',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('rfiId', id);
 
       const response = await axiosInstance.post(endpoints.rfi.submit(id));
 
@@ -44,8 +43,6 @@ export const editRfi = createAsyncThunk(
   async (rfiData, { getState, rejectWithValue }) => {
     try {
       const { id, formData } = rfiData;
-      console.log('rfiId', id);
-      console.log('formData', formData);
 
       const response = await axiosInstance.put(endpoints.rfi.edit(id), formData);
 
@@ -65,11 +62,8 @@ export const getRfiList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
       // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.rfi.list(projectId),
@@ -93,7 +87,6 @@ export const deleteRfi = createAsyncThunk(
   'rfi/delete',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('rfiId', id);
       const response = await axiosInstance.delete(endpoints.rfi.delete(id));
 
       return response.data.data;
@@ -110,7 +103,6 @@ export const getRfiDetails = createAsyncThunk(
   'submittal/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalId', id);
 
       const response = await axiosInstance.get(endpoints.rfi.details(id));
 
@@ -130,8 +122,6 @@ export const submitRfiResponse = createAsyncThunk(
   async (rfiData, { getState, rejectWithValue }) => {
     try {
       const { id, formData } = rfiData;
-      console.log('rfiId', id);
-      console.log('formData', formData);
 
       const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
 
@@ -152,17 +142,14 @@ export const getRFILogPDF = createAsyncThunk(
   async (exptype, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
         responseType: 'blob',
       });
 
       const buffer = response.data;
-      console.log('buffer', response.data);
 
       const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
-      console.log('blob', blob);
       const url = URL.createObjectURL(blob);
 
       // Create a temporary link and trigger a download

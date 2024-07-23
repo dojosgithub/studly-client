@@ -29,8 +29,6 @@ export default function RfiEditView({ id }) {
   // const dispatch = useDispatch()
   const currentRfi = useSelector((state) => state.rfi.current);
 
-  console.log("currentRfiEdit", currentRfi)
-  console.log("rfiId", id)
   
   // useEffect(() => {
   //   // if (id) {

@@ -29,8 +29,6 @@ export default function PlanRoomEditView({ id }) {
   // const dispatch = useDispatch()
   const currentPlan = useSelector((state) => state.plan.current);
 
-  console.log("currentPlanEdit", currentPlan)
-  console.log("planId", id)
   
   // useEffect(() => {
   //   // if (id) {

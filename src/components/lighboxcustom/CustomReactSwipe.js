@@ -16,7 +16,6 @@ const SimpleSlider = ({ currentSheetIndex, setCurrentSheetIndex }) => {
   };
   const planroom = useSelector((state) => state?.planRoom?.current);
 
-  console.log('planroom', planroom);
 
   // useEffect(() => {
   //   if (sliderRef.current && typeof currentSheetIndex === 'number') {

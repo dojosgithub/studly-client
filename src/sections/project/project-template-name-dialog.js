@@ -26,7 +26,6 @@ export default function ProjectTemplateName({ open, onClose, setSelectedTemplate
     const dispatch = useDispatch()
     // const { getValues } = useFormContext()
     // const { trades } = getValues()
-    console.log('trades',trades)
     const NewUserSchema = Yup.object().shape({
         name: Yup.string().required('Template Name is required'),
 
@@ -59,7 +58,6 @@ export default function ProjectTemplateName({ open, onClose, setSelectedTemplate
             console.info('DATA', data);
             setSelectedTemplate('')
             const { error, payload } = await dispatch(createNewTemplate(data))
-            console.log('e-p', { error, payload });
             if (!isEmpty(error)) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return

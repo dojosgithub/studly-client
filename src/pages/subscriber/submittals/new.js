@@ -12,7 +12,6 @@ export default function SubmittalsCreatePage() {
   const dispatch = useDispatch();
   const projectId = useSelector(state=>state?.project?.current?.id);
 
-  console.log('projectIdSubmittal', projectId)
 // getting users list of project
   useEffect(() => {
       dispatch(getProjectUsersList())

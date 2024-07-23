@@ -16,7 +16,6 @@ export default function CustomAutoComplete({ optionsList, error }) {
 
     const { getValues, setValue } = useFormContext()
     const { user: value } = getValues()
-    console.log("user", value)
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {

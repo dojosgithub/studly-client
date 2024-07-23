@@ -12,7 +12,6 @@ export default function PlanRoomCreatePage() {
   const dispatch = useDispatch();
   const projectId = useSelector(state=>state?.project?.current?.id);
 
-  console.log('projectIdPlanRoom', projectId)
 // getting users list of project
   useEffect(() => {
       dispatch(getExistingPlanRoomList())

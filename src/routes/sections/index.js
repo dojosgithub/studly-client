@@ -46,7 +46,6 @@ export default function Router() {
 
     if (currentSubmittal && currentUser) {
       const isNotEmpty = isIncluded(currentSubmittal?.owner, currentUser?._id);
-      console.log('isNotEmpty:', isNotEmpty);
       if (isNotEmpty) {
         setDynamicRoutes([
           {

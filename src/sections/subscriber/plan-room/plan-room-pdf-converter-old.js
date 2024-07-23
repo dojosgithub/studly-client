@@ -158,7 +158,6 @@ function PlanRoomPdfConverter({ files }) {
     handleUpload();
   }, [handleUpload]);
 
-  console.log('fiels', files);
   if (images?.length <= 0 || isLoadingRef?.current) {
     return (
       <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
@@ -211,7 +210,6 @@ function PlanRoomPdfConverter({ files }) {
                   clearOnBlur
                   handleHomeEndKeys
                   onChange={(event, newValue) => {
-                    console.log('newValue:', newValue)
                     if (typeof newValue[newValue.length - 1] === 'string') {
                       const newValueObj = {
                         id: nanoid(),
@@ -220,7 +218,6 @@ function PlanRoomPdfConverter({ files }) {
                       newValue[newValue.length - 1] = newValueObj;
                       field.onChange(newValue);
                     } else {
-                      console.log('newValue', newValue)
                       field.onChange(newValue);
                     }
                   }}

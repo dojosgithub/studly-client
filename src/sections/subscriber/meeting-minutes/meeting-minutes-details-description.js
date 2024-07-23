@@ -45,7 +45,6 @@ const StyledCard = styled(Card, {
 //         conferenceCallLink: '',
 
 export default function Description({ data }) {
-  console.log('DATA:', data);
   return (
     <Grid container spacing={3}>
       <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>

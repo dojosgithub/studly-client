@@ -31,23 +31,17 @@ const ProjectSubcontractor = () => {
 
 
     useEffect(() => {
-        console.log('subcontractor', subcontractors);
-        console.log('options', options);
 
     }, [subcontractors, options, trades])
 
     const handleSelect = (tradeId, email) => {
-        // console.log('subcontractorId', subcontractorId)
         if (email === "create") {
             setOpen(true)
             setID(tradeId)
             return
         }
-        console.log('email', email)
         const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
-        console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
         const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
-        console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
         // const { email } = subcontractorObj
         const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
         const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
@@ -61,7 +55,6 @@ const ProjectSubcontractor = () => {
         }
 
 
-        console.log('handleSelect', data);
 
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
@@ -76,7 +69,6 @@ const ProjectSubcontractor = () => {
             }
             return trade;
         });
-        console.log('modifiedTrades', modifiedTrades)
         setValue('trades', modifiedTrades)
         dispatch(setProjectTrades(modifiedTrades))
         // const filteredSubcontractor = subcontractors.filter(sub =>sub.email===email);

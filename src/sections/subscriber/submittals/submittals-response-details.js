@@ -73,10 +73,6 @@ const SubmittalsDetails = ({ id }) => {
 
 
     useEffect(() => {
-        console.log('currentSubmittal', currentSubmittal);
-        console.log('OwnerList', currentSubmittal?.owner);
-        console.log('currentUser:?._id', currentUser?._id);
-        console.log('id', id);
     }, [currentSubmittal, id, currentUser]);
 
 

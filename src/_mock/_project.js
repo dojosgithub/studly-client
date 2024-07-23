@@ -102,7 +102,7 @@ export const FILTER_CATEGORIES_PLANROOM = [
   'Plumbing',
   'Structural',
 ];
-export const FILTER_CATEGORIES_MEETINGROOM = ['Active', 'Inactive'];
+export const FILTER_CATEGORIES_MEETINGROOM = ['Draft', 'Minutes'];
 export const FILTER_CATEGORIES_MEETINGNOTES = ['Active', 'Inactive'];
 
 export const PROJECT_TEMPLATE_OPTIONS = [

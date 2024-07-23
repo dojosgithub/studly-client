@@ -110,7 +110,6 @@ export default function ProjectStepperForm() {
   const activeTab = useSelector(state => state.project.create.activeTab);
   const templates = useSelector(state => state.template.list);
   const defaultTemplate = templates.find(item => item.name === 'default');
-  console.log('defaultTemplate', defaultTemplate)
   const defaultTemplateTrades = defaultTemplate ? defaultTemplate?.trades : [];
 
   const templateList = useSelector(state => state.template.list);
@@ -274,7 +273,6 @@ export default function ProjectStepperForm() {
   const formValues = getValues();
   const { name, address, state, city, zipCode } = formValues;
   const watchValues = watch();
-  console.log('formValues', formValues)
   function processInviteUsers() {
     // Check if both internal and external arrays are not empty
     const hasInternal = inviteUsers.internal && inviteUsers.internal.length > 0;
@@ -298,25 +296,20 @@ export default function ProjectStepperForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data->', data);
       if (!companies) {
         return
       }
       setIsFormSubmitting(true);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
-      console.log("updatedTrades", updatedTrades)
       // // const teams = processInviteUsers(inviteUsers);
       // // const members = teamMembers?.map(({ _id, ...rest }) => rest);
       // const { id, ...rest } = data.workflow;
       // const updatedWorkflow = rest;
       const updatedWorkflow = data.workflow;
-      console.log("updatedWorkflow", updatedWorkflow)
 
       const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members }
-      console.log("finalData", finalData)
 
       const { error, payload } = await dispatch(createNewProject(finalData))
-      console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: "error" });
         return
@@ -363,7 +356,6 @@ export default function ProjectStepperForm() {
       isFormValid = await trigger(currentStepValue);
 
     }
-    console.log('isformvalid', isFormValid)
     return { isFormValid, currentStepValue }
   }
 
@@ -439,7 +431,6 @@ export default function ProjectStepperForm() {
         case 'name':
           dispatch(setProjectName({ name, address, state, city, zipCode }));
           dispatch(setProjectWorkflow(formValues?.workflow));
-          console.log('formValuesNAME', formValues);
           break;
         case 'trades':
           dispatch(setProjectTrades(formValues?.trades));
@@ -460,9 +451,6 @@ export default function ProjectStepperForm() {
     //   setOpen(true);
     // }
     const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
-    console.log('isModified', isModified)
-    console.log('defaultTemplateTrades', defaultTemplateTrades)
-    console.log('formValues.trades', formValues.trades)
     if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
       setOpen(true);
       dispatch(setDefaultTemplateModified(true))
@@ -490,10 +478,8 @@ export default function ProjectStepperForm() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped((prevSkipped) => {
-      console.log('prevSkipped', prevSkipped)
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
-      console.log('newSkipped', newSkipped)
       return newSkipped;
     });
   };

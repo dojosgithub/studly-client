@@ -51,7 +51,6 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
 const MeetingMinutesNotes = () => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
-  console.log('raahim', inviteAttendee);
 
   const { control, setValue, getValues, watch, resetField } = useFormContext();
 
@@ -80,7 +79,7 @@ const MeetingMinutesNotes = () => {
   return (
     <Box sx={{ marginBottom: '2rem', position: 'relative' }}>
       <Typography sx={{ mt: 2, mb: 4 }} fontSize="1.5rem" fontWeight="bold">
-        Meeting Notes
+        Meeting Agenda
       </Typography>
       <Card
         variant="outlined"
@@ -97,7 +96,7 @@ const MeetingMinutesNotes = () => {
                   <Stack gap={3} mx={2} my={3}>
                     <RHFTextField
                       name={`notes[${noteIndex}].subject`}
-                      label="Subject"
+                      label="Section"
                       InputLabelProps={{ shrink: true }}
                     />
                     <NestedTopicFieldArray control={control} noteIndex={noteIndex} note={note} />
@@ -114,7 +113,7 @@ const MeetingMinutesNotes = () => {
           onClick={handleAddNote}
           sx={{ mt: 3 }}
         >
-          Add Another Subject
+          Add Another Section
         </Button>
       </Card>
     </Box>
@@ -152,7 +151,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
     control,
     name: `notes[${noteIndex}].topics`,
   });
-  console.log('topicFields', topicFields);
   const handleAddTopic = () => {
     appendTopic({
       topic: '',

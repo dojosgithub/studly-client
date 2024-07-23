@@ -65,12 +65,8 @@ export default function SubscriberUpdatePassword() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('DATA', data);
-      console.log('email', email);
       const newData = { password: data.newPassword, email }
-      console.log('newData', newData);
       const { error, payload } = await dispatch(updatePasswordFirstLogin(newData))
-      console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: "error" });
         return
@@ -82,7 +78,6 @@ export default function SubscriberUpdatePassword() {
 
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
       enqueueSnackbar(`Error Updating Password`, { variant: "error" });
     }
   });

@@ -168,7 +168,6 @@ export function AuthProvider({ children }) {
     };
 
     const response = await axios.get(endpoints.auth.forgotPassword, { params: data });
-    console.log('forgotPassword-->', response.data)
     dispatch({
       type: 'FORGOT_PASSWORD',
     });
@@ -183,7 +182,6 @@ export function AuthProvider({ children }) {
     };
 
     const response = await axios.post(endpoints.auth.newPassword, data);
-    console.log('response.data', response.data)
     const { data: { accessToken, user, refreshToken } } = response.data;
     setSession(accessToken);
     dispatchRedux(signIn({ accessToken, user, refreshToken }))

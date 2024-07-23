@@ -12,7 +12,6 @@ export const createMeetingMinutes = createAsyncThunk(
     }
 
     const projectId = getState().project?.current?.id;
-    console.log('projectId', projectId);
 
     meetingMinutesData.projectId = projectId;
     try {
@@ -40,7 +39,6 @@ export const updateMeetingMinutes = createAsyncThunk(
     }
 
     const projectId = getState().project?.current?.id;
-    console.log('projectId', projectId);
 
     data.projectId = projectId;
     try {
@@ -62,11 +60,8 @@ export const getMeetingMinutesList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
       // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.meetingMinutes.list(projectId),
@@ -91,7 +86,6 @@ export const MeetingMinutes = createAsyncThunk(
   'meetingMinutesSheet/delete',
   async ({ projectId, meetingMinutesId, sheetId }, { getState, rejectWithValue }) => {
     try {
-      console.log('ids', { projectId, meetingMinutesId, sheetId });
       const response = await axiosInstance.delete(
         endpoints.meetingMinutes.delete(projectId, meetingMinutesId, sheetId)
       );
@@ -111,7 +105,6 @@ export const getMeetingMinutesDetails = createAsyncThunk(
   'meetingMinutes/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('meetingMinutes', id);
 
       const response = await axiosInstance.get(endpoints.meetingMinutes.details(id));
 
@@ -176,6 +169,24 @@ export const changeToMinutes = createAsyncThunk(
     }
   }
 );
+
+export const deleteMeeting  =  createAsyncThunk(
+  'meetingMinutes/delete',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(endpoints.meetingMinutes.delete(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
 // export const submitPlanRoomToArchitect = createAsyncThunk(
 //   'rfi/submitToArchitect',
 //   async (id, { getState, rejectWithValue }) => {
@@ -278,18 +289,14 @@ export const getMeetingMinutesPDF = createAsyncThunk(
   async (id, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
-      console.log('id', id);
 
       const response = await axiosInstance.get(endpoints.meetingMinutes.pdf(id), {
         responseType: 'blob',
       });
 
       const buffer = response.data;
-      console.log('buffer', response.data);
 
       const blob = new Blob([buffer], { type: 'application/pdf' });
-      console.log('blob', blob);
       const url = URL.createObjectURL(blob);
 
       // Create a temporary link and trigger a download

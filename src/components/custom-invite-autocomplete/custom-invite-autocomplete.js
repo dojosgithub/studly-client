@@ -35,7 +35,6 @@ export default function CustomInviteAutoComplete({ optionsList }) {
     const { getValues, setValue,formState: { isSubmitSuccessful } } = useFormContext()
     const { user } = getValues()
     // console.log("value", value);
-    console.log("user", user);
     const handleEmailValidation = (email) => {
         if (validateEmail(email)) {
             setInputError("");
@@ -55,9 +54,7 @@ export default function CustomInviteAutoComplete({ optionsList }) {
         }
     };
     React.useEffect(() => {
-        console.log('inputError', inputError)
         if (isSubmitSuccessful) {
-            console.log('isSubmitSuccessful', isSubmitSuccessful)
             setInputError('')
         }
 
@@ -81,7 +78,6 @@ export default function CustomInviteAutoComplete({ optionsList }) {
                 } else {
                     // setInputValue(newValue);
                     setValue("user",newValue);
-                    console.log("newValue", newValue)
                 }
             }}
             onInputChange={(event, newInputValue) => {

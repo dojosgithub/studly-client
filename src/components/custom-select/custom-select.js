@@ -30,7 +30,6 @@ export default function CustomSelect({ onSelect, selectedOption, type = 'templat
 
     const handleSelect = (value) => {
         onSelect(value)
-        console.log('handleSelect', value)
         // Find the selected item based on the value
         if (value !== 'create') {
             const selectedItem = renderList.find(item => item.name === value || value === 'default');
@@ -40,7 +39,6 @@ export default function CustomSelect({ onSelect, selectedOption, type = 'templat
                 dispatch(setProjectTrades(selectedItem?.trades))
             } else if (type === "workflow") {
                 const { id, ...rest } = selectedItem;
-                console.log('rest', rest)
                 handleSelectWorkflow(selectedItem);
                 setValue('workflow', rest)
                 dispatch(setProjectWorkflow(rest))
@@ -51,12 +49,10 @@ export default function CustomSelect({ onSelect, selectedOption, type = 'templat
     };
 
     const handleSelectTemplate = (value) => {
-        console.log("Selected template:", value);
         dispatch(setCurrentTemplate(value))
         // Additional logic for selected item
     };
     const handleSelectWorkflow = (value) => {
-        console.log("Selected workflow:", value);
         dispatch(setCurrentWorkflow(value))
         // Additional logic for selected item
     };

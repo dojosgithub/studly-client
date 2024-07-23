@@ -30,8 +30,6 @@ export default function SubmittalsRevisionView({ id }) {
   const currentSubmittal = useSelector((state) => state.submittal.current);
   
 
-  console.log("currentSubmittalReview", currentSubmittal)
-  console.log("sumittalId", id)
 
   // useEffect(() => {
   //   // if (id) {

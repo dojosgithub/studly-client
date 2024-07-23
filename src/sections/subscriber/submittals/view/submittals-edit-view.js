@@ -29,9 +29,6 @@ export default function SubmittalsEditView({ id }) {
   // const dispatch = useDispatch()
   const currentSubmittal = useSelector((state) => state.submittal.current);
 
-  console.log("currentSubmittalEdit", currentSubmittal)
-  console.log("sumittalId", id)
-  
   // useEffect(() => {
   //   // if (id) {
   //   // }

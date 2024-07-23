@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box, Button, IconButton, Divider, alpha, Typography } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
@@ -7,7 +8,7 @@ import { useForm, useFieldArray, useFormContext } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSnackbar } from 'notistack'; // Import useSnackbar hook
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import uuidv4 from 'src/utils/uuidv4';
 // import {
 //   setMeetingMinutesInviteAttendee,
@@ -44,7 +45,7 @@ const inviteAttendeeSchema = Yup.object().shape({
   ),
 });
 
-export default function MeetingMinutesInviteAttendeeView() {
+export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
   const dispatch = useDispatch();
   // const { trigger } = useFormContext();
   const { enqueueSnackbar } = useSnackbar(); // Initialize useSnackbar hook
@@ -88,9 +89,14 @@ export default function MeetingMinutesInviteAttendeeView() {
           <Box key={attendee.id}>
             <Box
               rowGap={5}
-              columnGap={3}
+              columnGap={4}
               display="grid"
-              gridTemplateColumns="repeat(3, 1fr) 50px" // Set columns to 3 equal parts and a fixed size for the button
+              // gridTemplateColumns="repeat(3, 1fr) 0.5fr 50px" // Set columns to 3 equal parts, a smaller part for the checkbox, and a fixed size for the button
+              gridTemplateColumns={
+                isEdit 
+                  ? "repeat(3, 1fr) 0.5fr 50px" // Include the smaller checkbox column if isEdit is true
+                  : "repeat(3, 1fr) 50px" // Exclude the checkbox column if isEdit is false
+              }
               my={3}
             >
               <RHFTextField
@@ -111,6 +117,12 @@ export default function MeetingMinutesInviteAttendeeView() {
                 InputLabelProps={{ shrink: true }}
                 onBlur={() => trigger(`inviteAttendee[${index}].email`)}
               />
+
+              {isEdit && (
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <RHFCheckbox name={`inviteAttendee[${index}].attended`} label="Attended" />
+                </Box>
+              )}
               {/* Remove button */}
               <StyledIconButton color="inherit" onClick={() => handleRemoveAttendee(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
@@ -137,3 +149,7 @@ export default function MeetingMinutesInviteAttendeeView() {
     </Box>
   );
 }
+
+MeetingMinutesInviteAttendeeView.propTypes = {
+  isEdit: PropTypes.bool,
+};

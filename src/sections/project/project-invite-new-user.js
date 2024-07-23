@@ -43,7 +43,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
     // const userListOptions = PROJECT_INVITE_USERS_INTERNAL;
     const userListOptions = useSelector(state => state?.project?.users);
     const userRoles = type === "external" ? PROJECT_INVITE_EXTERNAL_USER_ROLES : PROJECT_INVITE_INTERNAL_USER_ROLES
-    console.log('userListOptions', userListOptions)
     const InviteUserSchema = Yup.object().shape({
         user: Yup.object().shape({ email: Yup.string().email('Invalid email').required('User email is required'), id: Yup.string() }),
         role: Yup.string().required('User role is required'),
@@ -76,7 +75,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
 
     const handleSelectRole = useCallback(
         (index, option) => {
-            console.log('option', option)
             setValue(
                 `role`,
                 option
@@ -86,7 +84,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
     );
     const handleSelectUser = useCallback(
         (option) => {
-            console.log("option", option)
 
             setValue('user', option)
 
@@ -94,7 +91,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         [setValue]
     );
 
-    console.log('userObj', userObj)
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -105,7 +101,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
             // setValue('email', '')
             // reset();
             // dispatch(setUsersActions(updatedData))
-            console.log('data', data)
             const { role, user } = data;
             const hasEmailAndId = 'email' in user && 'id' in user;
             const finalData = {
@@ -120,7 +115,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
                 finalData.user = data.user.id
                 finalData.status = 'joined'
             }
-            console.log('finalData', finalData)
             // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
             dispatch(setMembers(finalData))
             reset(defaultValues)

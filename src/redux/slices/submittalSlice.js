@@ -28,8 +28,6 @@ export const editSubmittal = createAsyncThunk(
   async (submittalData, { getState, rejectWithValue }) => {
     try {
       const { id, formData } = submittalData;
-      console.log('submittalId', id);
-      console.log('formData', formData);
 
       const response = await axiosInstance.put(endpoints.submittal.edit(id), formData);
 
@@ -47,7 +45,6 @@ export const deleteSubmittal = createAsyncThunk(
   'submittal/delete',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalId', id);
       const response = await axiosInstance.delete(endpoints.submittal.delete(id));
 
       return response.data.data;
@@ -64,7 +61,6 @@ export const getSubmittalDetails = createAsyncThunk(
   'submittal/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalId', id);
 
       const response = await axiosInstance.get(endpoints.submittal.details(id));
 
@@ -84,11 +80,8 @@ export const getSubmittalList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
       // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.submittal.list(projectId),
@@ -114,7 +107,6 @@ export const getAllProjectUsersList = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(endpoints.project.projectAllUsersList(projectId));
 
@@ -133,7 +125,6 @@ export const getProjectUsersList = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(endpoints.project.projectUsersList(projectId));
 
@@ -153,13 +144,11 @@ export const getProjectAssigneeUsers = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(
         endpoints.project.projectAssigneeUsersList(projectId)
       );
 
-      console.log('response.data.data', response.data.data);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -176,17 +165,14 @@ export const getSubmittalLogPDF = createAsyncThunk(
   async (exptype, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(endpoints.submittal.pdf(projectId, exptype), {
         responseType: 'blob',
       });
 
       const buffer = response.data;
-      console.log('buffer', response.data);
 
       const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
-      console.log('blob', blob);
       const url = URL.createObjectURL(blob);
 
       // Create a temporary link and trigger a download
@@ -213,7 +199,6 @@ export const submitSubmittalToArchitect = createAsyncThunk(
   'submittal/submitToArchitect',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalId', id);
 
       const response = await axiosInstance.post(endpoints.submittal.submit(id));
 
@@ -232,8 +217,6 @@ export const respondToSubmittalRequest = createAsyncThunk(
   async (submittalData, { getState, rejectWithValue }) => {
     try {
       const { id, formData } = submittalData;
-      console.log('formData', formData);
-      console.log('submittalId', id);
 
       const response = await axiosInstance.post(endpoints.submittal.review(id), formData);
 
@@ -251,7 +234,6 @@ export const getSubmittalResponseDetails = createAsyncThunk(
   'submittal/submittalResponseDetails',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalId', id);
 
       const response = await axiosInstance.get(endpoints.submittal.responseDetails(id));
 
@@ -270,8 +252,6 @@ export const updateSubmittalResponseDetails = createAsyncThunk(
   async (submittalData, { getState, rejectWithValue }) => {
     try {
       const { id, formData } = submittalData;
-      console.log('formData', formData);
-      console.log('submittalId', id);
 
       const response = await axiosInstance.put(endpoints.submittal.responseDetails(id), formData);
 
@@ -289,7 +269,6 @@ export const changeSubmittalStatus = createAsyncThunk(
   'submittal/changeSubmittalStatus',
   async (submittalData, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalData', submittalData);
 
       const response = await axiosInstance.post(endpoints.submittal.status, submittalData);
 
@@ -308,10 +287,8 @@ export const resendToSubcontractor = createAsyncThunk(
   async (id, { getState, rejectWithValue }) => {
     try {
 
-      console.log('submittalId', id);
 
       const response = await axiosInstance.get(endpoints.submittal.resendToSubcontractor(id));
-      console.log('response.data', response.data);
 
       return response.data.message;
     } catch (err) {
@@ -327,7 +304,6 @@ export const sendToAll = createAsyncThunk(
   'submittal/sendToAll',
   async (submittalData, { getState, rejectWithValue }) => {
     try {
-      console.log('submittalData', submittalData);
 
       const response = await axiosInstance.post(endpoints.submittal.sendToAll, submittalData);
 

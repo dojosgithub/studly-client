@@ -24,8 +24,6 @@ export default function SubmittalsReviewRespondView({ id }) {
   const currentSubmittal = useSelector(state => state.submittal.current)
   useEffect(() => {
     // dispatch(setSubmittalResponse(currentSubmittal))
-    console.log("currentSubmittal", currentSubmittal)
-    console.log("submittalIdResponse", id)
 
   }, [dispatch, currentSubmittal, id])
 

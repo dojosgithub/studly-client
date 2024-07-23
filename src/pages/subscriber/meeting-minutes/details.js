@@ -14,7 +14,6 @@ export default function MeetingMinutesDetailsPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('details', id)
     useEffect(() => {
         dispatch(getMeetingMinutesDetails(id))
     }, [dispatch, id])

@@ -40,12 +40,9 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
     dispatch(setCurrentProject(project));
     // dispatch(getSubmittalList())
     const { members } = project;
-    console.log('role', role);
-    console.log('members', members);
     if (role !== 'CAD' || role !== 'PWU') {
       if (members && members.length > 0) {
         const projectRole = members.find((member) => member.email === email);
-        console.log('projectRole', projectRole);
         dispatch(setCurrentProjectRole(projectRole?.role));
       }
     }
@@ -65,9 +62,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   }, []);
 
   React.useEffect(() => {
-    console.log(currentProject);
     const updatedCurrentProject = projects.findIndex((project) => project.id === currentProject.id);
-    console.log(updatedCurrentProject);
     if (updatedCurrentProject !== -1) {
       handleProject(projects[updatedCurrentProject], false);
     }

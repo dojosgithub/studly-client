@@ -40,13 +40,10 @@ export default function OnboardingProjects({ projects }) {
   const handleProject = (project) => {
     dispatch(setCurrentProject(project))
     const { members } = project;
-    console.log("role", role);
-    console.log("members", members);
     if (role !== "CAD" || role !== "PWU") {
       // Check if members array is not empty and find the member by email
       if (members && members.length > 0) {
         const projectRole = members.find(member => member.email === email);
-        console.log("projectRole", projectRole);
         dispatch(setCurrentProjectRole(projectRole?.role))
       }
 

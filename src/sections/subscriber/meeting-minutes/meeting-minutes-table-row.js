@@ -156,7 +156,7 @@ const MeetingMinutesTableRow = memo(
           arrow="right-top"
           sx={{ width: 140 }}
         >
-          {(role === 'CAD' || role === 'PWU') && (
+          {status !== 'Minutes' && (
             <>
               <MenuItem
                 onClick={() => {
@@ -168,16 +168,17 @@ const MeetingMinutesTableRow = memo(
                 <Iconify icon="solar:trash-bin-trash-bold" />
                 Delete
               </MenuItem>
-
-              <MenuItem
-                onClick={() => {
-                  onEditRow();
-                  popover.onClose();
-                }}
-              >
-                <Iconify icon="solar:pen-bold" />
-                Edit
-              </MenuItem>
+              {(role === 'CAD' || role === 'PWU') && (
+                <MenuItem
+                  onClick={() => {
+                    onEditRow();
+                    popover.onClose();
+                  }}
+                >
+                  <Iconify icon="solar:pen-bold" />
+                  Edit
+                </MenuItem>
+              )}
             </>
           )}
 

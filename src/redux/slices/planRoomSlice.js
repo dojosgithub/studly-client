@@ -25,11 +25,8 @@ export const getPlanRoomList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const { status, ...data } = listOptions;
-      console.log('status', status);
-      console.log('data', data);
       // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.planRoom.list(projectId),
@@ -55,10 +52,8 @@ export const getPlanRoomPDFSThumbnails = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const { data } = listOptions;
-      console.log('data', data);
       // const projectId = getState().projectId.id
       const response = await axiosInstance.post(endpoints.planRoom.pdfThumbnails(projectId), data);
 
@@ -78,7 +73,6 @@ export const getExistingPlanRoomList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     try {
       const projectId = getState().project?.current?.id;
-      console.log('projectId', projectId);
 
       const response = await axiosInstance.get(endpoints.planRoom.existinglist(projectId));
 
@@ -97,7 +91,6 @@ export const deletePlanRoomSheet = createAsyncThunk(
   'planRoomSheet/delete',
   async ({ projectId, planRoomId, sheetId }, { getState, rejectWithValue }) => {
     try {
-      console.log('ids', { projectId, planRoomId, sheetId });
       const response = await axiosInstance.delete(
         endpoints.planRoom.delete(projectId, planRoomId, sheetId)
       );
@@ -174,7 +167,6 @@ export const getPlanRoomDetails = createAsyncThunk(
   'planRoom/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('planRoom id', id);
 
       const response = await axiosInstance.get(endpoints.planRoom.details(id));
 

@@ -59,7 +59,6 @@ const ProjectCreateTrade = () => {
     useEffect(() => {
         const handleKeyPress = (event) => {
             if (event.key === 'Tab') {
-                console.log('Tab key pressed');
 
                 handleAdd();
             }

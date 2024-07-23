@@ -54,7 +54,6 @@ export default function JwtForgotPasswordView() {
 
       router.push(paths.auth.jwt.newPassword);
     } catch (error) {
-      console.log("error", error);
       setErrorMsg(typeof error === 'string' ? error : error.message);
 
     }

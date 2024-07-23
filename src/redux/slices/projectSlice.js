@@ -50,7 +50,6 @@ export const getCurrentProjectTradesById = createAsyncThunk(
   'project/trades',
   async (id, { getState, rejectWithValue }) => {
     try {
-      console.log('id', id);
       const response = await axiosInstance.get(endpoints.project.trades(id));
 
       return response.data.data.trades
