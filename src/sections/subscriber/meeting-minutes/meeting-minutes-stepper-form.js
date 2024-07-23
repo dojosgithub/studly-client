@@ -81,7 +81,7 @@ const steps = [
     value: 'inviteAttendee',
   },
   {
-    label: 'Meeting Notes',
+    label: 'Meeting Agenda',
     // description: Create  your project workflow,
     value: 'notes',
   },
