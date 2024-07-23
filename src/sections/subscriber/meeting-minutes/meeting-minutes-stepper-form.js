@@ -408,7 +408,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         component = <MeetingMinutesDescription />;
         break;
       case 1:
-        component = <MeetingMinutesInviteAttendeeView />;
+        component = <MeetingMinutesInviteAttendeeView isEdit={isEdit}/>;
         break;
 
       case 2:
