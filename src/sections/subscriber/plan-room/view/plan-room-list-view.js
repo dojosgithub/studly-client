@@ -160,7 +160,6 @@ export default function PlanRoomListView() {
   // }, [dispatch, filters.query, filters.status, page])
 
   useEffect(() => {
-    console.log('filters.status', filters.status);
     dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
@@ -194,14 +193,11 @@ export default function PlanRoomListView() {
 
   const handleDeleteRow = useCallback(
     async (row, onDelete) => {
-      console.log('row', row);
       const { projectId, planRoomId, _id: sheetId } = row;
-      console.log('id-->', projectId, planRoomId, sheetId);
       const { error, payload } = await dispatch(
         deletePlanRoomSheet({ projectId, planRoomId, sheetId })
       );
       await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }));
-      console.log('e-p', error, payload);
       onDelete.onFalse();
       enqueueSnackbar('Sheet Deleted Successfully', { variant: 'success' });
     },
@@ -225,12 +221,10 @@ export default function PlanRoomListView() {
     },
     [router]
   );
-  console.log('LISTDATA', listData);
   
   const handleViewRow = useCallback(
     (row) => {
       // router.push(paths.subscriber.planRoom.details(title));
-      console.log('handleViewRow', row);
       // const index = newSlides.findIndex((item) => item.title === title);
       // lightbox.onOpen(newSlides[index]?.src);
       // const index = listData.docs.findIndex((item) => item._id === id);

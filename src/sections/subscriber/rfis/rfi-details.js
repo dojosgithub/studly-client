@@ -239,15 +239,10 @@ const RfiDetails = ({ id }) => {
   //   : null;
 
   useEffect(() => {
-    console.log('currentRfi', currentRfi);
-    console.log('OwnerList', currentRfi?.owner);
-    console.log('currentUser:?._id', currentUser?._id);
-    console.log('id', id);
     // getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRfi, id, currentUser, isSubmitting]);
   const handleSubmitToArchitect = async () => {
-    console.log('ID==>', id);
     setIsSubmitting(true);
     const { error, payload } = await dispatch(submitRfiToArchitect(id));
     setIsSubmitting(false);

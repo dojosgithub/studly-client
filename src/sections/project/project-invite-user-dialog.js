@@ -70,7 +70,6 @@ export default function ProjectInviteUserDialog({
 
   const handleSelectRole = useCallback(
     (index, option) => {
-      console.log('option', option)
       setValue(
         `role`,
         option
@@ -80,7 +79,6 @@ export default function ProjectInviteUserDialog({
   );
   const handleSelectEmail = useCallback(
     (index, option) => {
-      console.log('email', option)
       setValue(
         `email`,
         option
@@ -96,7 +94,6 @@ export default function ProjectInviteUserDialog({
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar('Invite sent successfully!');
       const updatedData = { ...data, _id: uuidv4(), }
-      console.log('updatedData Final', updatedData);
       reset();
       onClose()
       dispatch(setUsersAction(updatedData))

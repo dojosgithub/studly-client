@@ -38,13 +38,11 @@ import ThumbnailsViewer from '../lighboxcustom/thumbnails';
 // export default function CustomDrawerPlanRoom({
 const CustomDrawerPlanRoom = React.memo(
   ({ open, onClose, isOnboarding = false, Component, type = 'project', setTrades, activeRow }) => {
-    console.log('activeRow', activeRow);
     const theme = useTheme();
     const dispatch = useDispatch();
 
     const [currentSheetIndex, setCurrentSheetIndex] = useState(null);
     const planroom = useSelector((state) => state?.planRoom?.current);
-    console.log('currentSheetIndex:', currentSheetIndex);
     const renderHead = (
       <Stack
         direction="row"
@@ -119,8 +117,6 @@ const CustomDrawerPlanRoom = React.memo(
     }, [planroom, activeRow]);
 
     if (!activeRow?.planRoomId) return null;
-
-    console.log(activeRow?.planRoomId);
 
     return (
       <Drawer

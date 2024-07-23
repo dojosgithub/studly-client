@@ -15,11 +15,9 @@ export default function SubmittalsEditPage() {
 
   const dispatch = useDispatch()
   const projectId = useSelector(state => state?.project?.current?.id);
-  console.log('projectId Submittal Edit', projectId)
 
   // getting users list of project
   useEffect(() => {
-    console.log('edit', id)
     dispatch(getProjectUsersList())
     dispatch(getProjectAssigneeUsers())
     async function getDetails(){

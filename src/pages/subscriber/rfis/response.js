@@ -14,7 +14,6 @@ export default function RfiResponsePage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('responseDetails', id)
     useEffect(() => {
         async function fetchDetails() {
             await dispatch(getRfiDetails(id))

@@ -112,7 +112,6 @@ export default function SubmittalsListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    console.log('filters.status', filters.status);
     dispatch(getSubmittalList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
@@ -143,14 +142,12 @@ export default function SubmittalsListView() {
 
   const handleDeleteRow = useCallback(
     async (id, onDelete) => {
-      console.log('id', id);
       await dispatch(deleteSubmittal(id));
       const { error, payload } = await dispatch(
         // getSubmittalList({ search: '', page: 1, status: [] })
         getSubmittalList({ search: filters.query, page, sortDir, status: filters.status })
 
       );
-      console.log('payload', payload);
       onDelete.onFalse();
       enqueueSnackbar('Submittal Deleted Successfully', { variant: 'success' });
     },

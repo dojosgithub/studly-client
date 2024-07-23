@@ -39,8 +39,6 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
 
   // ? Reset trades and selected trade template on tab change 
   const handleTabChange = (e, value) => {
-    console.log('value-->', value)
-    console.log('activeTab-->', activeTab)
     dispatch(setActiveTab(value));
     if (value === 'create') {
       dispatch(setSelectedTradeTemplate(''))

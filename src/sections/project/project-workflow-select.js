@@ -27,8 +27,6 @@ export default function ProjectWorkflowSelect() {
 
 
 
-    console.log("currentWorkflow->", cWorkflow)
-    console.log("workflows->", workflows)
     useEffect(() => {
         setSelectedWorkflowName(cWorkflow?.name)
         setWorkflowList(workflows)
@@ -37,11 +35,9 @@ export default function ProjectWorkflowSelect() {
 
 
     const handleSelect = (value) => {
-        console.log('handleSelect', value)
         // Find the selected item based on the value
         if (value !== 'create') {
             const selectedItem = workflowList.find(item => item.name === value || value === 'default');
-            console.log('selectedItem', selectedItem)
             handleSelectWorkflow(selectedItem);
             setValue('workflow', selectedItem)
             dispatch(setProjectWorkflow(selectedItem))
@@ -65,7 +61,6 @@ export default function ProjectWorkflowSelect() {
 
 
     const handleSelectWorkflow = (value) => {
-        console.log("Selected workflow:", value);
         dispatch(setCurrentWorkflow(value))
         // Additional logic for selected item
     };

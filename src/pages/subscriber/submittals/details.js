@@ -14,7 +14,6 @@ export default function SubmittalsDetailsPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('details', id)
     useEffect(() => {
         dispatch(getSubmittalDetails(id))
         // getting users list of project

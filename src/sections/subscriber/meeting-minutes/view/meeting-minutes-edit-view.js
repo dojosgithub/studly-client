@@ -20,7 +20,6 @@ export default function MeetingMinutesEditView({ id }) {
   // const currentMeetingMinutes = useSelector((state) => state.plan.current);
 
   // console.log("currentMeetingMinutesEdit", currentMeetingMinutes)
-  console.log('meetingId', id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

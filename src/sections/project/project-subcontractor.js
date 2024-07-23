@@ -31,15 +31,11 @@ const ProjectSubcontractor = () => {
 
 
     useEffect(() => {
-        console.log('subcontractor', subcontractors);
-        console.log('options', options);
 
     }, [subcontractors, options, trades])
 
     const handleSelect = (tradeId, email) => {
         // console.log('subcontractorId', subcontractorId)
-        console.log('tradeId', tradeId)
-        console.log('email', email)
         if (email === "create") {
             setOpen(true)
             setID(tradeId)
@@ -117,8 +113,6 @@ const ProjectSubcontractor = () => {
     }
 
     const handleRemove = (tradeId, emailId) => {
-        console.log('tradeId', tradeId)
-        console.log('email', emailId)
         dispatch(removeInvitedSubcontractor(emailId))
         const modifiedTrades = trades.map(trade => {
             if (trade.tradeId === tradeId) {
@@ -128,7 +122,6 @@ const ProjectSubcontractor = () => {
             }
             return trade;
         });
-        console.log('modifiedTradesRemove', modifiedTrades)
         setValue('trades', modifiedTrades)
         dispatch(setProjectTrades(modifiedTrades))
 

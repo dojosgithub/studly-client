@@ -124,7 +124,6 @@ export default function CompanyListView() {
     (id) => {
       // const deleteRow = tableData.filter((row) => row.id !== id);
       // setTableData(deleteRow);
-      console.log("companyId", id)
       dispatch(deleteCompany(id))
       enqueueSnackbar('Company deleted successfully!', { variant: 'success' });
       dispatch(fetchCompanyList({ search: filters.query, page }))
@@ -142,9 +141,6 @@ export default function CompanyListView() {
 
   const handleUpdateStatus = useCallback(
     async (id, value) => {
-      console.log('id', id)
-      console.log('status', value)
-      console.log('status type', typeof value)
       const status = value === "1" ? "2" : "1"
       await dispatch(updateCompanyStatus({ id, status }))
       await dispatch(fetchCompanyList())

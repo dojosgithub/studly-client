@@ -129,7 +129,6 @@ const ProjectNewTemplateDrawer = ({ onClose, open, setTrades }) => {
 
         const handleKeyPress = (event) => {
             if (event.key === 'Tab') {
-                console.log('Tab key pressed');
 
                 handleAdd();
             }
@@ -164,12 +163,10 @@ const ProjectNewTemplateDrawer = ({ onClose, open, setTrades }) => {
             const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
             console.info('updatedTrades', updatedTrades);
             const { error, payload } = await dispatch(createNewTemplate({ ...data, trades: updatedTrades }))
-            console.log('e-p', { error, payload });
             if (!isEmpty(error)) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return
             }
-            console.log('payload', payload);
             enqueueSnackbar('Template created successfully!', { variant: 'success' });
             dispatch(getTemplateList())
             dispatch(setCurrentTemplate(payload))
@@ -204,9 +201,7 @@ const ProjectNewTemplateDrawer = ({ onClose, open, setTrades }) => {
     //     setValue("trades", updatedTrades)
 
     // }
-    console.log('open->', open)
     if (showSnackbarRef && showSnackbarRef.current && trades.length === 0 && open) {
-        console.log('trades', trades)
         enqueueSnackbar('Please add a trade', { variant: "warning" });
     }
 

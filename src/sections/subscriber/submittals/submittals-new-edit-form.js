@@ -58,7 +58,6 @@ import SubmittalAttachments from './submittals-attachment';
 // ----------------------------------------------------------------------
 
 export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
-  console.log('currentSubmittal', currentSubmittal);
   const router = useRouter();
   const params = useParams();
   const { pathname } = useLocation();
@@ -83,12 +82,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   }, [pathname, existingAttachments]);
 
   const { enqueueSnackbar } = useSnackbar();
-  console.log('projectId', projectId);
-  console.log('submittalId ', id);
-  console.log('ccList ', ccList);
-  console.log('ownerList ', ownerList);
-  console.log('pathname ', pathname);
-  console.log('params ', params);
 
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
@@ -154,7 +147,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     let returnDate = null;
     const ccListInside = currentSubmittal?.ccList || [];
     const owner = currentSubmittal?.owner?.map((item) => item.email) || [];
-    console.log('owner000', owner);
     if (currentSubmittal) {
       submittalId = currentSubmittal.submittalId || '';
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
@@ -169,8 +161,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         const revisionCount =
           currentSubmittal?.parentSubmittal?.revisionCount || currentSubmittal?.revisionCount;
         const isParentSubmittalHasRevisions = currentSubmittal?.parentSubmittal?.revisionCount > 0;
-        console.log('revisionCount', revisionCount);
-        console.log('isParentSubmittalHasRevisions', isParentSubmittalHasRevisions);
         submittalId = updateSubmittalId(submittalId, revisionCount, isParentSubmittalHasRevisions);
       } else {
         name = currentSubmittal?.name || '';
@@ -214,8 +204,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const values = watch();
   const { submittalId } = values;
-  console.log('values', values);
-  console.log('errors', errors);
 
   useEffect(() => {
     if (!isEmpty(currentSubmittal)) {
@@ -228,10 +216,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   }
   const handleSelectTrade = useCallback(
     (option) => {
-      console.log('option', option);
       const sequence = option.submittalCreatedCount + 1;
       const id1 = concat(option.tradeId, '-', sequence).join('');
-      console.log('id1', id1);
 
       setValue(`submittalId`, id1);
     },
@@ -253,11 +239,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         ...tradeObj,
         submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1,
       };
-      console.log('data-->', data);
-      console.log('val-->', val);
-      console.log('owner-->', owner);
-      console.log('tradeId', tradeId);
-      console.log('trade', trade);
       // delete trade._id;
       if (!trade) {
         return;
@@ -301,10 +282,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       finalData.attachments = attachments;
       formData.append('body', JSON.stringify(finalData));
 
-      console.log('Final DATA', finalData);
-      console.log('files ', files);
-      console.log('formData ', formData);
-
       let error;
       let payload;
       if (!isEmpty(currentSubmittal) && !pathname.includes('revision') && id) {
@@ -336,14 +313,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
         return;
       }
-      console.log('payload', payload);
       await handleSubmitToArchitect(payload?.id);
       reset();
 
       router.push(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
       enqueueSnackbar(`Error ${currentSubmittal ? 'Updating' : 'Creating'} Project`, {
         variant: 'error',
       });
@@ -351,10 +326,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   });
 
   const handleSubmitToArchitect = async (SubmittalId) => {
-    console.log('SubmittalId', SubmittalId);
     isSubmittingRef.current = true;
     const { error, payload } = await dispatch(submitSubmittalToArchitect(SubmittalId));
-    console.log('e-p', { error, payload });
     isSubmittingRef.current = false;
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -568,7 +541,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                             },
                           }
                         : {};
-                      console.log(isDateNextDay);
                       return (
                         <DatePicker
                           label="Request Return Date"

@@ -29,10 +29,8 @@ export default function InviteNewUserView() {
 
 
     useEffect(() => {
-        console.log("params", params)
         const initialize = async () => {
             const { error, payload } = await dispatch(getInviteDetails(params?.inviteId))
-            console.log("payload", payload)
             if (!isEmpty(error)) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 // router.push(paths.auth.jwt.login);

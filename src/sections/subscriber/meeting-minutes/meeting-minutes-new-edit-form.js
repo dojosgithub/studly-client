@@ -58,7 +58,6 @@ import { useBoolean } from 'src/hooks/use-boolean';
 // ----------------------------------------------------------------------
 
 export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id }) {
-  console.log('currentMeetingMinutes', currentMeetingMinutes);
   const router = useRouter();
   const confirm = useBoolean();
 
@@ -113,7 +112,6 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('getValues', getValues())
 
   // useEffect(() => {
   //   reset(defaultValues);
@@ -122,16 +120,12 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
   // }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
  
 
-  console.log('errors', errors)
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
   }
 
   const onSubmit = handleSubmit(async (data, val) => {
     try {
-      console.log('data ', data);
-     
-      console.log('val', val);
       confirm.onTrue()
 
       // if (val === 'review') isSubmittingRef.current = true;
@@ -198,7 +192,6 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
       // isSubmittingRef.current = false;
       // router.push(paths.subscriber.rfi.list);
     } catch (error) {
-      console.log('error-->', error);
       enqueueSnackbar(`Error ${currentMeetingMinutes ? 'Updating' : 'Creating'} RFI`, {
         variant: 'error',
       });
@@ -244,7 +237,6 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
                             },
                           }
                           : {};
-                        console.log(isDateNextDay);
                         return (
                           <DatePicker
                             label="Issue Date"

@@ -108,8 +108,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
 
   useEffect(() => {
     // dispatch(setSubmittalResponse(currentRfi?.response))
-    console.log("currentRfi", currentRfi?.response)
-    console.log("submittalIdResponse--->", id)
     reset(defaultValues)
   }, [dispatch, currentRfi, id, reset, defaultValues])
 
@@ -122,8 +120,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
         enqueueSnackbar('Submittal Id not Found', { variant: "error" });
         return
       }
-      console.log("value", value)
-      console.log("data", data)
 
       const formData = new FormData();
       const attachments = [];
@@ -138,8 +134,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
       data.attachments = attachments
       formData.append('body', JSON.stringify(data));
 
-      console.log('Final DATA', data);
-      console.log('files ', files)
       // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
 
       let error;
@@ -149,7 +143,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
         error = res.error
         payload = res.payload
       } else if (!currentRfi?.isResponseSubmitted && value === "save" && params?.id) {
-        console.log('inside')
         const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
         error = res.error
         payload = res.payload
@@ -178,7 +171,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
 
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
       // enqueueSnackbar(`Error ${currentRfi?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });

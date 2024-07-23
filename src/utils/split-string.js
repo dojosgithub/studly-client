@@ -3,6 +3,5 @@ export const getStrTradeId = (str) => {
     const lastIndex = str.lastIndexOf("-");
     const valueBeforeHyphen = str.substring(0, lastIndex);
 
-    console.log(valueBeforeHyphen); // Output: 123.22-2
     return valueBeforeHyphen;
 }

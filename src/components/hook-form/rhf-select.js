@@ -214,8 +214,6 @@ export function RHFSelectChip({
         </Box>
       );
     }
-    console.log('selectedValue', selectedValue)
-    console.log('chip', chip)
     return selectedValue;
   };
 

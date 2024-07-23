@@ -67,16 +67,12 @@ const ProjectCreateWorkflow = ({ type, onClose }) => {
     } = methods;
     const onSubmit = handleSubmit(async (data) => {
         try {
-            console.log('data', data);
             const statuses = data?.statuses?.map(object => object.name);
-            console.log('statuses', statuses);
             const { error, payload } = await dispatch(createNewWorkflow({ ...data, statuses }))
-            console.log('e-p', { error, payload });
             if (!isEmpty(error)) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return
             }
-            console.log('payload', payload);
             enqueueSnackbar('Workflow created successfully!', { variant: 'success' });
             dispatch(getWorkflowList())
             dispatch(setCurrentWorkflow(payload))

@@ -49,8 +49,6 @@ export default function SubmittalSendAllDialog({
 
 
   const dispatch = useDispatch()
-  console.log('id--->', id);
-  console.log('userList--->', userList);
   const SendtoAllSchema = Yup.object().shape({
     users: Yup.array(Yup.string()).min(1, "Minimum 1 user is required").required("Users are required"),
     submittalId: Yup.string().required('submittalId is required'),
@@ -82,10 +80,8 @@ export default function SubmittalSendAllDialog({
     try {
 
 
-      console.log('data', data)
 
       const { error, payload } = await dispatch(sendToAll(data))
-      console.log('e-p', { error, payload });
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
         return;

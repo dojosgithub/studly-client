@@ -110,7 +110,6 @@ export default function RfiListView() {
   // }, [dispatch, filters.query, filters.status, page])
 
   useEffect(() => {
-    console.log('filters.status', filters.status);
     dispatch(getRfiList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
@@ -144,10 +143,8 @@ export default function RfiListView() {
 
   const handleDeleteRow = useCallback(
     async (id, onDelete) => {
-      console.log('id', id)
       await dispatch(deleteRfi(id))
       const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }))
-      console.log('payload', payload)
       onDelete.onFalse()
       enqueueSnackbar('RFI Deleted Successfully', { variant: "success" });
     },

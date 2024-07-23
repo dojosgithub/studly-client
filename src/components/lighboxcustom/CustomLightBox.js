@@ -52,7 +52,6 @@ const RenderStarWarsSlide = React.memo(({ slide }) => {
   const slideIndex = slides.findIndex((el) => el === slide);
 
   const { currentIndex } = useLightboxState();
-  console.log('Re render slider');
   return slideIndex === currentIndex ? (
     <React.Fragment className="container" onClick={(e) => e.stopPropagation()}>
       {/* <div className="fade" /> */}

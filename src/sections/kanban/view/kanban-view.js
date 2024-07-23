@@ -100,9 +100,6 @@ export default function KanbanView() {
           // const jsonData = JSON.stringify(obj);
 
           console.info('Moving to same list!');
-          console.log('board', obj);
-          console.log('statuses', statuses);
-          console.log('formValues', formValues);
 
           return;
         }
@@ -154,9 +151,6 @@ export default function KanbanView() {
         // console.log('jsonData', jsonData);
 
         console.info('Moving to different list!');
-        console.log('board', obj);
-        console.log('statuses', statuses);
-        console.log('formValues', formValues);
       } catch (error) {
         console.error(error);
       }

@@ -155,7 +155,6 @@ const MeetingMinutesDetails = ({ id }) => {
 
   const getMenus = () => {
     const optionsArray = [];
-    console.log('STATUS:', status);
     if (
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
@@ -204,7 +203,6 @@ const MeetingMinutesDetails = ({ id }) => {
     // setIsSubmitting(true);
     // dispatch(submitSubmittalToArchitect(id));
     setIsSubmitting(true);
-    console.log(currentMeeting, currentMeeting?.id);
     await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
     setIsSubmitting(false);
     handleClose();

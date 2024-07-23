@@ -61,7 +61,6 @@ import PlanRoomPDFSheetsDrawer from './plan-room-pdf-sheets-drawer';
 // ----------------------------------------------------------------------
 
 export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
-  console.log('currentPlanSet', currentPlanSet);
   const router = useRouter();
   const params = useParams();
   const confirm = useBoolean();
@@ -123,7 +122,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     trigger,
     formState: { isSubmitting, errors, isValid },
   } = methods;
-  console.log('getValues', getValues());
   // useEffect(() => {
   //   if (!isEmpty(currentPlanSet)) {
   //     reset(defaultValues);
@@ -144,20 +142,16 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     }
   }, [files]);
 
-  console.log('errors', errors);
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
   }
 
   const onSubmit = handleSubmit(async (data, val) => {
     try {
-      console.log('data ', data);
       if (files.length <= 0) {
         enqueueSnackbar('Min 1 File is required', { variant: 'error' });
         return;
       }
-      console.log('val', val);
-      console.log('files ', files);
       confirm.onTrue();
 
       // if (val === 'review') isSubmittingRef.current = true;
@@ -224,7 +218,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       // isSubmittingRef.current = false;
       // router.push(paths.subscriber.rfi.list);
     } catch (error) {
-      console.log('error-->', error);
       enqueueSnackbar(`Error ${currentPlanSet ? 'Updating' : 'Creating'} RFI`, {
         variant: 'error',
       });
@@ -233,8 +226,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
 
   const handeFormSubmit = async (sheets, attachments) => {
     const formValues = getValues();
-    console.log('formValues', formValues);
-    console.log('sheets', sheets);
     // const mimeType = 'image/png';
     // const sheetsFileArray = sheets.map(sheet => {
     //   const file = base64ToFile(sheet.src, `${sheet.title}-${Math.random() * 10}.png`, mimeType);
@@ -259,13 +250,11 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       // return rest;
       return sheet;
     });
-    console.log('modifiedSheets', modifiedSheets);
 
     const data = { ...formValues, sheets: modifiedSheets };
     const { _id, firstName, lastName, email } = currentUser;
     const creator = _id;
     const finalData = { ...data, creator, projectId };
-    console.log('finalData-->', finalData);
     const formData = new FormData();
     // const attachments = [];
     // for (let index = 0; index < files.length; index += 1) {
@@ -291,9 +280,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     // finalData.sheetAttachments = sheetAttachments;
     formData.append('body', JSON.stringify(finalData));
 
-    console.log('Final DATA', finalData);
-    console.log('files ', files);
-    console.log('formData ', formData);
 
     const res = await dispatch(createPlanRoom(formData));
     const { error, payload } = res;
@@ -302,7 +288,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       return;
     }
     confirm.onFalse();
-    console.log('e-p', payload);
     await dispatch(getProjectList());
     enqueueSnackbar('Sheets Published Successfully!', { variant: 'success' });
 
@@ -310,7 +295,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   };
   const handleSelectExisting = useCallback(
     (option) => {
-      console.log('option', option);
       const { planName, issueDate, id: versionId } = option;
       existingNameRef.current = planName;
       setValue(`planName`, planName);
@@ -330,7 +314,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
                 <Box display="flex" sx={{ maxWidth: { xs: '100%', md: '40%' } }}>
                   <RHFSelect name="planName" label="Choose Existing Version Set">
                     {/* <MenuItem value="" disabled selected>Choose Existing Version Set</MenuItem> */}
-                    {console.log('existingPlanList', existingPlanList)}
                     {existingPlanList?.map((item) => (
                       <MenuItem
                         key={item.id}

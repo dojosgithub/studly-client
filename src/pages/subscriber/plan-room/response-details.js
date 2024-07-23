@@ -15,7 +15,6 @@ export default function PlanRoomResponseDetailsPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('rfiResponseDetails', id)
     useEffect(() => {
         async function fetchDetails() {
             await dispatch(getPlanRoomDetails(id))

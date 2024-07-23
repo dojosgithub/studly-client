@@ -51,7 +51,6 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
 const MeetingMinutesNotes = () => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
-  console.log('raahim', inviteAttendee);
 
   const { control, setValue, getValues, watch, resetField } = useFormContext();
 
@@ -152,7 +151,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
     control,
     name: `notes[${noteIndex}].topics`,
   });
-  console.log('topicFields', topicFields);
   const handleAddTopic = () => {
     appendTopic({
       topic: '',

@@ -27,14 +27,11 @@ export default function ProjectTradeSelect() {
     const [templateList, setTemplateList] = useState(templates)
 
     useEffect(() => {
-        console.log("currentTemplate->", cTemplate)
-        console.log("templates->", templates)
         setSelectedTemplateName(cTemplate?.name)
         setTemplateList(templates)
 
     }, [cTemplate, templates])
     const handleSelect = (value) => {
-        console.log('handleSelect', value)
         // Find the selected item based on the value
         dispatch(setSelectedTradeTemplate(value))
         if (value !== 'create') {
@@ -54,7 +51,6 @@ export default function ProjectTradeSelect() {
     };
 
     const handleSelectTemplate = (value) => {
-        console.log("Selected template:", value);
         dispatch(setCurrentTemplate(value))
         // Additional logic for selected item
     };

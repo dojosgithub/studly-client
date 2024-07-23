@@ -15,7 +15,6 @@ export const getInviteDetails = createAsyncThunk(
     'invite/details',
     async (id, { rejectWithValue }) => {
         try {
-            console.log("inviteId", id)
             const response = await axiosInstance.get(endpoints.invite.details(id));
 
             return response.data.data
@@ -38,10 +37,8 @@ export const sendInviteUserCredentials = createAsyncThunk(
     'invite/credentials',
     async (data, { rejectWithValue }) => {
         try {
-            console.log("data", data)
             const { inviteId, ...rest } = data
             const params = { params: rest }
-            console.log("params", params)
             const response = await axiosInstance.get(endpoints.invite.create(inviteId), params);
 
             return response.data.data

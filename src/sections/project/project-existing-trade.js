@@ -58,7 +58,6 @@ const ProjectExistingTrade = () => {
     // }, [currentProjectTrades, setValue])
 
 useEffect(() => {
-    console.log('FIELDS-->',fields)
 
 }, [fields])
 
@@ -84,7 +83,6 @@ useEffect(() => {
     useEffect(() => {
         const handleKeyPress = (event) => {
             if (event.key === 'Tab') {
-                console.log('Tab key pressed');
 
                 handleAdd();
             }

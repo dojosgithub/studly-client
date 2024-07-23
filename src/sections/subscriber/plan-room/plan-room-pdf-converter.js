@@ -159,17 +159,14 @@ function PlanRoomPdfConverter({ files }) {
 
   const handleUpload = useCallback(async () => {
     const formData = new FormData();
-    console.log('FILES:', files);
     for (let index = 0; index < files.length; index += 1) {
       const file = files[index];
       if (file instanceof File) {
-        console.log('INSIDEEES');
         formData.append('files', file);
       }
     }
     const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
     if (data.payload) {
-      console.log(data);
       setImages(data.payload.thumbails);
       setValue('attachments', data.payload.files);
       setSheets(data.payload.sheets);
@@ -178,13 +175,11 @@ function PlanRoomPdfConverter({ files }) {
     isLoadingRef.current = false;
   }, [dispatch, files, setValue]);
 
-  console.log('SHEETS', sheets);
   useEffect(() => {
     isLoadingRef.current = true;
     handleUpload();
   }, [handleUpload]);
 
-  console.log('fiels', files);
   if (sheets?.length <= 0 || images?.length <= 0 || isLoadingRef?.current) {
     return (
       <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
@@ -237,7 +232,6 @@ function PlanRoomPdfConverter({ files }) {
                   clearOnBlur
                   handleHomeEndKeys
                   onChange={(event, newValue) => {
-                    console.log('newValue:', newValue);
                     if (typeof newValue[newValue.length - 1] === 'string') {
                       const newValueObj = {
                         id: nanoid(),
@@ -246,7 +240,6 @@ function PlanRoomPdfConverter({ files }) {
                       newValue[newValue.length - 1] = newValueObj;
                       field.onChange(newValue);
                     } else {
-                      console.log('newValue', newValue);
                       field.onChange(newValue);
                     }
                   }}

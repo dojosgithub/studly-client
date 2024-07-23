@@ -85,7 +85,6 @@ export default function ProjectInviteUserListView({ type }) {
     useEffect(() => {
         const userList = members.filter(member => member.team === type);
         setTableData(userList);
-        console.log('userList updated:', userList);
     }, [members, type]);
 
 
@@ -131,10 +130,7 @@ export default function ProjectInviteUserListView({ type }) {
 
     const handleDeleteRow = useCallback(
         (email) => {
-            console.log('tableData', tableData)
-            console.log('email', email)
             const filteredRows = tableData.filter((row) => row.email !== email);
-            console.log('filteredRows', filteredRows)
             // enqueueSnackbar('User removed from the team successfully!');
             // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
             // dispatch(setUsersActions(email))

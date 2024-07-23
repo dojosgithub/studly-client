@@ -15,9 +15,7 @@ const options = {
 
 export function useGetBoard() {
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, options);
-  console.log("boarddata==>", data);
   // const jsonString = JSON.stringify(data);
-  // console.log("jsonString==>", jsonString);
   const memoizedValue = useMemo(
     () => ({
       board: data?.board,
@@ -329,12 +327,10 @@ export async function moveTask(updateColumns) {
   /**
    * Work in local
    */
-  console.log("moveTask updateColumns",updateColumns)
   mutate(
     URL,
     (currentData) => {
       const { board } = currentData;
-      console.log("currentData",currentData);
 
       // update board.columns
       const columns = updateColumns;
@@ -345,7 +341,6 @@ export async function moveTask(updateColumns) {
           columns,
         },
       };
-      console.log("obj",obj);
       return obj
     },
     false

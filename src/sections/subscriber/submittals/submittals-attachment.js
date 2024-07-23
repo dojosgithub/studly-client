@@ -38,7 +38,6 @@ export default function SubmittalAttachments({
       //   })
       // );
       const totalFiles = acceptedFiles.length + files.length;
-      console.log('totalFiles', totalFiles);
       if (totalFiles > 10) {
         enqueueSnackbar('You can upload maximum of 10 files', { variant: 'error' });
         return;

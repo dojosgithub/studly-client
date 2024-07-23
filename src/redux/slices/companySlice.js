@@ -50,7 +50,6 @@ export const createNewCompany = createAsyncThunk(
 export const deleteCompany = createAsyncThunk(
   'company/delete',
   async (id, { rejectWithValue }) => {
-    console.log("companyId", id)
     try {
       const response = await axiosInstance.delete(endpoints.company.delete(id));
 
@@ -72,8 +71,6 @@ export const deleteCompany = createAsyncThunk(
 export const updateCompanyStatus = createAsyncThunk(
   'company/status',
   async ({ id, status }, { rejectWithValue }) => {
-    console.log("companyId", id)
-    console.log("companyStatus", status)
     try {
       const response = await axiosInstance.put(endpoints.company.status(id, status));
 

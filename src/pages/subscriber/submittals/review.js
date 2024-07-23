@@ -14,7 +14,6 @@ export default function SubmittalsReviewPage() {
     const dispatch = useDispatch();
 
     const { id } = params;
-    console.log('reviewDetails', id)
     useEffect(() => {
         async function fetchDetails() {
             await dispatch(getSubmittalDetails(id))

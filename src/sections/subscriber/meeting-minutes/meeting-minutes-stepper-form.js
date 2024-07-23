@@ -198,11 +198,9 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
   // const { name, address, state, city, zipCode } = formValues;
-  console.log('formValues', { description, inviteAttendee, notes, permit, plan });
 
   useEffect(() => {
     if (isEdit) {
-      console.log('ISEDIT', id);
       dispatch(getMeetingMinutesDetails(id));
     }
   }, [isEdit, id, dispatch]);
@@ -230,7 +228,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         stampDate: new Date(pl.stampDate),
       }));
 
-      console.log('MEETING:', meeting);
       dispatch(setCreateMeetingMinutes(meeting));
       reset(meeting);
     }
@@ -238,7 +235,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data->', data);
 
       // const { error, payload } = await dispatch(createNewProject(finalData))
       // console.log('e-p', { error, payload });
@@ -262,7 +258,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       // navigate(paths.subscriber.submittals.list)
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
       enqueueSnackbar('Error Updating Password', { variant: 'error' });
     }
   });
@@ -283,7 +278,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     const isFormValid = await trigger(currentStepValue);
 
     // }
-    console.log('isformvalid', isFormValid);
     return { isFormValid, currentStepValue };
   };
 
@@ -299,29 +293,22 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
-    console.log('isFormValid', isFormValid);
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
         case 'description':
-          console.log('formValues-Desc', description);
           dispatch(setMeetingMinutesDescription(cloneDeep(description)));
           break;
         case 'inviteAttendee':
-          console.log('formValues-Invite', inviteAttendee);
           dispatch(setMeetingMinutesInviteAttendee(cloneDeep(inviteAttendee)));
           break;
         case 'notes':
-          console.log('formValues-Notes', notes);
           dispatch(setMeetingMinutesNotes(cloneDeep(notes)));
-          console.log('raahim');
           break;
         case 'permit':
-          console.log('formValues-permit', permit);
           dispatch(setMeetingMinutesPermit(cloneDeep(permit)));
           break;
         case 'plan':
-          console.log('formValues-plan', plan);
           dispatch(setMeetingMinutesPlanTracking(cloneDeep(plan)));
           break;
         default:
@@ -345,10 +332,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped((prevSkipped) => {
-      console.log('prevSkipped', prevSkipped);
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
-      console.log('newSkipped', newSkipped);
       return newSkipped;
     });
   };
@@ -395,7 +380,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     });
     router.push(paths.subscriber.meetingMinutes.list);
 
-    console.log('Form Data:', { description, inviteAttendee, notes, permit, plan });
 
     // Optionally, you can submit the form
     // methods.handleSubmit(onSubmit)();

@@ -111,7 +111,6 @@ export default function MeetingMinutesListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    console.log('filters.status', filters.status);
     dispatch(
       getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status })
     );
@@ -147,7 +146,6 @@ export default function MeetingMinutesListView() {
 
   const handleDeleteRow = useCallback(
     async (row, onDelete) => {
-      console.log('row', row);
       // const { projectId, planRoomId, _id: sheetId } = row
       // console.log('id-->', projectId, planRoomId, sheetId)
       dispatch(deleteMeeting(row));
@@ -173,7 +171,6 @@ export default function MeetingMinutesListView() {
     (id) => {
       router.push(paths.subscriber.meetingMinutes.details(id));
       // confirm.onTrue()
-      console.log('handleViewRow', id);
     },
     [router]
   );

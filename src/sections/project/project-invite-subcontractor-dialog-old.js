@@ -55,7 +55,6 @@ export default function ProjectInviteSubcontractorDialog({
     options,
   })
 
-  console.log('stepperFormValues', stepperFormValues);
 
   const dispatch = useDispatch()
   const InviteUserSchema = Yup.object().shape({
@@ -102,11 +101,8 @@ export default function ProjectInviteSubcontractorDialog({
 
 
   const isEmailAlreadyExists = async (email) => {
-    console.log('email', email)
     const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)
-    console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
     const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
-    console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
     // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
     const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
 
@@ -119,7 +115,6 @@ export default function ProjectInviteSubcontractorDialog({
       return true
     }
     const data = { email }
-    console.log('handleSelect', data);
 
     const modifiedTrades = trades.map(trade => {
       if (trade.tradeId === tradeId) {
@@ -133,7 +128,6 @@ export default function ProjectInviteSubcontractorDialog({
       }
       return trade;
     });
-    console.log('modifiedTradesDialog', modifiedTrades)
     setValue('trades', modifiedTrades)
     dispatch(setProjectTrades(modifiedTrades))
 
@@ -179,7 +173,6 @@ export default function ProjectInviteSubcontractorDialog({
         enqueueSnackbar('email already exists!', { variant: 'error' });
         return
       }
-      console.log('data', data)
 
       // const { role, user, ...rest } = data;
       // const hasEmailAndId = 'email' in user && 'id' in user;
@@ -206,7 +199,6 @@ export default function ProjectInviteSubcontractorDialog({
         status: "invited",
       }
 
-      console.log('finalData', finalData)
       // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
       //  // dispatch(setMembers(finalData))
       dispatch(setInvitedSubcontractor(finalData))

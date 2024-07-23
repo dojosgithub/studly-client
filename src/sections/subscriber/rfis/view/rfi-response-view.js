@@ -21,8 +21,6 @@ export default function RfiResponseView({ id }) {
   const dispatch = useDispatch()
   const currentRfi = useSelector(state => state.rfi.current)
   useEffect(() => {
-    console.log("currentRfi", currentRfi)
-    console.log("rfiIdResponse", id)
 
   }, [dispatch, currentRfi, id])
 
