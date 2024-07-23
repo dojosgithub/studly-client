@@ -156,7 +156,7 @@ export default function KanbanView() {
       }
     },
     // [board?.columns, board?.ordered, board]
-    [board, formValues, setValue]
+    [board, setValue]
   );
 
   function getTaskObjectsFromColumn(jsonData) {
