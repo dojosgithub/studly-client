@@ -20,7 +20,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const MeetingMinutesPlanTrackingFields = () => {
-  const { control, resetField, trigger } = useFormContext();
+  const { control, resetField, trigger, watch, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'plan',
@@ -29,8 +29,8 @@ const MeetingMinutesPlanTrackingFields = () => {
   const handleAdd = useCallback(() => {
     append({
       planTracking: '',
-      dateRecieved: null,
-      stampDate: null,
+      dateRecieved: new Date(), // Set default date to current date
+      stampDate: new Date(), // Set default date to current date
       // _id: uuidv4(),
     });
   }, [append]);
@@ -53,15 +53,6 @@ const MeetingMinutesPlanTrackingFields = () => {
   const handleRemove = (index) => {
     remove(index);
   };
-
-//   const handleClearService = useCallback(
-//     (index) => {
-//       resetField(`plan[${index}].planTracking`);
-//       resetField(`plan[${index}].stampDate`);
-//       resetField(`plan[${index}].dateRecieved`);
-//     },
-//     [resetField]
-//   );
 
   return (
     <>
@@ -90,12 +81,16 @@ const MeetingMinutesPlanTrackingFields = () => {
                 sx={{ alignSelf: 'center' }}
                 name={`plan[${index}].stampDate`}
                 label="Stamp Date"
+                value={watch(`plan[${index}].stampDate`)}
+                onChange={(newValue) => setValue(`plan[${index}].stampDate`, newValue)}
                 onBlur={() => trigger(`plan[${index}].stampDate`)}
               />
               <MeetingMinutesDatePicker
                 sx={{ alignSelf: 'center' }}
                 name={`plan[${index}].dateRecieved`}
                 label="Date Received"
+                value={watch(`plan[${index}].dateRecieved`)}
+                onChange={(newValue) => setValue(`plan[${index}].dateRecieved`, newValue)}
                 onBlur={() => trigger(`plan[${index}].dateRecieved`)}
               />
               <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>

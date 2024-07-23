@@ -8,12 +8,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
 export default function InviteAttendee({ data }) {
-  const handleToggleAttendance = (attendee) => {
-    attendee.attended = !attendee.attended;
+  const [attendees, setAttendees] = useState(data);
+
+  const handleToggleAttendance = (index) => {
+    const updatedAttendees = [...attendees];
+    updatedAttendees[index] = {
+      ...updatedAttendees[index],
+      attended: !updatedAttendees[index].attended,
+    };
+    setAttendees(updatedAttendees);
   };
 
   return (
@@ -28,7 +36,7 @@ export default function InviteAttendee({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((attendee, index) => (
+          {attendees.map((attendee, index) => (
             <TableRow key={index}>
               <TableCell component="th" scope="row">
                 {attendee.name}
@@ -39,7 +47,7 @@ export default function InviteAttendee({ data }) {
                 {/* <Button
                   variant="contained"
                   color={attendee.attended ? 'success' : 'primary'}
-                  onClick={() => handleToggleAttendance(attendee)}
+                  onClick={() => handleToggleAttendance(index)}
                 >
                   {attendee.attended ? 'Yes' : 'No'}
                 </Button> */}
@@ -55,10 +63,10 @@ export default function InviteAttendee({ data }) {
 InviteAttendee.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string,
-      company: PropTypes.string,
-      email: PropTypes.string,
-      attended: PropTypes.bool,
+      name: PropTypes.string.isRequired,
+      company: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      attended: PropTypes.bool.isRequired,
     })
   ).isRequired,
 };

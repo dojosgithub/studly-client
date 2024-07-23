@@ -12,7 +12,6 @@ const MeetingMinutesDescription = () => {
   const { trigger, getValues, setValue } = useFormContext();
 
   const handleBlur = (fieldName) => {
-
     trigger(`description.${fieldName}`);
   };
 
@@ -47,7 +46,7 @@ const MeetingMinutesDescription = () => {
           label="Meeting Site"
           onBlur={() => handleBlur('site')}
         />
-        
+
         <RHFTextField
           name="description.minutesBy"
           label="Minutes By"
@@ -55,12 +54,12 @@ const MeetingMinutesDescription = () => {
         />
         <RHFTextField
           name="description.conferenceCallLink"
-          label="Video Conference Link"
+          label="Conference Call URL"
           onBlur={() => handleBlur('conferenceCallLink')}
         />
         <RHFTextField
           name="description.conferenceCallId"
-          label="Video Conference Link"
+          label="Meeting URL"
           onBlur={() => handleBlur('conferenceCallId')}
         />
         <MeetingMinutesDatePicker
@@ -74,7 +73,6 @@ const MeetingMinutesDescription = () => {
           label="Meeting Time"
           onBlur={() => handleBlur('time')}
         />
-        
       </Box>
     </>
   );

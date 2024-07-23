@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   Alert,
   Avatar,
@@ -26,7 +27,7 @@ import { LoadingButton } from '@mui/lab';
 import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { addDays, isAfter, isBefore, isTomorrow, parseISO } from 'date-fns';
-
+import { bgcolor } from '@mui/system';
 //
 import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
@@ -40,6 +41,7 @@ import {
 import { getRfiDetails, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
 //
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
+
 import { getStatusColor } from 'src/utils/constants';
 import Label from 'src/components/label';
 import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
@@ -65,12 +67,13 @@ const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
 })(({ isSubcontractor, theme }) => ({
   '& .submittalTitle': {
-    color: theme.palette.primary,
     flex: 0.25,
     borderRight: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
+
     fontWeight: 'bold',
   },
   display: 'flex',
+
   borderRadius: '10px',
   padding: '1rem',
   gap: '1rem',
@@ -299,17 +302,10 @@ const MeetingMinutesDetails = ({ id }) => {
           width: 1,
           bottom: 0,
           zIndex: 9,
-
-          // position: 'absolute',
-          bgcolor: 'background.paper',
-
-          // [`& .${tabsClasses.flexContainer}`]: {
-          //   pr: { md: 3 },
-          //   justifyContent: {
-          //     sm: 'center',
-          //     md: 'flex-end',
-          //   },
-          // },
+          bgcolor: '#F4F6F8',
+          marginBottom: '35px',
+          borderBottom: '2px solid #FFCC3F',
+          mt: 1,
         }}
       >
         {TABS.map((tab) => (
@@ -318,15 +314,23 @@ const MeetingMinutesDetails = ({ id }) => {
             value={tab.value}
             label={tab.label}
             sx={{
-              width: 180,
+              fontFamily: 'Public Sans',
+              fontSize: '14px',
+              fontWeight: 400,
+              lineHeight: '22px',
+              textAlign: 'left',
+              width: 197,
+              color: 'inherit',
+
               '&.Mui-selected': {
-                bgcolor: '#ffcc3f',
-                borderRadius: '10px',
+                color: 'white',
+                bgcolor: '#FFCC3F',
               },
             }}
           />
         ))}
       </Tabs>
+
       {currentTab === 'description' && <Description data={currentMeeting?.description} />}
       {currentTab === 'attendees' && <InviteAttendee data={currentMeeting?.inviteAttendee} />}
       {currentTab === 'agenda' && <Notes data={currentMeeting?.notes} />}

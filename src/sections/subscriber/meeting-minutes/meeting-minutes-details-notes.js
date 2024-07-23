@@ -6,13 +6,15 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
+import { Chip, Stack } from '@mui/material';
 
 // Styled Components
 const TopicContainer = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  padding: theme.spacing(3),  // Increased padding
+  padding: theme.spacing(3), // Increased padding
   border: '1px solid #ddd',
   borderRadius: theme.shape.borderRadius,
+  backgroundColor: '#F2F3F5',
 }));
 
 const Notes = ({ data }) => {
@@ -21,7 +23,7 @@ const Notes = ({ data }) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-
+  console.log('raahim', data);
   return (
     <div>
       {data.map((note, noteIndex) => (
@@ -35,9 +37,33 @@ const Notes = ({ data }) => {
             aria-controls={`panel${noteIndex}-content`}
             id={`panel${noteIndex}-header`}
           >
-            <Typography sx={{ fontSize: '1.6rem' }} fontWeight="bold">
-              {note.subject}
-            </Typography>
+            <Stack direction="column">
+              <Typography sx={{ fontSize: '1.6rem', marginBottom: '1rem' }} fontWeight="bold">
+                {note.subject}
+              </Typography>
+              <Stack direction="row" spacing={1}>
+                {note.topics.map((topic, topicIndex) => (
+                  <Chip
+                    key={topicIndex}
+                    label={topic.topic}
+                    size="small"
+                    sx={{
+                      height: '40px',
+
+                      backgroundColor: '#ffcc3f',
+                      minWidth: '80px',
+
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+
+                      fontSize: '20px',
+                      marginRight: '10px',
+                    }}
+                  />
+                ))}
+              </Stack>
+            </Stack>
           </AccordionSummary>
           <AccordionDetails>
             {note.topics.map((topic, topicIndex) => (
@@ -49,52 +75,59 @@ const Notes = ({ data }) => {
                   <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
                     Description:
                   </Typography>
-                  <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                    {topic.description}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                    Action:
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                    {topic.action}
-                  </Typography>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+
                   <div>
-                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                      Due Date:
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                      {new Date(topic.date).toLocaleDateString()}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                      Status:
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                      {topic.status}
-                    </Typography>
+                    <Typography
+                      sx={{ fontSize: '1.2rem' }}
+                      marginBottom={2}
+                      dangerouslySetInnerHTML={{ __html: topic.description }}
+                    />
                   </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '60%',
+                  }}
+                >
                   <div>
-                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                      Assignee:
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                      {topic.assignee}
-                    </Typography>
+                    <div>
+                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                        Due Date:
+                      </Typography>
+                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                        {new Date(topic.date).toLocaleDateString()}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                        Status:
+                      </Typography>
+                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                        {topic?.status}
+                      </Typography>
+                    </div>
                   </div>
+
                   <div>
-                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                      Priority:
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
-                      {topic.priority}
-                    </Typography>
+                    <div>
+                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                        Assignee:
+                      </Typography>
+                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                        {topic?.assignee?.name}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                        Priority:
+                      </Typography>
+                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                        {topic?.priority}
+                      </Typography>
+                    </div>
                   </div>
                 </div>
               </TopicContainer>

@@ -23,9 +23,9 @@ const Plan = ({ data }) => {
           <TableRow>
             <TableCell>Plan Tracking</TableCell>
             <TableCell>Stamp Date</TableCell>
-            
-            {/* <TableCell>Actions</TableCell> */}
             <TableCell>Date Received</TableCell>
+            <TableCell> </TableCell>
+            {/* <TableCell>Date Received</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -34,24 +34,28 @@ const Plan = ({ data }) => {
               <TableCell component="th" scope="row">
                 {plan.planTracking}
               </TableCell>
-              <TableCell>{plan.stampDate ? new Date(plan.stampDate).toLocaleDateString() : 'N/A'}</TableCell>
-              <TableCell>{plan.dateReceived ? new Date(plan.dateReceived).toLocaleDateString() : 'N/A'}</TableCell>
               <TableCell>
-                {/* <Button
+                {plan.stampDate ? new Date(plan.stampDate).toLocaleDateString() : 'N/A'}
+              </TableCell>
+              <TableCell>
+                {plan.dateRecieved ? new Date(plan.dateRecieved).toLocaleDateString() : 'N/A'}
+              </TableCell>
+              {/* <TableCell>
+                <Button
                   variant="contained"
                   color={plan.planTracking ? 'success' : 'primary'}
                   onClick={() => handleTogglePlanTracking(plan)}
                 >
                   {plan.planTracking ? 'Untrack' : 'Track'}
-                </Button> */}
-              </TableCell>
+                </Button>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}
+};
 
 Plan.propTypes = {
   data: PropTypes.arrayOf(

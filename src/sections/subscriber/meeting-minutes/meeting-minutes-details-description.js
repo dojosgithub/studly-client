@@ -48,56 +48,54 @@ export default function Description({ data }) {
   console.log('DATA:', data);
   return (
     <Grid container spacing={3}>
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px',marginTop:'30px'}}>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
         <Typography className="submittalTitle">Title</Typography>
         <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-          {data?.meetingNumber}
+          {data?.title}
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Date</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {data?.date?.toString()}
+          {new Date(data?.date).toLocaleDateString()}
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
-        <Typography className="submittalTitle">Meeting ID</Typography>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
+        <Typography className="submittalTitle">Video Conference ID</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
           {data?.conferenceCallId}
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Minutes By</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
           {data?.minutesBy}
         </Typography>
       </StyledCard>
 
-
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Site</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
           {data?.site}
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%' ,marginBottom:'20px'}}>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Time</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {data?.time}
+          {new Date(data?.time).toLocaleTimeString()}
         </Typography>
       </StyledCard>
 
-      <StyledCard sx={{ width: '100%',}}>
-  <Typography className="submittalTitle">URL</Typography>
-  <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-    {data?.conferenceCallLink}
-  </Typography>
-</StyledCard>
-
+      <StyledCard sx={{ width: '100%' }}>
+        <Typography className="submittalTitle">Video Conference Link</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.conferenceCallLink}
+        </Typography>
+      </StyledCard>
     </Grid>
   );
 }

@@ -18,13 +18,13 @@ export default function Permit({ data }) {
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 950 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Status</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Permit Number</TableCell>
-            {/* <TableCell>Actions</TableCell> */}
+            <TableCell> </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -33,17 +33,19 @@ export default function Permit({ data }) {
               <TableCell component="th" scope="row">
                 {permit.status}
               </TableCell>
-              <TableCell>{permit.date ? new Date(permit.date).toLocaleDateString() : 'N/A'}</TableCell>
-              <TableCell>{permit.permitNumber}</TableCell>
               <TableCell>
-                {/* <Button
-                  // variant="contained"
-                  // color={permit.status === 'Active' ? 'success' : 'primary'}
-                  // onClick={() => handleToggleStatus(permit)}
+                {permit.date ? new Date(permit.date).toLocaleDateString() : 'N/A'}
+              </TableCell>
+              <TableCell>{permit.permitNumber}</TableCell>
+              {/* <TableCell>
+                <Button
+                // variant="contained"
+                // color={permit.status === 'Active' ? 'success' : 'primary'}
+                // onClick={() => handleToggleStatus(permit)}
                 >
                   {permit.status === 'Active' ? 'Deactivate' : 'Activate'}
-                </Button> */}
-              </TableCell>
+                </Button>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
