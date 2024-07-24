@@ -332,7 +332,7 @@ const topicInitialState = {
   description: '',
   assignee: null,
   status: 'Open',
-  priority: null,
+  priority: 'Low',
 
   // _id: uuidv4(),
 };

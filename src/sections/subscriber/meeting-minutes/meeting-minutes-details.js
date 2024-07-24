@@ -226,7 +226,7 @@ const MeetingMinutesDetails = ({ id }) => {
     dispatch(sendToAttendees(currentMeeting?.id));
     setIsSubmitting(false);
     // handleClose();
-    enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
+    enqueueSnackbar('Meeting Minutes have been successfully distributed', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
