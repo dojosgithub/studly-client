@@ -59,7 +59,7 @@ const meetingMinutesSchema = Yup.object().shape({
   inviteAttendee: Yup.array().of(inviteAttendeeSchema),
   notes: Yup.array().of(
     Yup.object().shape({
-      subject: Yup.string().required('Subject is required'),
+      subject: Yup.string().required('Section is required'),
       topics: Yup.array().of(topicSchema),
     })
   ),

@@ -157,7 +157,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
       date: new Date(),
       assignee: null,
       status: 'Open',
-      priority: null,
+      priority: 'Low',
       description: '',
       // _id: uuidv4(),
     });

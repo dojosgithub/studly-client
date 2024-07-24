@@ -104,7 +104,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
   const currentMeeting = useSelector((state) => state?.meetingMinutes?.current);
   const currentProject = useSelector((state) => state?.project?.current);
 
-
   const [activeStep, setActiveStep] = useState(0);
 
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
@@ -150,7 +149,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               date: new Date(),
               assignee: null,
               status: 'Open',
-              priority: null,
+              priority: 'Low',
               description: '',
               // _id: uuidv4(),
             },
@@ -235,7 +234,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-
       // const { error, payload } = await dispatch(createNewProject(finalData))
       // console.log('e-p', { error, payload });
       // if (!isEmpty(error)) {
@@ -344,7 +342,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     // dispatch(resetCreateProject())
   };
 
-  const handleFinish = () => {
+  const handleFinish = (status) => {
     // Clone the plan array using lodash's cloneDeep
     const clonedPlan = cloneDeep(plan);
 
@@ -359,6 +357,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
             notes,
             permit,
             plan: clonedPlan,
+            ...(status && { status }),
           },
           id,
         })
@@ -380,7 +379,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     });
     router.push(paths.subscriber.meetingMinutes.list);
 
-
     // Optionally, you can submit the form
     // methods.handleSubmit(onSubmit)();
   };
@@ -392,7 +390,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         component = <MeetingMinutesDescription />;
         break;
       case 1:
-        component = <MeetingMinutesInviteAttendeeView isEdit={isEdit}/>;
+        component = <MeetingMinutesInviteAttendeeView isEdit={isEdit} />;
         break;
 
       case 2:
@@ -461,9 +459,11 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                   Back
                 </Button>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button onClick={handleReset} disabled={isSubmitting}>
-                  Reset
-                </Button>
+                {!isEdit && (
+                  <Button onClick={handleReset} disabled={isSubmitting}>
+                    Reset
+                  </Button>
+                )}
                 <LoadingButton
                   type="button"
                   variant="contained"
@@ -473,6 +473,17 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                 >
                   {isEdit ? 'Update' : 'Finish'}
                 </LoadingButton>
+                {isEdit && (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    onClick={() => handleFinish('Minutes')}
+                  >
+                    Convert to Minutes
+                  </Button>
+                )}
               </Box>
             </>
           ) : (
