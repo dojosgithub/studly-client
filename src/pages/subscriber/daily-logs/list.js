@@ -1,11 +1,11 @@
 import { Stack } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 // sections
-import { MeetingMinutesListView } from 'src/sections/subscriber/meeting-minutes/view';
+import { MeetingMinutesListView } from 'src/sections/subscriber/daily-logs/view';
 
 // ----------------------------------------------------------------------
 
-export default function MeetingMinutesListPage() {
+export default function DailyLogsListPage() {
   return (
     <>
       <Helmet>

@@ -161,7 +161,7 @@ export const paths = {
   // SUBSCRIBER
   subscriber: {
     // root: `${ROOTS.SUBSCRIBER}`,
-    onboarding: "/onboarding",
+    onboarding: '/onboarding',
     // invite: (id) => `/invite/${id}`,
     invite: {
       details: (id) => `/invite/${id}`,
@@ -205,11 +205,11 @@ export const paths = {
       response: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/response`,
     },
     logs: {
-      new: `${ROOTS.SUBSCRIBER}/logs/new`,
-      list: `${ROOTS.SUBSCRIBER}/logs/list`,
-      edit: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}/edit`,
-      details: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}`,
-      response: (id) => `${ROOTS.SUBSCRIBER}/logs/${id}/response`,
+      new: `${ROOTS.SUBSCRIBER}/daily-logs/new`,
+      list: `${ROOTS.SUBSCRIBER}/daily-logs/list`,
+      edit: (id) => `${ROOTS.SUBSCRIBER}/daily-logs/${id}/edit`,
+      details: (id) => `${ROOTS.SUBSCRIBER}/daily-logs/${id}`,
+      response: (id) => `${ROOTS.SUBSCRIBER}/daily-logs/${id}/response`,
     },
     coi: {
       new: `${ROOTS.SUBSCRIBER}/coi/new`,
@@ -226,6 +226,6 @@ export const paths = {
       details: (id) => `${ROOTS.SUBSCRIBER}/settings/${id}`,
       response: (id) => `${ROOTS.SUBSCRIBER}/settings/${id}/response`,
     },
-    updatePassword: `/update-password`
-  }
+    updatePassword: `/update-password`,
+  },
 };

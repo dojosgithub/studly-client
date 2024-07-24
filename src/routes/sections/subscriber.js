@@ -12,7 +12,6 @@ import { LoadingScreen } from 'src/components/loading-screen';
 // OVERVIEW
 const IndexPage = lazy(() => import('src/pages/dashboard/app'));
 
-
 // Submittals
 const SubmittalsListPage = lazy(() => import('src/pages/subscriber/submittals/list'));
 const SubmittalsCreatePage = lazy(() => import('src/pages/subscriber/submittals/new'));
@@ -20,8 +19,9 @@ const SubmittalsEditPage = lazy(() => import('src/pages/subscriber/submittals/ed
 const SubmittalsDetailsPage = lazy(() => import('src/pages/subscriber/submittals/details'));
 const SubmittalsRevisionPage = lazy(() => import('src/pages/subscriber/submittals/revision'));
 const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
-const SubmittalsResponseDetailsPage = lazy(() => import('src/pages/subscriber/submittals/response-details'));
-
+const SubmittalsResponseDetailsPage = lazy(() =>
+  import('src/pages/subscriber/submittals/response-details')
+);
 
 // Rfis
 const RfiListPage = lazy(() => import('src/pages/subscriber/rfis/list'));
@@ -35,20 +35,26 @@ const PlanRoomListPage = lazy(() => import('src/pages/subscriber/plan-room/list'
 const PlanRoomCreatePage = lazy(() => import('src/pages/subscriber/plan-room/new'));
 const PlanRoomEditPage = lazy(() => import('src/pages/subscriber/plan-room/edit'));
 const PlanRoomDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/details'));
-const PlanRoomResponseDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/response-details'));
+const PlanRoomResponseDetailsPage = lazy(() =>
+  import('src/pages/subscriber/plan-room/response-details')
+);
 
 // MeetingMinutes
 const MeetingMinutesListPage = lazy(() => import('src/pages/subscriber/meeting-minutes/list'));
 const MeetingMinutesCreatePage = lazy(() => import('src/pages/subscriber/meeting-minutes/new'));
 const MeetingMinutesEditPage = lazy(() => import('src/pages/subscriber/meeting-minutes/edit'));
-const MeetingMinutesDetailsPage = lazy(() => import('src/pages/subscriber/meeting-minutes/details'));
+const MeetingMinutesDetailsPage = lazy(() =>
+  import('src/pages/subscriber/meeting-minutes/details')
+);
 
-
+// DailyLogs
+const DailyLogsListPage = lazy(() => import('src/pages/subscriber/daily-logs/list'));
+const DailyLogsCreatePage = lazy(() => import('src/pages/subscriber/daily-logs/new'));
+const DailyLogsEditPage = lazy(() => import('src/pages/subscriber/daily-logs/edit'));
+const DailyLogsDetailsPage = lazy(() => import('src/pages/subscriber/daily-logs/details'));
 
 // Project
 const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
-
-
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDeniedPage = lazy(() => import('src/pages/dashboard/permission'));
@@ -70,7 +76,6 @@ export const subscriberRoutes = [
       </AuthGuard>
     ),
     children: [
-
       { path: 'settings', element: <ProjectSettingsPage /> },
       {
         path: 'submittals',
@@ -120,6 +125,16 @@ export const subscriberRoutes = [
           { path: ':id/edit', element: <MeetingMinutesEditPage /> },
         ],
       },
+      {
+        path: 'daily-logs',
+        children: [
+          { element: <DailyLogsListPage />, index: true },
+          { path: 'list', element: <DailyLogsListPage /> },
+          { path: 'new', element: <DailyLogsCreatePage /> },
+          { path: ':id', element: <DailyLogsDetailsPage /> },
+          { path: ':id/edit', element: <DailyLogsEditPage /> },
+        ],
+      },
 
       //   {
       //     path: 'user',
@@ -133,7 +148,6 @@ export const subscriberRoutes = [
       //       { path: 'account', element: <UserAccountPage /> },
       //     ],
       //   },
-
     ],
   },
 ];
