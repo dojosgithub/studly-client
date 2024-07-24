@@ -76,8 +76,6 @@ export function useNavData() {
             roles: STUDLY_ROLES.company,
             // roles: ['System Admin'],
           },
-
-
         ],
       },
 
@@ -85,7 +83,7 @@ export function useNavData() {
 
       {
         items: [
-          // 
+          //
           {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
@@ -103,47 +101,40 @@ export function useNavData() {
             path: paths.subscriber.meetingMinutes.list,
             icon: ICONS.dashboard,
             roles: STUDLY_ROLES.meetingMinutes,
-
           },
           {
             title: 'Plan Room',
             path: paths.subscriber.planRoom.list,
             icon: ICONS.booking,
             roles: STUDLY_ROLES.planRoom,
-
           },
           {
             title: 'Documents',
             path: paths.subscriber.documents.list,
             icon: ICONS.folder,
             roles: STUDLY_ROLES.documents,
-
           },
           {
             title: 'Daily Logs',
             path: paths.subscriber.logs.list,
             icon: ICONS.file,
             roles: STUDLY_ROLES.documents,
-
           },
-          {
-            title: `COI's`,
-            path: paths.subscriber.coi.list,
-            icon: ICONS.lock,
-            roles: STUDLY_ROLES.documents,
+          // {
+          //   title: `COI's`,
+          //   path: paths.subscriber.coi.list,
+          //   icon: ICONS.lock,
+          //   roles: STUDLY_ROLES.documents,
 
-          },
+          // },
           {
             title: 'Project Settings',
             path: paths.subscriber.settings.root,
             icon: ICONS.settings,
             roles: STUDLY_ROLES.projectSetting,
           },
-
-
         ],
       },
-
     ],
     []
   );
@@ -169,15 +160,13 @@ export function useNavDataSubscriber() {
       // ----------------------------------------------------------------------
       {
         items: [
-          // 
+          //
           {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
             icon: ICONS.dashboard,
             roles: ['subscriber'], // hides on admin role
           },
-
-
         ],
       },
     ],
