@@ -29,7 +29,7 @@ export default function DailyLogsCreateView() {
           },
           {
             name: 'Daily Logs',
-            href: paths.subscriber.dailyLogs.list,
+            href: paths.subscriber.logs.list,
           },
           { name: 'New' },
         ]}

@@ -28,7 +28,7 @@ import DailyLogsTableToolbar from '../daily-logs-table-toolbar'; // Uncommented 
 // import PlanRoomTableRow from '../meeting-minutes-table-row'; // Uncommented and fixed import
 
 // Redux actions
-// import { deleteMeeting, getMeetingMinutesList } from 'src/redux/slices/meetingMinutesSlice'; // Uncommented and fixed import
+// import { deleteMeeting, getDailyLogsList } from 'src/redux/slices/DailyLogsSlice'; // Uncommented and fixed import
 
 // ----------------------------------------------------------------------
 
@@ -52,13 +52,13 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function MeetingMinutesListView() {
+export default function DailyLogsListView() {
   const settings = useSettingsContext();
   const dispatch = useDispatch();
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
-  const listData = useSelector((state) => state?.meetingMinutes?.list);
+  const listData = useSelector((state) => state?.DailyLogs?.list);
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
@@ -66,7 +66,7 @@ export default function MeetingMinutesListView() {
 
   // useEffect(() => {
   //   dispatch(
-  //     getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status })
+  //     getDailyLogsList({ search: filters.query, page, sortDir, status: filters.status })
   //   );
   // }, [dispatch, filters, page, sortDir]);
 
@@ -82,18 +82,18 @@ export default function MeetingMinutesListView() {
   //     await dispatch(deleteMeeting(rowId));
   //     enqueueSnackbar('Meeting Deleted Successfully', { variant: 'success' });
   //     dispatch(
-  //       getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status })
+  //       getDailyLogsList({ search: filters.query, page, sortDir, status: filters.status })
   //     );
   //   },
   //   [dispatch, enqueueSnackbar, filters, page, sortDir]
   // );
 
   const handleEditRow = useCallback(
-    (id) => navigate(paths.subscriber.meetingMinutes.edit(id)),
+    (id) => navigate(paths.subscriber.DailyLogs.edit(id)),
     [navigate]
   );
   const handleViewRow = useCallback(
-    (id) => navigate(paths.subscriber.meetingMinutes.details(id)),
+    (id) => navigate(paths.subscriber.DailyLogs.details(id)),
     [navigate]
   );
 
@@ -105,14 +105,14 @@ export default function MeetingMinutesListView() {
         heading="Daily Logs"
         links={[
           { name: 'Dashboard' },
-          { name: 'Daily Logs', href: paths.subscriber.meetingMinutes.list },
+          { name: 'Daily Logs', href: paths.subscriber.logs.list },
           { name: 'Logs' },
         ]}
         action={
           role === 'CAD' || role === 'PWU' ? (
             <Button
               component={RouterLink}
-              href={paths.subscriber.meetingMinutes.new}
+              href={paths.subscriber.logs.new}
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >

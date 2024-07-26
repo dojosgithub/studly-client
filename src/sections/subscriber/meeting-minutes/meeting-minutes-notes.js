@@ -51,7 +51,6 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
 const MeetingMinutesNotes = () => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
-
   const { control, setValue, getValues, watch, resetField } = useFormContext();
 
   const {
