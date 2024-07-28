@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -32,18 +32,19 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
+import SubmittalAttachments from './daily-logs-attachment';
 
 const StyledButton = styled(Button)(({ theme, selected }) => ({
-  backgroundColor: selected ? theme.palette.primary.main : theme.palette.background.paper,
+  backgroundColor: selected ? '#FFCC3F' : theme.palette.background.paper,
   color: selected ? theme.palette.primary.contrastText : theme.palette.text.primary,
   '&:hover': {
-    backgroundColor: selected ? theme.palette.primary.dark : theme.palette.action.hover,
+    backgroundColor: selected ? '#FFCC3F' : theme.palette.action.hover,
   },
   margin: theme.spacing(0.5),
 }));
 
 const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
-const CreateDailyLog = () => {
+const CreateDailyLog = (currentLogs) => {
   const dispatch = useDispatch();
   const { control, getValues, handleSubmit } = useFormContext();
   const createDailyLog = useSelector((state) => state.dailyLogs?.current);
@@ -53,6 +54,13 @@ const CreateDailyLog = () => {
     setSelectedWeather(value);
     dispatch(setCreateDailyLogs({ ...createDailyLog, weather: value }));
   };
+  const existingAttachments = useMemo(
+    () => (currentLogs?.attachments ? currentLogs?.attachments : []),
+    [currentLogs]
+  );
+
+  const [files, setFiles] = useState(existingAttachments);
+
 
   const {
     fields: subcontractorFields,
@@ -78,9 +86,21 @@ const CreateDailyLog = () => {
     control,
     name: 'distributionList',
   });
+  const {
+    fields: inspectionFields,
+    append: appendInspection,
+    remove: removeInspection,
+  } = useFieldArray({
+    control,
+    name: 'inspectionList',
+  });
   const handleRemoveDistributionList = (index) => {
     removeDistribution(index);
   };
+  const handleRemoveInspectionList = (index) => {
+    removeInspection(index);
+  };
+
   const handleRemoveVisitorList = (index) => {
     removeVisitor(index);
   };
@@ -112,6 +132,12 @@ const CreateDailyLog = () => {
     updatedVisitors[index] = { ...updatedVisitors[index], [name]: value };
     dispatch(setCreateDailyLogs({ ...createDailyLog, subcontractorAttendance: updatedVisitors }));
   };
+  const handleInspectionListChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedInspections = [...inspectionFields];
+    updatedInspections[index] = { ...updatedInspections[index], [name]: value };
+    dispatch(setCreateDailyLogs({ ...createDailyLog, inspectionList: updatedInspections }));
+  };
 
   const handleDistributionListChange = (index, e) => {
     const { name, value } = e.target;
@@ -127,7 +153,9 @@ const CreateDailyLog = () => {
   const addVisitorList = () => {
     appendVisitor({ visitor: '' });
   };
-
+  const addInspectionList = () => {
+    appendInspection({ name: '', result: '' });
+  };
   // Function to add a new distribution list entry
   const addDistributionList = () => {
     appendDistribution({ name: '', email: '' });
@@ -171,6 +199,13 @@ const CreateDailyLog = () => {
     },
   }));
 
+  const displayVisitorFields = visitorFields.length > 0 ? visitorFields : [{ visitor: '' }];
+  const displaySubcontractorFields =
+    subcontractorFields.length > 0 ? subcontractorFields : [{ companyName: '', headCount: '' }];
+  const displayDistributionFields =
+    distributionFields.length > 0 ? distributionFields : [{ name: '', email: '' }];
+  const displayInspectionFields =
+    inspectionFields.length > 0 ? inspectionFields : [{ name: '', email: '' }];
   return (
     <Box sx={{ padding: 3, width: '80%' }}>
       {/* <Typography variant="h4">Create a New Daily Log</Typography> */}
@@ -223,7 +258,7 @@ const CreateDailyLog = () => {
               sx={{ marginBottom: 2 }}
             /> */}
 
-            {visitorFields?.map((visit, index) => (
+            {displayVisitorFields?.map((visit, index) => (
               <Box
                 key={index}
                 sx={{
@@ -262,28 +297,59 @@ const CreateDailyLog = () => {
 
             {/* <InputLabel>Inspection</InputLabel>
             <Select name="inspection" value={createDailyLog.inspection} onChange={handleChange}> */}
-            <div style={{ display: 'flex', flexDirection: 'row', marginRight: 2, margin: 1 }}>
+             
+            <Typography variant="h6" margin={1}>
+              Inspection
+            </Typography>
+            {displayInspectionFields?.map((inspection, index) => (
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
               <FormControl>
-                <FormLabel
-                  sx={{ marginRight: 2, margin: 1, width: '20%' }}
-                  id="demo-row-radio-buttons-group-label"
-                >
-                  Inspection
-                </FormLabel>
-                <TextField label="Name" name="name" value=" " onChange="" sx={{ marginRight: 1 }} />
+              <TextField
+                  fullWidth
+                  label="Name"
+                  name="name"
+                  value={inspection.name}
+                  onChange={(e) => handleInspectionListChange(index, e)}
+                  sx={{ marginRight: 1 }}
+                />
+              </FormControl>
+              <FormControl>
                 <RadioGroup
-                  sx={{ marginRight: 2, margin: 1, width: '20%' }}
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                 >
-                  {' '}
                   <FormControlLabel value="Pass" control={<Radio />} label="Pass" />
                   <FormControlLabel value="Fail" control={<Radio />} label="Fail" />
                 </RadioGroup>
-                <TextField label="Name" name="name" value="" onChange="" sx={{ marginRight: 1 }} />
               </FormControl>
-            </div>
+              <FormControl>
+              <TextField
+                  fullWidth
+                  label="Result"
+                  name="result"
+                  value={inspection.result}
+                  onChange={(e) => handleInspectionListChange(index, e)}
+                  sx={{ marginRight: 1 }}
+                />
+              </FormControl>
+              <StyledIconButton color="inherit" onClick={() => handleRemoveInspectionList(index)}>
+                  <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                </StyledIconButton>
+            </Stack>
+              ))}
+              {inspectionFields.length > 1}
+            <Button
+              component="button"
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="secondary"
+              onClick={addInspectionList}
+              sx={{ marginRight: 2, margin: 1, width: '20%' }}
+            >
+              Add Another
+            </Button>
+
             {/* </Select> */}
           </Box>
         </Card>
@@ -312,14 +378,14 @@ const CreateDailyLog = () => {
             Distribution List
           </Typography>
 
-          {distributionFields?.map((person, index) => (
+          {displayDistributionFields?.map((person, index) => (
             <Box
               key={index}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                marginRight: 2,
-                margin: 1,
+                marginBottom: 2,
+                marginLeft: 1,
                 width: '100%',
               }}
             >
@@ -328,21 +394,21 @@ const CreateDailyLog = () => {
                 name="name"
                 value={person.name}
                 onChange={(e) => handleDistributionListChange(index, e)}
-                sx={{ marginRight: 1 }}
+                sx={{ marginRight: 1, width: '50%' }}
               />
               <TextField
                 label="Email"
                 name="email"
                 value={person.email}
                 onChange={(e) => handleDistributionListChange(index, e)}
-                sx={{ marginRight: 1 }}
+                sx={{ marginRight: 1, width: '50%' }}
               />
               <StyledIconButton color="inherit" onClick={() => handleRemoveDistributionList(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
               </StyledIconButton>
             </Box>
           ))}
-          {subcontractorFields.length > 1 && <Divider sx={{ my: 2, borderColor: 'grey.500' }} />}
+          {/* {distributionFields.length > 1 && <Divider sx={{ my: 2, borderColor: 'grey.500' }} />} */}
           <Button
             component="button"
             variant="outlined"
@@ -360,28 +426,31 @@ const CreateDailyLog = () => {
             Subcontractor Attendance
           </Typography>
 
-          {subcontractorFields?.map((attendance, index) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+          {displaySubcontractorFields?.map((attendance, index) => (
+            <Box
+              key={index}
+              sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, marginLeft: 1 }}
+            >
               <TextField
                 label="Company Name"
                 name="companyName"
                 value={attendance.companyName}
                 onChange={(e) => handleSubcontractorChange(index, e)}
-                sx={{ marginRight: 1 }}
+                sx={{ marginRight: 1, width: '50%' }}
               />
               <TextField
                 label="Headcount"
                 name="headCount"
                 value={attendance.headCount}
                 onChange={(e) => handleSubcontractorChange(index, e)}
-                sx={{ marginRight: 1 }}
+                sx={{ marginRight: 1, width: '50%' }}
               />
               <StyledIconButton color="inherit" onClick={() => handleRemoveSubcontractor(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
               </StyledIconButton>
             </Box>
           ))}
-
+          {/* {subcontractorFields.length > 1 && <Divider sx={{ my: 2, borderColor: 'grey.500' }} />} */}
           <Button
             component="button"
             variant="outlined"
@@ -392,6 +461,17 @@ const CreateDailyLog = () => {
           >
             Add Another
           </Button>
+        </Card>
+        <Card sx={{ paddingLeft: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
+        <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
+            Attachments
+          </Typography>
+          <SubmittalAttachments files={files}
+                  setFiles={setFiles}
+
+                  sx={{ marginRight: 2, margin: 1 }}
+                   />
+                  
         </Card>
 
         <Card sx={{ paddingLeft: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
@@ -408,7 +488,13 @@ const CreateDailyLog = () => {
         </Card>
         <Divider sx={{ marginY: 3 }} />
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
           <Button variant="contained" color="primary">
             Save
           </Button>

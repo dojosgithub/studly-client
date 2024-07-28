@@ -17,7 +17,6 @@ export default function SubmittalAttachments({
   //
   onCreate,
   onUpdate,
-  //
   files,
   setFiles,
   // preview=true,
