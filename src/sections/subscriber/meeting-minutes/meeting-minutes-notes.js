@@ -66,7 +66,7 @@ const MeetingMinutesNotes = () => {
   const handleAddNote = useCallback(() => {
     appendNote({
       subject: '',
-      topics: [{ topic: '', date: new Date(), description: '' }],
+      topics: [{ topic: '', date: null, description: '', status: 'Open', priority: 'Low' }],
     });
   }, [appendNote]);
 
@@ -153,7 +153,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
   const handleAddTopic = () => {
     appendTopic({
       topic: '',
-      date: new Date(),
+      date: null,
       assignee: null,
       status: 'Open',
       priority: 'Low',

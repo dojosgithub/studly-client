@@ -29,8 +29,8 @@ const MeetingMinutesPlanTrackingFields = () => {
   const handleAdd = useCallback(() => {
     append({
       planTracking: '',
-      dateRecieved: new Date(), // Set default date to current date
-      stampDate: new Date(), // Set default date to current date
+      dateRecieved: null, // Set default date to current date
+      stampDate: null, // Set default date to current date
       // _id: uuidv4(),
     });
   }, [append]);

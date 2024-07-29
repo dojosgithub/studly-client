@@ -220,13 +220,13 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       }));
       meeting.permit = meeting.permit?.map((perm) => ({
         ...perm,
-        date: new Date(perm.date),
+        date: perm.date && new Date(perm.date),
       }));
 
       meeting.plan = meeting.plan?.map((pl) => ({
         ...pl,
-        dateRecieved: new Date(pl.dateRecieved),
-        stampDate: new Date(pl.stampDate),
+        dateRecieved: pl.dateRecieved && new Date(pl.dateRecieved),
+        stampDate: pl.stampDate && new Date(pl.stampDate),
       }));
 
       dispatch(setCreateMeetingMinutes(meeting));
@@ -352,8 +352,9 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
     if (isEdit) {
-      dispatch(
-        await updateMeetingMinutes({
+      console.log('status', status);
+      await dispatch(
+        updateMeetingMinutes({
           data: {
             description,
             inviteAttendee,
@@ -474,7 +475,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                   variant="contained"
                   disabled={isLoading}
                   loading={isLoading}
-                  onClick={handleFinish}
+                  onClick={() => handleFinish(null)}
                 >
                   {isEdit ? 'Update' : 'Finish'}
                 </LoadingButton>
