@@ -106,6 +106,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const [activeStep, setActiveStep] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(0);
+
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
   const router = useRouter();
 
@@ -218,13 +220,13 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       }));
       meeting.permit = meeting.permit?.map((perm) => ({
         ...perm,
-        date: new Date(perm.date),
+        date: perm.date && new Date(perm.date),
       }));
 
       meeting.plan = meeting.plan?.map((pl) => ({
         ...pl,
-        dateRecieved: new Date(pl.dateRecieved),
-        stampDate: new Date(pl.stampDate),
+        dateRecieved: pl.dateRecieved && new Date(pl.dateRecieved),
+        stampDate: pl.stampDate && new Date(pl.stampDate),
       }));
 
       dispatch(setCreateMeetingMinutes(meeting));
@@ -342,14 +344,16 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     // dispatch(resetCreateProject())
   };
 
-  const handleFinish = (status) => {
+  const handleFinish = async (status) => {
+    setIsLoading(true);
     // Clone the plan array using lodash's cloneDeep
     const clonedPlan = cloneDeep(plan);
 
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
     if (isEdit) {
-      dispatch(
+      console.log('status', status);
+      await dispatch(
         updateMeetingMinutes({
           data: {
             description,
@@ -363,7 +367,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         })
       );
     } else {
-      dispatch(
+      await dispatch(
         createMeetingMinutes({
           description,
           inviteAttendee,
@@ -377,6 +381,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     enqueueSnackbar(`Meeting ${isEdit ? 'updated' : 'created'} successfully!`, {
       variant: 'success',
     });
+    setIsLoading(false);
+
     router.push(paths.subscriber.meetingMinutes.list);
 
     // Optionally, you can submit the form
@@ -467,9 +473,9 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                 <LoadingButton
                   type="button"
                   variant="contained"
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
-                  onClick={handleFinish}
+                  disabled={isLoading}
+                  loading={isLoading}
+                  onClick={() => handleFinish(null)}
                 >
                   {isEdit ? 'Update' : 'Finish'}
                 </LoadingButton>
@@ -477,8 +483,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                   <Button
                     type="button"
                     variant="contained"
-                    disabled={isSubmitting}
-                    loading={isSubmitting}
+                    disabled={isLoading}
+                    loading={isLoading}
                     onClick={() => handleFinish('Minutes')}
                   >
                     Convert to Minutes

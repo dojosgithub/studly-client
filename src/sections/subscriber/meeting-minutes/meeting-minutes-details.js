@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -151,12 +151,13 @@ const MeetingMinutesDetails = ({ id }) => {
     docStatus,
   } = currentMeeting;
 
-  useEffect(() => {
-    getMenus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMeeting]);
+  console.log('isSubmitting', isSubmitting);
+  // useEffect(() => {
+  //   getMenus();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [currentMeeting]);
 
-  const getMenus = () => {
+  const getMenus = useCallback(() => {
     const optionsArray = [];
     if (
       currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
@@ -198,12 +199,21 @@ const MeetingMinutesDetails = ({ id }) => {
         );
       }
 
-      setMenuItems(optionsArray);
+      // setMenuItems(optionsArray);
     }
-  };
+    return optionsArray;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, status, isSubmitting, currentMeeting]);
+
+  // useMemo to avoid unnecessary state updates
+  const memoizedMenuItems = useMemo(() => getMenus(), [getMenus]);
+
+  useEffect(() => {
+    setMenuItems(memoizedMenuItems);
+  }, [memoizedMenuItems]);
 
   const handleExportPDF = async (e) => {
-    handleClose();
     setIsSubmitting(true);
     await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
     setIsSubmitting(false);
@@ -220,23 +230,23 @@ const MeetingMinutesDetails = ({ id }) => {
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
-  const handleSendToAttendees = () => {
+  const handleSendToAttendees = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    dispatch(sendToAttendees(currentMeeting?.id));
+    await dispatch(sendToAttendees(currentMeeting?.id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('Meeting Minutes have been successfully distributed', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
-  const handleChangeToMinutes = () => {
+  const handleChangeToMinutes = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    dispatch(changeToMinutes(currentMeeting?.id));
-    setIsSubmitting(false);
+    await dispatch(changeToMinutes(currentMeeting?.id));
     // handleClose();
     enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
+    setIsSubmitting(false);
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
