@@ -55,12 +55,12 @@ const MeetingMinutesDescription = () => {
         />
         <RHFTextField
           name="description.conferenceCallLink"
-          label="Conference Call URL"
+          label="Video Conference Link"
           onBlur={() => handleBlur('conferenceCallLink')}
         />
         <RHFTextField
           name="description.conferenceCallId"
-          label="Meeting URL"
+          label="Video Conference ID"
           onBlur={() => handleBlur('conferenceCallId')}
         />
         <MeetingMinutesDatePicker

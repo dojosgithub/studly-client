@@ -106,6 +106,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const [activeStep, setActiveStep] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(0);
+
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
   const router = useRouter();
 
@@ -342,7 +344,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     // dispatch(resetCreateProject())
   };
 
-  const handleFinish = (status) => {
+  const handleFinish = async (status) => {
+    setIsLoading(true);
     // Clone the plan array using lodash's cloneDeep
     const clonedPlan = cloneDeep(plan);
 
@@ -350,7 +353,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
     if (isEdit) {
       dispatch(
-        updateMeetingMinutes({
+        await updateMeetingMinutes({
           data: {
             description,
             inviteAttendee,
@@ -363,7 +366,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         })
       );
     } else {
-      dispatch(
+      await dispatch(
         createMeetingMinutes({
           description,
           inviteAttendee,
@@ -377,6 +380,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     enqueueSnackbar(`Meeting ${isEdit ? 'updated' : 'created'} successfully!`, {
       variant: 'success',
     });
+    setIsLoading(false);
+
     router.push(paths.subscriber.meetingMinutes.list);
 
     // Optionally, you can submit the form
@@ -467,8 +472,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                 <LoadingButton
                   type="button"
                   variant="contained"
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
+                  disabled={isLoading}
+                  loading={isLoading}
                   onClick={handleFinish}
                 >
                   {isEdit ? 'Update' : 'Finish'}
@@ -477,8 +482,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
                   <Button
                     type="button"
                     variant="contained"
-                    disabled={isSubmitting}
-                    loading={isSubmitting}
+                    disabled={isLoading}
+                    loading={isLoading}
                     onClick={() => handleFinish('Minutes')}
                   >
                     Convert to Minutes
