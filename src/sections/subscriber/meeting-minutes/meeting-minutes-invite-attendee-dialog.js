@@ -70,9 +70,7 @@ export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
     control,
     name: 'inviteAttendee',
   });
-  // console.log('notes',notes)
 
-  // Handle removing an attendee
   const handleRemoveAttendee = (index) => {
     remove(index);
   };
@@ -93,9 +91,9 @@ export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
               display="grid"
               // gridTemplateColumns="repeat(3, 1fr) 0.5fr 50px" // Set columns to 3 equal parts, a smaller part for the checkbox, and a fixed size for the button
               gridTemplateColumns={
-                isEdit 
-                  ? "repeat(3, 1fr) 0.5fr 50px" // Include the smaller checkbox column if isEdit is true
-                  : "repeat(3, 1fr) 50px" // Exclude the checkbox column if isEdit is false
+                isEdit
+                  ? 'repeat(3, 1fr) 0.5fr 50px' // Include the smaller checkbox column if isEdit is true
+                  : 'repeat(3, 1fr) 50px' // Exclude the checkbox column if isEdit is false
               }
               my={3}
             >

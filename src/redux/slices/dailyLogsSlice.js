@@ -218,25 +218,66 @@ export const getDailyLogsPDF = createAsyncThunk(
   }
 );
 
-const DailyLogsInitialState = {
-  createDailyLog: {
-    date: '07-21-2024',
-    projectName: 'ABC Project',
-    accidentAndSafetyIssues: '',
-    visitorsList: [{ visitors: '' }],
-    inspection: '',
-    weather: 'Clear',
-    subcontractorAttendance: [{ companyName: '', headCount: '' }],
-    distributionList: [{ name: '', email: '' }],
-    attachments: [],
-    summary: '',
-  },
+const dailyLogsInitialState = {
+  date: new Date('07-21-2024'),
+  accidentSafetyIssues: '',
+  visitors: [{ visitors: '' }],
+  inspection: [{ value: '', status: true, reason: '' }],
+  weather: 'Clear',
+  subcontractorAttendance: [{ companyName: '', headCount: '' }],
+  distributionList: [{ name: '', email: '' }],
+  attachments: [],
+  summary: '',
+  status: 1,
+  docStatus: 1,
 };
+
+// {
+//   date: {
+//     type: Date,
+//   },
+//   projectId: {
+//     type: Schema.Types.ObjectId,
+//     ref: 'Project',
+//   },
+//   accidentSafetyIssues: String,
+//   visitors: [String],
+//   inspection: [
+//     {
+//       value: String,
+//       status: Boolean,
+//       reason: String,
+//     },
+//   ],
+//   weather: [String],
+//   subcontractorAttendance: [
+//     {
+//       companyName: String,
+//       headCount: Number,
+//     },
+//   ],
+//   distributionList: [
+//     {
+//       name: String,
+//       email: String,
+//     },
+//   ],
+//   attachments: Array,
+//   summary: String,
+//   status: {
+//     type: Number,
+//     default: 1,
+//   },
+//   docStatus: {
+//     type: Number,
+//     default: DOC_STATUS.active,
+//   },
+// },
 
 const initialState = {
   notes: '',
   list: [],
-  create: { ...DailyLogsInitialState },
+  create: cloneDeep(dailyLogsInitialState),
   current: {},
   isLoading: false,
   error: null,
@@ -271,8 +312,8 @@ const dailyLogs = createSlice({
     //   state.create.plan = action.payload;
     // },
 
-    resetdailyLogsCreateState: () => DailyLogsInitialState,
-    resetdailyLogsState: () => initialState,
+    resetDailyLogsCreateState: () => dailyLogsInitialState,
+    resetDailyLogsState: () => initialState,
   },
   extraReducers: (builder) => {
     // * Create New dailyLogs
