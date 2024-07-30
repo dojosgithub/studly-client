@@ -34,10 +34,15 @@ export const createDailyLogs = createAsyncThunk(
     // if (isEmpty(dailyLogsData)) {
     //   return rejectWithValue('daily logs cannot be empty.');
     // }
+    const projectId = getState().project?.current?.id;
 
+    dailyLogsData.projectId = projectId;
     try {
       console.log('Sending data:', dailyLogsData);
-      const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
+      const response = await axiosInstance.post(
+        endpoints.dailyLogs.create(projectId),
+        dailyLogsData
+      );
       console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
@@ -56,11 +61,16 @@ export const getDailyLogsList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     console.log('ListsData', listOptions);
     try {
-      // const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?.id;
       console.log('Sending data:', listOptions);
-      // const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
-      const response = await axiosInstance.post(endpoints.dailyLogs.list, listOptions);
+      const { status, ...data } = listOptions;
+      const response = await axiosInstance.post(
+        endpoints.dailyLogs.list(projectId),
+        { status },
+        {
+          params: data,
+        }
+      );
       console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
@@ -72,6 +82,32 @@ export const getDailyLogsList = createAsyncThunk(
     }
   }
 );
+// export const getMeetingMinutesList = createAsyncThunk(
+//   'dailyLogs/list',
+//   async (listOptions, { getState, rejectWithValue }) => {
+//     try {
+//       const projectId = getState().project?.current?.id;
+
+//       const { status, ...data } = listOptions;
+//       // const projectId = getState().projectId.id
+//       const response = await axiosInstance.post(
+//         endpoints.meetingMinutes.list(projectId),
+//         { status },
+//         {
+//           params: data,
+//         }
+//       );
+
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while fetching rfi list.');
+//     }
+//   }
+// );
 
 export const updatedailyLogs = createAsyncThunk(
   'dailyLogs/update',

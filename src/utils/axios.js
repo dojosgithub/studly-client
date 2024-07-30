@@ -127,8 +127,8 @@ export const endpoints = {
     toMinutes: (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
   },
   dailyLogs: {
-    list: (id) => `/api/user/meeting-minutes/${id}`,
-    create: '/api/user/daily-logs',
+    list: (id) => `/api/user/daily-logs/${id}`,
+    create: (id) => `/api/user/daily-logs/${id}`,
     update: (id) => `/api/user/meeting-minutes/${id}`,
     submit: (id) => `/api/user/meeting-minutes/${id}/submit`,
     edit: (id) => `/api/user/meeting-minutes/${id}`,

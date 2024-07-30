@@ -5,7 +5,6 @@ import { Container, Card, Button, Divider } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
-import IconButton from '@mui/material/IconButton';
 import { useSnackbar } from 'notistack';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -15,6 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 // components
+import { getDailyLogsList } from 'src/redux/slices/dailyLogsSlice';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
@@ -24,16 +24,13 @@ import {
   TableEmptyRows,
   TablePaginationCustom,
 } from 'src/components/table';
-import DailyLogsTableToolbar from '../daily-logs-table-toolbar'; // Uncommented and fixed import
-// import PlanRoomTableRow from '../meeting-minutes-table-row'; // Uncommented and fixed import
-
-// Redux actions
-// import { deleteMeeting, getDailyLogsList } from 'src/redux/slices/DailyLogsSlice'; // Uncommented and fixed import
+import PlanRoomTableRow from '../daily-logs-table-row';
+import DailyLogsTableToolbar from '../daily-logs-table-toolbar';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'createdDate', label: ' Date', width: '16%' },
+  { id: 'createdDate', label: 'Date', width: '16%' },
   { id: 'inspections', label: 'Inspections', width: '16%' },
   { id: 'accidents', label: 'Accidents', width: '16%' },
   { id: 'visitors', label: 'Visitors', width: '16%' },
@@ -58,17 +55,16 @@ export default function DailyLogsListView() {
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
-  const listData = useSelector((state) => state?.DailyLogs?.list);
+  const listData = useSelector((state) => state?.dailyLogs?.list);
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
+  const denseHeight = 52;
 
-  // useEffect(() => {
-  //   dispatch(
-  //     getDailyLogsList({ search: filters.query, page, sortDir, status: filters.status })
-  //   );
-  // }, [dispatch, filters, page, sortDir]);
+  useEffect(() => {
+    dispatch(getDailyLogsList({ search: filters.query, page, sortDir }));
+  }, [dispatch, filters.query, page, sortDir]);
 
   const handlePageChange = (e, newPage) => setPage(newPage + 1);
   const handleSortChange = () => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
@@ -76,17 +72,6 @@ export default function DailyLogsListView() {
   const handleFilters = useCallback((name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   }, []);
-
-  // const handleDeleteRow = useCallback(
-  //   async (rowId) => {
-  //     await dispatch(deleteMeeting(rowId));
-  //     enqueueSnackbar('Meeting Deleted Successfully', { variant: 'success' });
-  //     dispatch(
-  //       getDailyLogsList({ search: filters.query, page, sortDir, status: filters.status })
-  //     );
-  //   },
-  //   [dispatch, enqueueSnackbar, filters, page, sortDir]
-  // );
 
   const handleEditRow = useCallback(
     (id) => navigate(paths.subscriber.DailyLogs.edit(id)),
@@ -109,7 +94,7 @@ export default function DailyLogsListView() {
           { name: 'Logs' },
         ]}
         action={
-          role === 'CAD' || role === 'PWU' ? (
+          (role === 'CAD' || role === 'PWU') && (
             <Button
               component={RouterLink}
               href={paths.subscriber.logs.new}
@@ -118,7 +103,7 @@ export default function DailyLogsListView() {
             >
               Create New Log
             </Button>
-          ) : null
+          )
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />
@@ -137,17 +122,16 @@ export default function DailyLogsListView() {
               />
 
               <TableBody>
-                {/* {dataFiltered.map((row) => (
-                  <PlanRoomTableRow
-                    key={row.id}
-                    row={row}
-                    // onDeleteRow={() => handleDeleteRow(row.id)}
-                    onEditRow={() => handleEditRow(row.id)}
-                    onViewRow={() => handleViewRow(row.id)}
-                  />
-                ))} */}
+                {
+                  // dataFiltered && dataFiltered?
+                  listData?.docs &&
+                    listData?.docs?.map((row) => <PlanRoomTableRow key={row.id} row={row} />)
+                }
+                <TableEmptyRows
+                  height={denseHeight}
+                  emptyRows={emptyRows(listData?.docs?.length)}
+                />
 
-                <TableEmptyRows height={72} emptyRows={emptyRows(listData?.docs?.length)} />
                 <TableNoData notFound={notFound} />
               </TableBody>
             </Table>
