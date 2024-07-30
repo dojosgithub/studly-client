@@ -302,7 +302,7 @@ const MeetingMinutesDetails = ({ id }) => {
           </div>
         )}
       </Box>
-      <Tabs
+      {/* <Tabs
         value={currentTab}
         onChange={handleChangeTab}
         sx={{
@@ -339,8 +339,29 @@ const MeetingMinutesDetails = ({ id }) => {
             }}
           />
         ))}
-      </Tabs>
-
+      </Tabs> */}
+      <Stack
+        direction="row"
+        sx={{ mt: 2, mb: 2, backgroundColor: '#F4F6F8', width: '100%' }}
+        justifyContent="space-around"
+        alignItems="center"
+      >
+        {TABS.map((tab) => (
+          <Paper
+            sx={{
+              backgroundColor: tab.value === currentTab ? 'rgb(239,170,26)' : '#F4F6F8',
+              p: 2,
+              fontFamily: 'Public Sans',
+              cursor: 'pointer',
+              width: '100%',
+              textAlign: 'center',
+            }}
+            onClick={() => handleChangeTab(null, tab.value)}
+          >
+            {tab.label}
+          </Paper>
+        ))}
+      </Stack>
       {currentTab === 'description' && <Description data={currentMeeting?.description} />}
       {currentTab === 'attendees' && <InviteAttendee data={currentMeeting?.inviteAttendee} />}
       {currentTab === 'agenda' && <Notes data={currentMeeting?.notes} />}
