@@ -342,7 +342,13 @@ const MeetingMinutesDetails = ({ id }) => {
       </Tabs> */}
       <Stack
         direction="row"
-        sx={{ mt: 2, mb: 2, backgroundColor: '#F4F6F8', width: '100%' }}
+        sx={{
+          mt: 2,
+          mb: 2,
+          backgroundColor: '#F4F6F8',
+          width: '100%',
+          borderBottom: '2px solid rgb(239,170,26)',
+        }}
         justifyContent="space-around"
         alignItems="center"
       >
@@ -355,6 +361,7 @@ const MeetingMinutesDetails = ({ id }) => {
               cursor: 'pointer',
               width: '100%',
               textAlign: 'center',
+              borderRadius: 0,
             }}
             onClick={() => handleChangeTab(null, tab.value)}
           >
