@@ -264,17 +264,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const getFormValidation = async () => {
     const currentStepValue = steps[activeStep].value;
-    // let isFormValid;
-    // refers to project stepper form value 'name'
-    // if (currentStepValue === "name") {
-    //   const isNameValid = await trigger('name');
-    //   const isAddressValid = await trigger('address');
-    //   const isStateValid = await trigger('state');
-    //   const isCityValid = await trigger('city');
-    //   const isZipCodeValid = await trigger('zipCode');
-    //   isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
 
-    // } else {
     const isFormValid = await trigger(currentStepValue);
 
     // }
@@ -384,7 +374,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     setIsLoading(false);
 
     router.push(paths.subscriber.meetingMinutes.list);
-
     // Optionally, you can submit the form
     // methods.handleSubmit(onSubmit)();
   };

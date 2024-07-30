@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
+import { MeetingMinutesDetailsView } from 'src/sections/subscriber/daily-logs/view';
 import { getMeetingMinutesDetails } from 'src/redux/slices/meetingMinutesSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
 // sections
-import { MeetingMinutesDetailsView } from 'src/sections/subscriber/daily-logs/view';
 
 // ----------------------------------------------------------------------
 

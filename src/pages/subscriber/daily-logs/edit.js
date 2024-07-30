@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
+import { PlanRoomEditView } from 'src/sections/subscriber/plan-room/view';
 import { getRfiDetails } from 'src/redux/slices/rfiSlice';
 import { getProjectAssigneeUsers, getProjectUsersList } from 'src/redux/slices/submittalSlice';
 // routes
@@ -8,7 +9,6 @@ import { useParams } from 'src/routes/hooks';
 import MeetingMinutesCreateView from 'src/sections/subscriber/meeting-minutes/meeting-minutes-create-view';
 import { MeetingMinutesEditView } from 'src/sections/subscriber/daily-logs/view';
 // sections
-import { PlanRoomEditView } from 'src/sections/subscriber/plan-room/view';
 
 // ----------------------------------------------------------------------
 

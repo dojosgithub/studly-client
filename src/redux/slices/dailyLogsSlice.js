@@ -4,26 +4,71 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 
 // * Meeting Minutes
 
-export const createdailyLogs = createAsyncThunk(
-  'dailyLogs/createdailyLogs',
+// export const createDailyLogs = createAsyncThunk(
+//   'dailyLogs/create',
+//   async (dailyLogsData, { getState, rejectWithValue }) => {
+//     if (isEmpty(dailyLogsData)) {
+//       return rejectWithValue('daily logs cannot be empty.');
+//     }
+
+//     const projectId = getState().project?.current?.id;
+
+//     dailyLogsData.projectId = projectId;
+//     try {
+//       const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
+
+//       return response.data.data;
+//     } catch (err) {
+//       console.error('errSlice', err);
+//       if (err && err.message) {
+//         throw Error(err.message);
+//       }
+//       throw Error('An error occurred while creating the plan.');
+//     }
+//   }
+// );
+export const createDailyLogs = createAsyncThunk(
+  'dailyLogs/create',
   async (dailyLogsData, { getState, rejectWithValue }) => {
-    if (isEmpty(dailyLogsData)) {
-      return rejectWithValue('Meeting minutes data cannot be empty.');
-    }
+    console.log('dailyLogsData', dailyLogsData);
+    // if (isEmpty(dailyLogsData)) {
+    //   return rejectWithValue('daily logs cannot be empty.');
+    // }
 
-    const projectId = getState().project?.current?.id;
-
-    dailyLogsData.projectId = projectId;
     try {
+      console.log('Sending data:', dailyLogsData);
       const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
+      console.log('API Response:', response.data);
+      return response.data.data;
+    } catch (err) {
+      console.error('API Error:', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
 
+export const getDailyLogsList = createAsyncThunk(
+  'dailyLogs/list',
+
+  async (listOptions, { getState, rejectWithValue }) => {
+    console.log('ListsData', listOptions);
+    try {
+      // const projectId = getState().project?.current?.id;
+      console.log('Sending data:', listOptions);
+      // const { status, ...data } = listOptions;
+      // const projectId = getState().projectId.id
+      const response = await axiosInstance.post(endpoints.dailyLogs.list, listOptions);
+      console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {
         throw Error(err.message);
       }
-      throw Error('An error occurred while creating the plan.');
+      throw Error('An error occurred while fetching rfi list.');
     }
   }
 );
@@ -48,33 +93,6 @@ export const updatedailyLogs = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while creating the plan.');
-    }
-  }
-);
-
-export const getDailyLogsList = createAsyncThunk(
-  'dailyLogs/list',
-  async (listOptions, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?.id;
-
-      const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
-      const response = await axiosInstance.post(
-        endpoints.dailyLogs.list(projectId),
-        { status },
-        {
-          params: data,
-        }
-      );
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching rfi list.');
     }
   }
 );
@@ -317,16 +335,16 @@ const dailyLogs = createSlice({
   },
   extraReducers: (builder) => {
     // * Create New dailyLogs
-    builder.addCase(createdailyLogs.pending, (state) => {
+    builder.addCase(createDailyLogs.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(createdailyLogs.fulfilled, (state, action) => {
+    builder.addCase(createDailyLogs.fulfilled, (state, action) => {
       state.create = action.payload;
       state.isLoading = false;
       state.error = null;
     });
-    builder.addCase(createdailyLogs.rejected, (state, action) => {
+    builder.addCase(createDailyLogs.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

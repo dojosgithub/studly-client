@@ -66,7 +66,6 @@ export const endpoints = {
     userList: '/api/user/list',
     subcontractorList: '/api/user/subcontractor/list',
     subcontractorCompanyList: '/api/user/subcontractor/list/company',
-
   },
   project: {
     list: '/api/user/project',
@@ -90,8 +89,6 @@ export const endpoints = {
     status: `/api/user/submittal/status`,
     resendToSubcontractor: (id) => `/api/user/submittal/resend/${id}`,
     sendToAll: `/api/user/submittal/sendto`,
-
-
   },
   rfi: {
     list: (id) => `/api/user/rfi/${id}`,
@@ -109,7 +106,8 @@ export const endpoints = {
     create: '/api/user/plan-room',
     submit: (id) => `/api/user/plan-room/${id}/submit`,
     edit: (id) => `/api/user/plan-room/${id}`,
-    delete: (projectId,planRoomId,sheetId) => `/api/user/plan-room/${projectId}/${planRoomId}/${sheetId}`,
+    delete: (projectId, planRoomId, sheetId) =>
+      `/api/user/plan-room/${projectId}/${planRoomId}/${sheetId}`,
     details: (id) => `/api/user/plan-room/details/${id}`,
     response: (id) => `/api/user/plan-room/${id}/response`,
     pdf: (id, exptype) => `/api/user/plan-room-report/${id}/${exptype}`,
@@ -126,17 +124,28 @@ export const endpoints = {
     pdf: (id) => `/api/user/meeting-minutes/export/${id}`,
     followup: (id) => `/api/user/meeting-minutes/followup/${id}`,
     sendToAttendees: (id) => `/api/user/meeting-minutes/send/${id}`,
-    toMinutes:  (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
+    toMinutes: (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
+  },
+  dailyLogs: {
+    list: (id) => `/api/user/meeting-minutes/${id}`,
+    create: '/api/user/daily-logs',
+    update: (id) => `/api/user/meeting-minutes/${id}`,
+    submit: (id) => `/api/user/meeting-minutes/${id}/submit`,
+    edit: (id) => `/api/user/meeting-minutes/${id}`,
+    delete: (id) => `/api/user/meeting-minutes/${id}`,
+    details: (id) => `/api/user/meeting-minutes/${id}/details`,
+    pdf: (id) => `/api/user/meeting-minutes/export/${id}`,
+    followup: (id) => `/api/user/meeting-minutes/followup/${id}`,
+    sendToAttendees: (id) => `/api/user/meeting-minutes/send/${id}`,
+    toMinutes: (id) => `/api/user/meeting-minutes/to-minutes/${id}`,
   },
   template: {
     list: '/api/user/template',
     create: '/api/user/template',
-
   },
   workflow: {
     list: '/api/user/workflow',
     create: '/api/user/workflow',
-
   },
   invite: {
     details: (id) => `/api/user/invite/${id}`,

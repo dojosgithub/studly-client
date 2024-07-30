@@ -1,11 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { useState, useMemo, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
+import { isEmpty } from 'lodash';
+import { LoadingButton } from '@mui/lab';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { useSnackbar } from 'notistack';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import {
@@ -25,7 +29,7 @@ import {
   IconButton,
 } from '@mui/material';
 
-import { setCreateDailyLogs } from 'src/redux/slices/dailyLogsSlice'; // Adjust import based on your project structure
+import { createDailyLogs, setCreateDailyLogs } from 'src/redux/slices/dailyLogsSlice'; // Adjust import based on your project structure
 
 import FormProvider, {
   RHFEditor,
@@ -33,6 +37,8 @@ import FormProvider, {
   RHFTextField,
   RHFAutocomplete,
 } from 'src/components/hook-form';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 import Iconify from 'src/components/iconify';
 import SubmittalAttachments from './daily-logs-attachment';
@@ -48,30 +54,30 @@ const StyledButton = styled(Button)(({ theme, selected }) => ({
 
 const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
 
-const CreateDailyLog = (currentLogs) => {
+const CreateDailyLog = ({ currentLog }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const createDailyLog = useSelector((state) => state.dailyLogs?.current);
-  const [selectedWeather, setSelectedWeather] = useState(createDailyLog.weather || '');
+  const currentProject = useSelector((state) => state?.project?.current);
 
   const NewDailyLogSchema = Yup.object().shape({
     date: Yup.date().required('Date is required'),
     accidentSafetyIssues: Yup.string(),
     visitors: Yup.array().of(
       Yup.object().shape({
-        visitors: Yup.string().required('visitors field is required'),
+        visitors: Yup.string(),
       })
     ),
     inspection: Yup.array()
       .of(
         Yup.object().shape({
           value: Yup.string(),
-          status: Yup.string().oneOf(['Pass', 'Fail'], 'Invalid status'),
+          status: Yup.string(),
           result: Yup.string(),
         })
       )
       .required('Inspection is required'),
-    weather: Yup.string(),
+    weather: Yup.array(),
     subcontracterList: Yup.array().of(
       Yup.object().shape({
         companyName: Yup.string(),
@@ -87,6 +93,7 @@ const CreateDailyLog = (currentLogs) => {
     attachements: Yup.array(),
     summary: Yup.string(),
   });
+  const { enqueueSnackbar } = useSnackbar();
 
   const defaultValues = useMemo(
     () => ({
@@ -108,8 +115,16 @@ const CreateDailyLog = (currentLogs) => {
     defaultValues,
   });
 
-  const { handleSubmit, control, getValues, trigger, setValue } = methods;
-
+  const {
+    reset,
+    handleSubmit,
+    control,
+    getValues,
+    trigger,
+    setValue,
+    formState: { isSubmitting, errors },
+  } = methods;
+  console.log('errors', errors);
   const handleWeatherChange = (value) => {
     // setSelectedWeather(value);
     // dispatch(setCreateDailyLogs({ weather: value }));
@@ -131,8 +146,8 @@ const CreateDailyLog = (currentLogs) => {
   console.log(formValues);
 
   const existingAttachments = useMemo(
-    () => (currentLogs?.attachments ? currentLogs?.attachments : []),
-    [currentLogs]
+    () => (currentLog?.attachments ? currentLog?.attachments : []),
+    [currentLog]
   );
 
   const [files, setFiles] = useState(existingAttachments);
@@ -169,8 +184,14 @@ const CreateDailyLog = (currentLogs) => {
     control,
     name: 'inspection',
   });
-  const onSubmit = (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     console.log('Form Values:', data);
+    data.visitors = data.visitors.map((visitor) => visitor.visitors);
+    data.projectId = currentProject.id;
+    // data.inspection = data.inspection.map((inspection) => ({
+    //   ...inspection,
+    //   status: inspection.status === 'true' ? true : false,
+    // }));
     const formData = new FormData();
     const attachments = [];
     for (let index = 0; index < files.length; index += 1) {
@@ -184,7 +205,31 @@ const CreateDailyLog = (currentLogs) => {
     data.attachments = attachments;
     console.log(data);
     formData.append('body', JSON.stringify(data));
-  };
+
+    let error;
+    let payload;
+    let message;
+    if (!isEmpty(currentLog)) {
+      message = `updated`;
+
+      // const res = await dispatch(editRfi({ formData, id }));
+      // error = res.error;
+      // payload = res.payload;
+    } else {
+      message = `created`;
+      const res = await dispatch(createDailyLogs(formData));
+      error = res.error;
+      payload = res.payload;
+    }
+    if (!isEmpty(error)) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+      return;
+    }
+
+    enqueueSnackbar(`Daily log ${message} successfully!`, { variant: 'success' });
+    reset();
+    router.push(paths.subscriber.logs.list);
+  });
 
   const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -221,7 +266,7 @@ const CreateDailyLog = (currentLogs) => {
   const getStatus = (index) => getValues(`inspection[${index}].status`);
 
   return (
-    <Box sx={{ padding: 3, width: '80%' }}>
+    <Box sx={{ padding: 3, width: '100%', paddingLeft: 0 }}>
       {/* <Typography variant="h4">Create a New Daily Log</Typography> */}
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Box sx={{ marginTop: 2, borderWidth: '2px' }}>
@@ -239,8 +284,9 @@ const CreateDailyLog = (currentLogs) => {
                 InputLabelProps={{ shrink: true }}
               />
               <Typography variant="h6" margin={1}>
-                visitors
+                Visitors
               </Typography>
+              <Divider sx={{ marginY: 2 }} />
 
               {visitorFields?.map((visit, index) => (
                 <Box
@@ -288,6 +334,7 @@ const CreateDailyLog = (currentLogs) => {
               <Typography variant="h6" margin={1}>
                 Inspection
               </Typography>
+              <Divider sx={{ marginY: 2 }} />
               {inspectionFields?.map((inspection, index) => (
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
                   <FormControl>
@@ -382,6 +429,7 @@ const CreateDailyLog = (currentLogs) => {
             <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
               Distribution List
             </Typography>
+            <Divider sx={{ marginY: 2 }} />
 
             {distributionFields?.map((person, index) => (
               <Box
@@ -407,7 +455,11 @@ const CreateDailyLog = (currentLogs) => {
                   onBlur={() => trigger(`distributionList[${index}].email`)}
                   sx={{ marginRight: 2 }}
                 />
-                <StyledIconButton color="inherit" onClick={() => removeDistribution(index)}>
+                <StyledIconButton
+                  color="inherit"
+                  onClick={() => removeDistribution(index)}
+                  sx={{ marginRight: 2 }}
+                >
                   <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
                 </StyledIconButton>
               </Box>
@@ -419,7 +471,7 @@ const CreateDailyLog = (currentLogs) => {
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="secondary"
               onClick={() => appendDistribution({ name: '', email: '' })}
-              sx={{ marginRight: 2, margin: 1 }}
+              sx={{ margin: 1, marginRight: 2 }}
             >
               Add Another
             </Button>
@@ -429,6 +481,7 @@ const CreateDailyLog = (currentLogs) => {
             <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
               Subcontractor Attendance
             </Typography>
+            <Divider sx={{ marginY: 2 }} />
 
             {subcontractorFields?.map((field, index) => (
               <Box
@@ -448,7 +501,11 @@ const CreateDailyLog = (currentLogs) => {
                   sx={{ marginRight: 2 }}
                 />
 
-                <StyledIconButton color="inherit" onClick={() => removeSubcontractor(index)}>
+                <StyledIconButton
+                  color="inherit"
+                  onClick={() => removeSubcontractor(index)}
+                  sx={{ marginRight: 1 }}
+                >
                   <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
                 </StyledIconButton>
               </Box>
@@ -465,18 +522,18 @@ const CreateDailyLog = (currentLogs) => {
               Add Another
             </Button>
           </Card>
-          <Card sx={{ paddingLeft: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
+          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
             <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
               Attachments
             </Typography>
             <SubmittalAttachments
               files={files}
               setFiles={setFiles}
-              sx={{ marginRight: 2, margin: 1 }}
+              sx={{ margin: 1, paddingRight: 3 }}
             />
           </Card>
 
-          <Card sx={{ paddingLeft: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
+          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
             <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
               Summary
             </Typography>
@@ -489,26 +546,19 @@ const CreateDailyLog = (currentLogs) => {
               InputLabelProps={{ shrink: true }}
             />
           </Card>
-          <Divider sx={{ marginY: 3 }} />
-
-          <form
-            onSubmit={handleSubmit((data) => {
-              // Handle form submission
-              console.log(data);
-              // Dispatch your action or other logic
-            })}
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
-              Save
-            </Button>
-          </form>
+          <Divider sx={{ margin: 2 }} />
+          <div style={{ display: 'flex', justifyContent: 'flex-end ' }}>
+            <LoadingButton type="submit" variant="contained" sx={{ marginRight: 2 }}>
+              Create
+            </LoadingButton>
+          </div>
         </Box>
       </FormProvider>
     </Box>
   );
 };
 export default CreateDailyLog;
+
+CreateDailyLog.propTypes = {
+  currentLog: PropTypes.object,
+};
