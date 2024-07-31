@@ -10,26 +10,39 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 
 const DailyLogsTableRow = memo(
   ({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) => {
-    const { id, description, status, inspections, accidents, visitors, weather } = row;
     const role = useSelector((state) => state?.user?.user?.role?.shortName);
     const confirm = useBoolean();
     const popover = usePopover();
-
-    const date = description?.date;
-    const validDate = isValid(parseISO(date))
-      ? format(parseISO(date), 'yyyy-MM-dd')
-      : 'Invalid Date';
+    // console.log(row);
+    const truncatedText =
+      row.accidentSafetyIssues.length > 20
+        ? `${row.accidentSafetyIssues.substring(0, 20)}...`
+        : row.accidentSafetyIssues;
 
     return (
       <>
         <TableRow selected={selected}>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{validDate}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {inspections ? 'Completed' : 'Pending'}
+            {new Date(row?.date).toLocaleDateString()}
           </TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{accidents}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{visitors?.length}</TableCell>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{weather}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {row.inspection ? 'Completed' : 'Pending'}
+          </TableCell>
+
+          <TableCell
+            sx={{ whiteSpace: 'nowrap' }}
+            dangerouslySetInnerHTML={{ __html: truncatedText }}
+          />
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.visitors?.length}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {row?.weather?.map((id, index) => (
+              <span key={index}>
+                {id}
+                {index < row.weather.length - 1 && ', '}
+              </span>
+            ))}
+          </TableCell>
+
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
             <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
@@ -43,7 +56,7 @@ const DailyLogsTableRow = memo(
           arrow="right-top"
           sx={{ width: 140 }}
         >
-          {status !== 'Minutes' && (
+          {row.status !== 'Minutes' && (
             <>
               <MenuItem
                 onClick={() => {
@@ -58,7 +71,7 @@ const DailyLogsTableRow = memo(
               {(role === 'CAD' || role === 'PWU') && (
                 <MenuItem
                   onClick={() => {
-                    onEditRow(id);
+                    onEditRow(row.id);
                     popover.onClose();
                   }}
                 >
@@ -71,7 +84,7 @@ const DailyLogsTableRow = memo(
 
           <MenuItem
             onClick={() => {
-              onViewRow(id);
+              onViewRow(row.id);
               popover.onClose();
             }}
           >

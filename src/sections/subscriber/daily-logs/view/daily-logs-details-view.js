@@ -8,7 +8,7 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-// import DailyLogsDetails from '../daily-logs-details';
+import DailyLogsDetails from '../daily-logs-details';
 
 // ----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ export default function DailyLogsDetailsView({ id }) {
         links={[
           {
             name: 'Daily Logs',
-            href: paths.subscriber.dailyLogs.list,
+            href: paths.subscriber.logs.list,
           },
           { name: 'Details' },
         ]}
@@ -31,7 +31,7 @@ export default function DailyLogsDetailsView({ id }) {
         }}
       />
 
-      {/* <DailyLogsDetails id={id} /> */}
+      <DailyLogsDetails id={id} />
     </Container>
   );
 }

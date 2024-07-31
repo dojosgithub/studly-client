@@ -14,7 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 // components
-import { getDailyLogsList } from 'src/redux/slices/dailyLogsSlice';
+import { getDailyLogsList, deleteLog } from 'src/redux/slices/dailyLogsSlice';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
@@ -54,6 +54,7 @@ export default function DailyLogsListView() {
   const dispatch = useDispatch();
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const listData = useSelector((state) => state?.dailyLogs?.list);
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
@@ -69,17 +70,30 @@ export default function DailyLogsListView() {
   const handlePageChange = (e, newPage) => setPage(newPage + 1);
   const handleSortChange = () => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
 
+  const handleDeleteRow = useCallback(
+    async (row, onDelete) => {
+      dispatch(deleteLog(row));
+
+      onDelete.onFalse();
+      enqueueSnackbar('Log Deleted Successfully', { variant: 'success' });
+
+      dispatch(getDailyLogsList({ search: filters.query, page, sortDir, status: filters.status }));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const handleFilters = useCallback((name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleEditRow = useCallback(
-    (id) => navigate(paths.subscriber.DailyLogs.edit(id)),
-    [navigate]
-  );
+  // const handleEditRow = useCallback((id) => navigate(paths.subscriber.logs.edit(id)), [navigate]);
   const handleViewRow = useCallback(
-    (id) => navigate(paths.subscriber.DailyLogs.details(id)),
-    [navigate]
+    (id) => {
+      router.push(paths.subscriber.logs.details(id));
+      // confirm.onTrue()
+    },
+    [router]
   );
 
   const notFound = listData?.totalDocs === 0;
@@ -125,7 +139,18 @@ export default function DailyLogsListView() {
                 {
                   // dataFiltered && dataFiltered?
                   listData?.docs &&
-                    listData?.docs?.map((row) => <PlanRoomTableRow key={row.id} row={row} />)
+                    listData?.docs?.map((row) => (
+                      <PlanRoomTableRow
+                        key={row.id}
+                        row={row}
+                        // selected={table.selected.includes(row.id)}
+                        // onSelectRow={() => table.onSelectRow(row.id)}
+
+                        // onEditRow={() => handleEditRow(row?.id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
+                        onViewRow={() => handleViewRow(row?.id)}
+                      />
+                    ))
                 }
                 <TableEmptyRows
                   height={denseHeight}

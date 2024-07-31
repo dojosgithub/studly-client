@@ -34,15 +34,10 @@ export const createDailyLogs = createAsyncThunk(
     // if (isEmpty(dailyLogsData)) {
     //   return rejectWithValue('daily logs cannot be empty.');
     // }
-    const projectId = getState().project?.current?.id;
 
-    dailyLogsData.projectId = projectId;
     try {
       console.log('Sending data:', dailyLogsData);
-      const response = await axiosInstance.post(
-        endpoints.dailyLogs.create(projectId),
-        dailyLogsData
-      );
+      const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
       console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
@@ -51,6 +46,23 @@ export const createDailyLogs = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
+export const getDailyLogsDetails = createAsyncThunk(
+  'dailyLogs/details',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.dailyLogs.details(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
     }
   }
 );
@@ -148,23 +160,6 @@ export const DailyLogs = createAsyncThunk(
         throw Error(err.message);
       }
       throw Error('An error occurred while deleting planroom sheet.');
-    }
-  }
-);
-
-export const getDailyLogsDetails = createAsyncThunk(
-  'dailyLogs/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.dailyLogs.details(id));
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
     }
   }
 );
@@ -278,7 +273,7 @@ const dailyLogsInitialState = {
   visitors: [{ visitors: '' }],
   inspection: [{ value: '', status: true, reason: '' }],
   weather: 'Clear',
-  subcontractorAttendance: [{ companyName: '', headCount: '' }],
+  subcontractorAttendance: [{ companyName: '', headCount: null }],
   distributionList: [{ name: '', email: '' }],
   attachments: [],
   summary: '',

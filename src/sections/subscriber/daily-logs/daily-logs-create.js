@@ -81,7 +81,7 @@ const CreateDailyLog = ({ currentLog }) => {
     subcontracterList: Yup.array().of(
       Yup.object().shape({
         companyName: Yup.string(),
-        headCount: Yup.string(),
+        headCount: Yup.number(),
       })
     ),
     distributionList: Yup.array().of(
@@ -102,7 +102,7 @@ const CreateDailyLog = ({ currentLog }) => {
       visitors: [{ visitors: '' }],
       inspection: [{ value: '', status: true, reason: '' }],
       weather: [],
-      subcontractorList: [{ companyName: '', headCount: '' }],
+      subcontractorAttendance: [{ companyName: '', headCount: null }],
       distributionList: [{ name: '', email: '' }],
       attachments: [],
       summary: '',
@@ -158,7 +158,7 @@ const CreateDailyLog = ({ currentLog }) => {
     remove: removeSubcontractor,
   } = useFieldArray({
     control,
-    name: 'subcontractorList',
+    name: 'subcontractorAttendance',
   });
   const {
     fields: visitorFields,
@@ -216,7 +216,7 @@ const CreateDailyLog = ({ currentLog }) => {
       // error = res.error;
       // payload = res.payload;
     } else {
-      message = `created`;
+      message = `create`;
       const res = await dispatch(createDailyLogs(formData));
       error = res.error;
       payload = res.payload;
@@ -489,16 +489,17 @@ const CreateDailyLog = ({ currentLog }) => {
                 sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, marginLeft: 1 }}
               >
                 <RHFTextField
-                  name={`subcontractorList[${index}].companyName`}
+                  name={`subcontractorAttendance[${index}].companyName`}
                   label="Company Name"
                   InputLabelProps={{ shrink: true }}
                   sx={{ marginRight: 2 }}
                 />
                 <RHFTextField
-                  name={`subcontractorList[${index}].headCount`}
+                  name={`subcontractorAttendance[${index}].headCount`}
                   label="Head Count"
                   InputLabelProps={{ shrink: true }}
                   sx={{ marginRight: 2 }}
+                  type="number"
                 />
 
                 <StyledIconButton
@@ -516,7 +517,7 @@ const CreateDailyLog = ({ currentLog }) => {
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="secondary"
-              onClick={() => appendSubcontractor({ companyName: '', headCount: '' })}
+              onClick={() => appendSubcontractor({ companyName: '', headCount: null })}
               sx={{ marginRight: 2, margin: 1 }}
             >
               Add Another
