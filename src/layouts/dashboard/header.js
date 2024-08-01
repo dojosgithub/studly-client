@@ -51,7 +51,9 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
-      {!lgUp && isOnboarding && <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: "100%" }} />}
+      {!lgUp && isOnboarding && (
+        <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: '100%' }} />
+      )}
 
       {/* <Searchbar /> */}
 
@@ -86,7 +88,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
           }),
           ...(isNavHorizontal && {
             width: 1,
-            bgcolor: 'background.default',
+            bgcolor: isOnboarding ? '#3E3E3E' : 'background.default',
             height: HEADER.H_DESKTOP_OFFSET,
             borderBottom: `dashed 1px ${theme.palette.divider}`,
           }),
@@ -104,8 +106,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
         sx={{
           height: 1,
           px: { lg: 5 },
-          backgroundColor: theme.palette.background.brandPrimary,
-
+          backgroundColor: isOnboarding ? '#3E3E3E' : theme.palette.background.brandPrimary,
         }}
       >
         {renderContent}
