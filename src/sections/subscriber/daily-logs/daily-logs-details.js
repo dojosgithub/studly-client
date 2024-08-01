@@ -54,10 +54,9 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import {
   changeToMinutes,
   createFollowup,
-  getMeetingMinutesPDF,
+  getDailyLogsPDF,
   sendToAttendees,
-  setCreateMeetingMinutes,
-} from 'src/redux/slices/meetingMinutesSlice';
+} from 'src/redux/slices/dailyLogsSlice';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
 import Logs from './daily-logs-details-logs';
@@ -155,7 +154,7 @@ const DailyLogsDetails = ({ id }) => {
     isResponseSubmitted,
     response,
     docStatus,
-  } = currentMeeting;
+  } = currentLog;
 
   console.log('isSubmitting', isSubmitting);
   // useEffect(() => {
@@ -189,7 +188,7 @@ const DailyLogsDetails = ({ id }) => {
       optionsArray.push(
         <MenuItem onClick={() => handleSendToAttendees()}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
-            Send to Attendees
+            Distribute
           </LoadingButton>
         </MenuItem>
       );
@@ -221,7 +220,7 @@ const DailyLogsDetails = ({ id }) => {
 
   const handleExportPDF = async (e) => {
     setIsSubmitting(true);
-    await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
+    await dispatch(getDailyLogsPDF(currentLog?.id));
     setIsSubmitting(false);
     handleClose();
   };
@@ -239,11 +238,11 @@ const DailyLogsDetails = ({ id }) => {
   const handleSendToAttendees = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(sendToAttendees(currentMeeting?.id));
+    await dispatch(sendToAttendees(currentLog?.id));
     setIsSubmitting(false);
     // handleClose();
-    enqueueSnackbar('Meeting Minutes have been successfully distributed', { variant: 'success' });
-    navigate(paths.subscriber.meetingMinutes.list);
+    enqueueSnackbar('daily Logs have been successfully distributed', { variant: 'success' });
+    navigate(paths.subscriber.logs.list);
   };
 
   const handleChangeToMinutes = async () => {
@@ -258,8 +257,8 @@ const DailyLogsDetails = ({ id }) => {
 
   return (
     <>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Chip
+      <Box display="flex" alignItems="center" justifyContent="flex-end">
+        {/* <Chip
           size="large"
           color="secondary"
           variant="outlined"
@@ -274,7 +273,7 @@ const DailyLogsDetails = ({ id }) => {
             // mr: 1
           }}
           label={status}
-        />
+        /> */}
         {menuItems.length > 0 && (
           <div>
             <Button
@@ -313,13 +312,6 @@ const DailyLogsDetails = ({ id }) => {
           <Typography className="submittalTitle">Date</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {new Date(currentLog?.date).toLocaleDateString()}
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Project Name</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.projectId}
           </Typography>
         </StyledCard>
 
@@ -363,7 +355,7 @@ const DailyLogsDetails = ({ id }) => {
         <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
           <Typography className="submittalTitle">Attachments</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.attachments?.length ? 'Attachments present' : 'No attachments'}
+            <MultiFilePreview files={attachments} thumbnail onDownload />
           </Typography>
         </StyledCard>
 

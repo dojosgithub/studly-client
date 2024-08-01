@@ -95,6 +95,12 @@ export default function DailyLogsListView() {
     },
     [router]
   );
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.subscriber.logs.edit(id));
+    },
+    [router]
+  );
 
   const notFound = listData?.totalDocs === 0;
 
@@ -146,8 +152,8 @@ export default function DailyLogsListView() {
                         // selected={table.selected.includes(row.id)}
                         // onSelectRow={() => table.onSelectRow(row.id)}
 
-                        // onEditRow={() => handleEditRow(row?.id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
+                        onEditRow={() => handleEditRow(row?.id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row?.id, onDelete)}
                         onViewRow={() => handleViewRow(row?.id)}
                       />
                     ))

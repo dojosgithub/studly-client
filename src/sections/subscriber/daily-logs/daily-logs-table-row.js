@@ -9,7 +9,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
 const DailyLogsTableRow = memo(
-  ({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) => {
+  ({ row, selected, onSelectRow, onDeleteRow, onEditRow, onViewRow }) => {
     const role = useSelector((state) => state?.user?.user?.role?.shortName);
     const confirm = useBoolean();
     const popover = usePopover();
@@ -26,7 +26,13 @@ const DailyLogsTableRow = memo(
             {new Date(row?.date).toLocaleDateString()}
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {row.inspection ? 'Completed' : 'Pending'}
+            {row?.inspection && (
+              <span>
+                {row.inspection
+                  .map((inspection) => (inspection.value))
+                  .join(', ')}
+              </span>
+            )}
           </TableCell>
 
           <TableCell

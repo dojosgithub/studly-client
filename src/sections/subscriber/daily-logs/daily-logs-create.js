@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
-import { isEmpty } from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 import { LoadingButton } from '@mui/lab';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -29,7 +29,12 @@ import {
   IconButton,
 } from '@mui/material';
 
-import { createDailyLogs, setCreateDailyLogs } from 'src/redux/slices/dailyLogsSlice'; // Adjust import based on your project structure
+import {
+  createDailyLogs,
+  setCreateDailyLogs,
+  getDailyLogsDetails,
+  updateDailyLogs,
+} from 'src/redux/slices/dailyLogsSlice'; // Adjust import based on your project structure
 
 import FormProvider, {
   RHFEditor,
@@ -37,7 +42,7 @@ import FormProvider, {
   RHFTextField,
   RHFAutocomplete,
 } from 'src/components/hook-form';
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 
 import Iconify from 'src/components/iconify';
@@ -54,9 +59,21 @@ const StyledButton = styled(Button)(({ theme, selected }) => ({
 
 const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
 
-const CreateDailyLog = ({ currentLog }) => {
+const CreateDailyLog = ({ isEdit }) => {
   const dispatch = useDispatch();
+  const params = useParams();
+
+  const currentLog = useSelector((state) => state?.dailyLogs?.current);
+  const { id } = params;
+
+  console.log('id, id', id);
   const router = useRouter();
+
+  useEffect(() => {
+    if (isEdit) {
+      dispatch(getDailyLogsDetails(id));
+    }
+  }, [isEdit, id, dispatch]);
 
   const currentProject = useSelector((state) => state?.project?.current);
 
@@ -78,10 +95,10 @@ const CreateDailyLog = ({ currentLog }) => {
       )
       .required('Inspection is required'),
     weather: Yup.array(),
-    subcontracterList: Yup.array().of(
+    subcontractorAttendance: Yup.array().of(
       Yup.object().shape({
         companyName: Yup.string(),
-        headCount: Yup.number(),
+        headCount: Yup.mixed().nullable(),
       })
     ),
     distributionList: Yup.array().of(
@@ -90,7 +107,7 @@ const CreateDailyLog = ({ currentLog }) => {
         email: Yup.string(),
       })
     ),
-    attachements: Yup.array(),
+    attachments: Yup.array(),
     summary: Yup.string(),
   });
   const { enqueueSnackbar } = useSnackbar();
@@ -124,6 +141,58 @@ const CreateDailyLog = ({ currentLog }) => {
     setValue,
     formState: { isSubmitting, errors },
   } = methods;
+
+  useEffect(() => {
+    if (isEdit && currentLog) {
+      const meeting = cloneDeep(currentLog);
+
+      // Convert date field with default value if undefined
+      meeting.date = meeting.date ? new Date(meeting.date) : new Date();
+
+      // Handle inspection array with default empty array if undefined
+      meeting.inspection = Array.isArray(meeting.inspection)
+        ? meeting.inspection.map((inspection) => ({
+            ...inspection,
+            date: inspection.date ? new Date(inspection.date) : new Date(),
+          }))
+        : [];
+
+      // Handle distributionList array with default empty array if undefined
+      meeting.distributionList = Array.isArray(meeting.distributionList)
+        ? meeting.distributionList.map((distrib) => ({
+            ...distrib,
+          }))
+        : [];
+
+      // Handle subcontractorAttendance array with default empty array if undefined
+      meeting.subcontractorAttendance = Array.isArray(meeting.subcontractorAttendance)
+        ? meeting.subcontractorAttendance.map((subcontractor) => ({
+            ...subcontractor,
+          }))
+        : [];
+
+      // Handle weather array (assuming no transformation needed)
+      meeting.weather = Array.isArray(meeting.weather) ? [...meeting.weather] : [];
+
+      // Handle visitors array (assuming no transformation needed)
+      meeting.visitors = Array.isArray(meeting.visitors)
+        ? meeting.visitors.map((visitor) => ({ visitors: visitor }))
+        : [];
+
+      // Handle HTML strings (no transformation needed if they're in the correct format)
+      meeting.accidentSafetyIssues =
+        typeof meeting.accidentSafetyIssues === 'string' ? meeting.accidentSafetyIssues : '';
+
+      meeting.summary = typeof meeting.summary === 'string' ? meeting.summary : '';
+
+      // Handle attachments (assuming it's an array of objects)
+      meeting.attachments = Array.isArray(meeting.attachments) ? [...meeting.attachments] : [];
+
+      dispatch(setCreateDailyLogs(meeting));
+      reset(meeting);
+    }
+  }, [isEdit, currentLog, dispatch, reset]);
+
   console.log('errors', errors);
   const handleWeatherChange = (value) => {
     // setSelectedWeather(value);
@@ -186,43 +255,49 @@ const CreateDailyLog = ({ currentLog }) => {
   });
   const onSubmit = handleSubmit(async (data) => {
     console.log('Form Values:', data);
+
+    // Map visitor fields to correct structure
     data.visitors = data.visitors.map((visitor) => visitor.visitors);
     data.projectId = currentProject.id;
-    // data.inspection = data.inspection.map((inspection) => ({
-    //   ...inspection,
-    //   status: inspection.status === 'true' ? true : false,
-    // }));
+
     const formData = new FormData();
     const attachments = [];
-    for (let index = 0; index < files.length; index += 1) {
-      const file = files[index];
+
+    // Append files to FormData
+    files.forEach((file) => {
       if (file instanceof File) {
         formData.append('attachments', file);
       } else {
         attachments.push(file);
       }
-    }
+    });
+
     data.attachments = attachments;
     console.log(data);
+
     formData.append('body', JSON.stringify(data));
 
-    let error;
-    let payload;
     let message;
-    if (!isEmpty(currentLog)) {
-      message = `updated`;
+    let res;
 
-      // const res = await dispatch(editRfi({ formData, id }));
-      // error = res.error;
-      // payload = res.payload;
+    if (isEdit) {
+      message = 'updated';
+      // Dispatch update action
+      console.log('unga bunga');
+      res = await dispatch(updateDailyLogs({ data: formData, id }));
     } else {
-      message = `create`;
-      const res = await dispatch(createDailyLogs(formData));
-      error = res.error;
-      payload = res.payload;
+      message = 'created';
+      // Dispatch create action
+      res = await dispatch(createDailyLogs(formData));
     }
-    if (!isEmpty(error)) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+
+    // Handle response
+    const { error, payload } = res;
+
+    if (error) {
+      enqueueSnackbar(error.message || 'An error occurred while saving the daily log.', {
+        variant: 'error',
+      });
       return;
     }
 
@@ -344,7 +419,7 @@ const CreateDailyLog = ({ currentLog }) => {
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          label="Name"
+                          label="Value"
                           InputLabelProps={{ shrink: true }}
                           sx={{ marginRight: 2 }}
                           onBlur={() => trigger(`inspection[${index}].value`)}
@@ -450,7 +525,7 @@ const CreateDailyLog = ({ currentLog }) => {
                 />
                 <RHFTextField
                   name={`distributionList[${index}].email`}
-                  label="Name"
+                  label="Email"
                   InputLabelProps={{ shrink: true }}
                   onBlur={() => trigger(`distributionList[${index}].email`)}
                   sx={{ marginRight: 2 }}
@@ -550,7 +625,7 @@ const CreateDailyLog = ({ currentLog }) => {
           <Divider sx={{ margin: 2 }} />
           <div style={{ display: 'flex', justifyContent: 'flex-end ' }}>
             <LoadingButton type="submit" variant="contained" sx={{ marginRight: 2 }}>
-              Create
+              {isEdit ? 'Update' : 'Create'}
             </LoadingButton>
           </div>
         </Box>
@@ -562,4 +637,5 @@ export default CreateDailyLog;
 
 CreateDailyLog.propTypes = {
   currentLog: PropTypes.object,
+  isEdit: PropTypes.bool,
 };

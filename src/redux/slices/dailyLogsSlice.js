@@ -94,43 +94,12 @@ export const getDailyLogsList = createAsyncThunk(
     }
   }
 );
-// export const getMeetingMinutesList = createAsyncThunk(
-//   'dailyLogs/list',
-//   async (listOptions, { getState, rejectWithValue }) => {
-//     try {
-//       const projectId = getState().project?.current?.id;
 
-//       const { status, ...data } = listOptions;
-//       // const projectId = getState().projectId.id
-//       const response = await axiosInstance.post(
-//         endpoints.meetingMinutes.list(projectId),
-//         { status },
-//         {
-//           params: data,
-//         }
-//       );
-
-//       return response.data.data;
-//     } catch (err) {
-//       console.error('errSlice', err);
-//       if (err && err.message) {
-//         throw Error(err.message);
-//       }
-//       throw Error('An error occurred while fetching rfi list.');
-//     }
-//   }
-// );
-
-export const updatedailyLogs = createAsyncThunk(
+export const updateDailyLogs = createAsyncThunk(
   'dailyLogs/update',
   async ({ data, id }, { getState, rejectWithValue }) => {
-    if (isEmpty(data)) {
-      return rejectWithValue('Meeting minutes data cannot be empty.');
-    }
+    console.log(data, id);
 
-    const projectId = getState().project?.current?.id;
-
-    data.projectId = projectId;
     try {
       const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
 
@@ -250,7 +219,7 @@ export const getDailyLogsPDF = createAsyncThunk(
       // Create a temporary link and trigger a download
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'meeting_log';
+      a.download = 'daily_log';
       a.click();
 
       // Cleanup

@@ -34,7 +34,7 @@ export default function DailyLogsEditPage() {
   return (
     <>
       <Helmet>
-        <title> Meeting Minutes Edit</title>
+        <title> Daily Logs Edit</title>
       </Helmet>
 
       {/* <PlanRoomEditView id={`${id}`} /> */}

@@ -8,14 +8,17 @@ import { paths } from 'src/routes/paths';
 // components
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { setCurrentDailyLogs } from 'src/redux/slices/dailyLogsSlice';
+import DailyLogsStepperForm from '../daily-logs-stepper-form';
+import DailyLogsStepperView from './daily-logs-stepper-view';
 //
-// import MeetingMinutesNewEditForm from '../meeting-minutes-new-edit-form';
+import DailyLogsNewEditForm from '../daily-logs-new-edit-form';
 // import MeetingMinutesStepperForm from '../meeting-minutes-stepper-form';
 // import MeetingMinutesStepperView from './meeting-minutes-stepper-view';
 
 // ----------------------------------------------------------------------
 
-export default function MeetingMinutesEditView({ id }) {
+export default function DailyLogsEditView({ id }) {
   const settings = useSettingsContext();
   // const currentMeetingMinutes = useSelector((state) => state.plan.current);
 
@@ -32,7 +35,7 @@ export default function MeetingMinutesEditView({ id }) {
           },
           {
             name: 'Daily Logs',
-            href: paths.subscriber.meetingMinutes.list,
+            href: paths.subscriber.logs.list,
           },
           { name: 'Update Daily Logs' },
         ]}
@@ -40,14 +43,14 @@ export default function MeetingMinutesEditView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-
-      {/* <MeetingMinutesNewEditForm currentMeetingMinutes={currentMeetingMinutes} id={id} /> */}
-      {/* <MeetingMinutesStepperForm /> */}
-      {/* <MeetingMinutesStepperView isEdit /> */}
+      {/* 
+      <DailyLogsNewEditForm currentMeetingMinutes={setCurrentDailyLogs} id={id} />
+      <DailyLogsStepperForm /> */}
+      <DailyLogsStepperView isEdit />
     </Container>
   );
 }
 
-MeetingMinutesEditView.propTypes = {
+DailyLogsEditView.propTypes = {
   id: PropTypes.string,
 };
