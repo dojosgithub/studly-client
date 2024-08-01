@@ -332,7 +332,19 @@ const DailyLogsDetails = ({ id }) => {
         <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Weather</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.weather?.join(', ') || 'N/A'}
+            {currentLog?.weather?.length > 0
+              ? currentLog.weather.map((condition, index) => (
+                  <Chip
+                    key={index}
+                    label={condition}
+                    sx={{
+                      margin: '2px',
+                      backgroundColor: '#FFCC3F',
+                      color: 'white',
+                    }}
+                  />
+                ))
+              : 'N/A'}
           </Typography>
         </StyledCard>
 

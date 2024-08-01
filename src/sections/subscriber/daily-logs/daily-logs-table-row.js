@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { TableRow, TableCell, IconButton, Box, MenuItem, Button } from '@mui/material';
+import { TableRow, TableCell, IconButton, Box, MenuItem, Chip, Button } from '@mui/material';
 import { isValid, parseISO, format } from 'date-fns';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
@@ -27,11 +27,7 @@ const DailyLogsTableRow = memo(
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {row?.inspection && (
-              <span>
-                {row.inspection
-                  .map((inspection) => (inspection.value))
-                  .join(', ')}
-              </span>
+              <span>{row.inspection.map((inspection) => inspection.value).join(', ')}</span>
             )}
           </TableCell>
 
@@ -41,12 +37,19 @@ const DailyLogsTableRow = memo(
           />
           <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.visitors?.length}</TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-            {row?.weather?.map((id, index) => (
-              <span key={index}>
-                {id}
-                {index < row.weather.length - 1 && ', '}
-              </span>
-            ))}
+            {row?.weather?.length > 0
+              ? row?.weather?.map((condition, index) => (
+                  <Chip
+                    key={index}
+                    label={condition}
+                    sx={{
+                      margin: '2px',
+                      backgroundColor: '#FFAB00',
+                      color: 'white',
+                    }}
+                  />
+                ))
+              : 'N/A'}
           </TableCell>
 
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>

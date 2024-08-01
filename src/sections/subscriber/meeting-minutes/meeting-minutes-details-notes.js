@@ -50,7 +50,7 @@ const Notes = ({ data }) => {
                     sx={{
                       height: '40px',
 
-                      backgroundColor: '#ffcc3f',
+                      backgroundColor: '##FFAB00',
                       minWidth: '80px',
 
                       display: 'flex',

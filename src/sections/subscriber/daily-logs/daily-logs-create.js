@@ -49,10 +49,10 @@ import Iconify from 'src/components/iconify';
 import SubmittalAttachments from './daily-logs-attachment';
 
 const StyledButton = styled(Button)(({ theme, selected }) => ({
-  backgroundColor: selected ? '#FFCC3F' : theme.palette.background.paper,
+  backgroundColor: selected ? '#FFAB00' : theme.palette.background.paper,
   color: selected ? theme.palette.primary.contrastText : theme.palette.text.primary,
   '&:hover': {
-    backgroundColor: selected ? '#FFCC3F' : theme.palette.action.hover,
+    backgroundColor: selected ? '#FFAB00' : theme.palette.action.hover,
   },
   margin: theme.spacing(0.5),
 }));
@@ -220,6 +220,7 @@ const CreateDailyLog = ({ isEdit }) => {
   );
 
   const [files, setFiles] = useState(existingAttachments);
+  const [loading, setLoading] = useState(false);
 
   const {
     fields: subcontractorFields,
@@ -254,56 +255,59 @@ const CreateDailyLog = ({ isEdit }) => {
     name: 'inspection',
   });
   const onSubmit = handleSubmit(async (data) => {
+    setLoading(true); // Start loading spinner
     console.log('Form Values:', data);
 
-    // Map visitor fields to correct structure
-    data.visitors = data.visitors.map((visitor) => visitor.visitors);
-    data.projectId = currentProject.id;
+    try {
+      // Map visitor fields to correct structure
+      data.visitors = data.visitors.map((visitor) => visitor.visitors);
+      data.projectId = currentProject.id;
 
-    const formData = new FormData();
-    const attachments = [];
+      const formData = new FormData();
+      const attachments = [];
 
-    // Append files to FormData
-    files.forEach((file) => {
-      if (file instanceof File) {
-        formData.append('attachments', file);
-      } else {
-        attachments.push(file);
-      }
-    });
-
-    data.attachments = attachments;
-    console.log(data);
-
-    formData.append('body', JSON.stringify(data));
-
-    let message;
-    let res;
-
-    if (isEdit) {
-      message = 'updated';
-      // Dispatch update action
-      console.log('unga bunga');
-      res = await dispatch(updateDailyLogs({ data: formData, id }));
-    } else {
-      message = 'created';
-      // Dispatch create action
-      res = await dispatch(createDailyLogs(formData));
-    }
-
-    // Handle response
-    const { error, payload } = res;
-
-    if (error) {
-      enqueueSnackbar(error.message || 'An error occurred while saving the daily log.', {
-        variant: 'error',
+      // Append files to FormData
+      files.forEach((file) => {
+        if (file instanceof File) {
+          formData.append('attachments', file);
+        } else {
+          attachments.push(file);
+        }
       });
-      return;
-    }
 
-    enqueueSnackbar(`Daily log ${message} successfully!`, { variant: 'success' });
-    reset();
-    router.push(paths.subscriber.logs.list);
+      data.attachments = attachments;
+      console.log(data);
+
+      formData.append('body', JSON.stringify(data));
+
+      let message;
+      let res;
+
+      if (isEdit) {
+        message = 'updated';
+        res = await dispatch(updateDailyLogs({ data: formData, id }));
+      } else {
+        message = 'created';
+        res = await dispatch(createDailyLogs(formData));
+      }
+
+      const { error, payload } = res;
+
+      if (error) {
+        enqueueSnackbar(error.message || 'An error occurred while saving the daily log.', {
+          variant: 'error',
+        });
+        return;
+      }
+
+      enqueueSnackbar(`Daily log ${message} successfully!`, { variant: 'success' });
+      reset();
+      router.push(paths.subscriber.logs.list);
+    } catch (error) {
+      enqueueSnackbar('An unexpected error occurred.', { variant: 'error' });
+    } finally {
+      setLoading(false); // Stop loading spinner
+    }
   });
 
   const StyledCard = styled(Card, {
@@ -623,8 +627,13 @@ const CreateDailyLog = ({ isEdit }) => {
             />
           </Card>
           <Divider sx={{ margin: 2 }} />
-          <div style={{ display: 'flex', justifyContent: 'flex-end ' }}>
-            <LoadingButton type="submit" variant="contained" sx={{ marginRight: 2 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              sx={{ marginRight: 2 }}
+              loading={loading} // Pass loading state to show spinner in button
+            >
               {isEdit ? 'Update' : 'Create'}
             </LoadingButton>
           </div>
