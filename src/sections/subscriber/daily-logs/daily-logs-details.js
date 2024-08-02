@@ -309,6 +309,13 @@ const DailyLogsDetails = ({ id }) => {
       </Box>
       <Grid container spacing={3}>
         <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
+          <Typography className="submittalTitle"> Accident and safety issues</Typography>
+          <Typography
+            sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}
+            dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }}
+          />
+        </StyledCard>
+        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Date</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {new Date(currentLog?.date).toLocaleDateString()}
@@ -327,6 +334,9 @@ const DailyLogsDetails = ({ id }) => {
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {currentLog?.inspection
               ?.map((item) => {
+                if (!item.value) {
+                  return 'N/A';
+                }
                 if (item.status) {
                   return `${item.value} - Pass`;
                 }
@@ -360,19 +370,24 @@ const DailyLogsDetails = ({ id }) => {
           <Typography className="submittalTitle">Subcontractor Attendance</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {currentLog?.subcontractorAttendance
-              ?.map((attendance) => attendance.companyName)
-              .join(', ')}
+              ?.map((item) => {
+                if (!item.value) {
+                  return 'N/A';
+                }
+                return `  ${item.companyName} - (${item.headCount}) people`;
+              })
+              .join(' | ') || 'N/A'}
           </Typography>
         </StyledCard>
 
-        <StyledCard sx={{ width: '100%' }}>
+        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Distribution List</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {currentLog?.distributionList?.map((item) => item.name).join(', ')}
           </Typography>
         </StyledCard>
 
-        <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
+        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Attachments</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
@@ -381,10 +396,10 @@ const DailyLogsDetails = ({ id }) => {
           </Typography>
         </StyledCard>
 
-        <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '20px' }}>
+        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Summary</Typography>
           <Typography
-            sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 1 }}
+            sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}
             dangerouslySetInnerHTML={{ __html: currentLog?.summary }}
           />
         </StyledCard>

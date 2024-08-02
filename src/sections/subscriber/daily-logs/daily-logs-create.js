@@ -50,7 +50,7 @@ import SubmittalAttachments from './daily-logs-attachment';
 
 const StyledButton = styled(Button)(({ theme, selected }) => ({
   backgroundColor: selected ? '#FFAB00' : theme.palette.background.paper,
-  color: selected ? theme.palette.primary.contrastText : theme.palette.text.primary,
+  color: theme.palette.text.primary,
   '&:hover': {
     backgroundColor: selected ? '#FFAB00' : theme.palette.action.hover,
   },

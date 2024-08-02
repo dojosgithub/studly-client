@@ -72,7 +72,7 @@ export default function DailyLogsListView() {
 
   const handleDeleteRow = useCallback(
     async (row, onDelete) => {
-      dispatch(deleteLog(row));
+      await dispatch(deleteLog(row));
 
       onDelete.onFalse();
       enqueueSnackbar('Log Deleted Successfully', { variant: 'success' });
@@ -130,40 +130,36 @@ export default function DailyLogsListView() {
 
       <Card>
         <DailyLogsTableToolbar filters={filters} onFilters={handleFilters} />
-
         <TableContainer>
           <Scrollbar>
             <Table size="medium">
               <TableHeadCustom
                 order={sortDir}
                 headLabel={TABLE_HEAD}
-                rowCount={listData?.docs?.length}
+                rowCount={listData?.docs?.length || 0}
                 handleSortChange={handleSortChange}
               />
 
               <TableBody>
-                {
-                  // dataFiltered && dataFiltered?
-                  listData?.docs &&
-                    listData?.docs?.map((row) => (
+                {listData?.docs?.length > 0 ? (
+                  <>
+                    {listData?.docs?.map((row) => (
                       <PlanRoomTableRow
                         key={row.id}
                         row={row}
-                        // selected={table.selected.includes(row.id)}
-                        // onSelectRow={() => table.onSelectRow(row.id)}
-
                         onEditRow={() => handleEditRow(row?.id)}
                         onDeleteRow={(onDelete) => handleDeleteRow(row?.id, onDelete)}
                         onViewRow={() => handleViewRow(row?.id)}
                       />
-                    ))
-                }
-                <TableEmptyRows
-                  height={denseHeight}
-                  emptyRows={emptyRows(listData?.docs?.length)}
-                />
-
-                <TableNoData notFound={notFound} />
+                    ))}
+                    <TableEmptyRows
+                      height={denseHeight}
+                      emptyRows={emptyRows(listData?.docs?.length)}
+                    />
+                  </>
+                ) : (
+                  <TableNoData notFound={notFound} />
+                )}
               </TableBody>
             </Table>
           </Scrollbar>
@@ -174,6 +170,7 @@ export default function DailyLogsListView() {
           page={page - 1}
           rowsPerPage={10}
           onPageChange={handlePageChange}
+          rowsPerPageOptions={[]}
         />
       </Card>
     </Container>
