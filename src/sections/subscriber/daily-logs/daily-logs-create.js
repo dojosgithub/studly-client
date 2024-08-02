@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
-import { isEmpty, cloneDeep } from 'lodash';
+import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 import { LoadingButton } from '@mui/lab';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -342,7 +342,14 @@ const CreateDailyLog = ({ isEdit }) => {
       outline: `1px solid ${alpha(theme.palette.grey[700], 1)}`,
     },
   }));
-  const getStatus = (index) => getValues(`inspection[${index}].status`);
+  const getStatus = (index) => {
+    const value = getValues(`inspection[${index}].status`);
+    console.log(isBoolean(value), value);
+    if (isBoolean(value)) {
+      return !value;
+    }
+    return value === 'false';
+  };
 
   return (
     <Box sx={{ padding: 3, width: '100%', paddingLeft: 0 }}>
@@ -423,7 +430,7 @@ const CreateDailyLog = ({ isEdit }) => {
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          label="Value"
+                          label="Type"
                           InputLabelProps={{ shrink: true }}
                           sx={{ marginRight: 2 }}
                           onBlur={() => trigger(`inspection[${index}].value`)}
@@ -447,7 +454,7 @@ const CreateDailyLog = ({ isEdit }) => {
                     />
                   </FormControl>
 
-                  {getStatus(index) === 'false' && (
+                  {getStatus(index) && (
                     <FormControl>
                       <Controller
                         name={`inspection[${index}].reason`}
@@ -634,7 +641,7 @@ const CreateDailyLog = ({ isEdit }) => {
               sx={{ marginRight: 2 }}
               loading={loading} // Pass loading state to show spinner in button
             >
-              {isEdit ? 'Update' : 'Create'}
+              {isEdit ? 'Update' : 'Save'}
             </LoadingButton>
           </div>
         </Box>

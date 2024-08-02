@@ -325,7 +325,15 @@ const DailyLogsDetails = ({ id }) => {
         <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Inspection</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.inspection?.map((item) => item.value).join(', ') || 'N/A'}
+            {currentLog?.inspection
+              ?.map((item) => {
+                if (item.status) {
+                  return `${item.value} - Pass`;
+                }
+                return `${item.value} - Fail (${item.reason})`;
+              })
+
+              .join(' | ') || 'N/A'}
           </Typography>
         </StyledCard>
 
@@ -339,8 +347,8 @@ const DailyLogsDetails = ({ id }) => {
                     label={condition}
                     sx={{
                       margin: '2px',
-                      backgroundColor: '#FFCC3F',
-                      color: 'white',
+                      backgroundColor: '#FFAB00',
+                      color: 'black',
                     }}
                   />
                 ))
@@ -367,7 +375,9 @@ const DailyLogsDetails = ({ id }) => {
         <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
           <Typography className="submittalTitle">Attachments</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            <MultiFilePreview files={attachments} thumbnail onDownload />
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+              <MultiFilePreview files={attachments} thumbnail onDownload />
+            </Box>
           </Typography>
         </StyledCard>
 

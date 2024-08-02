@@ -18,7 +18,7 @@ export default function DailyLogsCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Create a new Meeting</title>
+        <title> Create new daily log page</title>
       </Helmet>
 
       <MeetingMinutesCreateView />

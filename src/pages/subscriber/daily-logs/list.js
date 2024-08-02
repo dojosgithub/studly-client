@@ -9,7 +9,7 @@ export default function DailyLogsListPage() {
   return (
     <>
       <Helmet>
-        <title> Meeting Minutes List</title>
+        <title> Daily Logs List</title>
       </Helmet>
       <Stack sx={{ maxWidth: '100vw' }}>
         <MeetingMinutesListView />

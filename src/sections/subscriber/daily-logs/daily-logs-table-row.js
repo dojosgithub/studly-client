@@ -22,7 +22,20 @@ const DailyLogsTableRow = memo(
     return (
       <>
         <TableRow selected={selected}>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <TableCell
+            sx={{
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              '&:hover': {
+                color: 'blue', // Change text color to blue on hover
+                textDecoration: 'underline', // Add underline on hover for link effect
+              },
+            }}
+            onClick={() => {
+              onViewRow(row.id);
+              popover.onClose();
+            }}
+          >
             {new Date(row?.date).toLocaleDateString()}
           </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
