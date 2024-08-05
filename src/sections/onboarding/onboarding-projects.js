@@ -20,37 +20,40 @@ import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
 import { bgGradient } from 'src/theme/css';
-import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
+import {
+  changeProject,
+  setCurrentProject,
+  setCurrentProjectRole,
+} from 'src/redux/slices/projectSlice';
 import { CustomDrawer } from 'src/components/custom-drawer';
 import { ProjectView } from '../project/view';
 // components
 
-
 // ----------------------------------------------------------------------
-
 
 export default function OnboardingProjects({ projects }) {
   const dispatch = useDispatch();
-  const email = useSelector(state => state?.user?.user?.email);
-  const role = useSelector(state => state?.user?.user?.role?.shortName);
-  const user = useSelector(state => state?.user?.user);
-  const [openDrawer, setOpenDrawer] = useState(false)
+  const email = useSelector((state) => state?.user?.user?.email);
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
+  const user = useSelector((state) => state?.user?.user);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
 
   const handleProject = (project) => {
-    dispatch(setCurrentProject(project))
+    dispatch(setCurrentProject(project));
     const { members } = project;
-    if (role !== "CAD" || role !== "PWU") {
+    if (role !== 'CAD' || role !== 'PWU') {
       // Check if members array is not empty and find the member by email
       if (members && members.length > 0) {
-        const projectRole = members.find(member => member.email === email);
-        dispatch(setCurrentProjectRole(projectRole?.role))
+        const projectRole = members.find((member) => member.email === email);
+        // TODO: update current project through token
+        dispatch(changeProject(project));
+        dispatch(setCurrentProjectRole(projectRole?.role));
       }
-
     }
 
-    navigate(paths.subscriber.submittals.list)
-  }
+    navigate(paths.subscriber.submittals.list);
+  };
 
   return (
     <>
@@ -63,31 +66,29 @@ export default function OnboardingProjects({ projects }) {
           borderRadius: '1rem',
           p: 6,
           maxWidth: 780,
-          mx: 'auto'
+          mx: 'auto',
         }}
       >
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
           Choose a Project to Continue
         </Typography>
 
-        <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
+        <Typography
+          variant="p"
+          sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}
+        >
           {email} is part of multiple projects
         </Typography>
 
-
-        <Stack
-          p={5}
-          gap={2}
-        >
-          {projects.slice(0, 4).map(project => (
-
+        <Stack p={5} gap={2}>
+          {projects.slice(0, 4).map((project) => (
             <Button
               sx={{
                 minHeight: '60px',
                 borderRadius: 1,
                 border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
                 textAlign: 'center',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
               onClick={() => handleProject(project)}
               key={project?._id}
@@ -95,23 +96,31 @@ export default function OnboardingProjects({ projects }) {
               {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
             </RouterLink> */}
               {project?.name}
-            </Button>)
-          )
-          }
-          {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && <Button
-            variant="contained"
-            color="secondary"
-            size='large'
-            onClick={() => setOpenDrawer(true)}
-          // onClick={() => navigate(paths.subscriber.submittals.list)}
-          >
-            Create a new Project
-          </Button>}
+            </Button>
+          ))}
+          {user?.userType === 'Subscriber' &&
+            (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                onClick={() => setOpenDrawer(true)}
+                // onClick={() => navigate(paths.subscriber.submittals.list)}
+              >
+                Create a new Project
+              </Button>
+            )}
         </Stack>
-
       </Stack>
-      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (<CustomDrawer isOnboarding open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
-
+      {user?.userType === 'Subscriber' &&
+        (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
+          <CustomDrawer
+            isOnboarding
+            open={openDrawer}
+            onClose={() => setOpenDrawer(false)}
+            Component={ProjectView}
+          />
+        )}
     </>
   );
 }
