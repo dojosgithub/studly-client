@@ -309,19 +309,18 @@ const DailyLogsDetails = ({ id }) => {
       </Box>
       <Grid container spacing={3}>
         <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
+          <Typography className="submittalTitle">Date</Typography>
+          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+            {new Date(currentLog?.date).toLocaleDateString()}
+          </Typography>
+        </StyledCard>
+        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle"> Accident and safety issues</Typography>
           <Typography
             sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}
             dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }}
           />
         </StyledCard>
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Date</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {new Date(currentLog?.date).toLocaleDateString()}
-          </Typography>
-        </StyledCard>
-
         <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
           <Typography className="submittalTitle">Visitors</Typography>
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
@@ -340,7 +339,10 @@ const DailyLogsDetails = ({ id }) => {
                 if (item.status) {
                   return `${item.value} - Pass`;
                 }
-                return `${item.value} - Fail (${item.reason})`;
+                if (!item.status && item.reason) {
+                  return `${item.value} - Fail (${item.reason})`;
+                }
+                return `${item.value} - Fail`;
               })
 
               .join(' | ') || 'N/A'}
@@ -371,10 +373,14 @@ const DailyLogsDetails = ({ id }) => {
           <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
             {currentLog?.subcontractorAttendance
               ?.map((item) => {
-                if (!item.value) {
+                if (!item.companyName) {
                   return 'N/A';
                 }
-                return `  ${item.companyName} - (${item.headCount}) people`;
+                if (item.companyName && item.headCount) {
+                  return `  ${item.companyName} - (${item.headCount}) people`;
+                }
+
+                return `  ${item.companyName} `;
               })
               .join(' | ') || 'N/A'}
           </Typography>

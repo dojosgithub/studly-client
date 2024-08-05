@@ -24,12 +24,15 @@ const DailyLogsTableRow = memo(
         <TableRow selected={selected}>
           <TableCell
             sx={{
-              whiteSpace: 'nowrap',
               cursor: 'pointer',
-              '&:hover': {
-                color: 'blue', // Change text color to blue on hover
-                textDecoration: 'underline', // Add underline on hover for link effect
-              },
+              color: 'blue',
+              textDecoration: 'underline',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '.25rem',
+              // '&:hover': {
+              //   textDecoration: 'underline',
+              // },
             }}
             onClick={() => {
               onViewRow(row.id);
