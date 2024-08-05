@@ -576,24 +576,6 @@ const SubmittalsDetails = ({ id }) => {
         <StyledCard>
           <Typography className="submittalTitle">Attachments</Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            {/* {attachments?.length > 0 && attachments?.slice(0, 4).map((item) => (
-                            <Avatar src={item?.preview} sx={{ width: 48, height: 48, mr: 2 }} />
-                        ))}
-                        {attachments?.length > 4 && (
-                            <Chip size="small" variant='outlined' label={`${attachments.length - 4} +`} />
-                        )} */}
-            {/* {attachments?.length > 0 &&
-              attachments.map((item) => (
-                <FileThumbnail
-                //   onDownload
-                  tooltip
-                  imageView
-                  file={item}
-                  sx={{ position: 'absolute' }}
-                  imgSx={{ position: 'absolute', width: 100 }}
-                />
-              ))} */}
-            <MultiFilePreview files={attachments} thumbnail onDownload />{' '}
             <MultiFilePreview files={attachments} thumbnail onDownload />
           </Box>
         </StyledCard>

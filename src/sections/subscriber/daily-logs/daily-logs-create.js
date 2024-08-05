@@ -187,8 +187,8 @@ const CreateDailyLog = ({ isEdit }) => {
 
       // Handle attachments (assuming it's an array of objects)
       meeting.attachments = Array.isArray(meeting.attachments) ? [...meeting.attachments] : [];
-
-      dispatch(setCreateDailyLogs(meeting));
+      setFiles(meeting.attachments);
+      // dispatch(setCreateDailyLogs(meeting));
       reset(meeting);
     }
   }, [isEdit, currentLog, dispatch, reset]);
@@ -219,7 +219,7 @@ const CreateDailyLog = ({ isEdit }) => {
     [currentLog]
   );
 
-  const [files, setFiles] = useState(existingAttachments);
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const {
