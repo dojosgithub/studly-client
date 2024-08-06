@@ -53,6 +53,12 @@ const DailyLogsCreatePage = lazy(() => import('src/pages/subscriber/daily-logs/n
 const DailyLogsEditPage = lazy(() => import('src/pages/subscriber/daily-logs/edit'));
 const DailyLogsDetailsPage = lazy(() => import('src/pages/subscriber/daily-logs/details'));
 
+// Documents
+const DocumentsListPage = lazy(() => import('src/pages/subscriber/documents/list'));
+// const DailyLogsCreatePage = lazy(() => import('src/pages/subscriber/daily-logs/new'));
+// const DailyLogsEditPage = lazy(() => import('src/pages/subscriber/daily-logs/edit'));
+// const DailyLogsDetailsPage = lazy(() => import('src/pages/subscriber/daily-logs/details'));
+
 // Project
 const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
 
@@ -133,6 +139,16 @@ export const subscriberRoutes = [
           { path: 'new', element: <DailyLogsCreatePage /> },
           { path: ':id', element: <DailyLogsDetailsPage /> },
           { path: ':id/edit', element: <DailyLogsEditPage /> },
+        ],
+      },
+      {
+        path: 'documents',
+        children: [
+          { element: <DocumentsListPage />, index: true },
+          { path: 'list', element: <DocumentsListPage /> },
+          // { path: 'new', element: <DailyLogsCreatePage /> },
+          // { path: ':id', element: <DailyLogsDetailsPage /> },
+          // { path: ':id/edit', element: <DailyLogsEditPage /> },
         ],
       },
 

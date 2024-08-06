@@ -1,19 +1,17 @@
-import { Stack } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 // sections
+import { FileManagerView } from 'src/sections/subscriber/documents/view';
 
-import { documentsListView } from 'src/sections/subscriber/documents/view';
 // ----------------------------------------------------------------------
 
-export default function documentsListPage() {
+export default function FileManagerPage() {
   return (
     <>
       <Helmet>
-        <title> Documents List</title>
+        <title> Dashboard: File Manager</title>
       </Helmet>
-      <Stack sx={{ maxWidth: '100vw' }}>
-        <documentsListView />
-      </Stack>
+
+      <FileManagerView />
     </>
   );
 }
