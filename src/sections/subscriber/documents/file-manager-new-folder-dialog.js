@@ -1,4 +1,8 @@
 import PropTypes from 'prop-types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { cloneDeep, isEmpty } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { useEffect, useState, useCallback } from 'react';
 // @mui
 import Stack from '@mui/material/Stack';
@@ -8,6 +12,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
+import { uploadDocument } from 'src/redux/slices/documentsSlice';
+import axiosInstance, { endpoints } from 'src/utils/axios';
 // components
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
@@ -33,6 +39,7 @@ export default function FileManagerNewFolderDialog({
       setFiles([]);
     }
   }, [open]);
+  const dispatch = useDispatch();
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -48,10 +55,19 @@ export default function FileManagerNewFolderDialog({
   );
 
   const handleUpload = () => {
-    onClose();
     console.info('ON UPLOAD');
-  };
 
+    let message;
+    let res;
+
+    files.forEach((file) => {
+      console.log(file.name);
+      console.log(file);
+      res = dispatch(uploadDocument(file));
+    });
+
+    onClose();
+  };
   const handleRemoveFile = (inputFile) => {
     const filtered = files.filter((file) => file !== inputFile);
     setFiles(filtered);
@@ -76,7 +92,13 @@ export default function FileManagerNewFolderDialog({
           />
         )}
 
-        <Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} />
+        <Upload
+          multiple
+          files={files}
+          setFiles={files}
+          onDrop={handleDrop}
+          onRemove={handleRemoveFile}
+        />
       </DialogContent>
 
       <DialogActions>

@@ -1,17 +1,28 @@
 import { useState, useCallback } from 'react';
 // @mui
+
 import Stack from '@mui/material/Stack';
+
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+
 import ToggleButton from '@mui/material/ToggleButton';
+
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 // utils
 import { fTimestamp } from 'src/utils/format-time';
 // _mock
+
 import { _allFiles, FILE_TYPE_OPTIONS } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
+
+// routes
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+import { RouterLink } from 'src/routes/components';
 // components
 import Iconify from 'src/components/iconify';
 import EmptyContent from 'src/components/empty-content';
@@ -123,6 +134,7 @@ export default function FileManagerView() {
   const renderFilters = (
     <Stack
       spacing={2}
+      marginTop={5}
       direction={{ xs: 'column', md: 'row' }}
       alignItems={{ xs: 'flex-end', md: 'center' }}
     >
@@ -138,7 +150,7 @@ export default function FileManagerView() {
         typeOptions={FILE_TYPE_OPTIONS}
       />
 
-      <ToggleButtonGroup size="small" value={view} exclusive onChange={handleChangeView}>
+      {/* <ToggleButtonGroup size="small" value={view} exclusive onChange={handleChangeView}>
         <ToggleButton value="list">
           <Iconify icon="solar:list-bold" />
         </ToggleButton>
@@ -146,7 +158,7 @@ export default function FileManagerView() {
         <ToggleButton value="grid">
           <Iconify icon="mingcute:dot-grid-fill" />
         </ToggleButton>
-      </ToggleButtonGroup>
+      </ToggleButtonGroup> */}
     </Stack>
   );
 
@@ -164,17 +176,25 @@ export default function FileManagerView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4">File Manager</Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-            onClick={upload.onTrue}
-          >
-            Upload
-          </Button>
-        </Stack>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <CustomBreadcrumbs
+          heading="Documents"
+          links={[
+            { name: 'Dashboard' },
+            { name: 'Documents', href: paths.subscriber.documents.list },
+            { name: 'Logs' },
+          ]}
+          action={
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="eva:cloud-upload-fill" />}
+              onClick={upload.onTrue}
+            >
+              Upload
+            </Button>
+          }
+          sx={{ mb: { xs: 3, md: 5 } }}
+        />
 
         <Stack
           spacing={2.5}

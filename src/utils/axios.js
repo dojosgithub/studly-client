@@ -139,6 +139,20 @@ export const endpoints = {
     sendToAttendees: (id) => `/api/user/daily-logs/send/${id}`,
     toMinutes: (id) => `/api/user/daily-logs/to-minutes/${id}`,
   },
+  documents: {
+    list: (id) => `/api/user/daily-logs/${id}`,
+    upload: `/api/user/documents`,
+    update: (id) => `/api/user/daily-logs/${id}`,
+    submit: (id) => `/api/user/daily-logs/${id}/submit`,
+    // edit: (id) => `/api/user/daily-logs/${id}`,
+    delete: (id) => `/api/user/daily-logs/${id}`,
+    // details: (id) => `/api/user/daily-logs/${id}/details`,
+    // pdf: (id) => `/api/user/daily-logs/export/${id}`,
+    // followup: (id) => `/api/user/daily-logs/followup/${id}`,
+    // sendToAttendees: (id) => `/api/user/daily-logs/send/${id}`,
+    // toMinutes: (id) => `/api/user/daily-logs/to-minutes/${id}`,
+  },
+
   template: {
     list: '/api/user/template',
     create: '/api/user/template',

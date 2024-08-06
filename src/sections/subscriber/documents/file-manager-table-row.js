@@ -112,14 +112,6 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
           }),
         }}
       >
-        <TableCell padding="checkbox">
-          <Checkbox
-            checked={selected}
-            onDoubleClick={() => console.info('ON DOUBLE CLICK')}
-            onClick={onSelectRow}
-          />
-        </TableCell>
-
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <FileThumbnail file={type} sx={{ width: 36, height: 36 }} />
@@ -130,6 +122,7 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
               sx={{
                 maxWidth: 360,
                 cursor: 'pointer',
+                marginRight: 40,
                 ...(details.value && { fontWeight: 'fontWeightBold' }),
               }}
             >
@@ -137,15 +130,6 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
             </Typography>
           </Stack>
         </TableCell>
-
-        <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
-          {fData(size)}
-        </TableCell>
-
-        <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
-          {type}
-        </TableCell>
-
         <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
           <ListItemText
             primary={format(new Date(modifiedAt), 'dd MMM yyyy')}
@@ -158,8 +142,23 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
             }}
           />
         </TableCell>
+        <TableCell padding="checkbox">
+          {/* <Checkbox
+            checked={selected}
+            onDoubleClick={() => console.info('ON DOUBLE CLICK')}
+            onClick={onSelectRow}
+          /> */}
+        </TableCell>
 
-        <TableCell align="right" onClick={handleClick}>
+        {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
+          {fData(size)}
+        </TableCell> */}
+
+        {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
+          {type}
+        </TableCell> */}
+
+        {/* <TableCell align="right" onClick={handleClick}>
           <AvatarGroup
             max={4}
             sx={{
@@ -178,7 +177,7 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
                 <Avatar key={person.id} alt={person.name} src={person.avatarUrl} />
               ))}
           </AvatarGroup>
-        </TableCell>
+        </TableCell> */}
 
         <TableCell
           align="right"
@@ -187,14 +186,14 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
             whiteSpace: 'nowrap',
           }}
         >
-          <Checkbox
+          {/* <Checkbox
             color="warning"
             icon={<Iconify icon="eva:star-outline" />}
             checkedIcon={<Iconify icon="eva:star-fill" />}
             checked={favorite.value}
             onChange={favorite.onToggle}
             sx={{ p: 0.75 }}
-          />
+          /> */}
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />

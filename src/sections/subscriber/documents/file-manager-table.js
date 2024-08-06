@@ -25,12 +25,13 @@ import FileManagerTableRow from './file-manager-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name' },
-  { id: 'size', label: 'Size', width: 120 },
-  { id: 'type', label: 'Type', width: 120 },
-  { id: 'modifiedAt', label: 'Modified', width: 140 },
-  { id: 'shared', label: 'Shared', align: 'right', width: 140 },
-  { id: '', width: 88 },
+  { id: 'name', label: 'Name', width: '70%' },
+  // { id: 'size', label: 'Size', width: 120 },
+  // { id: 'type', label: 'Type', width: 120 },
+  { id: 'modifiedAt', label: 'Modified', width: '15%' },
+  { id: 'createdBy', label: 'Created By', align: 'left', width: '30%' },
+
+  { id: '', width: '20%' },
 ];
 
 // ----------------------------------------------------------------------
