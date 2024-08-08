@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import { useDispatch } from 'react-redux';
 import { useState, useCallback } from 'react';
 // @mui
 import Stack from '@mui/material/Stack';
@@ -22,6 +23,7 @@ import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 // utils
 import { fData } from 'src/utils/format-number';
 // components
+import { deleteDocument } from 'src/redux/slices/documentsSlice';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
@@ -36,7 +38,7 @@ import FileManagerFileDetails from './file-manager-file-details';
 export default function FileManagerTableRow({ row, selected, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { name, size, type, modifiedAt, shared, isFavorited } = row;
+  const { name, size, _type, updatedAt, createdBy, shared, isFavorited } = row;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -53,6 +55,7 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
   const confirm = useBoolean();
 
   const popover = usePopover();
+  const dispatch = useDispatch();
 
   const handleChangeInvite = useCallback((event) => {
     setInviteEmail(event.target.value);
@@ -85,6 +88,15 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
     },
   };
 
+  const handleDeleteItems = useCallback(async () => {
+    await dispatch(deleteDocument(row._id));
+
+    enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
+    confirm.onFalse();
+    onDeleteRow();
+  }, [dispatch, enqueueSnackbar, confirm, row, onDeleteRow]);
+
+  console.log(row);
   return (
     <>
       <TableRow
@@ -114,7 +126,7 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
       >
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <FileThumbnail file={type} sx={{ width: 36, height: 36 }} />
+            <FileThumbnail file={_type} sx={{ width: 36, height: 36 }} />
 
             <Typography
               noWrap
@@ -132,8 +144,8 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
         </TableCell>
         <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
           <ListItemText
-            primary={format(new Date(modifiedAt), 'dd MMM yyyy')}
-            secondary={format(new Date(modifiedAt), 'p')}
+            primary={format(new Date(updatedAt), 'dd MMM yyyy')}
+            secondary={format(new Date(updatedAt), 'p')}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               mt: 0.5,
@@ -142,14 +154,12 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
             }}
           />
         </TableCell>
-        <TableCell padding="checkbox">
-          {/* <Checkbox
-            checked={selected}
-            onDoubleClick={() => console.info('ON DOUBLE CLICK')}
-            onClick={onSelectRow}
-          /> */}
+        <TableCell>
+          <ListItemText
+            primary={`${createdBy.firstName} ${createdBy.lastName}`}
+            primaryTypographyProps={{ typography: 'body2' }}
+          />
         </TableCell>
-
         {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
           {fData(size)}
         </TableCell> */}
@@ -157,7 +167,6 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
         {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
           {type}
         </TableCell> */}
-
         {/* <TableCell align="right" onClick={handleClick}>
           <AvatarGroup
             max={4}
@@ -269,7 +278,14 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              // onDeleteRow(confirm);
+              handleDeleteItems();
+            }}
+          >
             Delete
           </Button>
         }

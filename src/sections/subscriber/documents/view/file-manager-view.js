@@ -1,9 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 
 import Stack from '@mui/material/Stack';
-
-import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import { Button, Menu, MenuItem } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -25,6 +29,7 @@ import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // components
 import Iconify from 'src/components/iconify';
+import { getDocumentsList, deleteDocument } from 'src/redux/slices/documentsSlice';
 import EmptyContent from 'src/components/empty-content';
 import { fileFormat } from 'src/components/file-thumbnail';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -38,6 +43,7 @@ import FileManagerGridView from '../file-manager-grid-view';
 
 import FileManagerFiltersResult from '../file-manager-filters-result';
 import FileManagerNewFolderDialog from '../file-manager-new-folder-dialog';
+import FileManagerNewFileDialog from '../file-manager-new-file';
 
 // ----------------------------------------------------------------------
 
@@ -52,14 +58,17 @@ const defaultFilters = {
 
 export default function FileManagerView() {
   const table = useTable({ defaultRowsPerPage: 10 });
-
+  const dispatch = useDispatch();
   const settings = useSettingsContext();
-
+  const [anchorEl, setAnchorEl] = useState(null);
   const openDateRange = useBoolean();
-
+  const listData = useSelector((state) => state?.documents?.list);
+  const [files, setFiles] = useState([]);
   const confirm = useBoolean();
-
+  const [folderName, setFolderName] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
   const upload = useBoolean();
+  const newFolder = useBoolean();
 
   const [view, setView] = useState('list');
 
@@ -79,6 +88,10 @@ export default function FileManagerView() {
     dateError,
   });
 
+  useEffect(() => {
+    dispatch(getDocumentsList({ search: filters.query }));
+  }, [dispatch, filters.query]);
+
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
     table.page * table.rowsPerPage + table.rowsPerPage
@@ -94,6 +107,9 @@ export default function FileManagerView() {
       setView(newView);
     }
   }, []);
+  const handleChangeFolderName = useCallback((event) => {
+    setFolderName(event.target.value);
+  }, []);
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -105,31 +121,57 @@ export default function FileManagerView() {
     },
     [table]
   );
+  const handleUpload = () => {
+    handleClose();
+    upload.onTrue(); // Call your upload function here
+  };
 
-  const handleDeleteItem = useCallback(
-    (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
+  const handleNewFolder = () => {
+    handleClose();
+    newFolder.onTrue(); // Call your new folder function here
+  };
 
-      table.onUpdatePageDeleteRow(dataInPage.length);
+  // const handleDeleteItem = useCallback(
+  //   (id) => {
+  //     const deleteRow = tableData.filter((row) => row.id !== id);
+  //     setTableData(deleteRow);
+
+  //     table.onUpdatePageDeleteRow(dataInPage.length);
+  //   },
+  //   [dataInPage.length, table, tableData]
+  // );
+
+  // const handleDeleteItems = useCallback(async(row) => {
+  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+  //   setTableData(deleteRows);
+
+  //   table.onUpdatePageDeleteRows({
+  //     totalRows: tableData.length,
+  //     totalRowsInPage: dataInPage.length,
+  //     totalRowsFiltered: dataFiltered.length,
+  //   });
+  // }, [dataFiltered.length, dataInPage.length, table, tableData]);
+  const handleDeleteItems = useCallback(
+    async (row) => {
+      console.log(row);
+      await dispatch(deleteDocument(row));
+
+      enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
+
+      dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
     },
-    [dataInPage.length, table, tableData]
+    [dispatch, enqueueSnackbar, filters.status, filters.query]
   );
-
-  const handleDeleteItems = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRows: tableData.length,
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, table, tableData]);
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const renderFilters = (
     <Stack
@@ -174,6 +216,10 @@ export default function FileManagerView() {
     />
   );
 
+  const fetchData = () => {
+    dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
+  };
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -187,42 +233,39 @@ export default function FileManagerView() {
           action={
             <Button
               variant="contained"
-              startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-              onClick={upload.onTrue}
+              startIcon={<AddIcon />}
+              onClick={handleClick}
+              style={{ paddingRight: 46 }}
             >
               Upload
             </Button>
           }
-          sx={{ mb: { xs: 3, md: 5 } }}
         />
-
-        <Stack
-          spacing={2.5}
-          sx={{
-            my: { xs: 3, md: 5 },
-          }}
-        >
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+          <MenuItem onClick={handleUpload}>
+            <NoteAddIcon style={{ marginRight: 8 }} /> {/* Add some margin for spacing */}
+            Upload File
+          </MenuItem>
+          <MenuItem onClick={handleNewFolder}>
+            <CreateNewFolderIcon style={{ marginRight: 8 }} /> {/* Add some margin for spacing */}
+            New Folder
+          </MenuItem>
+        </Menu>
+        <Stack spacing={2.5} sx={{ my: { xs: 3, md: 5 } }}>
           {renderFilters}
-
           {canReset && renderResults}
         </Stack>
 
         {notFound ? (
-          <EmptyContent
-            filled
-            title="No Data"
-            sx={{
-              py: 10,
-            }}
-          />
+          <EmptyContent filled title="No Data" sx={{ py: 10 }} />
         ) : (
           <>
-            {view === 'list' ? (
+            {/* {view === 'list' ? (
               <FileManagerTable
                 table={table}
                 tableData={tableData}
-                dataFiltered={dataFiltered}
-                onDeleteRow={handleDeleteItem}
+                dataFiltered={listData}
+                onDeleteRow={handleDeleteItems}
                 notFound={notFound}
                 onOpenConfirm={confirm.onTrue}
               />
@@ -230,32 +273,48 @@ export default function FileManagerView() {
               <FileManagerGridView
                 table={table}
                 data={tableData}
-                dataFiltered={dataFiltered}
-                onDeleteItem={handleDeleteItem}
+                dataFiltered={listData}
+                onDeleteItem={handleDeleteItems}
                 onOpenConfirm={confirm.onTrue}
               />
-            )}
+            )} */}
+            <FileManagerTable
+              table={table}
+              tableData={tableData}
+              dataFiltered={listData}
+              // onDeleteRow={(id) => handleDeleteItems(id)}
+              onDeleteRow={() => fetchData()}
+              notFound={notFound}
+              onOpenConfirm={confirm.onTrue}
+            />
           </>
         )}
       </Container>
 
-      <FileManagerNewFolderDialog open={upload.value} onClose={upload.onFalse} />
+      <FileManagerNewFileDialog open={upload.value} onClose={upload.onFalse} />
 
+      <FileManagerNewFolderDialog
+        open={newFolder.value}
+        onClose={newFolder.onFalse}
+        title="New Folder"
+        onCreate={() => {
+          setFolderName('');
+          console.info('CREATE NEW FOLDER', folderName);
+        }}
+        folderName={folderName}
+        onChangeFolderName={handleChangeFolderName}
+      />
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
-          </>
-        }
+        content="Are you sure you want to delete?"
         action={
           <Button
             variant="contained"
             color="error"
             onClick={() => {
-              handleDeleteItems();
+              handleDeleteItems(confirm);
               confirm.onFalse();
             }}
           >
@@ -268,39 +327,38 @@ export default function FileManagerView() {
 }
 
 // ----------------------------------------------------------------------
-
 function applyFilter({ inputData, comparator, filters, dateError }) {
   const { name, type, startDate, endDate } = filters;
 
+  // Step 1: Sort the data based on the comparator
   const stabilizedThis = inputData.map((el, index) => [el, index]);
-
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  inputData = stabilizedThis.map((el) => el[0]);
+  let filteredData = stabilizedThis.map((el) => el[0]);
 
+  // Step 2: Apply name filter
   if (name) {
-    inputData = inputData.filter(
-      (file) => file.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+    filteredData = filteredData.filter((file) =>
+      file.name.toLowerCase().includes(name.toLowerCase())
     );
   }
 
+  // Step 3: Apply type filter
   if (type.length) {
-    inputData = inputData.filter((file) => type.includes(fileFormat(file.type)));
+    filteredData = filteredData.filter((file) => type.includes(fileFormat(file.type)));
   }
 
-  if (!dateError) {
-    if (startDate && endDate) {
-      inputData = inputData.filter(
-        (file) =>
-          fTimestamp(file.createdAt) >= fTimestamp(startDate) &&
-          fTimestamp(file.createdAt) <= fTimestamp(endDate)
-      );
-    }
+  // Step 4: Apply date range filter if there's no date error
+  if (!dateError && startDate && endDate) {
+    filteredData = filteredData.filter((file) => {
+      const fileDate = fTimestamp(file.createdAt);
+      return fileDate >= fTimestamp(startDate) && fileDate <= fTimestamp(endDate);
+    });
   }
 
-  return inputData;
+  return filteredData;
 }

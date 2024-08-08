@@ -179,30 +179,30 @@ export default function DailyLogsListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status } = filters;
-  let filteredData = inputData;
+// function applyFilter({ inputData, comparator, filters }) {
+//   const { name, status } = filters;
+//   let filteredData = inputData;
 
-  if (name) {
-    filteredData = filteredData.filter((item) =>
-      item.name.toLowerCase().includes(name.toLowerCase())
-    );
-  }
+//   if (name) {
+//     filteredData = filteredData.filter((item) =>
+//       item.name.toLowerCase().includes(name.toLowerCase())
+//     );
+//   }
 
-  if (status.length) {
-    filteredData = filteredData.filter((item) => status.includes(item.status));
-  }
+//   if (status.length) {
+//     filteredData = filteredData.filter((item) => status.includes(item.status));
+//   }
 
-  return filteredData?.sort(comparator);
-}
+//   return filteredData?.sort(comparator);
+// }
 
-function getComparator(orderBy, orderDir) {
-  return (a, b) => {
-    if (a[orderBy] < b[orderBy]) return orderDir === 'asc' ? -1 : 1;
-    if (a[orderBy] > b[orderBy]) return orderDir === 'asc' ? 1 : -1;
-    return 0;
-  };
-}
+// function getComparator(orderBy, orderDir) {
+//   return (a, b) => {
+//     if (a[orderBy] < b[orderBy]) return orderDir === 'asc' ? -1 : 1;
+//     if (a[orderBy] > b[orderBy]) return orderDir === 'asc' ? 1 : -1;
+//     return 0;
+//   };
+// }
 
 function emptyRows(rowCount) {
   return Math.max(0, 10 - rowCount);

@@ -12,6 +12,7 @@ import rfiReducer from './slices/rfiSlice';
 import planRoomReducer from './slices/planRoomSlice';
 import meetingMinutesReducer from './slices/meetingMinutesSlice';
 import dailyLogsReducer from './slices/dailyLogsSlice';
+import documentsReducer from './slices/documentsSlice';
 //
 import templateReducer from './slices/templateSlice';
 import workflowReducer from './slices/workflowSlice';
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   planRoom: planRoomReducer,
   meetingMinutes: meetingMinutesReducer,
   dailyLogs: dailyLogsReducer,
+  documents: documentsReducer,
   template: templateReducer,
   workflow: workflowReducer,
   invite: inviteReducer,

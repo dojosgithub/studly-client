@@ -21,6 +21,7 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
+
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
 
@@ -31,7 +32,7 @@ export const getDocumentsList = createAsyncThunk(
       console.log('Sending data:', listOptions);
       const { status, ...data } = listOptions;
       const response = await axiosInstance.post(
-        endpoints.dailyLogs.list(projectId),
+        endpoints.documents.list(projectId),
         { status },
         {
           params: data,
@@ -48,11 +49,11 @@ export const getDocumentsList = createAsyncThunk(
     }
   }
 );
-export const deleteLog = createAsyncThunk(
+export const deleteDocument = createAsyncThunk(
   'documents/delete',
   async (id, { getState, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(endpoints.dailyLogs.delete(id));
+      const response = await axiosInstance.delete(endpoints.documents.delete(id));
 
       return response.data.data;
     } catch (err) {
@@ -64,19 +65,7 @@ export const deleteLog = createAsyncThunk(
     }
   }
 );
-const documentsInitialState = {
-  date: new Date('07-21-2024'),
-  accidentSafetyIssues: '',
-  visitors: [{ visitors: '' }],
-  inspection: [{ value: '', status: true, reason: '' }],
-  weather: 'Clear',
-  subcontractorAttendance: [{ companyName: '', headCount: null }],
-  distributionList: [{ name: '', email: '' }],
-  attachments: [],
-  summary: '',
-  status: 1,
-  docStatus: 1,
-};
+const documentsInitialState = {};
 
 const initialState = {
   notes: '',
@@ -136,15 +125,15 @@ const documents = createSlice({
       state.error = action.error.message;
     });
 
-    builder.addCase(deleteLog.pending, (state) => {
+    builder.addCase(deleteDocument.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(deleteLog.fulfilled, (state, action) => {
+    builder.addCase(deleteDocument.fulfilled, (state, action) => {
       state.isLoading = false;
       state.error = null;
     });
-    builder.addCase(deleteLog.rejected, (state, action) => {
+    builder.addCase(deleteDocument.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

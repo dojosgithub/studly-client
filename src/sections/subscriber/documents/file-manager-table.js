@@ -150,17 +150,15 @@ export default function FileManagerTable({
             />
 
             <TableBody>
-              {dataFiltered
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <FileManagerTableRow
-                    key={row.id}
-                    row={row}
-                    selected={selected.includes(row.id)}
-                    onSelectRow={() => onSelectRow(row.id)}
-                    onDeleteRow={() => onDeleteRow(row.id)}
-                  />
-                ))}
+              {dataFiltered?.docs?.map((row) => (
+                <FileManagerTableRow
+                  key={row.id}
+                  row={row}
+                  selected={selected.includes(row.id)}
+                  onSelectRow={() => onSelectRow(row.id)}
+                  onDeleteRow={() => onDeleteRow(row._id)}
+                />
+              ))}
 
               <TableEmptyRows
                 height={denseHeight}
@@ -181,7 +179,7 @@ export default function FileManagerTable({
       </Box>
 
       <TablePaginationCustom
-        count={dataFiltered.length}
+        count={dataFiltered?.totalDocs}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={onChangePage}

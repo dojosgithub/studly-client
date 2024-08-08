@@ -154,7 +154,7 @@ export default function FileManagerFileDetails({
 
   const renderShared = (
     <>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2.5 }}>
+      {/* <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2.5 }}>
         <Typography variant="subtitle2"> File Share With </Typography>
 
         <IconButton
@@ -181,7 +181,7 @@ export default function FileManagerFileDetails({
             <FileManagerInvitedItem key={person.id} person={person} />
           ))}
         </Box>
-      )}
+      )} */}
     </>
   );
 

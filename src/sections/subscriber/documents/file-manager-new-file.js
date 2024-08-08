@@ -21,19 +21,10 @@ import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerNewFolderDialog({
-  title = 'Upload Files',
-  open,
-  onClose,
-  //
-  onCreate,
-
-  folderName,
-  onChangeFolderName,
-  ...other
-}) {
+export default function FileManagerNewFileDialog({ title = 'Upload Files', open, onClose }) {
   const [files, setFiles] = useState([]);
   const currentProject = useSelector((state) => state?.project?.current);
+
   useEffect(() => {
     if (!open) {
       setFiles([]);
@@ -46,13 +37,13 @@ export default function FileManagerNewFolderDialog({
     );
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
+
   const handleUpload = async () => {
     try {
       const formData = new FormData();
 
       const body = {
-        name: folderName,
-        type: 'folder',
+        type: 'file',
         parentId: null,
         projectId: currentProject.id,
       };
@@ -62,7 +53,6 @@ export default function FileManagerNewFolderDialog({
           formData.append('attachments', file);
         }
       });
-
       formData.append('body', JSON.stringify(body));
 
       console.log(formData);
@@ -84,20 +74,10 @@ export default function FileManagerNewFolderDialog({
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}> {title} </DialogTitle>
 
       <DialogContent dividers sx={{ pt: 1, pb: 0, border: 'none' }}>
-        {onCreate && (
-          <TextField
-            fullWidth
-            label="Folder name"
-            value={folderName}
-            onChange={onChangeFolderName}
-            sx={{ mb: 3 }}
-          />
-        )}
-
         <Upload
           multiple
           files={files}
@@ -108,36 +88,27 @@ export default function FileManagerNewFolderDialog({
       </DialogContent>
 
       <DialogActions>
-        {/* <Button
+        <Button
           variant="contained"
           startIcon={<Iconify icon="eva:cloud-upload-fill" />}
           onClick={handleUpload}
           disabled={!files.length}
         >
           Upload
-        </Button> */}
+        </Button>
 
         {!!files.length && (
           <Button variant="outlined" color="inherit" onClick={handleRemoveAllFiles}>
             Remove all
           </Button>
         )}
-
-        <Stack direction="row" justifyContent="flex-end" flexGrow={1}>
-          <Button variant="contained" onClick={handleUpload}>
-            Create
-          </Button>
-        </Stack>
       </DialogActions>
     </Dialog>
   );
 }
 
-FileManagerNewFolderDialog.propTypes = {
-  folderName: PropTypes.string,
-  onChangeFolderName: PropTypes.func,
+FileManagerNewFileDialog.propTypes = {
   onClose: PropTypes.func,
-  onCreate: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,
 };
