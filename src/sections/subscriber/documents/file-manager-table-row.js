@@ -38,7 +38,7 @@ import FileManagerFileDetails from './file-manager-file-details';
 export default function FileManagerTableRow({ row, selected, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { name, size, _type, updatedAt, createdBy, shared, isFavorited } = row;
+  const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview } = row;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -126,7 +126,11 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
       >
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <FileThumbnail file={_type} sx={{ width: 36, height: 36 }} />
+            <FileThumbnail
+              // file={_type === 'file' ? fileType : _type}
+              file={preview}
+              sx={{ width: 36, height: 36 }}
+            />
 
             <Typography
               noWrap

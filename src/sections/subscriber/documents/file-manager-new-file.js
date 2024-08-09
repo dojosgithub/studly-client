@@ -21,7 +21,12 @@ import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerNewFileDialog({ title = 'Upload Files', open, onClose }) {
+export default function FileManagerNewFileDialog({
+  title = 'Upload Files',
+  open,
+  onClose,
+  fetchData,
+}) {
   const [files, setFiles] = useState([]);
   const currentProject = useSelector((state) => state?.project?.current);
 
@@ -58,6 +63,7 @@ export default function FileManagerNewFileDialog({ title = 'Upload Files', open,
       console.log(formData);
       await dispatch(uploadDocument(formData));
       console.log('Upload successful');
+      fetchData()
       onClose();
     } catch (error) {
       console.error('Upload failed:', error);
@@ -111,4 +117,5 @@ FileManagerNewFileDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,
+  fetchData: PropTypes.func,
 };

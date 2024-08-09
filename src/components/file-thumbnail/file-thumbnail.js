@@ -17,7 +17,7 @@ export default function FileThumbnail({
   imgSx,
 }) {
   const { name = '', path = '', preview = '' } = fileData(file);
-
+console.log(name, path, preview)
   const format = fileFormat(path || preview);
 
   const onDownloadHandler = () => {

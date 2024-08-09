@@ -30,6 +30,7 @@ export default function FileManagerNewFolderDialog({
 
   folderName,
   onChangeFolderName,
+  fetchData,
   ...other
 }) {
   const [files, setFiles] = useState([]);
@@ -68,6 +69,7 @@ export default function FileManagerNewFolderDialog({
       console.log(formData);
       await dispatch(uploadDocument(formData));
       console.log('Upload successful');
+      fetchData();
       onClose();
     } catch (error) {
       console.error('Upload failed:', error);
@@ -140,4 +142,5 @@ FileManagerNewFolderDialog.propTypes = {
   onCreate: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,
+  fetchData: PropTypes.func,
 };

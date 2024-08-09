@@ -286,12 +286,13 @@ export default function FileManagerView() {
               onDeleteRow={() => fetchData()}
               notFound={notFound}
               onOpenConfirm={confirm.onTrue}
+              fetchData={fetchData}
             />
           </>
         )}
       </Container>
 
-      <FileManagerNewFileDialog open={upload.value} onClose={upload.onFalse} />
+      <FileManagerNewFileDialog open={upload.value} onClose={upload.onFalse} fetchData={fetchData}/>
 
       <FileManagerNewFolderDialog
         open={newFolder.value}
@@ -303,6 +304,7 @@ export default function FileManagerView() {
         }}
         folderName={folderName}
         onChangeFolderName={handleChangeFolderName}
+        fetchData={fetchData}
       />
       <ConfirmDialog
         open={confirm.value}

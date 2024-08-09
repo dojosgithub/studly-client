@@ -64,7 +64,7 @@ export default function PlanRoomAttachments({
     setFiles(filtered);
     // setValue('attachments', filtered)
   };
-  
+
   const handleRemoveAllFiles = () => {
     // setValue('attachments', [])
     setFiles([]);
