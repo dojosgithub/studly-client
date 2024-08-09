@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
+import { LoadingButton } from '@mui/lab';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
@@ -34,6 +35,7 @@ export default function FileManagerNewFolderDialog({
   ...other
 }) {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const currentProject = useSelector((state) => state?.project?.current);
   useEffect(() => {
     if (!open) {
@@ -48,6 +50,7 @@ export default function FileManagerNewFolderDialog({
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
   const handleUpload = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
 
@@ -73,6 +76,8 @@ export default function FileManagerNewFolderDialog({
       onClose();
     } catch (error) {
       console.error('Upload failed:', error);
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -126,9 +131,17 @@ export default function FileManagerNewFolderDialog({
         )}
 
         <Stack direction="row" justifyContent="flex-end" flexGrow={1}>
-          <Button variant="contained" onClick={handleUpload}>
+          {/* <Button variant="contained" onClick={handleUpload}>
             Create
-          </Button>
+          </Button> */}
+          <LoadingButton
+            variant="contained"
+            disabled={!folderName}
+            onClick={handleUpload}
+            loading={loading} // Pass loading state to show spinner in button
+          >
+            Create
+          </LoadingButton>
         </Stack>
       </DialogActions>
     </Dialog>

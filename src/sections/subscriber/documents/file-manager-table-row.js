@@ -127,8 +127,8 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <FileThumbnail
-              // file={_type === 'file' ? fileType : _type}
-              file={preview}
+              file={_type === 'file' ? fileType : _type}
+              // file={preview}
               sx={{ width: 36, height: 36 }}
             />
 

@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
+import { LoadingButton } from '@mui/lab';
 import DialogContent from '@mui/material/DialogContent';
 import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
@@ -36,6 +37,7 @@ export default function FileManagerNewFileDialog({
     }
   }, [open]);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const handleDrop = useCallback((acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, { preview: URL.createObjectURL(file) })
@@ -44,6 +46,7 @@ export default function FileManagerNewFileDialog({
   }, []);
 
   const handleUpload = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
 
@@ -63,10 +66,12 @@ export default function FileManagerNewFileDialog({
       console.log(formData);
       await dispatch(uploadDocument(formData));
       console.log('Upload successful');
-      fetchData()
+      fetchData();
       onClose();
     } catch (error) {
       console.error('Upload failed:', error);
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -94,14 +99,23 @@ export default function FileManagerNewFileDialog({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        {/* <Button
           variant="contained"
           startIcon={<Iconify icon="eva:cloud-upload-fill" />}
           onClick={handleUpload}
           disabled={!files.length}
         >
           Upload
-        </Button>
+        </Button> */}
+        <LoadingButton
+          variant="contained"
+          startIcon={<Iconify icon="eva:cloud-upload-fill" />}
+          disabled={!files.length}
+          onClick={handleUpload}
+          loading={loading} // Pass loading state to show spinner in button
+        >
+          Upload
+        </LoadingButton>
 
         {!!files.length && (
           <Button variant="outlined" color="inherit" onClick={handleRemoveAllFiles}>
