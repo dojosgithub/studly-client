@@ -281,7 +281,6 @@ export default function FileManagerView() {
             <FileManagerTable
               table={table}
               tableData={tableData}
-              dataFiltered={listData}
               // onDeleteRow={(id) => handleDeleteItems(id)}
               onDeleteRow={() => fetchData()}
               notFound={notFound}
@@ -292,7 +291,11 @@ export default function FileManagerView() {
         )}
       </Container>
 
-      <FileManagerNewFileDialog open={upload.value} onClose={upload.onFalse} fetchData={fetchData}/>
+      <FileManagerNewFileDialog
+        open={upload.value}
+        onClose={upload.onFalse}
+        fetchData={fetchData}
+      />
 
       <FileManagerNewFolderDialog
         open={newFolder.value}

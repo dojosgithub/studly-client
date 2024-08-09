@@ -37,6 +37,7 @@ export default function FileManagerNewFileDialog({
     }
   }, [open]);
   const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const handleDrop = useCallback((acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
@@ -95,6 +96,7 @@ export default function FileManagerNewFileDialog({
           setFiles={setFiles}
           onDrop={handleDrop}
           onRemove={handleRemoveFile}
+          maxFiles={10}
         />
       </DialogContent>
 

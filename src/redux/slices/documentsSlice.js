@@ -21,6 +21,26 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
+export const updateDocument = createAsyncThunk(
+  'documents/update',
+  async (documentsData, { getState, rejectWithValue }) => {
+    console.log('documentsData', documentsData);
+
+    try {
+      const projectId = getState().project?.current?.id;
+      console.log('Sending data:', documentsData);
+      const response = await axiosInstance.post(endpoints.documents.update(projectId));
+      console.log('API Response:', response.data);
+      return response.data.data;
+    } catch (err) {
+      console.error('API Error:', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
 
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
@@ -65,6 +85,7 @@ export const deleteDocument = createAsyncThunk(
     }
   }
 );
+
 const documentsInitialState = {};
 
 const initialState = {

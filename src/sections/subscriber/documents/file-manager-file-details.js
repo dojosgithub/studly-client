@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -10,7 +11,9 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import Autocomplete from '@mui/material/Autocomplete';
+
 import Drawer from '@mui/material/Drawer';
 // utils
 import { fData } from 'src/utils/format-number';
@@ -19,14 +22,27 @@ import { fDateTime } from 'src/utils/format-time';
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Iconify from 'src/components/iconify';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import Scrollbar from 'src/components/scrollbar';
+
+import {
+  getDocumentsList,
+  deleteDocument,
+  uploadDocument,
+  updateDocument,
+} from 'src/redux/slices/documentsSlice';
 import FileThumbnail, { fileFormat } from 'src/components/file-thumbnail';
 //
 import FileManagerShareDialog from './file-manager-share-dialog';
 import FileManagerInvitedItem from './file-manager-invited-item';
 
 // ----------------------------------------------------------------------
-
+const defaultFilters = {
+  name: '',
+  type: [],
+  startDate: null,
+  endDate: null,
+};
 export default function FileManagerFileDetails({
   item,
   open,
@@ -34,23 +50,29 @@ export default function FileManagerFileDetails({
   //
   onFavorite,
   onCopyLink,
+
   onClose,
+  fetchData,
   onDelete,
   ...other
 }) {
-  const { name, size, url, type, shared, modifiedAt } = item;
+  const { name, size, url, _type, shared, updatedAt, fileType } = item;
 
   const hasShared = shared && !!shared.length;
 
   const toggleTags = useBoolean(true);
+  const confirm = useBoolean();
+  const dispatch = useDispatch();
 
+  const [filters, setFilters] = useState(defaultFilters);
+  const { enqueueSnackbar } = useSnackbar();
   const share = useBoolean();
 
   const properties = useBoolean(true);
 
   const [inviteEmail, setInviteEmail] = useState('');
 
-  const [tags, setTags] = useState(item.tags.slice(0, 3));
+  const [tags, setTags] = useState(item.tags);
 
   const handleChangeInvite = useCallback((event) => {
     setInviteEmail(event.target.value);
@@ -59,7 +81,12 @@ export default function FileManagerFileDetails({
   const handleChangeTags = useCallback((newValue) => {
     setTags(newValue);
   }, []);
-
+  useEffect(() => {
+    console.log('raahim', tags);
+    return () => {
+      dispatch(updateDocument(tags));
+    };
+  }, [tags, dispatch, item._id]);
   const renderTags = (
     <Stack spacing={1.5}>
       <Stack
@@ -109,6 +136,16 @@ export default function FileManagerFileDetails({
     </Stack>
   );
 
+  const handleDeleteItems = useCallback(
+    async (row) => {
+      console.log(row);
+      await dispatch(deleteDocument(row));
+
+      enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
+      dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
+    },
+    [dispatch, enqueueSnackbar, filters.status, filters.query]
+  );
   const renderProperties = (
     <Stack spacing={1.5}>
       <Stack
@@ -127,26 +164,26 @@ export default function FileManagerFileDetails({
 
       {properties.value && (
         <>
-          {/* <Stack direction="row" sx={{ typography: 'caption', textTransform: 'capitalize' }}>
+          <Stack direction="row" sx={{ typography: 'caption', textTransform: 'capitalize' }}>
             <Box component="span" sx={{ width: 80, color: 'text.secondary', mr: 2 }}>
               Size
             </Box>
             {fData(size)}
-          </Stack> */}
+          </Stack>
 
           <Stack direction="row" sx={{ typography: 'caption', textTransform: 'capitalize' }}>
             <Box component="span" sx={{ width: 80, color: 'text.secondary', mr: 2 }}>
               Modified
             </Box>
-            {fDateTime(modifiedAt)}
+            {fDateTime(updatedAt)}
           </Stack>
 
-          {/* <Stack direction="row" sx={{ typography: 'caption', textTransform: 'capitalize' }}>
+          <Stack direction="row" sx={{ typography: 'caption', textTransform: 'capitalize' }}>
             <Box component="span" sx={{ width: 80, color: 'text.secondary', mr: 2 }}>
               Type
             </Box>
-            {fileFormat(type)}
-          </Stack> */}
+            {fileFormat(_type === 'file' ? fileType : _type)}
+          </Stack>
         </>
       )}
     </Stack>
@@ -203,13 +240,13 @@ export default function FileManagerFileDetails({
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2.5 }}>
             <Typography variant="h6"> Info </Typography>
 
-            <Checkbox
+            {/* <Checkbox
               color="warning"
               icon={<Iconify icon="eva:star-outline" />}
               checkedIcon={<Iconify icon="eva:star-fill" />}
               checked={favorited}
               onChange={onFavorite}
-            />
+            /> */}
           </Stack>
 
           <Stack
@@ -222,7 +259,8 @@ export default function FileManagerFileDetails({
           >
             <FileThumbnail
               imageView
-              file={type === 'folder' ? type : url}
+              // file={type === 'folder' ? type : url}
+              file={_type === 'file' ? fileType : _type}
               sx={{ width: 64, height: 64 }}
               imgSx={{ borderRadius: 1 }}
             />
@@ -248,11 +286,31 @@ export default function FileManagerFileDetails({
             color="error"
             size="large"
             startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-            onClick={onDelete}
+            onClick={confirm.onTrue}
           >
             Delete
           </Button>
         </Box>
+
+        <ConfirmDialog
+          open={confirm.value}
+          onClose={confirm.onFalse}
+          title="Delete File"
+          content="Are you sure you want to delete this file?"
+          action={
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                handleDeleteItems();
+
+                confirm.onFalse();
+              }}
+            >
+              Delete
+            </Button>
+          }
+        />
       </Drawer>
 
       <FileManagerShareDialog
@@ -278,4 +336,5 @@ FileManagerFileDetails.propTypes = {
   onDelete: PropTypes.func,
   onFavorite: PropTypes.func,
   open: PropTypes.bool,
+  fetchData: PropTypes.func,
 };

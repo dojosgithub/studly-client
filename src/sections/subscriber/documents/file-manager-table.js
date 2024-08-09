@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,10 +11,10 @@ import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { tablePaginationClasses } from '@mui/material/TablePagination';
+import { getDocumentsList, deleteDocument } from 'src/redux/slices/documentsSlice';
 // components
 import Iconify from 'src/components/iconify';
 import {
-  emptyRows,
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
@@ -35,20 +37,25 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
+const defaultFilters = {
+  name: '',
+  type: [],
+  startDate: null,
+  endDate: null,
+};
 
 export default function FileManagerTable({
   table,
   tableData,
   notFound,
   onDeleteRow,
-  dataFiltered,
+  fetchData,
   onOpenConfirm,
 }) {
   const theme = useTheme();
 
   const {
     dense,
-    page,
     order,
     orderBy,
     rowsPerPage,
@@ -62,9 +69,19 @@ export default function FileManagerTable({
     onChangePage,
     onChangeRowsPerPage,
   } = table;
+  const dispatch = useDispatch();
+  const [filters, setFilters] = useState(defaultFilters);
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    dispatch(getDocumentsList({ search: filters.query, page }));
+  }, [dispatch, filters.query, page]);
 
+  const handlePageChange = (e, newPage) => setPage(newPage + 1);
   const denseHeight = dense ? 58 : 78;
-
+  const dataFiltered = useSelector((state) => state?.documents?.list);
+  const handleFilters = useCallback((name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  }, []);
   return (
     <>
       <Box
@@ -157,12 +174,13 @@ export default function FileManagerTable({
                   selected={selected.includes(row.id)}
                   onSelectRow={() => onSelectRow(row.id)}
                   onDeleteRow={() => onDeleteRow(row._id)}
+                  fetchData={fetchData}
                 />
               ))}
 
               <TableEmptyRows
                 height={denseHeight}
-                emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                emptyRows={emptyRows(dataFiltered?.docs?.length)}
               />
 
               <TableNoData
@@ -180,28 +198,23 @@ export default function FileManagerTable({
 
       <TablePaginationCustom
         count={dataFiltered?.totalDocs}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={onChangePage}
-        onRowsPerPageChange={onChangeRowsPerPage}
-        //
-        dense={dense}
-        onChangeDense={onChangeDense}
-        sx={{
-          [`& .${tablePaginationClasses.toolbar}`]: {
-            borderTopColor: 'transparent',
-          },
-        }}
+        page={page - 1}
+        rowsPerPage={10}
+        onPageChange={handlePageChange}
+        rowsPerPageOptions={[]}
       />
     </>
   );
 }
+function emptyRows(rowCount) {
+  return Math.max(0, 10 - rowCount);
+}
 
 FileManagerTable.propTypes = {
-  dataFiltered: PropTypes.array,
   notFound: PropTypes.bool,
   onDeleteRow: PropTypes.func,
   onOpenConfirm: PropTypes.func,
   table: PropTypes.object,
   tableData: PropTypes.array,
+  fetchData: PropTypes.func,
 };

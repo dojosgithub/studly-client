@@ -35,7 +35,13 @@ import FileManagerFileDetails from './file-manager-file-details';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerTableRow({ row, selected, onSelectRow, onDeleteRow }) {
+export default function FileManagerTableRow({
+  row,
+  selected,
+  onSelectRow,
+  onDeleteRow,
+  fetchData,
+}) {
   const theme = useTheme();
 
   const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview } = row;
@@ -262,6 +268,7 @@ export default function FileManagerTableRow({ row, selected, onSelectRow, onDele
         open={details.value}
         onClose={details.onFalse}
         onDelete={onDeleteRow}
+        fetchData={fetchData}
       />
 
       <FileManagerShareDialog
@@ -303,4 +310,5 @@ FileManagerTableRow.propTypes = {
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
+  fetchData: PropTypes.func,
 };
