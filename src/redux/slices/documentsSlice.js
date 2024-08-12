@@ -21,26 +21,6 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
-export const updateDocument = createAsyncThunk(
-  'documents/update',
-  async (documentsData, { getState, rejectWithValue }) => {
-    console.log('documentsData', documentsData);
-
-    try {
-      const projectId = getState().project?.current?.id;
-      console.log('Sending data:', documentsData);
-      const response = await axiosInstance.post(endpoints.documents.update(projectId));
-      console.log('API Response:', response.data);
-      return response.data.data;
-    } catch (err) {
-      console.error('API Error:', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
-    }
-  }
-);
 
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
@@ -85,6 +65,26 @@ export const deleteDocument = createAsyncThunk(
     }
   }
 );
+export const updateDocument = createAsyncThunk(
+  'documents/update',
+  async (id, documentsData, { getState, rejectWithValue }) => {
+    console.log('documentsData', documentsData);
+
+    try {
+      console.log('documentsData', id);
+      console.log('Sending data:', documentsData);
+      const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
+      console.log('API Response:', response.data);
+      return response.data.data;
+    } catch (err) {
+      console.error('API Error:', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
 
 const documentsInitialState = {};
 
@@ -110,6 +110,10 @@ const documents = createSlice({
     setuploaddocuments: (state, action) => {
       state.upload = action.payload;
     },
+    setupdatedocuments: (state, action) => {
+      state.upload = action.payload;
+    },
+
     setdocumentsDescription: (state, action) => {
       state.upload.description = action.payload;
     },
@@ -128,6 +132,19 @@ const documents = createSlice({
       state.error = null;
     });
     builder.addCase(uploadDocument.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(updateDocument.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateDocument.fulfilled, (state, action) => {
+      state.upload = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(updateDocument.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

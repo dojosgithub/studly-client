@@ -56,7 +56,7 @@ export default function FileManagerFileDetails({
   onDelete,
   ...other
 }) {
-  const { name, size, url, _type, shared, updatedAt, fileType } = item;
+  const { name, size, url, _type, shared, updatedAt, fileType, _id } = item;
 
   const hasShared = shared && !!shared.length;
 
@@ -136,16 +136,11 @@ export default function FileManagerFileDetails({
     </Stack>
   );
 
-  const handleDeleteItems = useCallback(
-    async (row) => {
-      console.log(row);
-      await dispatch(deleteDocument(row));
-
-      enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
-      dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
-    },
-    [dispatch, enqueueSnackbar, filters.status, filters.query]
-  );
+  const handleDeleteItems = useCallback(async () => {
+    await dispatch(deleteDocument(item._id));
+    enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
+    dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
+  }, [dispatch, enqueueSnackbar, filters.status, filters.query, item._id]);
   const renderProperties = (
     <Stack spacing={1.5}>
       <Stack
