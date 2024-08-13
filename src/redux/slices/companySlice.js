@@ -1,31 +1,52 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PROJECTS, PROJECT_INVITE_USERS_EXTERNAL, PROJECT_INVITE_USERS_INTERNAL, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
-import axiosInstance, { endpoints } from "src/utils/axios";
-import uuidv4 from "src/utils/uuidv4";
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  PROJECTS,
+  PROJECT_INVITE_USERS_EXTERNAL,
+  PROJECT_INVITE_USERS_INTERNAL,
+  PROJECT_SUBCONTRACTORS,
+  PROJECT_TEMPLATES,
+  PROJECT_WORKFLOWS,
+  _userList,
+} from 'src/_mock';
+import axiosInstance, { endpoints } from 'src/utils/axios';
+import uuidv4 from 'src/utils/uuidv4';
 
 export const fetchCompanyList = createAsyncThunk(
   'company/list',
   async (listOptions, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(endpoints.company.list, {
-        params: listOptions
+        params: listOptions,
       });
 
-      return response.data.data
+      return response.data.data;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
+  }
+);
+export const updateCompany = createAsyncThunk(
+  'company/update',
+  async ({ data, id }, { getState, rejectWithValue }) => {
+    console.log(data, id);
+
+    try {
+      const response = await axiosInstance.put(endpoints.company.update(id), data);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
 
 export const createNewCompany = createAsyncThunk(
   'company/create',
@@ -33,40 +54,29 @@ export const createNewCompany = createAsyncThunk(
     try {
       const response = await axiosInstance.post(endpoints.company.create, companyData);
 
-      return response.data.data.company
+      return response.data.data.company;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
-export const deleteCompany = createAsyncThunk(
-  'company/delete',
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(endpoints.company.delete(id));
+  }
+);
+export const deleteCompany = createAsyncThunk('company/delete', async (id, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.delete(endpoints.company.delete(id));
 
-      return response.data.data.company
-    } catch (err) {
-      console.error("errSlice", err)
-      if (err && err.message) {
-        throw Error(
-          err.message
-        );
-      }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+    return response.data.data.company;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
-  },
-)
+    throw Error('An error occurred while creating the company.');
+  }
+});
 
 export const updateCompanyStatus = createAsyncThunk(
   'company/status',
@@ -74,47 +84,39 @@ export const updateCompanyStatus = createAsyncThunk(
     try {
       const response = await axiosInstance.put(endpoints.company.status(id, status));
 
-      return response.data.data.company
+      return response.data.data.company;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
-
-
+  }
+);
 
 const initialState = {
   list: null,
   current: null,
   create: null,
   isLoading: false,
-  error: false
-
-}
+  error: false,
+};
 
 const company = createSlice({
   name: 'company',
   initialState,
   reducers: {
     setCreateCompany: (state, action) => {
-      state.create = action.payload
+      state.create = action.payload;
     },
     setCompanyList: (state, action) => {
-      state.list = action.payload
+      state.list = action.payload;
     },
 
     resetCompanyState: () => initialState,
   },
   extraReducers: (builder) => {
-
     // * Fetch Company List
     builder.addCase(fetchCompanyList.pending, (state) => {
       state.isLoading = true;
@@ -142,7 +144,7 @@ const company = createSlice({
     });
     builder.addCase(createNewCompany.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
     // * Delete New Company
     builder.addCase(deleteCompany.pending, (state) => {
@@ -155,7 +157,7 @@ const company = createSlice({
     });
     builder.addCase(deleteCompany.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
     builder.addCase(updateCompanyStatus.pending, (state) => {
       state.isLoading = true;
@@ -168,16 +170,13 @@ const company = createSlice({
     });
     builder.addCase(updateCompanyStatus.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
   },
-})
+});
 
-export const { resetCompanyState, setCompanyList, setCreateCompany } = company.actions
-export default company.reducer
-
-
-
+export const { resetCompanyState, setCompanyList, setCreateCompany } = company.actions;
+export default company.reducer;
 
 // const data=  await axios.post(endpoints.kanban, data, { params: { endpoint: 'create-column' } });
 // const updateUser = createAsyncThunk(

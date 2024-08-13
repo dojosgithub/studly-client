@@ -23,7 +23,14 @@ import UserQuickEditForm from './company-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onUpdate }) {
+export default function CompanyTableRow({
+  row,
+  selected,
+  onEditRow,
+  onSelectRow,
+  onDeleteRow,
+  onUpdate,
+}) {
   // const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
   const { name, address, company_admin, adminName, adminEmail, status, phoneNumber } = row;
 
@@ -55,11 +62,14 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell> */}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.firstName}{" "}{company_admin?.lastName}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {company_admin?.firstName} {company_admin?.lastName}
+        </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{company_admin?.email}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{truncate(address, { length: 20, omission: '...' })}</TableCell>
-
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {truncate(address, { length: 20, omission: '...' })}
+        </TableCell>
 
         {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell> */}
 
@@ -78,11 +88,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           </Label>
         </TableCell> */}
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <Switch
-            checked={status === "1"}
-            onChange={onUpdate}
-            color='success'
-          />
+          <Switch checked={status === '1'} onChange={onUpdate} color="success" />
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
@@ -117,7 +123,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           Delete
         </MenuItem>
 
-        {/* <MenuItem
+        <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -125,7 +131,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         >
           <Iconify icon="solar:pen-bold" />
           Edit
-        </MenuItem> */}
+        </MenuItem>
       </CustomPopover>
 
       <ConfirmDialog

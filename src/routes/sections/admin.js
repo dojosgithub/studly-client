@@ -51,9 +51,6 @@ export const adminRoutes = [
           // { path: '*', element: <Navigate to="/404" replace /> },
         ],
       },
-
-
     ],
   },
-
 ];

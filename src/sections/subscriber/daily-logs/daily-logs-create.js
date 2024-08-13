@@ -65,7 +65,7 @@ const CreateDailyLog = ({ isEdit }) => {
 
   const currentLog = useSelector((state) => state?.dailyLogs?.current);
   const { id } = params;
-
+  console.log('raahim', currentLog, id);
   console.log('id, id', id);
   const router = useRouter();
 

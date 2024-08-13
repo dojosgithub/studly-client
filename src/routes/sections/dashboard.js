@@ -70,7 +70,7 @@ export const dashboardRoutes = [
           { path: 'new', element: <CompanyCreatePage /> },
         ],
       },
-      
+
       {
         path: 'user',
         children: [
@@ -94,7 +94,6 @@ export const dashboardRoutes = [
           { path: 'new', element: <BlogNewPostPage /> },
         ],
       },
-
     ],
   },
 ];

@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { isEmpty } from 'lodash';
+
 import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
+import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -19,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { useRouter, useParams } from 'src/routes/hooks';
 // assets
 import { countries } from 'src/assets/data';
 // components
@@ -32,15 +34,16 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
-import { createNewCompany } from 'src/redux/slices/companySlice';
+import { createNewCompany, updateCompany, fetchCompanyList } from 'src/redux/slices/companySlice';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyNewEditForm({ currentCompany }) {
+export default function CompanyNewEditForm({ isEdit }) {
   const router = useRouter();
   const dispatch = useDispatch();
-
+  const params = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const { id } = params;
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Company Name is required'),
@@ -69,29 +72,48 @@ export default function CompanyNewEditForm({ currentCompany }) {
     // status: Yup.string(),
     // isVerified: Yup.boolean(),
   });
-
+  useEffect(() => {
+    if (isEdit) {
+      dispatch(fetchCompanyList(id));
+    }
+  }, [isEdit, id, dispatch]);
+  const currentLog = useSelector((state) => state?.company?.current);
+  console.log('raahim', currentLog, id);
   const defaultValues = useMemo(
     () => ({
-      name: currentCompany?.name || '',
-      phoneNumber: currentCompany?.phoneNumber || '',
-      address: currentCompany?.address || '',
-      email: currentCompany?.adminEmail || '',
-      firstName: currentCompany?.firstName || '',
-      lastName: currentCompany?.lastName || '',
-      // password: currentCompany?.password || '',
-      // adminName: currentCompany?.adminName || '',
+      name: '',
+      phoneNumber: '',
+      address: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      // password: currentLog?.password || '',
+      // adminName: currentLog?.adminName || '',
 
-      // city: currentCompany?.city || '',
-      // role: currentCompany?.role || '',
-      // state: currentCompany?.state || '',
-      // status: currentCompany?.status || '',
-      // country: currentCompany?.country || '',
-      // zipCode: currentCompany?.zipCode || '',
-      // avatarUrl: currentCompany?.avatarUrl || null,
-      // isVerified: currentCompany?.isVerified || true,
+      // city: currentLog?.city || '',
+      // role: currentLog?.role || '',
+      // state: currentLog?.state || '',
+      // status: currentLog?.status || '',
+      // country: currentLog?.country || '',
+      // zipCode: currentLog?.zipCode || '',
+      // avatarUrl: currentLog?.avatarUrl || null,
+      // isVerified: currentLog?.isVerified || true,
     }),
-    [currentCompany]
+    []
   );
+  useEffect(() => {
+    if (isEdit && currentLog) {
+      const Company = cloneDeep(currentLog);
+      console.log('raahim', currentLog);
+
+      Company.name = typeof Company.name === 'string' ? Company.name : '';
+      Company.name = typeof Company.phoneNumber === 'string' ? Company.phoneNumber : '';
+      Company.name = typeof Company.address === 'string' ? Company.address : '';
+      Company.name = typeof Company.email === 'string' ? Company.email : '';
+      Company.name = typeof Company.firstName === 'string' ? Company.firstName : '';
+      Company.name = typeof Company.lastName === 'string' ? Company.lastName : '';
+    }
+  }, [currentLog, isEdit]);
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
@@ -108,23 +130,63 @@ export default function CompanyNewEditForm({ currentCompany }) {
   } = methods;
 
   const values = watch();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
+    setLoading(true);
     try {
-      const { error, payload } = await dispatch(createNewCompany(data))
-      if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
+      let message;
+      let res;
+
+      //   if (isEdit) {
+      //     message = 'updated';
+      //     res = await dispatch(updateCompany({ data, currentLog }));
+      //   } else {
+      //     message = 'created';
+
+      //     res = await dispatch(createNewCompany(data));
+      //   }
+      //   // if (!isEmpty(error)) {
+      //   //   enqueueSnackbar(error.message, { variant: 'error' });
+      //   //   return;
+      //   // }
+      //   reset();
+      //   enqueueSnackbar(
+      //     currentLog ? 'Company updated successfully!' : 'Company created successfully!',
+      //     { variant: 'success' }
+      //   );
+      //   router.push(paths.admin.company.list);
+      // } catch (error) {
+      //   // console.error(error);
+      //   console.log('error-->', error);
+      //   enqueueSnackbar(`Error ${currentLog ? 'Updating' : 'Creating'} Company`, {
+      //     variant: 'error',
+      //   });
+      // }
+      if (isEdit) {
+        message = 'updated';
+        res = await dispatch(updateCompany({ data, id }));
+      } else {
+        message = 'created';
+        res = await dispatch(createNewCompany(data));
       }
+
+      const { error, payload } = res;
+
+      if (error) {
+        enqueueSnackbar(error.message || 'An error occurred while saving the daily log.', {
+          variant: 'error',
+        });
+        return;
+      }
+
+      enqueueSnackbar(`Company ${message} successfully!`, { variant: 'success' });
       reset();
-      enqueueSnackbar(currentCompany ? 'Company updated successfully!' : 'Company created successfully!', { variant: 'success' });
       router.push(paths.admin.company.list);
-
-
     } catch (error) {
-      // console.error(error);
-      console.log('error-->', error);
-      enqueueSnackbar(`Error ${currentCompany ? "Updating" : "Creating"} Company`, { variant: "error" });
+      enqueueSnackbar('An unexpected error occurred.', { variant: 'error' });
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   });
 
@@ -148,7 +210,7 @@ export default function CompanyNewEditForm({ currentCompany }) {
       <Grid container spacing={3}>
         {/* <Grid xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentCompany && (
+            {currentLog && (
               <Label
                 color={
                   (values.status === 'active' && 'success') ||
@@ -184,7 +246,7 @@ export default function CompanyNewEditForm({ currentCompany }) {
               />
             </Box>
 
-            {currentCompany && (
+            {currentLog && (
               <FormControlLabel
                 labelPlacement="start"
                 control={
@@ -232,7 +294,7 @@ export default function CompanyNewEditForm({ currentCompany }) {
               sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
             />
 
-            {currentCompany && (
+            {currentLog && (
               <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
                 <Button variant="soft" color="error">
                   Delete User
@@ -309,8 +371,8 @@ export default function CompanyNewEditForm({ currentCompany }) {
             </Box>
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-                {!currentCompany ? 'Create New Company' : 'Save Changes'}
+              <LoadingButton type="submit" variant="contained" size="large" loading={loading}>
+                {isEdit ? 'Create New Company' : 'Save Changes'}
               </LoadingButton>
             </Stack>
           </Card>
@@ -321,5 +383,5 @@ export default function CompanyNewEditForm({ currentCompany }) {
 }
 
 CompanyNewEditForm.propTypes = {
-  currentCompany: PropTypes.object,
+  isEdit: PropTypes.bool,
 };

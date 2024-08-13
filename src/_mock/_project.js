@@ -106,7 +106,7 @@ export const FILTER_CATEGORIES_MEETINGROOM = ['Draft', 'Minutes'];
 export const FILTER_CATEGORIES_MEETINGNOTES = ['Active', 'Inactive'];
 
 export const PROJECT_TEMPLATE_OPTIONS = [
-  { value: 'default', label: 'Studly Default Template', icon: 'mdi:crown-outline' },
+  { value: 'default', label: 'CSI Code Template', icon: 'mdi:crown-outline' },
   { value: 'template1', label: 'Template 1' },
   { value: 'template2', label: 'Template 2' },
   { value: 'template3', label: 'Template 3' },

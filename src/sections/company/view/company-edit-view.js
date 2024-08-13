@@ -13,10 +13,8 @@ import CompanyNewEditForm from '../company-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyEditView({ id }) {
+export default function CompanyEditView({ isEdit = false }) {
   const settings = useSettingsContext();
-
-  const currentUser = _userList.find((user) => user.id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -31,18 +29,18 @@ export default function CompanyEditView({ id }) {
             name: 'Companies',
             href: paths.dashboard.company.list,
           },
-          { name: currentUser?.name },
+          { name: 'Update Company' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <CompanyNewEditForm currentUser={currentUser} />
+      <CompanyNewEditForm isEdit={isEdit} />
     </Container>
   );
 }
 
 CompanyEditView.propTypes = {
-  id: PropTypes.string,
+  isEdit: PropTypes.bool,
 };

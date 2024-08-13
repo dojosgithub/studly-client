@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +8,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
+import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
@@ -16,10 +18,14 @@ import TableContainer from '@mui/material/TableContainer';
 // routes
 import { useSnackbar } from 'notistack';
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // Redux API Functions
-import { deleteCompany, fetchCompanyList, updateCompanyStatus } from 'src/redux/slices/companySlice';
+import {
+  deleteCompany,
+  fetchCompanyList,
+  updateCompanyStatus,
+} from 'src/redux/slices/companySlice';
 // _mock
 import { _userList, _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 // hooks
@@ -65,14 +71,13 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
-  query: ''
+  query: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function CompanyListView() {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const table = useTable();
 
@@ -82,9 +87,11 @@ export default function CompanyListView() {
 
   const router = useRouter();
 
+  const params = useParams();
+
   const confirm = useBoolean();
 
-  const listData = useSelector(state => state?.company?.list)
+  const listData = useSelector((state) => state?.company?.list);
 
   const [tableData, setTableData] = useState(listData?.docs || []);
 
@@ -102,49 +109,53 @@ export default function CompanyListView() {
   //   table.page * table.rowsPerPage,
   //   table.page * table.rowsPerPage + table.rowsPerPage
   // );
-
+  const currentLog = useSelector((state) => state?.company?.current);
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = listData?.totalDocs === 0
+  const notFound = listData?.totalDocs === 0;
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      // table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleFilters = useCallback((name, value) => {
+    // table.onResetPage();
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
 
   const handleDeleteRow = useCallback(
     (id) => {
       // const deleteRow = tableData.filter((row) => row.id !== id);
       // setTableData(deleteRow);
-      dispatch(deleteCompany(id))
+      dispatch(deleteCompany(id));
       enqueueSnackbar('Company deleted successfully!', { variant: 'success' });
-      dispatch(fetchCompanyList({ search: filters.query, page }))
+      dispatch(fetchCompanyList({ search: filters.query, page }));
     },
     [dispatch, filters?.query, page, enqueueSnackbar]
   );
 
-
+  // const handleEditRow = useCallback(
+  //   (id) => {
+  //     console.log('id', id);
+  //     console.log('path',params)
+  //     router.push(paths.dashboard.company.edit(id));
+  //   },
+  //   [router,params]
+  // );
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      console.log('id', id);
+      console.log('path', params);
+      router.push(paths.admin.company.edit(id));
     },
-    [router]
+    [router, params]
   );
-
   const handleUpdateStatus = useCallback(
     async (id, value) => {
-      const status = value === "1" ? "2" : "1"
-      await dispatch(updateCompanyStatus({ id, status }))
-      await dispatch(fetchCompanyList())
-
+      const status = value === '1' ? '2' : '1';
+      await dispatch(updateCompanyStatus({ id, status }));
+      await dispatch(fetchCompanyList());
     },
     [dispatch]
   );
@@ -160,10 +171,9 @@ export default function CompanyListView() {
     setFilters(defaultFilters);
   }, []);
 
-
   useEffect(() => {
     // Fetch company list data
-    dispatch(fetchCompanyList({ search: filters.query, page }))
+    dispatch(fetchCompanyList({ search: filters.query, page }));
     // .then((response) => {
     //   // Update table data state using functional update to ensure the latest companyList value is used
     //   console.log("companydata-->", response);
@@ -176,7 +186,7 @@ export default function CompanyListView() {
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
-  }
+  };
 
   return (
     <>
@@ -252,7 +262,6 @@ export default function CompanyListView() {
             //
             roleOptions={_roles}
           />
-
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
@@ -332,9 +341,6 @@ export default function CompanyListView() {
             dense={table.dense}
             onChangeDense={table.onChangeDense}
           /> */}
-
-
-
         </Card>
       </Container>
 
@@ -363,6 +369,9 @@ export default function CompanyListView() {
     </>
   );
 }
+CompanyListView.prototype = {
+  isEdit: PropTypes.bool,
+};
 
 // ----------------------------------------------------------------------
 
