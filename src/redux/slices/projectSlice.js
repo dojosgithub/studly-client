@@ -27,23 +27,6 @@ export const createNewProject = createAsyncThunk(
     }
   }
 );
-export const changeProject = createAsyncThunk(
-  'project/change',
-  async (projectData, { getState, rejectWithValue }) => {
-    try {
-      const email = getState()?.user?.user?.email; // Access the current state
-      const response = await axiosInstance.post(endpoints.project.change, projectData);
-      console.log('response.data.data', response.data.data);
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching project list.');
-    }
-  }
-);
 export const getProjectList = createAsyncThunk(
   'project/list',
   async (_, { getState, rejectWithValue }) => {

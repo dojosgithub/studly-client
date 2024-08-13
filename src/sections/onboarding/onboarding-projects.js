@@ -19,13 +19,13 @@ import { RouterLink } from 'src/routes/components';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
+import { jwtDecode } from 'jwt-decode';
 import { bgGradient } from 'src/theme/css';
-import {
-  changeProject,
-  setCurrentProject,
-  setCurrentProjectRole,
-} from 'src/redux/slices/projectSlice';
+import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
+import { authSwitchProject } from 'src/redux/slices/userSlice';
+//
 import { CustomDrawer } from 'src/components/custom-drawer';
+import { getKeyByValue, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY } from 'src/_mock';
 import { ProjectView } from '../project/view';
 // components
 
@@ -38,19 +38,56 @@ export default function OnboardingProjects({ projects }) {
   const user = useSelector((state) => state?.user?.user);
   const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
+  const accessToken = useSelector((state) => state.user.tokens.accessToken);
+  const decodedToken = jwtDecode(accessToken);
+  console.log('decodedToken', decodedToken);
 
   const handleProject = (project) => {
     dispatch(setCurrentProject(project));
-    const { members } = project;
-    if (role !== 'CAD' || role !== 'PWU') {
-      // Check if members array is not empty and find the member by email
-      if (members && members.length > 0) {
-        const projectRole = members.find((member) => member.email === email);
-        // TODO: update current project through token
-        dispatch(changeProject(project));
-        dispatch(setCurrentProjectRole(projectRole?.role));
+
+    const { members, admin, id: projectId, company: companyId } = project;
+    const isCompanyAdmin = role === 'CAD';
+
+    let projectData;
+    let updatedRole;
+
+    if (!isCompanyAdmin) {
+      // Non-Company Admin Logic
+      const projectMember = members.find((member) => member.email === email);
+
+      if (projectMember) {
+        updatedRole = projectMember.role;
+        projectData = {
+          role: updatedRole,
+          userType: updatedRole.loggedInAs,
+          projectId,
+          companyId,
+        };
       }
+    } else {
+      // Company Admin Logic
+      const isAdmin = admin === user._id;
+      updatedRole = {
+        name: SUBSCRIBER_USER_ROLE_STUDLY.CAD,
+        shortName: getKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY, SUBSCRIBER_USER_ROLE_STUDLY.CAD),
+        loggedInAs: USER_TYPES_STUDLY.SUB,
+      };
+      projectData = {
+        role: updatedRole,
+        userType: USER_TYPES_STUDLY.SUB,
+        projectId,
+        companyId,
+      };
+
+      console.log('Company Admin or Power User', isAdmin);
     }
+
+    if (projectData) {
+      dispatch(authSwitchProject(projectData));
+      dispatch(setCurrentProjectRole(updatedRole));
+    }
+
+    // TODO: update current project through token role CAD and PWU
 
     navigate(paths.subscriber.submittals.list);
   };
