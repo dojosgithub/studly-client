@@ -29,10 +29,26 @@ export const fetchCompanyList = createAsyncThunk(
     }
   }
 );
+export const getCompanyDetails = createAsyncThunk(
+  'company/details',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(endpoints.company.details(id));
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching submittal details.');
+    }
+  }
+);
 export const updateCompany = createAsyncThunk(
   'company/update',
   async ({ data, id }, { getState, rejectWithValue }) => {
-    console.log(data, id);
+    console.log('hehvsveh', data, id);
 
     try {
       const response = await axiosInstance.put(endpoints.company.update(id), data);
@@ -113,6 +129,9 @@ const company = createSlice({
     setCompanyList: (state, action) => {
       state.list = action.payload;
     },
+    setCurrentCompany: (state, action) => {
+      state.current = action.payload;
+    },
 
     resetCompanyState: () => initialState,
   },
@@ -172,10 +191,24 @@ const company = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
+    builder.addCase(getCompanyDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getCompanyDetails.fulfilled, (state, action) => {
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getCompanyDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
   },
 });
 
-export const { resetCompanyState, setCompanyList, setCreateCompany } = company.actions;
+export const { setCurrentCompany, resetCompanyState, setCompanyList, setCreateCompany } =
+  company.actions;
 export default company.reducer;
 
 // const data=  await axios.post(endpoints.kanban, data, { params: { endpoint: 'create-column' } });

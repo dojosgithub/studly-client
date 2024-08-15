@@ -13,7 +13,7 @@ import CompanyNewEditForm from '../company-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyEditView({ isEdit = false }) {
+export default function CompanyEditView() {
   const settings = useSettingsContext();
 
   return (
@@ -27,7 +27,7 @@ export default function CompanyEditView({ isEdit = false }) {
           },
           {
             name: 'Companies',
-            href: paths.dashboard.company.list,
+            href: paths.admin.company.list,
           },
           { name: 'Update Company' },
         ]}
@@ -36,11 +36,7 @@ export default function CompanyEditView({ isEdit = false }) {
         }}
       />
 
-      <CompanyNewEditForm isEdit={isEdit} />
+      <CompanyNewEditForm isEdit />
     </Container>
   );
 }
-
-CompanyEditView.propTypes = {
-  isEdit: PropTypes.bool,
-};

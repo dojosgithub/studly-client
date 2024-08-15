@@ -14,6 +14,7 @@ const DailyLogsStepperForm = ({ isEdit }) => {
     <FormProvider {...methods}>
       <Box sx={{ width: '100%', p: 2 }}>
         <CreateDailyLog isEdit={isEdit} />
+        {console.log('hehehe', isEdit)}
       </Box>
     </FormProvider>
   );

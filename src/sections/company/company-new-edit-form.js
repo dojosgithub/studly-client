@@ -34,7 +34,13 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
-import { createNewCompany, updateCompany, fetchCompanyList } from 'src/redux/slices/companySlice';
+import {
+  setCurrentCompany,
+  createNewCompany,
+  getCompanyDetails,
+  updateCompany,
+  fetchCompanyList,
+} from 'src/redux/slices/companySlice';
 
 // ----------------------------------------------------------------------
 
@@ -74,9 +80,10 @@ export default function CompanyNewEditForm({ isEdit }) {
   });
   useEffect(() => {
     if (isEdit) {
-      dispatch(fetchCompanyList(id));
+      dispatch(getCompanyDetails(id));
     }
-  }, [isEdit, id, dispatch]);
+  }, [id, dispatch, isEdit]);
+  const currentProject = useSelector((state) => state?.project?.current);
   const currentLog = useSelector((state) => state?.company?.current);
   console.log('raahim', currentLog, id);
   const defaultValues = useMemo(
@@ -101,19 +108,6 @@ export default function CompanyNewEditForm({ isEdit }) {
     }),
     []
   );
-  useEffect(() => {
-    if (isEdit && currentLog) {
-      const Company = cloneDeep(currentLog);
-      console.log('raahim', currentLog);
-
-      Company.name = typeof Company.name === 'string' ? Company.name : '';
-      Company.name = typeof Company.phoneNumber === 'string' ? Company.phoneNumber : '';
-      Company.name = typeof Company.address === 'string' ? Company.address : '';
-      Company.name = typeof Company.email === 'string' ? Company.email : '';
-      Company.name = typeof Company.firstName === 'string' ? Company.firstName : '';
-      Company.name = typeof Company.lastName === 'string' ? Company.lastName : '';
-    }
-  }, [currentLog, isEdit]);
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
@@ -128,7 +122,21 @@ export default function CompanyNewEditForm({ isEdit }) {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+  useEffect(() => {
+    if (isEdit && currentLog) {
+      const clonedCompany = cloneDeep(currentLog);
 
+      reset({
+        name: clonedCompany.name,
+        phoneNumber: clonedCompany.phoneNumber,
+        address: clonedCompany.address,
+        firstName: clonedCompany.company_admin?.firstName,
+        lastName: clonedCompany.company_admin?.lastName,
+        email: clonedCompany.company_admin?.email,
+        status: clonedCompany.status,
+      });
+    }
+  }, [currentLog, id, reset, isEdit]);
   const values = watch();
   const [loading, setLoading] = useState(false);
 
@@ -138,7 +146,7 @@ export default function CompanyNewEditForm({ isEdit }) {
       let message;
       let res;
 
-      //   if (isEdit) {
+      //   if (id) {
       //     message = 'updated';
       //     res = await dispatch(updateCompany({ data, currentLog }));
       //   } else {
@@ -180,7 +188,7 @@ export default function CompanyNewEditForm({ isEdit }) {
         return;
       }
 
-      enqueueSnackbar(`Company ${message} successfully!`, { variant: 'success' });
+      enqueueSnackbar(`company ${message} successfully!`, { variant: 'success' });
       reset();
       router.push(paths.admin.company.list);
     } catch (error) {
@@ -372,7 +380,7 @@ export default function CompanyNewEditForm({ isEdit }) {
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
               <LoadingButton type="submit" variant="contained" size="large" loading={loading}>
-                {isEdit ? 'Create New Company' : 'Save Changes'}
+                {isEdit ? 'Save Changes' : 'Create New Company'}
               </LoadingButton>
             </Stack>
           </Card>

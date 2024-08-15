@@ -60,6 +60,7 @@ const StyledButton = styled(Button)(({ theme, selected }) => ({
 const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
 
 const CreateDailyLog = ({ isEdit }) => {
+  console.log('hehehe', isEdit);
   const dispatch = useDispatch();
   const params = useParams();
 
