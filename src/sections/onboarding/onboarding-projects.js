@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { jwtDecode } from 'jwt-decode';
 //
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -19,12 +20,13 @@ import { RouterLink } from 'src/routes/components';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
-import { jwtDecode } from 'jwt-decode';
 import { bgGradient } from 'src/theme/css';
 import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
 import { authSwitchProject } from 'src/redux/slices/userSlice';
 //
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { CustomDrawer } from 'src/components/custom-drawer';
+//
 import { getKeyByValue, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY } from 'src/_mock';
 import { ProjectView } from '../project/view';
 // components
@@ -38,9 +40,6 @@ export default function OnboardingProjects({ projects }) {
   const user = useSelector((state) => state?.user?.user);
   const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
-  const accessToken = useSelector((state) => state.user.tokens.accessToken);
-  const decodedToken = jwtDecode(accessToken);
-  console.log('decodedToken', decodedToken);
 
   const handleProject = (project) => {
     dispatch(setCurrentProject(project));
@@ -135,18 +134,20 @@ export default function OnboardingProjects({ projects }) {
               {project?.name}
             </Button>
           ))}
-          {user?.userType === 'Subscriber' &&
-            (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
-              <Button
-                variant="contained"
-                color="secondary"
-                size="large"
-                onClick={() => setOpenDrawer(true)}
-                // onClick={() => navigate(paths.subscriber.submittals.list)}
-              >
-                Create a new Project
-              </Button>
-            )}
+          {/* // {user?.userType === 'Subscriber' && */}
+          {/* // (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && ( */}
+          <RoleAccessWrapper>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={() => setOpenDrawer(true)}
+              // onClick={() => navigate(paths.subscriber.submittals.list)}
+            >
+              Create a new Project
+            </Button>
+          </RoleAccessWrapper>
+          {/* // )} */}
         </Stack>
       </Stack>
       {user?.userType === 'Subscriber' &&

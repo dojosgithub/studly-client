@@ -10,13 +10,96 @@ import { _mock } from './_mock';
 export const STUDLY_ROLES = {
   company: ['SSA'],
   submittals: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  rfis: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  meetingMinutes: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  planRoom: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  documents: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  logs: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  coi: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
-  projectSetting: ['CAD'],
+  rfis: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'COM', 'ASC'],
+  planRoom: ['CAD', 'PWU', 'FIU'],
+  meetingMinutes: ['CAD', 'PWU'],
+  logs: ['CAD', 'PWU', 'FIU'],
+  documents: ['CAD', 'PWU', 'FIU'], // TODO: add routing
+  // coi: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
+  projectSetting: ['CAD', 'PWU'],
+};
+
+export const STUDLY_ACCESS_ROLES = {
+  CAD: {
+    // Company Admin
+    submittals: ['view', 'create', 'edit', 'delete'],
+    rfis: ['view', 'create', 'edit', 'delete'],
+    planRoom: ['view', 'create', 'edit', 'delete'],
+    meetingMinutes: ['view', 'create', 'edit', 'delete'],
+    dailyLogs: ['view', 'create', 'edit', 'delete'],
+    documents: ['view', 'upload', 'edit', 'delete'],
+    projectSettings: ['edit'],
+  },
+  PWU: {
+    // Power User
+    submittals: ['view', 'create', 'edit', 'delete'],
+    rfis: ['view', 'create', 'edit', 'delete'],
+    planRoom: ['view', 'create', 'edit', 'delete'],
+    meetingMinutes: ['view', 'create', 'edit', 'delete'],
+    dailyLogs: ['view', 'create'],
+    documents: ['view', 'upload', 'edit', 'delete'],
+    projectSettings: ['edit'],
+  },
+  FIU: {
+    // Field User
+    submittals: ['view'],
+    rfis: ['view'],
+    planRoom: ['view'],
+    meetingMinutes: [],
+    dailyLogs: ['view', 'create'],
+    documents: ['view'],
+    projectSettings: [],
+  },
+  SCO: {
+    // Sub Contractor
+    submittals: ['view'],
+    rfis: [],
+    planRoom: [],
+    meetingMinutes: [],
+    dailyLogs: [],
+    documents: [],
+    projectSettings: [],
+  },
+  ARC: {
+    // Architect
+    submittals: ['view', 'respond'],
+    rfis: ['view', 'respond'],
+    planRoom: [],
+    meetingMinutes: [],
+    dailyLogs: [],
+    documents: [],
+    projectSettings: [],
+  },
+  ENG: {
+    // Engineer
+    submittals: ['view', 'respond'],
+    rfis: ['view', 'respond'],
+    planRoom: [],
+    meetingMinutes: [],
+    dailyLogs: [],
+    documents: [],
+    projectSettings: [],
+  },
+  COM: {
+    // Construction Manager
+    submittals: ['view'],
+    rfis: ['view'],
+    planRoom: [],
+    meetingMinutes: [],
+    dailyLogs: [],
+    documents: [],
+    projectSettings: [],
+  },
+  ASC: {
+    // Associate
+    submittals: ['view'],
+    rfis: ['view'],
+    planRoom: [],
+    meetingMinutes: [],
+    dailyLogs: [],
+    documents: [],
+    projectSettings: [],
+  },
 };
 
 export const USER_TYPES_STUDLY = {
