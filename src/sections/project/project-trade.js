@@ -13,42 +13,48 @@ import { Divider, Typography } from '@mui/material';
 
 //
 import { useFormContext } from 'react-hook-form';
-import { setActiveTab, setProjectTrades, setSelectedTradeTemplate } from 'src/redux/slices/projectSlice';
+import {
+  setActiveTab,
+  setProjectTrades,
+  setSelectedTradeTemplate,
+} from 'src/redux/slices/projectSlice';
 
 import { PROJECT_TEMPLATES } from 'src/_mock';
 // components
 import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
 import ProjectCreateTrade from './project-create-trade';
+import ProjectCreateCsiTrade from './project-create-csi-template.';
 import ProjectExistingTrade from './project-existing-trade';
 import ProjectTradeSelect from './project-trade-select';
 
-
 export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
   const { getValues, setValue } = useFormContext();
-  const projectName = getValues('name')
+  const projectName = getValues('name');
 
-  const dispatch = useDispatch()
-  const activeTab = useSelector(state => state.project?.create?.activeTab)
-  const selectedTradeTemplate = useSelector(state => state.project?.create?.selectedTradeTemplate)
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.project?.create?.activeTab);
+  const selectedTradeTemplate = useSelector(
+    (state) => state.project?.create?.selectedTradeTemplate
+  );
   const defaultObj = {
     name: '',
     tradeId: '',
     _id: uuidv4(),
-  }
+  };
 
-  // ? Reset trades and selected trade template on tab change 
+  // ? Reset trades and selected trade template on tab change
   const handleTabChange = (e, value) => {
     dispatch(setActiveTab(value));
     if (value === 'create') {
-      dispatch(setSelectedTradeTemplate(''))
+      dispatch(setSelectedTradeTemplate(''));
       dispatch(setProjectTrades([defaultObj]));
-      setValue('trades', [defaultObj])
+      setValue('trades', [defaultObj]);
     } else {
-      setValue('trades', [])
+      setValue('trades', []);
       dispatch(setProjectTrades([]));
     }
-  }
+  };
   // onClick={(e) => {
   //   onTabChange(e.target.name)
   //   dispatch(setActiveTab(e.target.name))
@@ -56,40 +62,48 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
   // }}
   return (
     <>
-      <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Which trades will you be using for {projectName}</Typography>
-      <Divider sx={{
-        minHeight: '1px', bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-        mb: 4
-      }} />
+      <Typography sx={{ my: 2 }} fontSize="1.5rem" fontWeight="bold">
+        Which trades will you be using for {projectName}
+      </Typography>
+      <Divider
+        sx={{
+          minHeight: '1px',
+          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
+          mb: 4,
+        }}
+      />
 
       <Tabs value={activeTab} onChange={handleTabChange}>
         <TabsList>
-          <Tab value='create' name="create">Create Trade</Tab>
-          <Tab value='existing' name="existing">Use Exisiting Template</Tab>
+          <Tab value="create" name="create">
+            Create Trade
+          </Tab>
+          <Tab value="existing" name="existing">
+            Use Exisiting Template
+          </Tab>
         </TabsList>
-        <TabPanel value='create'>
+        <TabPanel value="create">
           <ProjectCreateTrade />
         </TabPanel>
-        <TabPanel value='existing'>
+        <TabPanel value="existing">
           {/* PROJECT_TEMPLATES */}
           <ProjectTradeSelect />
-          {selectedTradeTemplate && <ProjectExistingTrade />}
+          {/* {selectedTradeTemplate && <ProjectExistingTrade />} */}
+          {selectedTradeTemplate && <ProjectCreateCsiTrade />}
 
           {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}
         </TabPanel>
       </Tabs>
-
     </>
   );
 }
-
 
 ProjectTrade.propTypes = {
   selectedTemplate: PropTypes.string,
   onSelect: PropTypes.func,
   onTabChange: PropTypes.func,
-}
+};
 
 const grey = {
   50: '#F3F6F9',
@@ -122,7 +136,7 @@ const Tab = styled(BaseTab)`
 
   &:hover {
     background-color: ${grey[50]};
-    transition:0.2s ease-in;
+    transition: 0.2s ease-in;
   }
 
   &:focus {
@@ -130,7 +144,7 @@ const Tab = styled(BaseTab)`
   }
 
   &.${tabClasses.selected} {
-    background-color:  ${grey[50]};
+    background-color: ${grey[50]};
     color: ${grey[900]};
     outline: 1px solid ${grey[50]};
   }
@@ -151,7 +165,7 @@ const TabPanel = styled(BaseTabPanel)(
   // border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
   border-radius: 12px;
   opacity: 0.6;
-  `,
+  `
 );
 
 const TabsList = styled(BaseTabsList)(
@@ -166,5 +180,5 @@ const TabsList = styled(BaseTabsList)(
   align-content: space-between;
   gap:1rem;
   // box-shadow: 0px 4px 30px ${theme.palette.mode === 'dark' ? grey[900] : grey[200]};
-  `,
+  `
 );
