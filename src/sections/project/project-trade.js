@@ -24,7 +24,7 @@ import { PROJECT_TEMPLATES } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
 import ProjectCreateTrade from './project-create-trade';
-import ProjectCreateCsiTrade from './project-create-csi-template.';
+import ProjectCreateCsiTrade from './project-create-csi-template';
 import ProjectExistingTrade from './project-existing-trade';
 import ProjectTradeSelect from './project-trade-select';
 

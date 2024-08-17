@@ -1,13 +1,14 @@
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
+// hook-form
+import { TreeView, TreeItem } from '@mui/lab';
+import { styled } from '@mui/material/styles';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import IndeterminateCheckBoxRoundedIcon from '@mui/icons-material/IndeterminateCheckBoxRounded';
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+
 import { useSelector } from 'react-redux';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import IndeterminateCheckBoxRoundedIcon from '@mui/icons-material/IndeterminateCheckBoxRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import { styled } from '@mui/material/styles';
 
 // @mui
 import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material';
@@ -20,18 +21,25 @@ import uuidv4 from 'src/utils/uuidv4';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
-
+// Custom TreeItem with custom styles
 const CustomTreeItem = styled(TreeItem)(({ theme }) => ({
-  [`& .${treeItemClasses.content}`]: {
+  '& .MuiTreeItem-content': {
     padding: theme.spacing(0.5, 1),
     margin: theme.spacing(0.2, 0),
+    borderRadius: theme.shape.borderRadius,
+    '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focusVisible': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.2),
+    },
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    },
   },
-  [`& .${treeItemClasses.iconContainer}`]: {
+  '& .MuiTreeItem-iconContainer': {
     '& .close': {
       opacity: 0.3,
     },
   },
-  [`& .${treeItemClasses.groupTransition}`]: {
+  '& .MuiTreeItem-group': {
     marginLeft: 15,
     paddingLeft: 18,
     borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
@@ -61,6 +69,7 @@ function CollapseIcon(props) {
 function EndIcon(props) {
   return <DisabledByDefaultRoundedIcon {...props} sx={{ opacity: 0.3 }} />;
 }
+
 
 const ProjectCreateCsiTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
@@ -160,32 +169,29 @@ const ProjectCreateCsiTrade = () => {
           <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Name</Typography>
           <Typography> </Typography>
         </Box>
-        <SimpleTreeView
-          aria-label="customized"
-          defaultExpandedItems={['1', '3']}
-          slots={{
-            expandIcon: ExpandIcon,
-            collapseIcon: CollapseIcon,
-            endIcon: EndIcon,
-          }}
-          sx={{ overflowX: 'hidden', minHeight: 270, flexGrow: 1, maxWidth: 300 }}
-        >
-          <CustomTreeItem itemId="1" label="Main">
-            <CustomTreeItem itemId="2" label="Hello" />
-            <CustomTreeItem itemId="3" label="Subtree with children">
-              <CustomTreeItem itemId="6" label="Hello" />
-              <CustomTreeItem itemId="7" label="Sub-subtree with children">
-                <CustomTreeItem itemId="9" label="Child 1" />
-                <CustomTreeItem itemId="10" label="Child 2" />
-                <CustomTreeItem itemId="11" label="Child 3" />
-              </CustomTreeItem>
-              <CustomTreeItem itemId="8" label="Hello" />
-            </CustomTreeItem>
-            <CustomTreeItem itemId="4" label="World" />
-            <CustomTreeItem itemId="5" label="Something something" />
+        <TreeView
+      aria-label="customized"
+      defaultCollapseIcon={<CollapseIcon />}
+      defaultExpandIcon={<ExpandIcon />}
+      defaultEndIcon={<EndIcon />}
+      sx={{ overflowX: 'hidden', minHeight: 270, flexGrow: 1, maxWidth: 300 }}
+    >
+      <CustomTreeItem nodeId="1" label="Main">
+        <CustomTreeItem nodeId="2" label="Hello" />
+        <CustomTreeItem nodeId="3" label="Subtree with children">
+          <CustomTreeItem nodeId="4" label="Hello" />
+          <CustomTreeItem nodeId="5" label="Sub-subtree with children">
+            <CustomTreeItem nodeId="6" label="Child 1" />
+            <CustomTreeItem nodeId="7" label="Child 2" />
+            <CustomTreeItem nodeId="8" label="Child 3" />
           </CustomTreeItem>
-        </SimpleTreeView>
-      </Box>
+          <CustomTreeItem nodeId="9" label="Hello" />
+        </CustomTreeItem>
+        <CustomTreeItem nodeId="10" label="World" />
+        <CustomTreeItem nodeId="11" label="Something something" />
+      </CustomTreeItem>
+    </TreeView>
+        </Box>
 
       <Button
         component="button"
