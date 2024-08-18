@@ -21,7 +21,12 @@ import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 import { paths } from 'src/routes/paths';
 import Iconify from 'src/components/iconify';
 import { authSwitchProject } from 'src/redux/slices/userSlice';
-import { getKeyByValue, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY } from 'src/_mock';
+import {
+  getKeyByValue,
+  getUserRoleKeyByValue,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  USER_TYPES_STUDLY,
+} from 'src/_mock';
 import Scrollbar from '../scrollbar';
 
 export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
@@ -81,7 +86,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
       // Company Admin Logic
       updatedRole = {
         name: SUBSCRIBER_USER_ROLE_STUDLY.CAD,
-        shortName: getKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY, SUBSCRIBER_USER_ROLE_STUDLY.CAD),
+        shortName: getUserRoleKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY.CAD),
         loggedInAs: USER_TYPES_STUDLY.SUB,
       };
       projectData = {

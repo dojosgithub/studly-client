@@ -140,6 +140,12 @@ export const getKeyByValue = (object, value) =>
   Object.keys(object).find((key) => object[key] === value);
 export const getValueByKey = (object, key) => object[key];
 
+export const getUserRoleKeyByValue = (value) =>
+  Object.keys(SUBSCRIBER_USER_ROLE_STUDLY).find(
+    (key) => SUBSCRIBER_USER_ROLE_STUDLY[key] === value
+  );
+export const getUserRoleValueByKey = (key) => SUBSCRIBER_USER_ROLE_STUDLY[key];
+
 // get Key by value "Submitted"=>SUB
 export const getStatusKeyByValue = (value) => getKeyByValue(STATUS_WORKFLOW_STUDLY, value);
 // get Key by value "Sub Contractor"=>SCO

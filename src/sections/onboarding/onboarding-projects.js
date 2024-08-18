@@ -28,7 +28,12 @@ import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { CustomDrawer } from 'src/components/custom-drawer';
 //
 import Scrollbar from 'src/components/scrollbar';
-import { getKeyByValue, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY } from 'src/_mock';
+import {
+  getKeyByValue,
+  getUserRoleKeyByValue,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  USER_TYPES_STUDLY,
+} from 'src/_mock';
 import { ProjectView } from '../project/view';
 // components
 
@@ -69,7 +74,7 @@ export default function OnboardingProjects({ projects }) {
       const isAdmin = admin === user._id;
       updatedRole = {
         name: SUBSCRIBER_USER_ROLE_STUDLY.CAD,
-        shortName: getKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY, SUBSCRIBER_USER_ROLE_STUDLY.CAD),
+        shortName: getUserRoleKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY.CAD),
         loggedInAs: USER_TYPES_STUDLY.SUB,
       };
       projectData = {
