@@ -29,17 +29,17 @@ import { NAV } from '../config-layout';
 import { useNavData, useNavDataSubscriber } from './config-navigation';
 import { NavToggleButton, NavUpgrade } from '../_common';
 
-
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const { user } = useAuthContext();
+  // const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
-  const projects = useSelector(state => state.project.list)
-  const isProjectDrawerOpen = useSelector(state => state.project.isProjectDrawerOpen)
+  const user = useSelector((state) => state.user.user);
+  const projects = useSelector((state) => state.project.list);
+  const isProjectDrawerOpen = useSelector((state) => state.project.isProjectDrawerOpen);
 
   const navData = useNavData();
   const navDataSubscriber = useNavDataSubscriber();
@@ -51,6 +51,11 @@ export default function NavVertical({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  useEffect(() => {
+    console.log('navDataSubscriber', user?.role?.shortName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -60,37 +65,42 @@ export default function NavVertical({ openNav, onCloseNav }) {
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: (theme) => theme.palette.background.brandSecondary,
-
         },
       }}
     >
       {/* {user?.userType !== "Subscriber" && <Logo sx={{ my: 3, mx: "auto" }} />} */}
-      <Logo sx={{ my: 3, mx: "auto" }} />
-      {(user?.userType === "Subscriber") && (
+      <Logo sx={{ my: 3, mx: 'auto' }} />
+      {user?.userType === 'Subscriber' && (
         // && user?.role?.shortName === "CAD"
-        <CustomNavCollapseList onOpen={() => {
-          // setOpenDrawer(true)
-          dispatch(setProjectDrawerState(true))
-        }} />
+        <CustomNavCollapseList
+          onOpen={() => {
+            // setOpenDrawer(true)
+            dispatch(setProjectDrawerState(true));
+          }}
+        />
       )}
-      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (
-        <CustomDrawer onClose={() => {
-          dispatch(setProjectDrawerState(false))
-          // setOpenDrawer(false)
-          dispatch(resetCreateProject())
-          dispatch(resetWorkflow())
-          dispatch(resetTemplate())
-        }}
-          open={isProjectDrawerOpen}
-          // open={openDrawer}
-          Component={ProjectView} />
-      )}
-      <NavSectionVertical data={navData} config={
-        {
+      {user?.userType === 'Subscriber' &&
+        (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
+          <CustomDrawer
+            onClose={() => {
+              dispatch(setProjectDrawerState(false));
+              // setOpenDrawer(false)
+              dispatch(resetCreateProject());
+              dispatch(resetWorkflow());
+              dispatch(resetTemplate());
+            }}
+            open={isProjectDrawerOpen}
+            // open={openDrawer}
+            Component={ProjectView}
+          />
+        )}
+      <NavSectionVertical
+        data={navData}
+        config={{
           currentRole: user?.role?.shortName, // if current role is not allowed
           // // currentUserType: user?.userType, // if current userType is not allowed
-        }
-      } />
+        }}
+      />
 
       <Box sx={{ flexGrow: 1 }} />
 
@@ -115,7 +125,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
             position: 'fixed',
             width: NAV.W_VERTICAL,
             borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
-
           }}
         >
           {renderContent}

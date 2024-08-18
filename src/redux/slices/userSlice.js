@@ -24,9 +24,7 @@ export const authSwitchProject = createAsyncThunk(
     try {
       // const email = getState()?.user?.user?.email; // Access the current state
       const response = await axiosInstance.post(endpoints.project.switch, projectData);
-      console.log('projectData', projectData);
-      console.log('response.data.data', response.data.data);
-      return response.data.data.tokens;
+      return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {
@@ -86,11 +84,8 @@ const user = createSlice({
       state.error = null;
     });
     builder.addCase(authSwitchProject.fulfilled, (state, action) => {
-      console.log('action.payload', action.payload);
-      state.tokens = {
-        accessToken: action.payload.accessToken,
-        refreshToken: action.payload.refreshToken,
-      };
+      state.user = { ...action.payload.user };
+      state.tokens = { ...action.payload.tokens };
       state.isLoading = false;
       state.error = null;
     });

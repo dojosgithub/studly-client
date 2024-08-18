@@ -27,6 +27,7 @@ import { authSwitchProject } from 'src/redux/slices/userSlice';
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { CustomDrawer } from 'src/components/custom-drawer';
 //
+import Scrollbar from 'src/components/scrollbar';
 import { getKeyByValue, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY } from 'src/_mock';
 import { ProjectView } from '../project/view';
 // components
@@ -111,29 +112,33 @@ export default function OnboardingProjects({ projects }) {
 
         <Typography
           variant="p"
-          sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}
+          sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center', mb: 2 }}
         >
           {email} is part of multiple projects
         </Typography>
 
-        <Stack p={5} gap={2}>
-          {projects.slice(0, 4).map((project) => (
-            <Button
-              sx={{
-                minHeight: '60px',
-                borderRadius: 1,
-                border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
-                textAlign: 'center',
-                cursor: 'pointer',
-              }}
-              onClick={() => handleProject(project)}
-              key={project?._id}
-            >
-              {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
+        <Stack gap={2}>
+          <Scrollbar sx={{ height: '14.75rem', py: 0, p: 3 }}>
+            <Stack gap={2}>
+              {projects.map((project) => (
+                <Button
+                  sx={{
+                    minHeight: '60px',
+                    borderRadius: 1,
+                    border: (theme) => `2px solid ${theme.palette.background.brandPrimary}`,
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleProject(project)}
+                  key={project?._id}
+                >
+                  {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
             </RouterLink> */}
-              {project?.name}
-            </Button>
-          ))}
+                  {project?.name}
+                </Button>
+              ))}
+            </Stack>
+          </Scrollbar>
           {/* // {user?.userType === 'Subscriber' && */}
           {/* // (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && ( */}
           <RoleAccessWrapper>

@@ -63,20 +63,20 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
     let projectData;
     let updatedRole;
 
-    if (!isCompanyAdmin && role !== 'PWU') {
-      // Non-Company Admin and Non-Power User Logic
-      const projectMember = members.find((member) => member.email === email);
+    // if (!isCompanyAdmin && role !== 'PWU') {
+    // Non-Company Admin and Non-Power User Logic
+    const projectMember = members.find((member) => member.email === email);
 
-      if (projectMember) {
-        updatedRole = projectMember.role;
-        projectData = {
-          role: updatedRole,
-          userType: updatedRole.loggedInAs,
-          projectId,
-          companyId,
-        };
-        dispatch(setCurrentProjectRole(updatedRole));
-      }
+    if (projectMember) {
+      updatedRole = projectMember.role;
+      projectData = {
+        role: updatedRole,
+        userType: updatedRole.loggedInAs,
+        projectId,
+        companyId,
+      };
+      dispatch(setCurrentProjectRole(updatedRole));
+      console.log('Other User Role');
     } else {
       // Company Admin Logic
       updatedRole = {
@@ -91,7 +91,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
         companyId,
       };
       dispatch(setCurrentProjectRole(updatedRole));
-      console.log('Company Admin');
+      console.log('Company Admin Role');
     }
 
     if (projectData) {
