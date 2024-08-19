@@ -23,7 +23,20 @@ import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 //
-import { createNewProject, getAllSubcontractorList, getCompanySubcontractorList, getProjectList, resetCreateProject, resetMembers, setCreateTemplate, setDefaultTemplateModified, setProjectDrawerState, setProjectName, setProjectTrades, setProjectWorkflow } from 'src/redux/slices/projectSlice';
+import {
+  createNewProject,
+  getAllSubcontractorList,
+  getCompanySubcontractorList,
+  getProjectList,
+  resetCreateProject,
+  resetMembers,
+  setCreateTemplate,
+  setDefaultTemplateModified,
+  setProjectDrawerState,
+  setProjectName,
+  setProjectTrades,
+  setProjectWorkflow,
+} from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
 import ProjectWorkflow from 'src/sections/project/project-workflow';
@@ -33,11 +46,15 @@ import { PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // form
-import FormProvider, {
-  RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
-import { getTemplateList, resetTemplate, setIsDefaultTemplate, setIsNewTemplate, setIsTemplateNameAdded } from 'src/redux/slices/templateSlice';
+import {
+  getTemplateList,
+  resetTemplate,
+  setIsDefaultTemplate,
+  setIsNewTemplate,
+  setIsTemplateNameAdded,
+} from 'src/redux/slices/templateSlice';
 import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 
@@ -47,7 +64,6 @@ import ProjectSubcontractor from './project-subcontractor';
 import ProjectInviteUsers from './project-invite-users';
 import ProjectFinal from './project-final';
 import ProjectCreateWorkflow from './project-create-workflow';
-
 
 // ----------------------------------------------------------------------
 
@@ -81,73 +97,70 @@ const steps = [
   },
 ];
 
-
 export default function ProjectStepperForm() {
   const [activeStep, setActiveStep] = useState(0);
 
-  const [selectedTemplate, setSelectedTemplate] = useState('')
+  const [selectedTemplate, setSelectedTemplate] = useState('');
   // const [activeTab, setActiveTab] = useState('')
   // [0, 1, 2, 3, 4]
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
-  const [open, setOpen] = useState(false)
-  const [isFormSubmitting, setIsFormSubmitting] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
-  const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false)
+  const [openNewTemplateDrawer, setOpenNewTemplateDrawer] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const projectList = useSelector(state => state.project.list);
-  const newTemplate = useSelector(state => state.project.template);
-  const inviteUsers = useSelector(state => state.project.inviteUsers);
-  const members = useSelector(state => state.project.members);
-  const companies = useSelector(state => state.user.user.companies);
+  const projectList = useSelector((state) => state.project.list);
+  const newTemplate = useSelector((state) => state.project.template);
+  const inviteUsers = useSelector((state) => state.project.inviteUsers);
+  const members = useSelector((state) => state.project.members);
+  const companies = useSelector((state) => state.user.user.companies);
 
-  const selectedTradeTemplate = useSelector(state => state.project.create.selectedTradeTemplate);
-  const isDefaultTemplateModified = useSelector(state => state.project.create.isDefaultTemplateModified);
-  const activeTab = useSelector(state => state.project.create.activeTab);
-  const templates = useSelector(state => state.template.list);
-  const defaultTemplate = templates.find(item => item.name === 'default');
+  const selectedTradeTemplate = useSelector((state) => state.project.create.selectedTradeTemplate);
+  const isDefaultTemplateModified = useSelector(
+    (state) => state.project.create.isDefaultTemplateModified
+  );
+  const activeTab = useSelector((state) => state.project.create.activeTab);
+  const templates = useSelector((state) => state.template.list);
+  const defaultTemplate = templates.find((item) => item.name === 'default');
   const defaultTemplateTrades = defaultTemplate ? defaultTemplate?.trades : [];
 
-  const templateList = useSelector(state => state.template.list);
-  const workflowList = useSelector(state => state.workflow.list);
+  const templateList = useSelector((state) => state.template.list);
+  const workflowList = useSelector((state) => state.workflow.list);
 
   // creating new trade template
-  const isDefaultTemplate = useSelector(state => state.template.isDefaultTemplate);
-  const isTemplateNameAdded = useSelector(state => state.template.isTemplateNameAdded);
-  const isNewTemplate = useSelector(state => state.template.isNewTemplate);
+  const isDefaultTemplate = useSelector((state) => state.template.isDefaultTemplate);
+  const isTemplateNameAdded = useSelector((state) => state.template.isTemplateNameAdded);
+  const isNewTemplate = useSelector((state) => state.template.isNewTemplate);
 
   // creating new workflow template
-  const isNewWorkflow = useSelector(state => state.workflow.isNewWorkflow);
+  const isNewWorkflow = useSelector((state) => state.workflow.isNewWorkflow);
 
   // step === 3 || step === 4
-  const isStepOptional = (step) => (step === 2 || step === 3);
+  const isStepOptional = (step) => step === 2 || step === 3;
 
   const isStepSkipped = (step) => skipped?.has(step);
 
   useEffect(() => {
-    dispatch(getTemplateList())
-    dispatch(getWorkflowList())
+    dispatch(getTemplateList());
+    dispatch(getWorkflowList());
     // dispatch(getAllSubcontractorList())
-    dispatch(getCompanySubcontractorList())
-
-  }, [dispatch])
-
-
+    dispatch(getCompanySubcontractorList());
+  }, [dispatch]);
 
   const getTemplateTrades = useCallback(
     // templates
     (val) => {
-      let trades = templateList.filter(template => template.name === val);
-      trades = trades.length > 0 ? trades[0]?.trades : []
-      return trades
+      let trades = templateList.filter((template) => template.name === val);
+      trades = trades.length > 0 ? trades[0]?.trades : [];
+      return trades;
     },
     [templateList]
   );
-
 
   const ProjectSchema = Yup.object().shape({
     name: Yup.string().required('Project Name is required'),
@@ -160,18 +173,21 @@ export default function ProjectStepperForm() {
         Yup.object().shape({
           // tradeId: Yup.string().required('Trade ID is required'),
           tradeId: Yup.string()
-            .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
+            // .matches(
+            //   /^[0-9.-]+$/,
+            //   'Trade id must contain only numeric characters, dots, and hyphens'
+            // )
             .required('Trade id is required'),
           name: Yup.string().required('Trade Name is required'),
           _id: Yup.string(),
-          subcontractorId: Yup.string()
+          subcontractorId: Yup.string(),
         })
       )
       .min(1, 'At least one trade is required'),
     workflow: Yup.object().shape({
       name: Yup.string().required('Workflow Name is required'),
       statuses: Yup.array().min(1, 'At least one status is required'),
-      // returnDate: Yup.date().min(addDays(new Date(), 1)), 
+      // returnDate: Yup.date().min(addDays(new Date(), 1)),
       returnDate: Yup.string().required('Date is required'),
     }),
     // inviteUsers: Yup.lazy((value) => (
@@ -209,7 +225,6 @@ export default function ProjectStepperForm() {
     //       })
     //     ).min(1,"1 value")
     // })
-
   });
 
   const defaultValues = useMemo(() => {
@@ -217,22 +232,27 @@ export default function ProjectStepperForm() {
     // For example, check if selectedTemplate is present or not
     // const isNewEntry = activeStep === 3 || activeStep === 4;
     const isNewEntry = activeStep === 2 || activeStep === 3;
-    // TODO: currentSelectedTemplate from redux 
+    // TODO: currentSelectedTemplate from redux
     return {
       name: '',
       address: '',
       state: '',
       city: '',
       zipCode: '',
-      trades: activeTab === "create" ? [{
-        name: '',
-        tradeId: '',
-        _id: uuidv4(),
-      }] : [],
+      trades:
+        activeTab === 'create'
+          ? [
+              {
+                name: '',
+                tradeId: '',
+                _id: uuidv4(),
+              },
+            ]
+          : [],
       workflow: {
         name: 'default',
         statuses: ['Draft', 'Submitted'],
-        returnDate: new Date()
+        returnDate: new Date(),
         // returnDate: "2024-03-05T07:23:21.004Z"
       },
       // trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
@@ -267,7 +287,7 @@ export default function ProjectStepperForm() {
     getValues,
     handleSubmit,
     formState: { isSubmitting, isValid },
-    trigger
+    trigger,
   } = methods;
 
   const formValues = getValues();
@@ -297,7 +317,7 @@ export default function ProjectStepperForm() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!companies) {
-        return
+        return;
       }
       setIsFormSubmitting(true);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
@@ -307,57 +327,51 @@ export default function ProjectStepperForm() {
       // const updatedWorkflow = rest;
       const updatedWorkflow = data.workflow;
 
-      const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members }
+      const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members };
 
-      const { error, payload } = await dispatch(createNewProject(finalData))
+      const { error, payload } = await dispatch(createNewProject(finalData));
       if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
       }
-      setIsFormSubmitting(false)
-      handleReset()
+      setIsFormSubmitting(false);
+      handleReset();
       enqueueSnackbar('Project created successfully!', { variant: 'success' });
-      await dispatch(getProjectList())
-      dispatch(getSubmittalList({ search: '', page: 1, status: [] }))
-      dispatch(resetTemplate())
-      dispatch(resetWorkflow())
-      dispatch(resetCreateProject())
-      dispatch(setProjectDrawerState(false))
+      await dispatch(getProjectList());
+      dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+      dispatch(resetTemplate());
+      dispatch(resetWorkflow());
+      dispatch(resetCreateProject());
+      dispatch(setProjectDrawerState(false));
       // if(isEmpty(projectList)){
       //   router.push(paths.subscriber.onboarding);
       //   return
       // }
       // router.push(paths.subscriber.submittals.list);
-      navigate(paths.subscriber.submittals.list)
-
-
+      navigate(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
-      enqueueSnackbar(`Error Updating Password`, { variant: "error" });
+      enqueueSnackbar(`Error Updating Password`, { variant: 'error' });
     }
   });
 
-
   const getFormValidation = async () => {
-    const currentStepValue = steps[activeStep].value
+    const currentStepValue = steps[activeStep].value;
     let isFormValid;
     // refers to project stepper form value 'name'
-    if (currentStepValue === "name") {
+    if (currentStepValue === 'name') {
       const isNameValid = await trigger('name');
       const isAddressValid = await trigger('address');
       const isStateValid = await trigger('state');
       const isCityValid = await trigger('city');
       const isZipCodeValid = await trigger('zipCode');
-      isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid
-
-
+      isFormValid = isNameValid && isAddressValid && isStateValid && isCityValid && isZipCodeValid;
     } else {
       isFormValid = await trigger(currentStepValue);
-
     }
-    return { isFormValid, currentStepValue }
-  }
+    return { isFormValid, currentStepValue };
+  };
 
   // const handleNext = async () => {
   //   // new change
@@ -394,9 +408,6 @@ export default function ProjectStepperForm() {
   //   }
   //   // TODO:  NEW CODE END
 
-
-
-
   //   if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
   //     setOpen(true)
   //     return
@@ -420,10 +431,9 @@ export default function ProjectStepperForm() {
     //   setActiveStep((prevStep) => prevStep + 1);
     // }
     const { isFormValid, currentStepValue } = await getFormValidation();
-
-    if (!isFormValid && currentStepValue === "trades") {
-      enqueueSnackbar('Please add a trade', { variant: "warning" });
-      return
+    if (!isFormValid && currentStepValue === 'trades') {
+      enqueueSnackbar('Please add a trade', { variant: 'warning' });
+      return;
     }
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
@@ -444,18 +454,13 @@ export default function ProjectStepperForm() {
     }
 
     // TODO: change defaultTemplate logic
-    // Handle skipping steps or moving to the next step
-    // if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
+
+    // const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
+    // if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
     //   setOpen(true);
-    // } else if (activeTab === 'existing' && selectedTemplate === 'default' && activeStep === 1) {
-    //   setOpen(true);
+    //   dispatch(setDefaultTemplateModified(true))
     // }
-    const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
-    if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
-      setOpen(true);
-      dispatch(setDefaultTemplateModified(true))
-    }
-    else if (isFormValid) {
+    if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
 
@@ -484,12 +489,11 @@ export default function ProjectStepperForm() {
     });
   };
 
-
   const handleReset = () => {
     setActiveStep(0);
     setSelectedTemplate('');
     reset();
-    dispatch(resetCreateProject())
+    dispatch(resetCreateProject());
   };
 
   const handleFinish = () => {
@@ -499,16 +503,13 @@ export default function ProjectStepperForm() {
   const handleSelect = (val) => {
     // if (val === "create") {
     //   setOpenNewTemplateDrawer(true)
-
     //   // return
     // }
-
     // setSelectedTemplate(val)
-
     // const filteredTrades = getTemplateTrades(val)
     // // TODO: multiple templates
     // setValue('trades', filteredTrades)
-  }
+  };
   const handleTab = (tab) => {
     // const newField = {
     //   name: '',
@@ -522,18 +523,17 @@ export default function ProjectStepperForm() {
     //   setSelectedTemplate('')
     // }
     // setActiveTab(tab)
-  }
+  };
 
   const handleTemplateCreation = (val) => {
     // setValue("templateName", val)
 
-    setOpen(false)
+    setOpen(false);
     // if (newTemplate?.create) {
     //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
     // }
     // setSelectedTemplate('')
-  }
-
+  };
 
   function getComponent() {
     let component;
@@ -542,7 +542,13 @@ export default function ProjectStepperForm() {
         component = <ProjectName />;
         break;
       case 1:
-        component = <ProjectTrade selectedTemplate={selectedTemplate} onSelect={handleSelect} onTabChange={handleTab} />;
+        component = (
+          <ProjectTrade
+            selectedTemplate={selectedTemplate}
+            onSelect={handleSelect}
+            onTabChange={handleTab}
+          />
+        );
         break;
       // case 2:
       //   component = <ProjectWorkflow />;
@@ -559,10 +565,18 @@ export default function ProjectStepperForm() {
     return component;
   }
 
-
   return (
     <>
-      <Stepper activeStep={activeStep} orientation="vertical" sx={{ maxHeight: '360px', marginTop: "2rem", "&.MuiStepper-root .MuiStepConnector-line": { height: '100%' }, "& .MuiStepLabel-root": { gap: '.75rem' } }}>
+      <Stepper
+        activeStep={activeStep}
+        orientation="vertical"
+        sx={{
+          maxHeight: '360px',
+          marginTop: '2rem',
+          '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
+          '& .MuiStepLabel-root': { gap: '.75rem' },
+        }}
+      >
         {steps.map((step, index) => {
           const stepProps = {};
           const labelProps = {};
@@ -577,31 +591,50 @@ export default function ProjectStepperForm() {
               <StepLabel
                 // onClick={() => handleBack(index)}
                 {...labelProps}
-                optional={<Typography variant="caption">{step.description}<br />{index === 0 && step.description2}</Typography>}
+                optional={
+                  <Typography variant="caption">
+                    {step.description}
+                    <br />
+                    {index === 0 && step.description2}
+                  </Typography>
+                }
               >
                 {step.label}
               </StepLabel>
-
-            </Step>)
+            </Step>
+          );
         })}
       </Stepper>
 
-      <Divider sx={{ width: '1px', background: "rgb(145 158 171 / 20%)" }} />
+      <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
 
-      <Stack flex={1} position='relative'>
+      <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>
-
           {activeStep === steps.length ? (
             <>
               <ProjectFinal />
 
-              <Box sx={{ display: 'flex', gap: 2,mb:2 }}>
-                <Button color="inherit" variant='outlined' disabled={isSubmitting} onClick={handleBack} sx={{ mr: 1 }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  disabled={isSubmitting}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
                   Back
                 </Button>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button onClick={handleReset} disabled={isSubmitting}>Reset</Button>
-                <LoadingButton type="button" variant="contained" disabled={isSubmitting} loading={isSubmitting} onClick={handleFinish}>
+                <Button onClick={handleReset} disabled={isSubmitting}>
+                  Reset
+                </Button>
+                <LoadingButton
+                  type="button"
+                  variant="contained"
+                  disabled={isSubmitting}
+                  loading={isSubmitting}
+                  onClick={handleFinish}
+                >
                   Finish
                 </LoadingButton>
               </Box>
@@ -614,16 +647,33 @@ export default function ProjectStepperForm() {
                   // py: 3,
                   my: 3,
                   minHeight: 120,
-                  background: 'transparent'
+                  background: 'transparent',
                   // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 }}
               >
                 {getComponent()}
               </Paper>
-              <Box sx={{ display: 'flex', position: 'sticky', bottom: 0, p: "1rem 0", width: '100%', bgcolor: '#fff' }}>
-                {activeStep !== 0 && <Button variant='outlined' color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-                  Back
-                </Button>}
+              <Box
+                sx={{
+                  display: 'flex',
+                  position: 'sticky',
+                  bottom: 0,
+                  p: '1rem 0',
+                  width: '100%',
+                  bgcolor: '#fff',
+                }}
+              >
+                {activeStep !== 0 && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                )}
                 <Box sx={{ flexGrow: 1 }} />
 
                 {isStepOptional(activeStep) && (
@@ -634,7 +684,9 @@ export default function ProjectStepperForm() {
                 {/* steps.length - 1 new change */}
 
                 {activeStep !== steps.length && (
-                  <Button onClick={handleNext} variant="contained">Next</Button>
+                  <Button onClick={handleNext} variant="contained">
+                    Next
+                  </Button>
                 )}
               </Box>
             </>
@@ -643,7 +695,7 @@ export default function ProjectStepperForm() {
         </FormProvider>
       </Stack>
 
-      {(open) &&
+      {open && (
         <ProjectTemplateName
           open={open}
           onClose={() => setOpen(!open)}
@@ -651,20 +703,20 @@ export default function ProjectStepperForm() {
           onTemplateCreation={handleTemplateCreation}
           trades={formValues?.trades}
         />
-      }
+      )}
       <CustomDrawer
-        open={isNewTemplate} onClose={() => dispatch(setIsNewTemplate(false))}
+        open={isNewTemplate}
+        onClose={() => dispatch(setIsNewTemplate(false))}
         Component={ProjectNewTemplateDrawer}
         setTrades={setValue}
-        type='template'
+        type="template"
       />
       <CustomDrawer
         open={isNewWorkflow}
         onClose={() => dispatch(setIsNewWorkflow(false))}
         Component={ProjectCreateWorkflow}
-        type='workflow'
+        type="workflow"
       />
-
 
       {/* {selectedTemplate === "default" && <ProjectTemplateName open={open} onClose={() => setOpen(false)} setSelectedTemplate={setSelectedTemplate} onTemplateCreation={handleTemplateCreation} trades={formValues?.trades} />}
       <CustomDrawer open={openNewTemplateDrawer} onClose={() => {

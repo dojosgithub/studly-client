@@ -88,8 +88,8 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
         <TabPanel value="existing">
           {/* PROJECT_TEMPLATES */}
           <ProjectTradeSelect />
-          {/* {selectedTradeTemplate && <ProjectExistingTrade />} */}
-          {selectedTradeTemplate && <ProjectCreateCsiTrade />}
+          {selectedTradeTemplate === 'default' && <ProjectCreateCsiTrade />}
+          {selectedTradeTemplate !== 'default' && <ProjectExistingTrade />}
 
           {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
           {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}

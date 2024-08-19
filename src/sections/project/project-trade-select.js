@@ -48,14 +48,21 @@ export default function ProjectTradeSelect() {
     if (value !== 'create') {
       const selectedItem = templateList.find((item) => item.name === value);
       handleSelectTemplate(selectedItem);
-      setValue('trades', selectedItem?.trades);
-      dispatch(setProjectTrades(selectedItem?.trades));
       dispatch(setSelectedTemplate(value));
-    }
-    if (value === 'default') {
-      dispatch(setIsDefaultTemplate(!!value));
+      // setValue('trades', selectedItem?.trades);
+      // dispatch(setProjectTrades(selectedItem?.trades));
+      if (value === 'default') {
+        dispatch(setIsDefaultTemplate(!!value));
+        setValue('trades', []);
+      } else {
+        setValue('trades', selectedItem?.trades);
+        dispatch(setProjectTrades(selectedItem?.trades));
+      }
     }
 
+    // if (value === 'default') {
+    //   dispatch(setIsDefaultTemplate(!!value));
+    // }
     if (value === 'create') {
       dispatch(setIsNewTemplate(!!value));
     }
