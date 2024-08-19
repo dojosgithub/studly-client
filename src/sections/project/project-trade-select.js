@@ -89,7 +89,7 @@ export default function ProjectTradeSelect() {
         </MenuItem>
         {templateList.map((item) => (
           <MenuItem
-            key={item.id}
+            key={item._id}
             value={item.name === 'default' ? 'default' : item.name}
             sx={{ height: 50, px: 3, borderRadius: 0 }}
           >

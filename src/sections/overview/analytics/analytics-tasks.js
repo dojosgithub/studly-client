@@ -32,10 +32,10 @@ export default function AnalyticsTasks({ title, subheader, list, ...other }) {
 
       {list.map((task) => (
         <TaskItem
-          key={task.id}
+          key={task._id}
           task={task}
-          checked={selected.includes(task.id)}
-          onChange={() => handleClickComplete(task.id)}
+          checked={selected.includes(task._id)}
+          onChange={() => handleClickComplete(task._id)}
         />
       ))}
     </Card>
@@ -55,22 +55,22 @@ function TaskItem({ task, checked, onChange }) {
 
   const handleMarkComplete = () => {
     popover.onClose();
-    console.info('MARK COMPLETE', task.id);
+    console.info('MARK COMPLETE', task._id);
   };
 
   const handleShare = () => {
     popover.onClose();
-    console.info('SHARE', task.id);
+    console.info('SHARE', task._id);
   };
 
   const handleEdit = () => {
     popover.onClose();
-    console.info('EDIT', task.id);
+    console.info('EDIT', task._id);
   };
 
   const handleDelete = () => {
     popover.onClose();
-    console.info('DELETE', task.id);
+    console.info('DELETE', task._id);
   };
 
   return (

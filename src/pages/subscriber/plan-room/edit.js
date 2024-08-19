@@ -14,8 +14,8 @@ export default function PlanRoomEditPage() {
   const params = useParams();
   const { id } = params;
 
-  const dispatch = useDispatch()
-  const projectId = useSelector(state => state?.project?.current?.id);
+  const dispatch = useDispatch();
+  const projectId = useSelector((state) => state?.project?.current?._id);
 
   //   console.log('edit', id)
   // getting users list of project

@@ -63,40 +63,39 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
 
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?.id);
-
-
+  const projectId = useSelector((state) => state.project?.current?._id);
 
   const { enqueueSnackbar } = useSnackbar();
 
-
   const NewPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
-    issueDate: Yup.date()
-      .required('Issue Date is required'),
-      // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
+    issueDate: Yup.date().required('Issue Date is required'),
+    // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
     creator: Yup.object().shape({
       _id: Yup.string(),
       firstName: Yup.string(),
       lastName: Yup.string(),
     }),
-   
   });
 
   const defaultValues = useMemo(() => {
     const planName = currentMeetingMinutes?.name ? currentMeetingMinutes?.name : '';
-    const issueDate = currentMeetingMinutes?.issueDate ? new Date(currentMeetingMinutes.issueDate) : null;
-    const creator = { _id: currentUser._id, firstName: currentUser?.firstName, lastName: currentUser?.lastName } || null;
-
+    const issueDate = currentMeetingMinutes?.issueDate
+      ? new Date(currentMeetingMinutes.issueDate)
+      : null;
+    const creator =
+      {
+        _id: currentUser._id,
+        firstName: currentUser?.firstName,
+        lastName: currentUser?.lastName,
+      } || null;
 
     return {
       planName,
       issueDate,
-      creator
+      creator,
     };
   }, [currentMeetingMinutes, currentUser]);
-
-
 
   const methods = useForm({
     resolver: yupResolver(NewPlanRoomSchema),
@@ -118,7 +117,6 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
   //   setFiles(existingAttachments)
   //   setAttachmentsError(false)
   // }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
- 
 
   if (!isEmpty(errors)) {
     window.scrollTo(0, 0);
@@ -126,7 +124,7 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
 
   const onSubmit = handleSubmit(async (data, val) => {
     try {
-      confirm.onTrue()
+      confirm.onTrue();
 
       // if (val === 'review') isSubmittingRef.current = true;
 
@@ -182,10 +180,10 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
 
       // if (val !== 'review') {
       //   enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      //   router.push(paths.subscriber.rfi.details(payload?.id));
+      //   router.push(paths.subscriber.rfi.details(payload?._id));
       //   return;
       // }
-      // await dispatch(submitRfiToArchitect(payload?.id));
+      // await dispatch(submitRfiToArchitect(payload?._id));
       // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       // console.log('payload', payload);
       // reset();
@@ -198,111 +196,101 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
     }
   });
 
-  
-
   return (
-      <FormProvider methods={methods} onSubmit={onSubmit}>
-        <Grid container spacing={3}>
-          <Grid xs={12} md={12}>
-            <Card sx={{ p: 3 }}>
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Grid container spacing={3}>
+        <Grid xs={12} md={12}>
+          <Card sx={{ p: 3 }}>
+            <Box rowGap={4} my={3} display="flex" flexDirection="column">
               <Box
-                rowGap={4}
-                my={3}
-                display="flex"
-                flexDirection="column"
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                }}
               >
-                  <Box
-                    rowGap={3}
-                    columnGap={2}
-                    display="grid"
-                    gridTemplateColumns={{
-                      xs: 'repeat(1, 1fr)',
-                      sm: 'repeat(2, 1fr)',
-                    }}
-                  >
-                    <RHFTextField name="planName" label="Plan Set Name" />
-                    <Controller
-                      name="issueDate"
-                      control={control}
-                      defaultValue={new Date()}
-                      render={({ field, fieldState: { error } }) => {
-                        const selectedDate = field.value || null;
-                        const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                        const dateStyle = isDateNextDay
-                          ? {
-                            '.MuiInputBase-root.MuiOutlinedInput-root': {
-                              color: 'red',
-                              borderColor: 'red',
-                              border: '1px solid',
-                            },
-                          }
-                          : {};
-                        return (
-                          <DatePicker
-                            label="Issue Date"
-                            views={['day']}
-                            value={selectedDate}
-                            // minDate={startOfDay(addDays(new Date(), 1))}
-                            onChange={(date) => field.onChange(date)}
-                            format="MM/dd/yyyy" // Specify the desired date format
-                            error={!!error}
-                            helperText={error && error?.message}
-                            slotProps={{
-                              textField: {
-                                fullWidth: true,
-                                error: !!error,
-                                helperText: error?.message,
-                              },
-                            }}
-                          // sx={dateStyle} // Apply conditional style based on the date comparison
-                          />
-                        );
-                      }}
-                    />
-                  </Box>
-
-              </Box>
-
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
-                gap="2rem"
-                sx={{ my: 3 }}
-              >
-                {(!currentMeetingMinutes ) &&
-                  (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-                    currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                   
-                      <LoadingButton
-                        type="button"
-                        onClick={() => {
-                          onSubmit('review')
+                <RHFTextField name="planName" label="Plan Set Name" />
+                <Controller
+                  name="issueDate"
+                  control={control}
+                  defaultValue={new Date()}
+                  render={({ field, fieldState: { error } }) => {
+                    const selectedDate = field.value || null;
+                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
+                    const dateStyle = isDateNextDay
+                      ? {
+                          '.MuiInputBase-root.MuiOutlinedInput-root': {
+                            color: 'red',
+                            borderColor: 'red',
+                            border: '1px solid',
+                          },
+                        }
+                      : {};
+                    return (
+                      <DatePicker
+                        label="Issue Date"
+                        views={['day']}
+                        value={selectedDate}
+                        // minDate={startOfDay(addDays(new Date(), 1))}
+                        onChange={(date) => field.onChange(date)}
+                        format="MM/dd/yyyy" // Specify the desired date format
+                        error={!!error}
+                        helperText={error && error?.message}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: !!error,
+                            helperText: error?.message,
+                          },
                         }}
-                        variant="contained"
-                        size="large"
-                        loading={isSubmitting}
-                      >
-                        Upload
-                      </LoadingButton>
-                  )}
-                {!isEmpty(currentMeetingMinutes) && (
+                        // sx={dateStyle} // Apply conditional style based on the date comparison
+                      />
+                    );
+                  }}
+                />
+              </Box>
+            </Box>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+              gap="2rem"
+              sx={{ my: 3 }}
+            >
+              {!currentMeetingMinutes &&
+                (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+                  currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
                   <LoadingButton
                     type="button"
-                    onClick={() => onSubmit('update')}
+                    onClick={() => {
+                      onSubmit('review');
+                    }}
                     variant="contained"
                     size="large"
                     loading={isSubmitting}
                   >
-                    Save Changes
+                    Upload
                   </LoadingButton>
                 )}
-              </Stack>
-            </Card>
-          </Grid>
+              {!isEmpty(currentMeetingMinutes) && (
+                <LoadingButton
+                  type="button"
+                  onClick={() => onSubmit('update')}
+                  variant="contained"
+                  size="large"
+                  loading={isSubmitting}
+                >
+                  Save Changes
+                </LoadingButton>
+              )}
+            </Stack>
+          </Card>
         </Grid>
-      </FormProvider>
-    
+      </Grid>
+    </FormProvider>
   );
 }
 

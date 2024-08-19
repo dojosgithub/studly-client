@@ -24,7 +24,7 @@ export default function AppTopRelated({ title, subheader, list, ...other }) {
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, minWidth: 360 }}>
           {list.map((app) => (
-            <ApplicationItem key={app.id} app={app} />
+            <ApplicationItem key={app._id} app={app} />
           ))}
         </Stack>
       </Scrollbar>

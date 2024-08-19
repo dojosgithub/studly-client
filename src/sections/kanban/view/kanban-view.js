@@ -66,7 +66,7 @@ export default function KanbanView() {
         const destinationColumn = board?.columns[destination.droppableId];
 
         // Moving task to same list
-        if (sourceColumn.id === destinationColumn.id) {
+        if (sourceColumn._id === destinationColumn._id) {
           const newTaskIds = [...sourceColumn.taskIds];
 
           newTaskIds.splice(source.index, 1);
@@ -75,7 +75,7 @@ export default function KanbanView() {
 
           // moveTask({
           //   ...board?.columns,
-          //   [sourceColumn.id]: {
+          //   [sourceColumn._id]: {
           //     ...sourceColumn,
           //     taskIds: newTaskIds,
           //   },
@@ -83,7 +83,7 @@ export default function KanbanView() {
 
           const updatedColumns = {
             ...board?.columns,
-            [sourceColumn.id]: {
+            [sourceColumn._id]: {
               ...sourceColumn,
               taskIds: newTaskIds,
             },
@@ -117,11 +117,11 @@ export default function KanbanView() {
 
         // moveTask({
         //   ...board?.columns,
-        //   [sourceColumn.id]: {
+        //   [sourceColumn._id]: {
         //     ...sourceColumn,
         //     taskIds: sourceTaskIds,
         //   },
-        //   [destinationColumn.id]: {
+        //   [destinationColumn._id]: {
         //     ...destinationColumn,
         //     taskIds: destinationTaskIds,
         //   },
@@ -129,11 +129,11 @@ export default function KanbanView() {
 
         const updatedColumns = {
           ...board?.columns,
-          [sourceColumn.id]: {
+          [sourceColumn._id]: {
             ...sourceColumn,
             taskIds: sourceTaskIds,
           },
-          [destinationColumn.id]: {
+          [destinationColumn._id]: {
             ...destinationColumn,
             taskIds: destinationTaskIds,
           },
@@ -169,7 +169,7 @@ export default function KanbanView() {
         const task = tasks[taskId];
         return task
           ? {
-              id: task.id,
+              id: task._id,
               name: task.name,
               status: task.status,
               priority: task.priority,

@@ -66,7 +66,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   const ccList = useSelector((state) => state.submittal.users);
   const ownerList = useSelector((state) => state.submittal.assigneeUsers);
   const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?.id);
+  const projectId = useSelector((state) => state.project?.current?._id);
   const trades = useSelector((state) => state.project?.current?.trades);
   const existingAttachments = useMemo(
     () => (currentSubmittal?.attachments ? currentSubmittal?.attachments : []),
@@ -263,7 +263,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           link,
           projectId,
           trade,
-          parentSubmittal: params?.id,
+          parentSubmittal: params?._id,
         };
       } else {
         finalData = { ...currentSubmittal, ...data, creator, owner, trade };
@@ -309,11 +309,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
             { variant: 'success' }
           );
         }
-        router.push(paths.subscriber.submittals.details(payload?.id));
+        router.push(paths.subscriber.submittals.details(payload?._id));
 
         return;
       }
-      await handleSubmitToArchitect(payload?.id);
+      await handleSubmitToArchitect(payload?._id);
       reset();
 
       router.push(paths.subscriber.submittals.list);

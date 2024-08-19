@@ -50,11 +50,11 @@ export async function createColumn(columnData) {
       const columns = {
         ...board.columns,
         // add new column in board.columns
-        [columnData.id]: columnData,
+        [columnData._id]: columnData,
       };
 
       // add new column in board.ordered
-      const ordered = [...board.ordered, columnData.id];
+      const ordered = [...board.ordered, columnData._id];
 
       return {
         ...currentData,
@@ -92,7 +92,7 @@ export async function updateColumn(columnId, columnName) {
       const columns = {
         ...board.columns,
         // update column in board.columns
-        [column.id]: {
+        [column._id]: {
           ...column,
           name: columnName,
         },
@@ -171,7 +171,7 @@ export async function clearColumn(columnId) {
 
       const columns = {
         ...board.columns,
-        [column.id]: {
+        [column._id]: {
           ...column,
           // delete task in column
           taskIds: [],
@@ -263,14 +263,14 @@ export async function createTask(columnId, taskData) {
         [columnId]: {
           ...column,
           // add task in column
-          taskIds: [...column.taskIds, taskData.id],
+          taskIds: [...column.taskIds, taskData._id],
         },
       };
 
       // add task in board.tasks
       const tasks = {
         ...board.tasks,
-        [taskData.id]: taskData,
+        [taskData._id]: taskData,
       };
 
       return {
@@ -306,7 +306,7 @@ export async function updateTask(taskData) {
       const tasks = {
         ...board.tasks,
         // add task in board.tasks
-        [taskData.id]: taskData,
+        [taskData._id]: taskData,
       };
 
       return {
@@ -334,14 +334,14 @@ export async function moveTask(updateColumns) {
 
       // update board.columns
       const columns = updateColumns;
-      const obj={
+      const obj = {
         ...currentData,
         board: {
           ...board,
           columns,
         },
       };
-      return obj
+      return obj;
     },
     false
   );
@@ -377,7 +377,7 @@ export async function deleteTask(columnId, taskId) {
 
       const columns = {
         ...board.columns,
-        [column.id]: {
+        [column._id]: {
           ...column,
           // delete tasks in column
           taskIds: column.taskIds.filter((id) => id !== taskId),

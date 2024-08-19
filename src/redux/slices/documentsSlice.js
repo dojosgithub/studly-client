@@ -5,7 +5,6 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 export const uploadDocument = createAsyncThunk(
   'documents/upload',
   async (documentsData, { getState, rejectWithValue }) => {
-
     try {
       const response = await axiosInstance.post(endpoints.documents.upload, documentsData);
       console.log('API Response:', response.data);
@@ -25,11 +24,10 @@ export const getDocumentsList = createAsyncThunk(
 
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
       let parentId;
 
       if ('parentId' in listOptions) {
-        
         parentId = listOptions.parentId;
       } else {
         const listData = getState().documents?.list;
@@ -76,7 +74,6 @@ export const deleteDocument = createAsyncThunk(
 export const updateDocument = createAsyncThunk(
   'documents/update',
   async (id, documentsData, { getState, rejectWithValue }) => {
-
     try {
       const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
       console.log('API Response:', response.data);

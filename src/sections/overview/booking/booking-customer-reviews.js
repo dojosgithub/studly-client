@@ -34,7 +34,7 @@ export default function BookingCustomerReviews({ title, subheader, list, ...othe
 
       <Carousel ref={carousel.carouselRef} {...carousel.carouselSettings}>
         {list.map((item) => (
-          <ReviewItem key={item.id} item={item} />
+          <ReviewItem key={item._id} item={item} />
         ))}
       </Carousel>
 
@@ -45,7 +45,7 @@ export default function BookingCustomerReviews({ title, subheader, list, ...othe
           fullWidth
           color="error"
           variant="soft"
-          onClick={() => console.info('ACCEPT', customerInfo?.id)}
+          onClick={() => console.info('ACCEPT', customerInfo?._id)}
         >
           Reject
         </Button>
@@ -54,7 +54,7 @@ export default function BookingCustomerReviews({ title, subheader, list, ...othe
           fullWidth
           color="inherit"
           variant="contained"
-          onClick={() => console.info('REJECT', customerInfo?.id)}
+          onClick={() => console.info('REJECT', customerInfo?._id)}
         >
           Accept
         </Button>

@@ -210,7 +210,7 @@ export default function FileManagerFileDetails({
       {hasShared && (
         <Box sx={{ pl: 2.5, pr: 1 }}>
           {shared.map((person) => (
-            <FileManagerInvitedItem key={person.id} person={person} />
+            <FileManagerInvitedItem key={person._id} person={person} />
           ))}
         </Box>
       )} */}

@@ -13,14 +13,14 @@ export default function SubmittalsRevisionPage() {
   const params = useParams();
   const { id } = params;
 
-  const dispatch = useDispatch()
-  const projectId = useSelector(state => state?.project?.current?.id);
+  const dispatch = useDispatch();
+  const projectId = useSelector((state) => state?.project?.current?._id);
 
   // getting users list of project
   useEffect(() => {
-    dispatch(getProjectUsersList())
-    dispatch(getProjectAssigneeUsers())
-  }, [id, dispatch])
+    dispatch(getProjectUsersList());
+    dispatch(getProjectAssigneeUsers());
+  }, [id, dispatch]);
   return (
     <>
       <Helmet>

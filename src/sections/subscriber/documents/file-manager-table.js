@@ -72,7 +72,7 @@ export default function FileManagerTable({
   const dispatch = useDispatch();
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
-  
+
   useEffect(() => {
     dispatch(getDocumentsList({ search: filters.query, page }));
   }, [dispatch, filters.query, page]);
@@ -98,7 +98,7 @@ export default function FileManagerTable({
           onSelectAllRows={(checked) =>
             onSelectAllRows(
               checked,
-              tableData.map((row) => row.id)
+              tableData.map((row) => row._id)
             )
           }
           action={
@@ -150,7 +150,7 @@ export default function FileManagerTable({
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.id)
+                  tableData.map((row) => row._id)
                 )
               }
               sx={{
@@ -170,10 +170,10 @@ export default function FileManagerTable({
             <TableBody>
               {dataFiltered?.docs?.map((row) => (
                 <FileManagerTableRow
-                  key={row.id}
+                  key={row._id}
                   row={row}
-                  selected={selected.includes(row.id)}
-                  onSelectRow={() => onSelectRow(row.id)}
+                  selected={selected.includes(row._id)}
+                  onSelectRow={() => onSelectRow(row._id)}
                   onDeleteRow={() => onDeleteRow(row._id)}
                   fetchData={fetchData}
                 />

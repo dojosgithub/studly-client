@@ -59,7 +59,7 @@ export default function FileManagerNewFileDialog({
           listData.links.length > 2
             ? listData.links[listData.links.length - 1].href.replace('/', '')
             : null,
-        projectId: currentProject.id,
+        projectId: currentProject._id,
       };
 
       files.forEach((file) => {

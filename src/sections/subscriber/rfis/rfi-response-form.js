@@ -39,9 +39,14 @@ import FormProvider, {
   RHFSelect,
   RHFMultiSelect,
   RHFMultiSelectChip,
-  RHFSelectChip
+  RHFSelectChip,
 } from 'src/components/hook-form';
-import { createNewSubmittal, editSubmittal, respondToSubmittalRequest, updateSubmittalResponseDetails } from 'src/redux/slices/submittalSlice';
+import {
+  createNewSubmittal,
+  editSubmittal,
+  respondToSubmittalRequest,
+  updateSubmittalResponseDetails,
+} from 'src/redux/slices/submittalSlice';
 import { REVIEW_STATUS } from 'src/utils/constants';
 import SubmittalAttachments from './rfi-attachment';
 
@@ -58,33 +63,28 @@ export default function RfiResponseForm({ currentRfi, id }) {
     [currentRfi?.response]
   );
 
-  const [files, setFiles] = useState(existingAttachments)
-  const [hasFileChanges, setHasFileChanges] = useState(JSON.stringify(files) !== JSON.stringify(existingAttachments))
+  const [files, setFiles] = useState(existingAttachments);
+  const [hasFileChanges, setHasFileChanges] = useState(
+    JSON.stringify(files) !== JSON.stringify(existingAttachments)
+  );
   const { enqueueSnackbar } = useSnackbar();
-
 
   useEffect(() => {
     // Check if files have changed
     const hasChanges = JSON.stringify(files) !== JSON.stringify(existingAttachments);
-    setHasFileChanges(hasChanges)
-
+    setHasFileChanges(hasChanges);
   }, [files, existingAttachments]);
-
 
   const NewSubmittalSchema = Yup.object().shape({
     comment: Yup.string().required('Comment is required'),
     status: Yup.string().required('Status is required'),
     // attachments: Yup.array().min(1),
-
   });
-
-
 
   const defaultValues = useMemo(
     () => ({
       comment: currentRfi?.response?.comment || '',
       status: currentRfi?.response?.status || '',
-
     }),
     [currentRfi]
   );
@@ -105,20 +105,17 @@ export default function RfiResponseForm({ currentRfi, id }) {
 
   const values = watch();
 
-
   useEffect(() => {
     // dispatch(setSubmittalResponse(currentRfi?.response))
-    reset(defaultValues)
-  }, [dispatch, currentRfi, id, reset, defaultValues])
-
-
+    reset(defaultValues);
+  }, [dispatch, currentRfi, id, reset, defaultValues]);
 
   const onSubmit = handleSubmit(async (data, value) => {
     // enqueueSnackbar(currentRfi ? 'Update success!' : 'Create success!');
     try {
       if (isEmpty(params)) {
-        enqueueSnackbar('Submittal Id not Found', { variant: "error" });
-        return
+        enqueueSnackbar('Submittal Id not Found', { variant: 'error' });
+        return;
       }
 
       const formData = new FormData();
@@ -131,44 +128,42 @@ export default function RfiResponseForm({ currentRfi, id }) {
           attachments.push(file);
         }
       }
-      data.attachments = attachments
+      data.attachments = attachments;
       formData.append('body', JSON.stringify(data));
 
-      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
+      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?._id }))
 
       let error;
       let payload;
-      if (currentRfi?.isResponseSubmitted && value === "update" && params?.id) {
-        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
-        error = res.error
-        payload = res.payload
-      } else if (!currentRfi?.isResponseSubmitted && value === "save" && params?.id) {
-        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }))
-        error = res.error
-        payload = res.payload
+      if (currentRfi?.isResponseSubmitted && value === 'update' && params?._id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?._id }));
+        error = res.error;
+        payload = res.payload;
+      } else if (!currentRfi?.isResponseSubmitted && value === 'save' && params?._id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?._id }));
+        error = res.error;
+        payload = res.payload;
       } else {
-        const res = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
-        error = res.error
-        payload = res.payload
+        const res = await dispatch(respondToSubmittalRequest({ formData, id: params?._id }));
+        error = res.error;
+        payload = res.payload;
       }
       if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
       }
       // reset();
       // let message = currentRfi?.isResponseSubmitted ? 'Submittal response updated successfully!' : 'Submittal response submitted successfully!'
-      let message = ''
-      if (currentRfi?.isResponseSubmitted && value === "update") {
+      let message = '';
+      if (currentRfi?.isResponseSubmitted && value === 'update') {
         message = 'Submittal response updated successfully!';
-      } else if (!currentRfi?.isResponseSubmitted && value === "save") {
+      } else if (!currentRfi?.isResponseSubmitted && value === 'save') {
         message = 'Submittal response saved successfully!';
       } else {
         message = 'Submittal response submitted successfully!';
       }
       enqueueSnackbar(message, { variant: 'success' });
-      router.push(paths.subscriber.submittals.details(params?.id));
-
-
+      router.push(paths.subscriber.submittals.details(params?._id));
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
@@ -176,21 +171,12 @@ export default function RfiResponseForm({ currentRfi, id }) {
     }
   });
 
-
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={4}
-
-              my={3}
-              display="flex"
-              flexDirection="column"
-            >
-
+            <Box rowGap={4} my={3} display="flex" flexDirection="column">
               {/* // TODO: SHOW CHIP */}
               <RHFSelect
                 name="status"
@@ -198,46 +184,59 @@ export default function RfiResponseForm({ currentRfi, id }) {
                 chip
                 disabled={currentRfi?.isResponseSubmitted}
               >
-
-                {REVIEW_STATUS?.map(item => (
-                  <MenuItem selected value={item}>{item}</MenuItem>
+                {REVIEW_STATUS?.map((item) => (
+                  <MenuItem selected value={item}>
+                    {item}
+                  </MenuItem>
                 ))}
               </RHFSelect>
               <RHFTextField name="comment" label="Add a comment" />
 
-
-
               <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
-
-
-
             </Box>
 
-
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              <Box display='flex' justifyContent='flex-end' gap={2}>
-
-                {!currentRfi?.isResponseSubmitted &&
-                  <LoadingButton type="button" onClick={() => onSubmit('save')} variant="outlined" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
+              <Box display="flex" justifyContent="flex-end" gap={2}>
+                {!currentRfi?.isResponseSubmitted && (
+                  <LoadingButton
+                    type="button"
+                    onClick={() => onSubmit('save')}
+                    variant="outlined"
+                    size="large"
+                    loading={isSubmitting}
+                    disabled={!isDirty && !hasFileChanges}
+                  >
                     Save
                   </LoadingButton>
-                }
-                {currentRfi?.isResponseSubmitted ?
-
-                  <LoadingButton type="button" onClick={() => onSubmit('update')} variant="contained" size="large" loading={isSubmitting} disabled={!isDirty && !hasFileChanges}>
+                )}
+                {currentRfi?.isResponseSubmitted ? (
+                  <LoadingButton
+                    type="button"
+                    onClick={() => onSubmit('update')}
+                    variant="contained"
+                    size="large"
+                    loading={isSubmitting}
+                    disabled={!isDirty && !hasFileChanges}
+                  >
                     Update
                   </LoadingButton>
-                  :
-                  <LoadingButton type="button" onClick={() => onSubmit('submit')} variant="contained" size="large" loading={isSubmitting}>
+                ) : (
+                  <LoadingButton
+                    type="button"
+                    onClick={() => onSubmit('submit')}
+                    variant="contained"
+                    size="large"
+                    loading={isSubmitting}
+                  >
                     Submit
                   </LoadingButton>
-                }
+                )}
               </Box>
             </Stack>
           </Card>
         </Grid>
       </Grid>
-    </FormProvider >
+    </FormProvider>
   );
 }
 

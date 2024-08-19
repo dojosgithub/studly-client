@@ -91,7 +91,7 @@ const MeetingMinutesNotes = () => {
                 <StyledIconButton color="inherit" onClick={() => handleRemoveNote(noteIndex)} top>
                   <Iconify icon="ion:close-circle" width="40px" height="40px" />
                 </StyledIconButton>
-                <Box key={note.id} sx={{ position: 'relative' }}>
+                <Box key={note._id} sx={{ position: 'relative' }}>
                   <Stack gap={3} mx={2} my={3}>
                     <RHFTextField
                       name={`notes[${noteIndex}].subject`}
@@ -165,7 +165,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
   return (
     <>
       {topicFields.map((topic, topicIndex) => (
-        <Box key={topic?.id} sx={{ position: 'relative' }}>
+        <Box key={topic?._id} sx={{ position: 'relative' }}>
           <StyledIconButton color="inherit" onClick={() => removeTopic(topicIndex)}>
             <Iconify icon="ion:close-circle" width="40px" height="40px" />
           </StyledIconButton>
@@ -262,7 +262,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
             <RHFEditor
               simple
               name={`notes[${noteIndex}].topics[${topicIndex}].description`}
-              id={`description-${topic.id}`}
+              id={`description-${topic._id}`}
               label="Description"
               InputLabelProps={{ shrink: true }}
             />

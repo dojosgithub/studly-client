@@ -158,7 +158,7 @@ export default function RfiListView() {
   );
 
   // const handleDeleteRows = useCallback(() => {
-  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row.id));
+  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row._id));
   //   setTableData(deleteRows);
 
   //   table.onUpdatePageDeleteRows({
@@ -294,7 +294,7 @@ export default function RfiListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.id)
+                  tableData.map((row) => row._id)
                 )
               }
               action={
@@ -318,7 +318,7 @@ export default function RfiListView() {
                   // onSelectAllRows={(checked) =>
                   //   table.onSelectAllRows(
                   //     checked,
-                  //     tableData.map((row) => row.id)
+                  //     tableData.map((row) => row._id)
                   //   )
                   // }
                   handleSortChange={handleSortChange}
@@ -331,13 +331,13 @@ export default function RfiListView() {
                     listData?.docs &&
                       listData?.docs?.map((row) => (
                         <RfiTableRow
-                          key={row.id}
+                          key={row._id}
                           row={row}
-                          selected={table.selected.includes(row.id)}
-                          onSelectRow={() => table.onSelectRow(row.id)}
-                          onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                          onEditRow={() => handleEditRow(row.id)}
-                          onViewRow={() => handleViewRow(row.id)}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={(onDelete) => handleDeleteRow(row._id, onDelete)}
+                          onEditRow={() => handleEditRow(row._id)}
+                          onViewRow={() => handleViewRow(row._id)}
                         />
                       ))
                   }

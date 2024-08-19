@@ -99,16 +99,15 @@ export default function KanbanTaskItem({ task, index, onDeleteTask, onUpdateTask
   //       }}
   //     >
   //       {task.assignee.map((user) => (
-  //         <Avatar key={user.id} alt={user.name} src={user.avatarUrl} />
+  //         <Avatar key={user._id} alt={user.name} src={user.avatarUrl} />
   //       ))}
   //     </AvatarGroup>
   //   </Stack>
   // );
 
-
   return (
     <>
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={task._id} index={index}>
         {(provided, snapshot) => (
           <Paper
             ref={provided.innerRef}
@@ -141,7 +140,17 @@ export default function KanbanTaskItem({ task, index, onDeleteTask, onUpdateTask
           >
             {/* {!!task.attachments.length && renderImg} */}
 
-            <Stack spacing={2} sx={{ px: 2, py: 2.5, position: 'relative', flexDirection: 'row', gap: '.25rem', alignItems: 'center' }}>
+            <Stack
+              spacing={2}
+              sx={{
+                px: 2,
+                py: 2.5,
+                position: 'relative',
+                flexDirection: 'row',
+                gap: '.25rem',
+                alignItems: 'center',
+              }}
+            >
               {renderPriority}
               <Iconify width={24} icon="akar-icons:drag-vertical" sx={{ mr: 0.25 }} />
 

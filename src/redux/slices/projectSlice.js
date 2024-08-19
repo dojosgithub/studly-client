@@ -289,7 +289,6 @@ const project = createSlice({
       }
     },
     removeMember: (state, action) => {
-      // const filteredMembers = state.members.filter(member => member?.id !== action?.payload)
       const filteredMembers = state.members.filter((member) => member?.email !== action?.payload);
       state.members = filteredMembers;
     },

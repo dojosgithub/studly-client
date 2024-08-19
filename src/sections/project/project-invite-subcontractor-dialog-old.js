@@ -18,18 +18,27 @@ import { Stack, Table, Typography } from '@mui/material';
 // components
 import { enqueueSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
-import FormProvider, {
-  RHFSelect, RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers, setProjectTrades } from 'src/redux/slices/projectSlice';
-// inviteSubcontractor, 
+import {
+  PROJECT_INVITE_USERS_INTERNAL,
+  PROJECT_INVITE_USER_ROLES,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  USER_TYPES_STUDLY,
+  getRoleKeyByValue,
+} from 'src/_mock';
+import {
+  setAddExternalUser,
+  setAddInternalUser,
+  setInvitedSubcontractor,
+  setMembers,
+  setProjectTrades,
+} from 'src/redux/slices/projectSlice';
+// inviteSubcontractor,
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
-
 
 // ----------------------------------------------------------------------
 
@@ -43,20 +52,24 @@ export default function ProjectInviteSubcontractorDialog({
   ...other
 }) {
   // Get List of Subcontractors in DB
-  const subcontractorListOptions = useSelector(state => state?.project?.subcontractors?.list?.all);
-  const subcontractorsList = useSelector(state => state.project?.subcontractors?.list?.company)
-  const subcontractorsInvitedList = useSelector(state => state.project?.subcontractors?.invited)
-  const subcontractors = useMemo(() => [...subcontractorsList, ...subcontractorsInvitedList], [subcontractorsList, subcontractorsInvitedList]);
-  const trades = useSelector(state => state.project.create.trades)
-  const { getValues, setValue } = useFormContext()
-  const stepperFormValues = getValues()
+  const subcontractorListOptions = useSelector(
+    (state) => state?.project?.subcontractors?.list?.all
+  );
+  const subcontractorsList = useSelector((state) => state.project?.subcontractors?.list?.company);
+  const subcontractorsInvitedList = useSelector((state) => state.project?.subcontractors?.invited);
+  const subcontractors = useMemo(
+    () => [...subcontractorsList, ...subcontractorsInvitedList],
+    [subcontractorsList, subcontractorsInvitedList]
+  );
+  const trades = useSelector((state) => state.project.create.trades);
+  const { getValues, setValue } = useFormContext();
+  const stepperFormValues = getValues();
   console.table('object', {
     tradeId,
     options,
-  })
+  });
 
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const InviteUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
@@ -66,15 +79,18 @@ export default function ProjectInviteSubcontractorDialog({
     role: Yup.string(),
   });
 
-  const defaultValues = useMemo(() => ({
-    firstName: '',
-    lastName: '',
-    // user: null,
-    email: '',
-    role: SUBSCRIBER_USER_ROLE_STUDLY.SCO,
-    status: 'invited',
-    team: null
-  }), []);
+  const defaultValues = useMemo(
+    () => ({
+      firstName: '',
+      lastName: '',
+      // user: null,
+      email: '',
+      role: SUBSCRIBER_USER_ROLE_STUDLY.SCO,
+      status: 'invited',
+      team: null,
+    }),
+    []
+  );
 
   const methods = useForm({
     resolver: yupResolver(InviteUserSchema),
@@ -88,7 +104,6 @@ export default function ProjectInviteSubcontractorDialog({
   } = methods;
   // const { user: userObj } = getValues;
 
-
   // const handleSelectUser = useCallback(
   //   (option) => {
   //     console.log("option", option)
@@ -99,41 +114,39 @@ export default function ProjectInviteSubcontractorDialog({
   //   [setValue]
   // );
 
-
   const isEmailAlreadyExists = async (email) => {
-    const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)
-    const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
+    const filteredSubcontractorByEmail = subcontractors.filter((sub) => sub.email === email);
+    const filteredSubcontractorCompany = subcontractorsList.filter((sub) => sub.email === email);
     // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
-    const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
+    const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0;
 
     // TODO ADD EXISTING SUBCONTRACTOR
-
 
     // if there is an id of subcontractor
     if (filteredSubcontractorByEmail.length > 0) {
       enqueueSnackbar('email already exists!', { variant: 'error' });
-      return true
+      return true;
     }
-    const data = { email }
+    const data = { email };
 
-    const modifiedTrades = trades.map(trade => {
+    const modifiedTrades = trades.map((trade) => {
       if (trade.tradeId === tradeId) {
         // return { ...trade, subcontractorId };
         if (!isEmailExistsInCompanyList && trade.subcontractorId) {
           // Remove subcontractorId from the trade
           const { subcontractorId, ...restOfTrade } = trade;
           return { ...restOfTrade, ...data };
-      }
+        }
         return { ...trade, ...data };
       }
       return trade;
     });
-    setValue('trades', modifiedTrades)
-    dispatch(setProjectTrades(modifiedTrades))
+    setValue('trades', modifiedTrades);
+    dispatch(setProjectTrades(modifiedTrades));
 
     // ? set options
 
-    setOptions(prevOptions => {
+    setOptions((prevOptions) => {
       const tradeIds = Object.keys(prevOptions);
 
       // Check if the options object is empty or if the tradeId is not present in prevOptions
@@ -144,13 +157,13 @@ export default function ProjectInviteSubcontractorDialog({
       }
 
       // Check if there's already an option with the same tradeId
-      const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
+      const existingTradeIndex = tradeIds.findIndex((id) => prevOptions[id].tradeId === tradeId);
 
       if (existingTradeIndex !== -1) {
         // If an option with the same tradeId exists, update its subcontractorId
         const updatedOptions = { ...prevOptions };
         // if (hasEmailAndId) {
-        //   updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail.id;
+        //   updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail._id;
         // }
         updatedOptions[tradeId].email = email;
         return updatedOptions;
@@ -160,18 +173,15 @@ export default function ProjectInviteSubcontractorDialog({
       // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
       return { ...prevOptions, [tradeId]: { tradeId, ...data } };
     });
-    return false
-  }
-
-
+    return false;
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-
-      const emailExists = await isEmailAlreadyExists(data.email)
+      const emailExists = await isEmailAlreadyExists(data.email);
       if (emailExists) {
         enqueueSnackbar('email already exists!', { variant: 'error' });
-        return
+        return;
       }
 
       // const { role, user, ...rest } = data;
@@ -186,23 +196,25 @@ export default function ProjectInviteSubcontractorDialog({
       //   ...rest
       // }
       // if (hasEmailAndId) {
-      //   finalData.user = data.user.id
+      //   finalData.user = data.user._id
       //   finalData.status = 'joined'
       // }
       const { role } = data;
       const finalData = {
         ...data,
         role: {
-          name: role, shortName: getRoleKeyByValue(role), loggedInAs: USER_TYPES_STUDLY.SUB
+          name: role,
+          shortName: getRoleKeyByValue(role),
+          loggedInAs: USER_TYPES_STUDLY.SUB,
         },
         team: null,
-        status: "invited",
-      }
+        status: 'invited',
+      };
 
-      // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials 
+      // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials
       //  // dispatch(setMembers(finalData))
-      dispatch(setInvitedSubcontractor(finalData))
-      reset()
+      dispatch(setInvitedSubcontractor(finalData));
+      reset();
       // // const { error, payload } = await dispatch(inviteSubcontractor(finalData))
       // // if (error) {
       //  //   enqueueSnackbar(error?.message||'There was an error sending Invite!', { variant: "error" });
@@ -210,9 +222,7 @@ export default function ProjectInviteSubcontractorDialog({
       //  // }
       //  // console.log('updatedData Final', updatedData);
       // enqueueSnackbar('Invite sent successfully!');
-      onClose()
-
-
+      onClose();
     } catch (e) {
       console.error(e);
     }
@@ -223,17 +233,30 @@ export default function ProjectInviteSubcontractorDialog({
       <DialogTitle> Invite </DialogTitle>
 
       <DialogContent sx={{ overflow: 'unset' }}>
-
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <Box
-            sx={{ display: 'flex', flexDirection: "column", gap: '1rem', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
-          // sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr)', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              flexWrap: { xs: 'wrap', md: 'nowrap' },
+            }}
+            // sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr)', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
           >
             <Box
-              sx={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(2, 1fr)', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+              sx={{
+                display: 'grid',
+                gap: '1rem',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                flexWrap: { xs: 'wrap', md: 'nowrap' },
+              }}
             >
-              <RHFTextField name='firstName' label="First Name" InputLabelProps={{ shrink: true }} />
-              <RHFTextField name='lastName' label="Last Name" InputLabelProps={{ shrink: true }} />
+              <RHFTextField
+                name="firstName"
+                label="First Name"
+                InputLabelProps={{ shrink: true }}
+              />
+              <RHFTextField name="lastName" label="Last Name" InputLabelProps={{ shrink: true }} />
             </Box>
 
             {/* <RHFSelect name='email' label="Email" InputLabelProps={{ shrink: true }}>
@@ -250,14 +273,11 @@ export default function ProjectInviteSubcontractorDialog({
                 value={userObj} setValue={(val) => handleSelectUser(val)} /> */}
               {/* {errors && errors?.email?.message && <Typography color='red' fontSize=".75rem">{errors?.email?.message}</Typography>} */}
             </Stack>
-
           </Box>
-
         </FormProvider>
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between' }}>
-
         {onClose && (
           <Button variant="outlined" color="inherit" onClick={onClose}>
             Close

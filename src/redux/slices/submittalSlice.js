@@ -61,7 +61,6 @@ export const getSubmittalDetails = createAsyncThunk(
   'submittal/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.get(endpoints.submittal.details(id));
 
       return response.data.data;
@@ -79,10 +78,9 @@ export const getSubmittalList = createAsyncThunk(
   'submittal/list',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.submittal.list(projectId),
         { status },
@@ -106,7 +104,7 @@ export const getAllProjectUsersList = createAsyncThunk(
   'submittal/users/list/all',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.project.projectAllUsersList(projectId));
 
@@ -124,7 +122,7 @@ export const getProjectUsersList = createAsyncThunk(
   'submittal/users/list',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.project.projectUsersList(projectId));
 
@@ -143,7 +141,7 @@ export const getProjectAssigneeUsers = createAsyncThunk(
   'submittal/users-assignee/list',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(
         endpoints.project.projectAssigneeUsersList(projectId)
@@ -164,7 +162,7 @@ export const getSubmittalLogPDF = createAsyncThunk(
   'submittal/pdf',
   async (exptype, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.submittal.pdf(projectId, exptype), {
         responseType: 'blob',
@@ -199,7 +197,6 @@ export const submitSubmittalToArchitect = createAsyncThunk(
   'submittal/submitToArchitect',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.post(endpoints.submittal.submit(id));
 
       return response.data.data;
@@ -234,7 +231,6 @@ export const getSubmittalResponseDetails = createAsyncThunk(
   'submittal/submittalResponseDetails',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.get(endpoints.submittal.responseDetails(id));
 
       return response.data.data;
@@ -269,7 +265,6 @@ export const changeSubmittalStatus = createAsyncThunk(
   'submittal/changeSubmittalStatus',
   async (submittalData, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.post(endpoints.submittal.status, submittalData);
 
       return response.data.data;
@@ -286,8 +281,6 @@ export const resendToSubcontractor = createAsyncThunk(
   'submittal/resendToSubcontractor',
   async (id, { getState, rejectWithValue }) => {
     try {
-
-
       const response = await axiosInstance.get(endpoints.submittal.resendToSubcontractor(id));
 
       return response.data.message;
@@ -304,7 +297,6 @@ export const sendToAll = createAsyncThunk(
   'submittal/sendToAll',
   async (submittalData, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.post(endpoints.submittal.sendToAll, submittalData);
 
       return response.data.data;
@@ -323,7 +315,7 @@ const initialState = {
   current: {},
   users: [],
   assigneeUsers: [],
-  projectUsersAll:[],
+  projectUsersAll: [],
   statusMessage: null,
   resendSubContractorMessage: null,
   sendAllMessage: null,
@@ -509,7 +501,7 @@ const submittal = createSlice({
     });
     builder.addCase(changeSubmittalStatus.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.statusMessage = action.payload
+      state.statusMessage = action.payload;
       state.error = null;
     });
     builder.addCase(changeSubmittalStatus.rejected, (state, action) => {
@@ -518,7 +510,7 @@ const submittal = createSlice({
     });
     builder.addCase(resendToSubcontractor.pending, (state, action) => {
       state.isLoading = true;
-      state.resendSubContractorMessage = action.payload
+      state.resendSubContractorMessage = action.payload;
       state.error = null;
     });
     builder.addCase(resendToSubcontractor.fulfilled, (state, action) => {
@@ -535,7 +527,7 @@ const submittal = createSlice({
     });
     builder.addCase(sendToAll.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.sendAllMessage = action.payload
+      state.sendAllMessage = action.payload;
       state.error = null;
     });
     builder.addCase(sendToAll.rejected, (state, action) => {

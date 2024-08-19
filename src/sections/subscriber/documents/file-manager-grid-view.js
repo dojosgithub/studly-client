@@ -78,11 +78,11 @@ export default function FileManagerGridView({
               .filter((i) => i.type === 'folder')
               .map((folder) => (
                 <FileManagerFolderItem
-                  key={folder.id}
+                  key={folder._id}
                   folder={folder}
-                  selected={selected.includes(folder.id)}
-                  onSelect={() => onSelectItem(folder.id)}
-                  onDelete={() => onDeleteItem(folder.id)}
+                  selected={selected.includes(folder._id)}
+                  onSelect={() => onSelectItem(folder._id)}
+                  onDelete={() => onDeleteItem(folder._id)}
                   sx={{ maxWidth: 'auto' }}
                 />
               ))}
@@ -114,11 +114,11 @@ export default function FileManagerGridView({
               .filter((i) => i.type !== 'folder')
               .map((file) => (
                 <FileManagerFileItem
-                  key={file.id}
+                  key={file._id}
                   file={file}
-                  selected={selected.includes(file.id)}
-                  onSelect={() => onSelectItem(file.id)}
-                  onDelete={() => onDeleteItem(file.id)}
+                  selected={selected.includes(file._id)}
+                  onSelect={() => onSelectItem(file._id)}
+                  onDelete={() => onDeleteItem(file._id)}
                   sx={{ maxWidth: 'auto' }}
                 />
               ))}
@@ -133,7 +133,7 @@ export default function FileManagerGridView({
             onSelectAllItems={(checked) =>
               onSelectAllItems(
                 checked,
-                data.map((row) => row.id)
+                data.map((row) => row._id)
               )
             }
             action={

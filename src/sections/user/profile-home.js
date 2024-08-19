@@ -187,7 +187,7 @@ export default function ProfileHome({ info, posts }) {
           {renderPostInput}
 
           {posts.map((post) => (
-            <ProfilePostItem key={post.id} post={post} />
+            <ProfilePostItem key={post._id} post={post} />
           ))}
         </Stack>
       </Grid>

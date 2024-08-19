@@ -190,7 +190,7 @@ export default function AccountBillingPlan({ cardList, addressBook, plans }) {
         list={cardList}
         open={openCards.value}
         onClose={openCards.onFalse}
-        selected={(selectedId) => selectedCard?.id === selectedId}
+        selected={(selectedId) => selectedCard?._id === selectedId}
         onSelect={handleSelectCard}
       /> */}
       {/* 
@@ -198,7 +198,7 @@ export default function AccountBillingPlan({ cardList, addressBook, plans }) {
         list={addressBook}
         open={openAddress.value}
         onClose={openAddress.onFalse}
-        selected={(selectedId) => selectedAddress?.id === selectedId}
+        selected={(selectedId) => selectedAddress?._id === selectedId}
         onSelect={handleSelectAddress}
         action={
           <Button

@@ -66,7 +66,7 @@ export default function ProfileFriends({ friends, searchFriends, onSearchFriends
           }}
         >
           {dataFiltered.map((friend) => (
-            <FriendCard key={friend.id} friend={friend} />
+            <FriendCard key={friend._id} friend={friend} />
           ))}
         </Box>
       )}

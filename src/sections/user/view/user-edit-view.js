@@ -16,7 +16,7 @@ import UserNewEditForm from '../user-new-edit-form';
 export default function UserEditView({ id }) {
   const settings = useSettingsContext();
 
-  const currentUser = _userList.find((user) => user.id === id);
+  const currentUser = _userList.find((user) => user._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

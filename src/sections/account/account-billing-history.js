@@ -27,7 +27,7 @@ export default function AccountBillingHistory({ invoices }) {
 
       <Stack spacing={1.5} sx={{ px: 3, pt: 3 }}>
         {(showMore.value ? invoices : invoices.slice(0, 8)).map((invoice) => (
-          <Stack key={invoice.id} direction="row" alignItems="center">
+          <Stack key={invoice._id} direction="row" alignItems="center">
             <ListItemText
               primary={invoice.invoiceNumber}
               secondary={fDate(invoice.createdAt)}

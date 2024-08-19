@@ -16,7 +16,12 @@ import { SUBSCRIBER_USER_ROLE_STUDLY, _userList } from 'src/_mock';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import {
+  getSubmittalDetails,
+  getSubmittalList,
+  setCurrentSubmittal,
+  submitSubmittalToArchitect,
+} from 'src/redux/slices/submittalSlice';
 import { useRouter } from 'src/routes/hooks';
 import RfiNewEditForm from '../rfi-new-edit-form';
 
@@ -25,11 +30,10 @@ import RfiNewEditForm from '../rfi-new-edit-form';
 export default function RfiEditView({ id }) {
   const settings = useSettingsContext();
   // const rfiList = useSelector(state => state.rfi?.list?.docs)
-  // const currentRfi = rfiList?.find(item => item.id === id)
+  // const currentRfi = rfiList?.find(item => item._id === id)
   // const dispatch = useDispatch()
   const currentRfi = useSelector((state) => state.rfi.current);
 
-  
   // useEffect(() => {
   //   // if (id) {
   //   // }

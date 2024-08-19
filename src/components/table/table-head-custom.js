@@ -50,13 +50,13 @@ export default function TableHeadCustom({
 
         {headLabel.map((headCell) => (
           <TableCell
-            key={headCell.id}
+            key={headCell._id}
             align={headCell.align || 'left'}
-            // sortDirection={orderBy === headCell.id ? order : false}
+            // sortDirection={orderBy === headCell._id ? order : false}
             sortDirection
             sx={{ width: headCell.width, minWidth: headCell.minWidth }}
           >
-            {(headCell.id === 'id' || headCell.id === 'rfiId') ? (
+            {headCell._id === 'id' || headCell._id === 'rfiId' ? (
               <TableSortLabel
                 hideSortIcon
                 active
@@ -66,7 +66,7 @@ export default function TableHeadCustom({
               >
                 {headCell.label}
 
-                {orderBy === headCell.id ? (
+                {orderBy === headCell._id ? (
                   <Box sx={{ ...visuallyHidden }}>
                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                   </Box>

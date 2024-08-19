@@ -50,7 +50,7 @@ function PlanRoomPdfConverter({ files }) {
   const { setValue, control } = useFormContext();
   const theme = useTheme();
   const filter = createFilterOptions();
-  const planRoomCategories = useSelector(state => state.project.current.planRoomCategories);
+  const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
 
   const renderAndExtractPage = useCallback(async (arrayBuffer, pageNumber) => {
     const pageImage = await renderPage(arrayBuffer, pageNumber);
@@ -256,7 +256,7 @@ function PlanRoomPdfConverter({ files }) {
                     value.map((option, i) => (
                       <Chip
                         {...getTagProps({ i })}
-                        key={option.id}
+                        key={option._id}
                         size="small"
                         label={option.name}
                       />

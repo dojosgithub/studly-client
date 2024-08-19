@@ -133,7 +133,7 @@ export default function FileManagerView() {
 
   // const handleDeleteItem = useCallback(
   //   (id) => {
-  //     const deleteRow = tableData.filter((row) => row.id !== id);
+  //     const deleteRow = tableData.filter((row) => row._id !== id);
   //     setTableData(deleteRow);
 
   //     table.onUpdatePageDeleteRow(dataInPage.length);
@@ -142,7 +142,7 @@ export default function FileManagerView() {
   // );
 
   // const handleDeleteItems = useCallback(async(row) => {
-  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row._id));
   //   setTableData(deleteRows);
 
   //   table.onUpdatePageDeleteRows({

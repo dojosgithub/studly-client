@@ -98,13 +98,15 @@ export default function AccountNotifications() {
                     <>
                       {notification.items.map((item) => (
                         <FormControlLabel
-                          key={item.id}
+                          key={item._id}
                           label={item.label}
                           labelPlacement="start"
                           control={
                             <Switch
-                              checked={field.value.includes(item.id)}
-                              onChange={() => field.onChange(getSelected(values.selected, item.id))}
+                              checked={field.value.includes(item._id)}
+                              onChange={() =>
+                                field.onChange(getSelected(values.selected, item._id))
+                              }
                             />
                           }
                           sx={{

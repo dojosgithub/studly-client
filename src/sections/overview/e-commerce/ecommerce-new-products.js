@@ -30,7 +30,7 @@ export default function EcommerceNewProducts({ list, ...other }) {
     <Card {...other}>
       <Carousel {...carousel.carouselSettings}>
         {list.map((item) => (
-          <CarouselItem key={item.id} item={item} />
+          <CarouselItem key={item._id} item={item} />
         ))}
       </Carousel>
     </Card>

@@ -121,7 +121,7 @@ export default function KanbanDetails({
 
       <Stack direction="row" flexWrap="wrap" alignItems="center" spacing={1}>
         {task.assignee.map((user) => (
-          <Avatar key={user.id} alt={user.name} src={user.avatarUrl} />
+          <Avatar key={user._id} alt={user.name} src={user.avatarUrl} />
         ))}
 
         <Tooltip title="Add assignee">

@@ -32,7 +32,7 @@ export default function BankingContacts({ title, subheader, list, ...other }) {
 
       <Stack spacing={3} sx={{ p: 3 }}>
         {list.map((contact) => (
-          <Stack direction="row" alignItems="center" key={contact.id}>
+          <Stack direction="row" alignItems="center" key={contact._id}>
             <Avatar src={contact.avatarUrl} sx={{ width: 48, height: 48, mr: 2 }} />
 
             <ListItemText primary={contact.name} secondary={contact.email} />

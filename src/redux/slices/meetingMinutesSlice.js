@@ -11,7 +11,7 @@ export const createMeetingMinutes = createAsyncThunk(
       return rejectWithValue('Meeting minutes data cannot be empty.');
     }
 
-    const projectId = getState().project?.current?.id;
+    const projectId = getState().project?.current?._id;
 
     meetingMinutesData.projectId = projectId;
     try {
@@ -38,15 +38,15 @@ export const updateMeetingMinutes = createAsyncThunk(
       return rejectWithValue('Meeting minutes data cannot be empty.');
     }
 
-    console.log(data, id)
+    console.log(data, id);
 
-    const projectId = getState().project?.current?.id;
+    const projectId = getState().project?.current?._id;
 
     data.projectId = projectId;
     try {
       const response = await axiosInstance.put(endpoints.meetingMinutes.update(id), data);
 
-      console.log(response)
+      console.log(response);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -62,10 +62,9 @@ export const getMeetingMinutesList = createAsyncThunk(
   'meetingMinutes/list',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.meetingMinutes.list(projectId),
         { status },
@@ -108,7 +107,6 @@ export const getMeetingMinutesDetails = createAsyncThunk(
   'meetingMinutes/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.get(endpoints.meetingMinutes.details(id));
 
       return response.data.data;
@@ -173,7 +171,7 @@ export const changeToMinutes = createAsyncThunk(
   }
 );
 
-export const deleteMeeting  =  createAsyncThunk(
+export const deleteMeeting = createAsyncThunk(
   'meetingMinutes/delete',
   async (id, { getState, rejectWithValue }) => {
     try {
@@ -291,7 +289,7 @@ export const getMeetingMinutesPDF = createAsyncThunk(
   'meetingMinutes/pdf',
   async (id, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.meetingMinutes.pdf(id), {
         responseType: 'blob',

@@ -120,7 +120,9 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   }, []);
 
   React.useEffect(() => {
-    const updatedCurrentProject = projects.findIndex((project) => project.id === currentProject.id);
+    const updatedCurrentProject = projects.findIndex(
+      (project) => project._id === currentProject._id
+    );
     if (updatedCurrentProject !== -1) {
       handleProject(projects[updatedCurrentProject], false);
     }

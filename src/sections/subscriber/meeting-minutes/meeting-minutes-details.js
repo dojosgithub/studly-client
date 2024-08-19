@@ -215,7 +215,7 @@ const MeetingMinutesDetails = ({ id }) => {
 
   const handleExportPDF = async (e) => {
     setIsSubmitting(true);
-    await dispatch(getMeetingMinutesPDF(currentMeeting?.id));
+    await dispatch(getMeetingMinutesPDF(currentMeeting?._id));
     setIsSubmitting(false);
     handleClose();
   };
@@ -223,7 +223,7 @@ const MeetingMinutesDetails = ({ id }) => {
   const handleCreateFollowUp = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(createFollowup(currentMeeting?.id));
+    await dispatch(createFollowup(currentMeeting?._id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('Follow up created successfully', { variant: 'success' });
@@ -233,7 +233,7 @@ const MeetingMinutesDetails = ({ id }) => {
   const handleSendToAttendees = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(sendToAttendees(currentMeeting?.id));
+    await dispatch(sendToAttendees(currentMeeting?._id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('Meeting Minutes have been successfully distributed', { variant: 'success' });
@@ -243,7 +243,7 @@ const MeetingMinutesDetails = ({ id }) => {
   const handleChangeToMinutes = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(changeToMinutes(currentMeeting?.id));
+    await dispatch(changeToMinutes(currentMeeting?._id));
     // handleClose();
     enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     setIsSubmitting(false);

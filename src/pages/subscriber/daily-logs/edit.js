@@ -17,7 +17,7 @@ export default function DailyLogsEditPage() {
   const { id } = params;
 
   const dispatch = useDispatch();
-  const projectId = useSelector((state) => state?.project?.current?.id);
+  const projectId = useSelector((state) => state?.project?.current?._id);
 
   //   console.log('edit', id)
   // getting users list of project

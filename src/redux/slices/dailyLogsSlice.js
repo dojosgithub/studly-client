@@ -11,7 +11,7 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 //       return rejectWithValue('daily logs cannot be empty.');
 //     }
 
-//     const projectId = getState().project?.current?.id;
+//     const projectId = getState().project?.current?._id;
 
 //     dailyLogsData.projectId = projectId;
 //     try {
@@ -73,7 +73,7 @@ export const getDailyLogsList = createAsyncThunk(
   async (listOptions, { getState, rejectWithValue }) => {
     console.log('ListsData', listOptions);
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
       console.log('Sending data:', listOptions);
       const { status, ...data } = listOptions;
       const response = await axiosInstance.post(
@@ -205,7 +205,7 @@ export const getDailyLogsPDF = createAsyncThunk(
   'dailyLogs/pdf',
   async (id, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.dailyLogs.pdf(id), {
         responseType: 'blob',

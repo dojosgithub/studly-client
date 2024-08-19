@@ -32,7 +32,7 @@ export default function RfiTableToolbar({
 }) {
   const popover = usePopover();
   const dispatch = useDispatch();
-  const userRole = useSelector(state => state.user.user.role.shortName);
+  const userRole = useSelector((state) => state.user.user.role.shortName);
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -43,8 +43,7 @@ export default function RfiTableToolbar({
     setAnchorEl(null);
   };
 
-  const planRoomCategories = useSelector(state => state.project.current.planRoomCategories);
-
+  const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
 
   // const handleFilterName = useCallback(
   //   (event) => {
@@ -91,70 +90,69 @@ export default function RfiTableToolbar({
   };
 
   return (
-      <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
-        sx={{
-          p: 2.5,
-          pr: { xs: 2.5, md: 1 },
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            fullWidth
-            value={inputValue}
-            onChange={handleInputChange}
-            // value={filters.name}
-            // onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
+    <Stack
+      spacing={2}
+      alignItems={{ xs: 'flex-end', md: 'center' }}
+      direction={{
+        xs: 'column',
+        md: 'row',
+      }}
+      sx={{
+        p: 2.5,
+        pr: { xs: 2.5, md: 1 },
+      }}
+    >
+      <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+        <TextField
+          fullWidth
+          value={inputValue}
+          onChange={handleInputChange}
+          // value={filters.name}
+          // onChange={handleFilterName}
+          placeholder="Search..."
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+              </InputAdornment>
+            ),
+          }}
+        />
 
-          {/* <IconButton onClick={popover.onOpen}>
+        {/* <IconButton onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton> */}
-        </Stack>
+      </Stack>
 
-        <FormControl
-          sx={{
-            flexShrink: 0,
-            width: { xs: 1, md:400 },
+      <FormControl
+        sx={{
+          flexShrink: 0,
+          width: { xs: 1, md: 400 },
+        }}
+      >
+        <InputLabel>Tags</InputLabel>
+
+        <Select
+          multiple
+          value={filters.status}
+          onChange={handleFilterStatus}
+          input={<OutlinedInput label="Tags" />}
+          renderValue={(selected) => selected.map((value) => value).join(', ')}
+          MenuProps={{
+            PaperProps: {
+              sx: { maxHeight: 240 },
+            },
           }}
         >
-          <InputLabel>Tags</InputLabel>
-
-          <Select
-            multiple
-            value={filters.status}
-            onChange={handleFilterStatus}
-            input={<OutlinedInput label="Tags" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
-            MenuProps={{
-              PaperProps: {
-                sx: { maxHeight: 240 },
-              },
-            }}
-          >
-            {planRoomCategories.map((option) => (
-              <MenuItem key={option.id} value={option.name}>
-                <Checkbox disableRipple size="small" checked={filters.status.includes(option.name)} />
-                {option.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-       </Stack>
+          {planRoomCategories.map((option) => (
+            <MenuItem key={option._id} value={option.name}>
+              <Checkbox disableRipple size="small" checked={filters.status.includes(option.name)} />
+              {option.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Stack>
   );
 }
 

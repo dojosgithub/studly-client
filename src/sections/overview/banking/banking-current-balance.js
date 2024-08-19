@@ -73,7 +73,7 @@ export default function BankingCurrentBalance({ list, sx }) {
     >
       <Carousel {...carousel.carouselSettings}>
         {list.map((card) => (
-          <CardItem key={card.id} card={card} />
+          <CardItem key={card._id} card={card} />
         ))}
       </Carousel>
     </Box>

@@ -24,7 +24,6 @@ export const submitRfiToArchitect = createAsyncThunk(
   'rfi/submitToArchitect',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.post(endpoints.rfi.submit(id));
 
       return response.data.data;
@@ -61,10 +60,9 @@ export const getRfiList = createAsyncThunk(
   'rfi/list',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.rfi.list(projectId),
         { status },
@@ -103,7 +101,6 @@ export const getRfiDetails = createAsyncThunk(
   'submittal/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.get(endpoints.rfi.details(id));
 
       return response.data.data;
@@ -136,12 +133,11 @@ export const submitRfiResponse = createAsyncThunk(
   }
 );
 
-
 export const getRFILogPDF = createAsyncThunk(
   'rfi/pdf',
   async (exptype, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
         responseType: 'blob',
@@ -171,7 +167,6 @@ export const getRFILogPDF = createAsyncThunk(
     }
   }
 );
-
 
 const initialState = {
   list: [],
@@ -284,10 +279,5 @@ const rfi = createSlice({
   },
 });
 
-export const {
-  setRfiList,
-  setCurrentRfi,
-  setCreateRfi,
-  resetRfiState,
-} = rfi.actions;
+export const { setRfiList, setCurrentRfi, setCreateRfi, resetRfiState } = rfi.actions;
 export default rfi.reducer;

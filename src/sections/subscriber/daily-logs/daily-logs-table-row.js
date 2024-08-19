@@ -35,7 +35,7 @@ const DailyLogsTableRow = memo(
               // },
             }}
             onClick={() => {
-              onViewRow(row.id);
+              onViewRow(row._id);
               popover.onClose();
             }}
           >
@@ -96,7 +96,7 @@ const DailyLogsTableRow = memo(
               {(role === 'CAD' || role === 'PWU') && (
                 <MenuItem
                   onClick={() => {
-                    onEditRow(row.id);
+                    onEditRow(row._id);
                     popover.onClose();
                   }}
                 >
@@ -109,7 +109,7 @@ const DailyLogsTableRow = memo(
 
           <MenuItem
             onClick={() => {
-              onViewRow(row.id);
+              onViewRow(row._id);
               popover.onClose();
             }}
           >

@@ -145,11 +145,11 @@ export default function DailyLogsListView() {
                   <>
                     {listData?.docs?.map((row) => (
                       <PlanRoomTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        onEditRow={() => handleEditRow(row?.id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row?.id, onDelete)}
-                        onViewRow={() => handleViewRow(row?.id)}
+                        onEditRow={() => handleEditRow(row?._id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row?._id, onDelete)}
+                        onViewRow={() => handleViewRow(row?._id)}
                       />
                     ))}
                     <TableEmptyRows

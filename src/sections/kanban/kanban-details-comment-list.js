@@ -30,7 +30,7 @@ export default function KanbanDetailsCommentList({ comments }) {
         }}
       >
         {comments.map((comment) => (
-          <Stack key={comment.id} direction="row" spacing={2}>
+          <Stack key={comment._id} direction="row" spacing={2}>
             <Avatar src={comment.avatarUrl} />
 
             <Stack spacing={comment.messageType === 'image' ? 1 : 0.5} flexGrow={1}>

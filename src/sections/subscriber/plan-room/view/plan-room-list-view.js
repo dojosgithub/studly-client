@@ -205,7 +205,7 @@ export default function PlanRoomListView() {
   );
 
   // const handleDeleteRows = useCallback(() => {
-  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row.id));
+  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row._id));
   //   setTableData(deleteRows);
 
   //   table.onUpdatePageDeleteRows({
@@ -221,7 +221,7 @@ export default function PlanRoomListView() {
     },
     [router]
   );
-  
+
   const handleViewRow = useCallback(
     (row) => {
       // router.push(paths.subscriber.planRoom.details(title));
@@ -361,7 +361,7 @@ export default function PlanRoomListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.id)
+                  tableData.map((row) => row._id)
                 )
               }
               action={
@@ -385,7 +385,7 @@ export default function PlanRoomListView() {
                   // onSelectAllRows={(checked) =>
                   //   table.onSelectAllRows(
                   //     checked,
-                  //     tableData.map((row) => row.id)
+                  //     tableData.map((row) => row._id)
                   //   )
                   // }
                   handleSortChange={handleSortChange}
@@ -477,11 +477,13 @@ export default function PlanRoomListView() {
           </Button>
         }
       /> */}
-      {confirm.value && <CustomDrawerPlanRoom
-        open={confirm.value}
-        onClose={closePlanRoomView}
-        activeRow={activeRow}
-      />}
+      {confirm.value && (
+        <CustomDrawerPlanRoom
+          open={confirm.value}
+          onClose={closePlanRoomView}
+          activeRow={activeRow}
+        />
+      )}
     </>
   );
 }

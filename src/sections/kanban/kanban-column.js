@@ -40,7 +40,7 @@ export default function KanbanColumn({ column, tasks, index }) {
   //   async (columnName) => {
   //     try {
   //       if (column.name !== columnName) {
-  //         updateColumn(column.id, columnName);
+  //         updateColumn(column._id, columnName);
 
   //         enqueueSnackbar('Update success!', {
   //           anchorOrigin: { vertical: 'top', horizontal: 'center' },
@@ -50,20 +50,20 @@ export default function KanbanColumn({ column, tasks, index }) {
   //       console.error(error);
   //     }
   //   },
-  //   [column.id, column.name, enqueueSnackbar]
+  //   [column._id, column.name, enqueueSnackbar]
   // );
 
   // const handleClearColumn = useCallback(async () => {
   //   try {
-  //     clearColumn(column.id);
+  //     clearColumn(column._id);
   //   } catch (error) {
   //     console.error(error);
   //   }
-  // }, [column.id]);
+  // }, [column._id]);
 
   // const handleDeleteColumn = useCallback(async () => {
   //   try {
-  //     deleteColumn(column.id);
+  //     deleteColumn(column._id);
 
   //     enqueueSnackbar('Delete success!', {
   //       anchorOrigin: { vertical: 'top', horizontal: 'center' },
@@ -71,22 +71,20 @@ export default function KanbanColumn({ column, tasks, index }) {
   //   } catch (error) {
   //     console.error(error);
   //   }
-  // }, [column.id, enqueueSnackbar]);
+  // }, [column._id, enqueueSnackbar]);
 
   // const handleAddTask = useCallback(
   //   async (taskData) => {
   //     try {
-  //       createTask(column.id, taskData);
+  //       createTask(column._id, taskData);
 
   //       openAddTask.onFalse();
   //     } catch (error) {
   //       console.error(error);
   //     }
   //   },
-  //   [column.id, openAddTask]
+  //   [column._id, openAddTask]
   // );
-
-
 
   // add task button
   // const renderAddTask = (
@@ -134,7 +132,7 @@ export default function KanbanColumn({ column, tasks, index }) {
   const handleDeleteTask = useCallback(
     async (taskId) => {
       try {
-        deleteTask(column.id, taskId);
+        deleteTask(column._id, taskId);
 
         enqueueSnackbar('Delete success!', {
           anchorOrigin: { vertical: 'top', horizontal: 'center' },
@@ -143,11 +141,11 @@ export default function KanbanColumn({ column, tasks, index }) {
         console.error(error);
       }
     },
-    [column.id, enqueueSnackbar]
+    [column._id, enqueueSnackbar]
   );
 
   return (
-    <Draggable draggableId={column.id} index={index}>
+    <Draggable draggableId={column._id} index={index}>
       {(provided, snapshot) => (
         <Paper
           ref={provided.innerRef}
@@ -176,45 +174,41 @@ export default function KanbanColumn({ column, tasks, index }) {
               /> */}
             {/* <Scrollbar sx={{ maxHeight: index === 0 ? "300px" : "100%" }}> */}
 
-              <Droppable droppableId={column.id} type="TASK">
-                {(dropProvided) => (
-                  <Stack
-                    ref={dropProvided.innerRef}
-                    {...dropProvided.droppableProps}
-                    spacing={2}
-                    sx={{
-                      py: 3,
-                      // width: 280,
-                      width: "100%",
-                      alignSelf: index === 1 ? 'center' : 'inherit'
-                    }}
-                  >
-                    {(column.taskIds.length <= 0) && (<RenderEmptyColumn />)}
-                    {column.taskIds.map((taskId, taskIndex) => (
-                      <KanbanTaskItem
-                        key={taskId}
-                        index={taskIndex}
-                        task={tasks[taskId]}
-                        onUpdateTask={handleUpdateTask}
-                        onDeleteTask={() => handleDeleteTask(taskId)}
-                      />
-                    ))}
-                    {dropProvided.placeholder}
-                  </Stack>
-                )}
-              </Droppable>
+            <Droppable droppableId={column._id} type="TASK">
+              {(dropProvided) => (
+                <Stack
+                  ref={dropProvided.innerRef}
+                  {...dropProvided.droppableProps}
+                  spacing={2}
+                  sx={{
+                    py: 3,
+                    // width: 280,
+                    width: '100%',
+                    alignSelf: index === 1 ? 'center' : 'inherit',
+                  }}
+                >
+                  {column.taskIds.length <= 0 && <RenderEmptyColumn />}
+                  {column.taskIds.map((taskId, taskIndex) => (
+                    <KanbanTaskItem
+                      key={taskId}
+                      index={taskIndex}
+                      task={tasks[taskId]}
+                      onUpdateTask={handleUpdateTask}
+                      onDeleteTask={() => handleDeleteTask(taskId)}
+                    />
+                  ))}
+                  {dropProvided.placeholder}
+                </Stack>
+              )}
+            </Droppable>
 
             {/* </Scrollbar> */}
-
           </Stack>
         </Paper>
       )}
     </Draggable>
   );
 }
-
-
-
 
 KanbanColumn.propTypes = {
   column: PropTypes.object,
@@ -225,6 +219,8 @@ KanbanColumn.propTypes = {
 const RenderEmptyColumn = () => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
     <Iconify width={24} icon="streamline:add-circle" sx={{ mr: 0.25, color: 'dimgrey' }} />
-    <Typography fontWeight='500' color='dimgrey'>Drag and Drop a Status</Typography>
+    <Typography fontWeight="500" color="dimgrey">
+      Drag and Drop a Status
+    </Typography>
   </Box>
-)
+);

@@ -88,7 +88,7 @@ export default function AboutTeam() {
           <Carousel ref={carousel.carouselRef} {...carousel.carouselSettings}>
             {_carouselsMembers.map((member) => (
               <Box
-                key={member.id}
+                key={member._id}
                 component={m.div}
                 variants={varFade().in}
                 sx={{

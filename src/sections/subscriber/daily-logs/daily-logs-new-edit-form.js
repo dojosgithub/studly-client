@@ -63,7 +63,7 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
 
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?.id);
+  const projectId = useSelector((state) => state.project?.current?._id);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -180,10 +180,10 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
 
       // if (val !== 'review') {
       //   enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      //   router.push(paths.subscriber.rfi.details(payload?.id));
+      //   router.push(paths.subscriber.rfi.details(payload?._id));
       //   return;
       // }
-      // await dispatch(submitRfiToArchitect(payload?.id));
+      // await dispatch(submitRfiToArchitect(payload?._id));
       // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       // console.log('payload', payload);
       // reset();

@@ -1,5 +1,4 @@
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
+import { SimpleTreeView, TreeItem, treeItemClasses } from '@mui/x-tree-view';
 import { useSelector } from 'react-redux';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -88,14 +87,14 @@ const ProjectCreateCsiTrade = () => {
 
     setCheckedItems((prevCheckedItems) => {
       if (isChecked) {
-        const exists = prevCheckedItems.some((item) => item.id === node.id);
+        const exists = prevCheckedItems.some((item) => item._id === node._id);
         if (!exists) {
           return [...prevCheckedItems, node];
         }
         return prevCheckedItems;
       }
 
-      return prevCheckedItems.filter((item) => item.id !== node.id);
+      return prevCheckedItems.filter((item) => item._id !== node._id);
     });
   };
 
@@ -169,8 +168,8 @@ const ProjectCreateCsiTrade = () => {
 
   const renderTree = (nodes) => (
     <CustomTreeItem
-      key={nodes.id}
-      itemId={nodes.id}
+      key={nodes._id}
+      itemId={nodes._id}
       label={
         <>
           {(!nodes.children || nodes.children.length === 0) && (

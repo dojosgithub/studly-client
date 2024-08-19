@@ -42,7 +42,7 @@ export default function AccountBillingPayment({ cards }) {
           sx={{ p: 3 }}
         >
           {cards.map((card) => (
-            <PaymentCardItem key={card.id} card={card} />
+            <PaymentCardItem key={card._id} card={card} />
           ))}
         </Box> */}
       </Card>

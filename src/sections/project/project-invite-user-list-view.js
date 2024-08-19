@@ -32,17 +32,23 @@ import { useSettingsContext } from 'src/components/settings';
 // // import { ConfirmDialog } from 'src/components/custom-dialog';
 // // import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
-    useTable,
-    getComparator,
-    emptyRows,
-    TableNoData,
-    TableEmptyRows,
-    TableHeadCustom,
-    TableSelectedAction,
-    TablePaginationCustom,
+  useTable,
+  getComparator,
+  emptyRows,
+  TableNoData,
+  TableEmptyRows,
+  TableHeadCustom,
+  TableSelectedAction,
+  TablePaginationCustom,
 } from 'src/components/table';
 //
-import { removeMember, setExternalUsers, setInternalUsers, setRemoveExternalUser, setRemoveInternalUser } from 'src/redux/slices/projectSlice';
+import {
+  removeMember,
+  setExternalUsers,
+  setInternalUsers,
+  setRemoveExternalUser,
+  setRemoveInternalUser,
+} from 'src/redux/slices/projectSlice';
 //
 import ProjectTableRow from './project-table-row';
 import ProjectTableToolbar from './project-table-toolbar';
@@ -54,168 +60,157 @@ import ProjectInviteNewUser from './project-invite-new-user';
 // // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-    // { id: '', width: 50 },
-    { id: 'email', label: 'Email', },
-    { id: 'role', label: 'Role' },
-    { id: '', },
-    { id: '', },
-    // //  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
-    // //  { id: 'company', label: 'Company', width: 220 },
-    // //  { id: 'status', label: 'Status', width: 100 },
+  // { id: '', width: 50 },
+  { id: 'email', label: 'Email' },
+  { id: 'role', label: 'Role' },
+  { id: '' },
+  { id: '' },
+  // //  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
+  // //  { id: 'company', label: 'Company', width: 220 },
+  // //  { id: 'status', label: 'Status', width: 100 },
 ];
 
 const defaultFilters = {
-    name: '',
-    role: [],
-    status: 'all',
+  name: '',
+  role: [],
+  status: 'all',
 };
 
 // ----------------------------------------------------------------------
 
 export default function ProjectInviteUserListView({ type }) {
-    const table = useTable();
-    const dispatch = useDispatch();
-    const { control, setValue, getValues, watch, resetField } = useFormContext();
+  const table = useTable();
+  const dispatch = useDispatch();
+  const { control, setValue, getValues, watch, resetField } = useFormContext();
 
-    const internal = useSelector(state => state?.project?.inviteUsers?.internal);
-    const external = useSelector(state => state?.project?.inviteUsers?.external);
-    // const userList = type === 'internal' ? internal : external;
-    const members = useSelector(state => state?.project?.members);
+  const internal = useSelector((state) => state?.project?.inviteUsers?.internal);
+  const external = useSelector((state) => state?.project?.inviteUsers?.external);
+  // const userList = type === 'internal' ? internal : external;
+  const members = useSelector((state) => state?.project?.members);
 
-    useEffect(() => {
-        const userList = members.filter(member => member.team === type);
-        setTableData(userList);
-    }, [members, type]);
+  useEffect(() => {
+    const userList = members.filter((member) => member.team === type);
+    setTableData(userList);
+  }, [members, type]);
 
+  const settings = useSettingsContext();
 
+  const router = useRouter();
 
+  const confirm = useBoolean();
 
-    const settings = useSettingsContext();
+  const [tableData, setTableData] = useState([]);
 
-    const router = useRouter();
+  const [filters, setFilters] = useState(defaultFilters);
 
-    const confirm = useBoolean();
+  const dataFiltered = applyFilter({
+    inputData: tableData,
+    comparator: getComparator(table.order, table.orderBy),
+    filters,
+  });
 
-    const [tableData, setTableData] = useState([]);
+  const dataInPage = dataFiltered.slice(
+    table.page * table.rowsPerPage,
+    table.page * table.rowsPerPage + table.rowsPerPage
+  );
 
-    const [filters, setFilters] = useState(defaultFilters);
+  const denseHeight = table.dense ? 52 : 72;
 
-    const dataFiltered = applyFilter({
-        inputData: tableData,
-        comparator: getComparator(table.order, table.orderBy),
-        filters,
-    });
+  const canReset = !isEqual(defaultFilters, filters);
 
-    const dataInPage = dataFiltered.slice(
-        table.page * table.rowsPerPage,
-        table.page * table.rowsPerPage + table.rowsPerPage
-    );
+  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
-    const denseHeight = table.dense ? 52 : 72;
+  const handleFilters = useCallback(
+    (name, value) => {
+      table.onResetPage();
+      setFilters((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    [table]
+  );
 
-    const canReset = !isEqual(defaultFilters, filters);
+  const handleDeleteRow = useCallback(
+    (email) => {
+      const filteredRows = tableData.filter((row) => row.email !== email);
+      // enqueueSnackbar('User removed from the team successfully!');
+      // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
+      // dispatch(setUsersActions(email))
+      dispatch(removeMember(email));
 
-    const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+      setTableData(filteredRows);
+      table.onUpdatePageDeleteRow(dataInPage.length);
+    },
+    [dataInPage.length, table, tableData, dispatch]
+  );
 
-    const handleFilters = useCallback(
-        (name, value) => {
-            table.onResetPage();
-            setFilters((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
-        },
-        [table]
-    );
+  const handleResetFilters = useCallback(() => {
+    setFilters(defaultFilters);
+  }, []);
 
-    const handleDeleteRow = useCallback(
-        (email) => {
-            const filteredRows = tableData.filter((row) => row.email !== email);
-            // enqueueSnackbar('User removed from the team successfully!');
-            // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
-            // dispatch(setUsersActions(email))
-            dispatch(removeMember(email))
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.user.edit(id));
+    },
+    [router]
+  );
 
-            setTableData(filteredRows);
-            table.onUpdatePageDeleteRow(dataInPage.length);
-        },
-        [dataInPage.length, table, tableData, dispatch]
-    );
-
-    const handleResetFilters = useCallback(() => {
-        setFilters(defaultFilters);
-    }, []);
-
-    const handleEditRow = useCallback(
-        (id) => {
-            router.push(paths.dashboard.user.edit(id));
-        },
-        [router]
-    );
-
-    function handleCheckedChange(checked) {
-        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
-        if (checked) {
-            const rowSelected = tableData.map(row => row.id);
-            setValue(`inviteUsers.inside[${type}]`, rowSelected)
-            dispatch(setUsersAction(rowSelected));
-        } else {
-            setValue(`inviteUsers.inside[${type}]`, [])
-            dispatch(setUsersAction([]));
-        }
+  function handleCheckedChange(checked) {
+    const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers;
+    if (checked) {
+      const rowSelected = tableData.map((row) => row._id);
+      setValue(`inviteUsers.inside[${type}]`, rowSelected);
+      dispatch(setUsersAction(rowSelected));
+    } else {
+      setValue(`inviteUsers.inside[${type}]`, []);
+      dispatch(setUsersAction([]));
     }
-    function handleUserUpdate(rowId) {
-        const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers
-        const updatedUsers = type === 'internal' ? [...internal] : [...external];
-        const userIndex = updatedUsers.indexOf(rowId);
+  }
+  function handleUserUpdate(rowId) {
+    const setUsersAction = type === 'internal' ? setInternalUsers : setExternalUsers;
+    const updatedUsers = type === 'internal' ? [...internal] : [...external];
+    const userIndex = updatedUsers.indexOf(rowId);
 
-        if (userIndex !== -1) {
-            // Remove the rowId if it exists
-            const updatedUsersFiltered = updatedUsers.filter(id => id !== rowId);
-            setValue(`inviteUsers.inside[${type}]`, updatedUsersFiltered)
-            dispatch(setUsersAction(updatedUsersFiltered));
-        } else {
-            // Add the rowId if it doesn't exist
-            const updatedUsersConcat = [...updatedUsers, rowId];
-            setValue(`inviteUsers.inside[${type}]`, updatedUsersConcat)
-            dispatch(setUsersAction(updatedUsersConcat));
-        }
+    if (userIndex !== -1) {
+      // Remove the rowId if it exists
+      const updatedUsersFiltered = updatedUsers.filter((id) => id !== rowId);
+      setValue(`inviteUsers.inside[${type}]`, updatedUsersFiltered);
+      dispatch(setUsersAction(updatedUsersFiltered));
+    } else {
+      // Add the rowId if it doesn't exist
+      const updatedUsersConcat = [...updatedUsers, rowId];
+      setValue(`inviteUsers.inside[${type}]`, updatedUsersConcat);
+      dispatch(setUsersAction(updatedUsersConcat));
     }
+  }
 
+  // //   const handleDeleteRows = useCallback(() => {
+  // //     const deleteRows = tableData.filter((row) => !table.selected.includes(row._id));
+  // //     setTableData(deleteRows);
 
+  // //     table.onUpdatePageDeleteRows({
+  // //       totalRows: tableData.length,
+  // //       totalRowsInPage: dataInPage.length,
+  // //       totalRowsFiltered: dataFiltered.length,
+  // //     });
+  // //   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
+  // //  const handleFilterStatus = useCallback(
+  // //    (event, newValue) => {
+  // //      handleFilters('status', newValue);
+  // //    },
+  // //    [handleFilters]
+  // //  );
 
-
-
-    // //   const handleDeleteRows = useCallback(() => {
-    // //     const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    // //     setTableData(deleteRows);
-
-    // //     table.onUpdatePageDeleteRows({
-    // //       totalRows: tableData.length,
-    // //       totalRowsInPage: dataInPage.length,
-    // //       totalRowsFiltered: dataFiltered.length,
-    // //     });
-    // //   }, [dataFiltered.length, dataInPage.length, table, tableData]);
-
-
-
-    // //  const handleFilterStatus = useCallback(
-    // //    (event, newValue) => {
-    // //      handleFilters('status', newValue);
-    // //    },
-    // //    [handleFilters]
-    // //  );
-
-
-    return (
-        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-            {/* <Box mb={5}>
+  return (
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {/* <Box mb={5}>
                 <ProjectInviteNewUser type={type} />
             </Box> */}
 
-            <Card>
-                {/* 
+      <Card>
+        {/* 
                     <ProjectTableToolbar
                         filters={filters}
                         onFilters={handleFilters}
@@ -235,8 +230,8 @@ export default function ProjectInviteUserListView({ type }) {
                         />
                     )} */}
 
-                <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-                    {/* <TableSelectedAction
+        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          {/* <TableSelectedAction
                             dense={table.dense}
                             numSelected={table.selected.length}
                             rowCount={tableData.length}
@@ -244,7 +239,7 @@ export default function ProjectInviteUserListView({ type }) {
 
                                 table.onSelectAllRows(
                                     checked,
-                                    tableData.map((row) => row.id)
+                                    tableData.map((row) => row._id)
                                 )
                                 console.log("checked", checked)
 
@@ -262,59 +257,58 @@ export default function ProjectInviteUserListView({ type }) {
                         // }
                         /> */}
 
-                    <Scrollbar>
-                        <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 540 }}>
-                            <TableHeadCustom
-                                order={table.order}
-                                orderBy={table.orderBy}
-                                headLabel={TABLE_HEAD}
-                                rowCount={tableData.length}
-                                numSelected={table.selected.length}
-                                onSort={table.onSort}
-                                onSelectAllRows={(checked) => {
-                                    table.onSelectAllRows(
-                                        checked,
-                                        tableData.map((row) => row.id)
-                                    )
-                                }
-                                }
-                            />
+          <Scrollbar>
+            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 540 }}>
+              <TableHeadCustom
+                order={table.order}
+                orderBy={table.orderBy}
+                headLabel={TABLE_HEAD}
+                rowCount={tableData.length}
+                numSelected={table.selected.length}
+                onSort={table.onSort}
+                onSelectAllRows={(checked) => {
+                  table.onSelectAllRows(
+                    checked,
+                    tableData.map((row) => row._id)
+                  );
+                }}
+              />
 
-                            <TableBody>
-                                {dataFiltered
-                                    // .slice(
-                                    //     table.page * table.rowsPerPage,
-                                    //     table.page * table.rowsPerPage + table.rowsPerPage
-                                    // )
-                                    .map((row) => (
-                                        <ProjectTableRow
-                                            key={row.email}
-                                            row={row}
-                                            selected={table.selected.includes(row.email)}
-                                            onDeleteRow={() => handleDeleteRow(row.email)}
-                                        // onSelectRow={() => {
-                                        //     table.onSelectRow(row.id)
+              <TableBody>
+                {dataFiltered
+                  // .slice(
+                  //     table.page * table.rowsPerPage,
+                  //     table.page * table.rowsPerPage + table.rowsPerPage
+                  // )
+                  .map((row) => (
+                    <ProjectTableRow
+                      key={row.email}
+                      row={row}
+                      selected={table.selected.includes(row.email)}
+                      onDeleteRow={() => handleDeleteRow(row.email)}
+                      // onSelectRow={() => {
+                      //     table.onSelectRow(row._id)
 
-                                        //     handleUserUpdate(row.id);
-                                        //     console.log('row-selected', row.id)
-                                        // }}
-                                        // onEditRow={() => handleEditRow(row.id)}
-                                        />
-                                    ))}
-                                <ProjectInviteNewUser type={type} />
+                      //     handleUserUpdate(row._id);
+                      //     console.log('row-selected', row._id)
+                      // }}
+                      // onEditRow={() => handleEditRow(row._id)}
+                    />
+                  ))}
+                <ProjectInviteNewUser type={type} />
 
-                                <TableEmptyRows
-                                    height={denseHeight}
-                                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                                />
+                <TableEmptyRows
+                  height={denseHeight}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                />
 
-                                <TableNoData notFound={notFound} />
-                            </TableBody>
-                        </Table>
-                    </Scrollbar>
-                </TableContainer>
+                <TableNoData notFound={notFound} />
+              </TableBody>
+            </Table>
+          </Scrollbar>
+        </TableContainer>
 
-                {/* <TablePaginationCustom
+        {/* <TablePaginationCustom
                     count={dataFiltered.length}
                     page={table.page}
                     rowsPerPage={table.rowsPerPage}
@@ -324,45 +318,43 @@ export default function ProjectInviteUserListView({ type }) {
                     dense={table.dense}
                     onChangeDense={table.onChangeDense}
                 /> */}
-            </Card>
-        </Container>
-
-    );
+      </Card>
+    </Container>
+  );
 }
 
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-    const { name, status, role } = filters;
+  const { name, status, role } = filters;
 
-    const stabilizedThis = inputData.map((el, index) => [el, index]);
+  const stabilizedThis = inputData.map((el, index) => [el, index]);
 
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
 
-    inputData = stabilizedThis.map((el) => el[0]);
+  inputData = stabilizedThis.map((el) => el[0]);
 
-    if (name) {
-        inputData = inputData.filter(
-            (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-        );
-    }
+  if (name) {
+    inputData = inputData.filter(
+      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+    );
+  }
 
-    if (status !== 'all') {
-        inputData = inputData.filter((user) => user.status === status);
-    }
+  if (status !== 'all') {
+    inputData = inputData.filter((user) => user.status === status);
+  }
 
-    if (role.length) {
-        inputData = inputData.filter((user) => role.includes(user.role));
-    }
+  if (role.length) {
+    inputData = inputData.filter((user) => role.includes(user.role));
+  }
 
-    return inputData;
+  return inputData;
 }
 
-
 ProjectInviteUserListView.propTypes = {
-    type: PropTypes.string,
+  type: PropTypes.string,
 };

@@ -22,7 +22,7 @@ export default function AnalyticsNews({ title, subheader, list, ...other }) {
 
       <Scrollbar>
         {list.map((news) => (
-          <NewsItem key={news.id} news={news} />
+          <NewsItem key={news._id} news={news} />
         ))}
       </Scrollbar>
 

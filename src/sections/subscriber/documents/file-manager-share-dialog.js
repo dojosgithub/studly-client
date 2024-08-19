@@ -61,7 +61,7 @@ export default function FileManagerShareDialog({
           <Scrollbar sx={{ maxHeight: 60 * 6 }}>
             <List disablePadding>
               {shared.map((person) => (
-                <FileManagerInvitedItem key={person.id} person={person} />
+                <FileManagerInvitedItem key={person._id} person={person} />
               ))}
             </List>
           </Scrollbar>

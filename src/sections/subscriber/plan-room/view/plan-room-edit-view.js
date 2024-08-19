@@ -16,7 +16,12 @@ import { SUBSCRIBER_USER_ROLE_STUDLY, _userList } from 'src/_mock';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import {
+  getSubmittalDetails,
+  getSubmittalList,
+  setCurrentSubmittal,
+  submitSubmittalToArchitect,
+} from 'src/redux/slices/submittalSlice';
 import { useRouter } from 'src/routes/hooks';
 import PlanRoomNewEditForm from '../plan-room-new-edit-form';
 
@@ -25,11 +30,10 @@ import PlanRoomNewEditForm from '../plan-room-new-edit-form';
 export default function PlanRoomEditView({ id }) {
   const settings = useSettingsContext();
   // const rfiList = useSelector(state => state.rfi?.list?.docs)
-  // const currentPlan = rfiList?.find(item => item.id === id)
+  // const currentPlan = rfiList?.find(item => item._id === id)
   // const dispatch = useDispatch()
   const currentPlan = useSelector((state) => state.plan.current);
 
-  
   // useEffect(() => {
   //   // if (id) {
   //   // }

@@ -26,11 +26,11 @@ export default function PostCommentList({ comments }) {
               />
               {hasReply &&
                 replyComment.map((reply) => {
-                  const userReply = users.find((user) => user.id === reply.userId);
+                  const userReply = users.find((user) => user._id === reply.userId);
 
                   return (
                     <PostCommentItem
-                      key={reply.id}
+                      key={reply._id}
                       name={userReply?.name || ''}
                       message={reply.message}
                       postedAt={reply.postedAt}

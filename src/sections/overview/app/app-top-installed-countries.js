@@ -20,7 +20,7 @@ export default function AppTopInstalledCountries({ title, subheader, list, ...ot
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3 }}>
           {list.map((country) => (
-            <CountryItem key={country.id} country={country} />
+            <CountryItem key={country._id} country={country} />
           ))}
         </Stack>
       </Scrollbar>

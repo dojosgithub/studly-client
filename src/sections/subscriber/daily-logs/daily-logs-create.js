@@ -262,7 +262,7 @@ const CreateDailyLog = ({ isEdit }) => {
     try {
       // Map visitor fields to correct structure
       data.visitors = data.visitors.map((visitor) => visitor.visitors);
-      data.projectId = currentProject.id;
+      data.projectId = currentProject._id;
 
       const formData = new FormData();
       const attachments = [];

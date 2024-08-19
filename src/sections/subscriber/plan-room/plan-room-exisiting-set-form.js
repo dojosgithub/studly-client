@@ -71,7 +71,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   const dispatch = useDispatch();
   const existingPlanList = useSelector((state) => state.planRoom?.existingList);
   const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?.id);
+  const projectId = useSelector((state) => state.project?.current?._id);
   const existingAttachments = useMemo(
     () => (currentPlanSet?.attachments ? currentPlanSet?.attachments : []),
     [currentPlanSet]
@@ -208,10 +208,10 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
 
       // if (val !== 'review') {
       //   enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      //   router.push(paths.subscriber.rfi.details(payload?.id));
+      //   router.push(paths.subscriber.rfi.details(payload?._id));
       //   return;
       // }
-      // await dispatch(submitRfiToArchitect(payload?.id));
+      // await dispatch(submitRfiToArchitect(payload?._id));
       // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       // console.log('payload', payload);
       // reset();
@@ -239,7 +239,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     const modifiedSheets = sheets.map((sheet) => {
       // console.log(sheet);
       sheet.category = sheet.category?.map((cat) => ({
-        id: cat.id,
+        id: cat._id,
         name: cat.name,
       }));
       const alphaMatch = sheet.title.match(/^[A-Za-z]+/);
@@ -280,7 +280,6 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     // finalData.sheetAttachments = sheetAttachments;
     formData.append('body', JSON.stringify(finalData));
 
-
     const res = await dispatch(createPlanRoom(formData));
     const { error, payload } = res;
     if (!isEmpty(error)) {
@@ -316,7 +315,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
                     {/* <MenuItem value="" disabled selected>Choose Existing Version Set</MenuItem> */}
                     {existingPlanList?.map((item) => (
                       <MenuItem
-                        key={item.id}
+                        key={item._id}
                         value={item.planName}
                         onClick={() => handleSelectExisting(item)}
                       >

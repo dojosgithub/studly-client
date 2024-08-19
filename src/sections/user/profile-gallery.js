@@ -40,7 +40,7 @@ export default function ProfileGallery({ gallery }) {
         }}
       >
         {gallery.map((image) => (
-          <Card key={image.id} sx={{ cursor: 'pointer', color: 'common.white' }}>
+          <Card key={image._id} sx={{ cursor: 'pointer', color: 'common.white' }}>
             <IconButton color="inherit" sx={{ position: 'absolute', top: 8, right: 8, zIndex: 9 }}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>

@@ -8,14 +8,13 @@ import { PlanRoomCreateView } from 'src/sections/subscriber/plan-room/view';
 // ----------------------------------------------------------------------
 
 export default function PlanRoomCreatePage() {
-
   const dispatch = useDispatch();
-  const projectId = useSelector(state=>state?.project?.current?.id);
+  const projectId = useSelector((state) => state?.project?.current?._id);
 
-// getting users list of project
+  // getting users list of project
   useEffect(() => {
-      dispatch(getExistingPlanRoomList())
-  }, [dispatch])
+    dispatch(getExistingPlanRoomList());
+  }, [dispatch]);
   return (
     <>
       <Helmet>

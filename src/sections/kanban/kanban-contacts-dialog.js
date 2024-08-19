@@ -75,7 +75,7 @@ export default function KanbanContactsDialog({ assignee = [], open, onClose }) {
 
               return (
                 <ListItem
-                  key={contact.id}
+                  key={contact._id}
                   disableGutters
                   secondaryAction={
                     <Button

@@ -9,114 +9,93 @@ import { Select } from '@mui/material';
 // _mock
 // components
 import Iconify from 'src/components/iconify';
-import { setCurrentWorkflow, setIsNewWorkflow, setSelectedWorkflow } from 'src/redux/slices/workflowSlice';
+import {
+  setCurrentWorkflow,
+  setIsNewWorkflow,
+  setSelectedWorkflow,
+} from 'src/redux/slices/workflowSlice';
 import { setProjectWorkflow } from 'src/redux/slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
 export default function ProjectWorkflowSelect() {
-    // for template and workflow
-    const dispatch = useDispatch()
-    const { setValue } = useFormContext()
-    const workflows = useSelector(state => state.workflow.list);
-    const cWorkflow = useSelector(state => state.workflow.current);
+  // for template and workflow
+  const dispatch = useDispatch();
+  const { setValue } = useFormContext();
+  const workflows = useSelector((state) => state.workflow.list);
+  const cWorkflow = useSelector((state) => state.workflow.current);
 
-    const [selectedWorkflowName, setSelectedWorkflowName] = useState(cWorkflow?.name)
-    const [workflowList, setWorkflowList] = useState(workflows)
+  const [selectedWorkflowName, setSelectedWorkflowName] = useState(cWorkflow?.name);
+  const [workflowList, setWorkflowList] = useState(workflows);
 
+  useEffect(() => {
+    setSelectedWorkflowName(cWorkflow?.name);
+    setWorkflowList(workflows);
+  }, [cWorkflow?.name, workflows]);
 
+  const handleSelect = (value) => {
+    // Find the selected item based on the value
+    if (value !== 'create') {
+      const selectedItem = workflowList.find((item) => item.name === value || value === 'default');
+      handleSelectWorkflow(selectedItem);
+      setValue('workflow', selectedItem);
+      dispatch(setProjectWorkflow(selectedItem));
+      dispatch(setSelectedWorkflow(value));
 
+      // const { id, ...rest } = selectedItem;
+      // console.log('rest', rest)
+    }
+    // if (value === 'default') {
+    //     dispatch(setIsDefaultWorkflow(!!value))
+    // }
 
-    useEffect(() => {
-        setSelectedWorkflowName(cWorkflow?.name)
-        setWorkflowList(workflows)
+    if (value === 'create') {
+      dispatch(setIsNewWorkflow(!!value));
+    }
+  };
 
-    }, [cWorkflow?.name, workflows])
-
-
-    const handleSelect = (value) => {
-        // Find the selected item based on the value
-        if (value !== 'create') {
-            const selectedItem = workflowList.find(item => item.name === value || value === 'default');
-            handleSelectWorkflow(selectedItem);
-            setValue('workflow', selectedItem)
-            dispatch(setProjectWorkflow(selectedItem))
-            dispatch(setSelectedWorkflow(value))
-
-
-
-            // const { id, ...rest } = selectedItem;
-            // console.log('rest', rest)
-
-        }
-        // if (value === 'default') {
-        //     dispatch(setIsDefaultWorkflow(!!value))
-        // }
-
-        if (value === 'create') {
-            dispatch(setIsNewWorkflow(!!value))
-        }
-    };
-
-
-
-    const handleSelectWorkflow = (value) => {
-        dispatch(setCurrentWorkflow(value))
-        // Additional logic for selected item
-    };
-    return (
-
-        <Box
-            rowGap={3}
-            columnGap={2}
-            display="grid"
-
-            sx={{ marginBottom: "2rem" }}
-        >
-            <Select
-                onChange={(e) => handleSelect(e.target.value)}
-                name='workflow'
-                value={selectedWorkflowName}
-                label=""
-                // displayEmpty
-                defaultValue='default'
-                disabled
-                //
-                sx={{
-                    "& .MuiSelect-select": {
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                    }
-                }}
-            >
-                <MenuItem
-                    value='default'
-                    sx={{ height: 50, px: 3, borderRadius: 0 }}
-                    selected
-                >
-                    Studly Default Workflow
-                    <Iconify
-                        icon='mdi:crown-outline'
-                        width={28}
-                        sx={{ mx: 1 }}
-                    />
-
-                </MenuItem>
-                {workflowList.map((item) => (
-                    item.name !== 'default' &&
-                    (<MenuItem
-                        key={item.id}
-                        value={item.name}
-                        sx={{ height: 50, px: 3, borderRadius: 0 }}
-                    >
-                        {item.name.toUpperCase()}
-
-                    </MenuItem>)
-                ))}
-                {/* {workflowList.map((item) => (
+  const handleSelectWorkflow = (value) => {
+    dispatch(setCurrentWorkflow(value));
+    // Additional logic for selected item
+  };
+  return (
+    <Box rowGap={3} columnGap={2} display="grid" sx={{ marginBottom: '2rem' }}>
+      <Select
+        onChange={(e) => handleSelect(e.target.value)}
+        name="workflow"
+        value={selectedWorkflowName}
+        label=""
+        // displayEmpty
+        defaultValue="default"
+        disabled
+        //
+        sx={{
+          '& .MuiSelect-select': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem',
+          },
+        }}
+      >
+        <MenuItem value="default" sx={{ height: 50, px: 3, borderRadius: 0 }} selected>
+          Studly Default Workflow
+          <Iconify icon="mdi:crown-outline" width={28} sx={{ mx: 1 }} />
+        </MenuItem>
+        {workflowList.map(
+          (item) =>
+            item.name !== 'default' && (
+              <MenuItem
+                key={item._id}
+                value={item.name}
+                sx={{ height: 50, px: 3, borderRadius: 0 }}
+              >
+                {item.name.toUpperCase()}
+              </MenuItem>
+            )
+        )}
+        {/* {workflowList.map((item) => (
                     <MenuItem
-                        key={item.id}
+                        key={item._id}
                         value={item.name === 'default' ? 'default' : item.name}
                         sx={{ height: 50, px: 3, borderRadius: 0 }}
                         >
@@ -130,17 +109,14 @@ export default function ProjectWorkflowSelect() {
                         )}
                     </MenuItem>
                 ))} */}
-                <MenuItem value='create' sx={{ height: 50, px: 3, borderTop: '1px solid black', borderRadius: 0 }}>
-                    <Iconify
-                        icon='material-symbols:add-circle-outline'
-                        width={20}
-                        sx={{ mr: 1 }}
-                    />
-                    Create New Template
-                </MenuItem>
-            </Select>
-        </Box>
-
-
-    );
+        <MenuItem
+          value="create"
+          sx={{ height: 50, px: 3, borderTop: '1px solid black', borderRadius: 0 }}
+        >
+          <Iconify icon="material-symbols:add-circle-outline" width={20} sx={{ mr: 1 }} />
+          Create New Template
+        </MenuItem>
+      </Select>
+    </Box>
+  );
 }

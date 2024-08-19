@@ -78,7 +78,7 @@ export default function ProfilePostItem({ post }) {
   const renderCommentList = (
     <Stack spacing={1.5} sx={{ px: 3, pb: 2 }}>
       {post.comments.map((comment) => (
-        <Stack key={comment.id} direction="row" spacing={2}>
+        <Stack key={comment._id} direction="row" spacing={2}>
           <Avatar alt={comment.author.name} src={comment.author.avatarUrl} />
 
           <Paper

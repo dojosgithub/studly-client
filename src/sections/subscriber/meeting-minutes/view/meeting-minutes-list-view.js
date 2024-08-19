@@ -243,13 +243,13 @@ export default function MeetingMinutesListView() {
                   listData?.docs &&
                     listData?.docs?.map((row) => (
                       <PlanRoomTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                        onEditRow={() => handleEditRow(row?.id)}
-                        onViewRow={() => handleViewRow(row?.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row._id, onDelete)}
+                        onEditRow={() => handleEditRow(row?._id)}
+                        onViewRow={() => handleViewRow(row?._id)}
                       />
                     ))
                 }

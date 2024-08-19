@@ -18,14 +18,13 @@ import SubmittalsReviewRespondForm from '../submittals-review-respond-form';
 
 export default function SubmittalsReviewRespondView({ id }) {
   const settings = useSettingsContext();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // // const submittalList = useSelector(state => state.submittal?.list?.docs)
-  // // const currentSubmittal = submittalList?.find(item => item.id === id)
-  const currentSubmittal = useSelector(state => state.submittal.current)
+  // // const currentSubmittal = submittalList?.find(item => item._id === id)
+  const currentSubmittal = useSelector((state) => state.submittal.current);
   useEffect(() => {
     // dispatch(setSubmittalResponse(currentSubmittal))
-
-  }, [dispatch, currentSubmittal, id])
+  }, [dispatch, currentSubmittal, id]);
 
   // console.log("currentSubmittalResponse", currentSubmittal)
   return (
@@ -49,7 +48,7 @@ export default function SubmittalsReviewRespondView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <SubmittalsReviewRespondForm currentSubmittal={currentSubmittal}  id={id}/>
+      <SubmittalsReviewRespondForm currentSubmittal={currentSubmittal} id={id} />
     </Container>
   );
 }

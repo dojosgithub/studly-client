@@ -199,7 +199,7 @@ export default function FileManagerTableRow({
           >
             {shared &&
               shared.map((person) => (
-                <Avatar key={person.id} alt={person.name} src={person.avatarUrl} />
+                <Avatar key={person._id} alt={person.name} src={person.avatarUrl} />
               ))}
           </AvatarGroup>
         </TableCell> */}

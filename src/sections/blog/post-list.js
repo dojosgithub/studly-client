@@ -25,7 +25,7 @@ export default function PostList({ posts, loading, disabledIndex }) {
   const renderList = (
     <>
       {posts.map((post, index) => (
-        <Grid key={post.id} xs={12} sm={6} md={!disabledIndex && index === 0 ? 6 : 3}>
+        <Grid key={post._id} xs={12} sm={6} md={!disabledIndex && index === 0 ? 6 : 3}>
           <PostItem post={post} index={!disabledIndex ? index : undefined} />
         </Grid>
       ))}

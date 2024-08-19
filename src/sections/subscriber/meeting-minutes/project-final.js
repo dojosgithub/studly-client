@@ -1,4 +1,3 @@
-
 // import { Avatar, Box, Card, Chip, Divider, ListItemText, Paper, Stack, Typography, alpha, styled } from '@mui/material'
 // import React, { useState } from 'react'
 // import { useSelector } from 'react-redux'
@@ -88,7 +87,7 @@
 //                             <Stack spacing={3} maxHeight={300}>
 //                                 {/* _bankingContacts.slice(-5) */}
 //                                 {filteredTrades.map((trade, index) => (
-//                                     <Stack direction="row" alignItems="center" key={trade?.id}>
+//                                     <Stack direction="row" alignItems="center" key={trade?._id}>
 //                                         {trade?.email && <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />}
 
 //                                         <ListItemText primary={trade?.name} secondary={trade?.email} />
@@ -124,8 +123,6 @@
 //                         </Stack>
 //                     </StyledCard>)
 //                 }
-
-             
 
 //             </Stack>
 //         </>

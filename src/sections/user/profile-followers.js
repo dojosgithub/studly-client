@@ -13,7 +13,7 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function ProfileFollowers({ followers }) {
-  const _mockFollowed = followers.slice(4, 8).map((i) => i.id);
+  const _mockFollowed = followers.slice(4, 8).map((i) => i._id);
 
   const [followed, setFollowed] = useState(_mockFollowed);
 
@@ -45,10 +45,10 @@ export default function ProfileFollowers({ followers }) {
       >
         {followers.map((follower) => (
           <FollowerItem
-            key={follower.id}
+            key={follower._id}
             follower={follower}
-            selected={followed.includes(follower.id)}
-            onSelected={() => handleClick(follower.id)}
+            selected={followed.includes(follower._id)}
+            onSelected={() => handleClick(follower._id)}
           />
         ))}
       </Box>

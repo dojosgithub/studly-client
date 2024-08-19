@@ -37,7 +37,7 @@ export default function BookingDetails({ title, subheader, tableLabels, tableDat
 
             <TableBody>
               {tableData.map((row) => (
-                <BookingDetailsRow key={row.id} row={row} />
+                <BookingDetailsRow key={row._id} row={row} />
               ))}
             </TableBody>
           </Table>
@@ -77,22 +77,22 @@ function BookingDetailsRow({ row }) {
 
   const handleDownload = () => {
     popover.onClose();
-    console.info('DOWNLOAD', row.id);
+    console.info('DOWNLOAD', row._id);
   };
 
   const handlePrint = () => {
     popover.onClose();
-    console.info('PRINT', row.id);
+    console.info('PRINT', row._id);
   };
 
   const handleShare = () => {
     popover.onClose();
-    console.info('SHARE', row.id);
+    console.info('SHARE', row._id);
   };
 
   const handleDelete = () => {
     popover.onClose();
-    console.info('DELETE', row.id);
+    console.info('DELETE', row._id);
   };
 
   return (

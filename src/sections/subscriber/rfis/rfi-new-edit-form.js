@@ -58,7 +58,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   const ccList = useSelector((state) => state.submittal.users);
   const ownerList = useSelector((state) => state.submittal.assigneeUsers);
   const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?.id);
+  const projectId = useSelector((state) => state.project?.current?._id);
   const existingAttachments = useMemo(
     () => (currentRfi?.attachments ? currentRfi?.attachments : []),
     [currentRfi]
@@ -171,7 +171,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
       let error;
       let payload;
-      if ((!isEmpty(currentRfi) && val === 'update' && id) || val === 'review' && id) {
+      if ((!isEmpty(currentRfi) && val === 'update' && id) || (val === 'review' && id)) {
         const res = await dispatch(editRfi({ formData, id }));
         error = res.error;
         payload = res.payload;
@@ -195,10 +195,10 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
       if (val !== 'review') {
         enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-        router.push(paths.subscriber.rfi.details(payload?.id));
+        router.push(paths.subscriber.rfi.details(payload?._id));
         return;
       }
-      await dispatch(submitRfiToArchitect(payload?.id));
+      await dispatch(submitRfiToArchitect(payload?._id));
       enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       reset();
       isSubmittingRef.current = false;

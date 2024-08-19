@@ -220,7 +220,7 @@ const DailyLogsDetails = ({ id }) => {
 
   const handleExportPDF = async (e) => {
     setIsSubmitting(true);
-    await dispatch(getDailyLogsPDF(currentLog?.id));
+    await dispatch(getDailyLogsPDF(currentLog?._id));
     setIsSubmitting(false);
     handleClose();
   };
@@ -228,7 +228,7 @@ const DailyLogsDetails = ({ id }) => {
   const handleCreateFollowUp = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(createFollowup(currentMeeting?.id));
+    await dispatch(createFollowup(currentMeeting?._id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('Follow up created successfully', { variant: 'success' });
@@ -238,7 +238,7 @@ const DailyLogsDetails = ({ id }) => {
   const handleSendToAttendees = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(sendToAttendees(currentLog?.id));
+    await dispatch(sendToAttendees(currentLog?._id));
     setIsSubmitting(false);
     // handleClose();
     enqueueSnackbar('daily Logs have been successfully distributed', { variant: 'success' });
@@ -248,7 +248,7 @@ const DailyLogsDetails = ({ id }) => {
   const handleChangeToMinutes = async () => {
     setIsSubmitting(true);
     // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
-    await dispatch(changeToMinutes(currentMeeting?.id));
+    await dispatch(changeToMinutes(currentMeeting?._id));
     // handleClose();
     enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     setIsSubmitting(false);

@@ -278,7 +278,7 @@ function PlanRoomPdfConverter({ files }) {
                     value.map((option, i) => (
                       <Chip
                         {...getTagProps({ i })}
-                        key={option.id}
+                        key={option._id}
                         size="small"
                         label={option.name}
                       />

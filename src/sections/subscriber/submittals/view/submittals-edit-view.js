@@ -16,7 +16,12 @@ import { SUBSCRIBER_USER_ROLE_STUDLY, _userList } from 'src/_mock';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import { getSubmittalDetails, getSubmittalList, setCurrentSubmittal, submitSubmittalToArchitect } from 'src/redux/slices/submittalSlice';
+import {
+  getSubmittalDetails,
+  getSubmittalList,
+  setCurrentSubmittal,
+  submitSubmittalToArchitect,
+} from 'src/redux/slices/submittalSlice';
 import { useRouter } from 'src/routes/hooks';
 import SubmittalsNewEditForm from '../submittals-new-edit-form';
 
@@ -25,7 +30,7 @@ import SubmittalsNewEditForm from '../submittals-new-edit-form';
 export default function SubmittalsEditView({ id }) {
   const settings = useSettingsContext();
   // const submittalList = useSelector(state => state.submittal?.list?.docs)
-  // const currentSubmittal = submittalList?.find(item => item.id === id)
+  // const currentSubmittal = submittalList?.find(item => item._id === id)
   // const dispatch = useDispatch()
   const currentSubmittal = useSelector((state) => state.submittal.current);
 

@@ -36,7 +36,7 @@ export default function EcommerceBestSalesman({
 
             <TableBody>
               {tableData.map((row) => (
-                <EcommerceBestSalesmanRow key={row.id} row={row} />
+                <EcommerceBestSalesmanRow key={row._id} row={row} />
               ))}
             </TableBody>
           </Table>

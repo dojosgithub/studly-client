@@ -61,7 +61,7 @@ export default function AuthClassicLayout({ children, image, title }) {
         mx: 'auto',
         maxWidth: 480,
         px: { xs: 2, md: 8 },
-        py: { xs: 15, md: title === "forgot-password" || title === "new-password" ? 15 : 30 },
+        py: { xs: 15, md: title === 'forgot-password' || title === 'new-password' ? 15 : 30 },
       }}
     >
       {children}
@@ -107,7 +107,7 @@ export default function AuthClassicLayout({ children, image, title }) {
                 sx={{
                   width: 32,
                   height: 32,
-                  ...(method !== option.id && {
+                  ...(method !== option._id && {
                     filter: 'grayscale(100%)',
                   }),
                 }}

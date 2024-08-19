@@ -24,10 +24,9 @@ export const getPlanRoomList = createAsyncThunk(
   'planRoom/list',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const { status, ...data } = listOptions;
-      // const projectId = getState().projectId.id
       const response = await axiosInstance.post(
         endpoints.planRoom.list(projectId),
         { status },
@@ -51,10 +50,9 @@ export const getPlanRoomPDFSThumbnails = createAsyncThunk(
   'split-pdf',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const { data } = listOptions;
-      // const projectId = getState().projectId.id
       const response = await axiosInstance.post(endpoints.planRoom.pdfThumbnails(projectId), data);
 
       return response.data.data;
@@ -72,7 +70,7 @@ export const getExistingPlanRoomList = createAsyncThunk(
   'existingPlanRoom/list',
   async (listOptions, { getState, rejectWithValue }) => {
     try {
-      const projectId = getState().project?.current?.id;
+      const projectId = getState().project?.current?._id;
 
       const response = await axiosInstance.get(endpoints.planRoom.existinglist(projectId));
 
@@ -167,7 +165,6 @@ export const getPlanRoomDetails = createAsyncThunk(
   'planRoom/details',
   async (id, { getState, rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.get(endpoints.planRoom.details(id));
 
       return response.data.data;
@@ -206,7 +203,7 @@ export const getPlanRoomDetails = createAsyncThunk(
 //   'rfi/pdf',
 //   async (exptype, { getState, rejectWithValue }) => {
 //     try {
-//       const projectId = getState().project?.current?.id;
+//       const projectId = getState().project?.current?._id;
 //       console.log('projectId', projectId);
 
 //       const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {

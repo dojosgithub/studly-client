@@ -1,1 +1,1 @@
-export const isIncluded = (array, value) => array?.some(owner => owner.id === value);
+export const isIncluded = (array, value) => array?.some((owner) => owner._id === value);

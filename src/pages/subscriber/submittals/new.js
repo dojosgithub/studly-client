@@ -8,15 +8,14 @@ import { SubmittalsCreateView } from 'src/sections/subscriber/submittals/view';
 // ----------------------------------------------------------------------
 
 export default function SubmittalsCreatePage() {
-
   const dispatch = useDispatch();
-  const projectId = useSelector(state=>state?.project?.current?.id);
+  const projectId = useSelector((state) => state?.project?.current?._id);
 
-// getting users list of project
+  // getting users list of project
   useEffect(() => {
-      dispatch(getProjectUsersList())
-      dispatch(getProjectAssigneeUsers())
-  }, [dispatch])
+    dispatch(getProjectUsersList());
+    dispatch(getProjectAssigneeUsers());
+  }, [dispatch]);
   return (
     <>
       <Helmet>

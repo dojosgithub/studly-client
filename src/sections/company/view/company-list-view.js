@@ -126,8 +126,6 @@ export default function CompanyListView() {
 
   const handleDeleteRow = useCallback(
     (id) => {
-      // const deleteRow = tableData.filter((row) => row.id !== id);
-      // setTableData(deleteRow);
       dispatch(deleteCompany(id));
       enqueueSnackbar('Company deleted successfully!', { variant: 'success' });
       dispatch(fetchCompanyList({ search: filters.query, page }));
@@ -271,7 +269,7 @@ export default function CompanyListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.id)
+                  tableData.map((row) => row._id)
                 )
               }
               action={
@@ -295,7 +293,7 @@ export default function CompanyListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row._id)
                     )
                   }
                 />
@@ -303,13 +301,13 @@ export default function CompanyListView() {
                 <TableBody>
                   {listData?.docs?.map((row) => (
                     <CompanyTableRow
-                      key={row.id}
+                      key={row._id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onUpdate={() => handleUpdateStatus(row.id, row.status)}
+                      selected={table.selected.includes(row._id)}
+                      onSelectRow={() => table.onSelectRow(row._id)}
+                      onDeleteRow={() => handleDeleteRow(row._id)}
+                      onEditRow={() => handleEditRow(row._id)}
+                      onUpdate={() => handleUpdateStatus(row._id, row.status)}
                     />
                   ))}
 
