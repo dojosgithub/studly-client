@@ -44,7 +44,8 @@ export default function FileManagerTableRow({
 }) {
   const theme = useTheme();
 
-  const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview } = row;
+  const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview, _id } =
+    row;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -71,7 +72,12 @@ export default function FileManagerTableRow({
     click: () => {
       details.onTrue();
     },
-    doubleClick: () => console.info('DOUBLE CLICK'),
+    doubleClick: () => {
+      if (_type === 'folder') {
+        console.info('DOUBLE CLICK', _type);
+        fetchData({ parentId: _id });
+      }
+    },
   });
 
   const handleCopy = useCallback(() => {

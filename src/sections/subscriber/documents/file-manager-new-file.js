@@ -30,6 +30,7 @@ export default function FileManagerNewFileDialog({
 }) {
   const [files, setFiles] = useState([]);
   const currentProject = useSelector((state) => state?.project?.current);
+  const listData = useSelector((state) => state?.documents?.list);
 
   useEffect(() => {
     if (!open) {
@@ -53,7 +54,11 @@ export default function FileManagerNewFileDialog({
 
       const body = {
         type: 'file',
-        parentId: null,
+        // parentId: null,
+        parentId:
+          listData.links.length > 2
+            ? listData.links[listData.links.length - 1].href.replace('/', '')
+            : null,
         projectId: currentProject.id,
       };
 

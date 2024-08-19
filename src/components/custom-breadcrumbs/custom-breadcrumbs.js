@@ -5,17 +5,20 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { ListItem } from '@mui/material';
 //
 import LinkItem from './link-item';
 
 // ----------------------------------------------------------------------
 
 export default function CustomBreadcrumbs({
+  notLink = false,
   links,
   action,
   heading,
   moreLink,
   activeLast,
+  onClick,
   sx,
   ...other
 }) {
@@ -36,12 +39,35 @@ export default function CustomBreadcrumbs({
           {!!links.length && (
             <Breadcrumbs separator={<Separator />} {...other}>
               {links.map((link) => (
-                <LinkItem
-                  key={link.name || ''}
-                  link={link}
-                  activeLast={activeLast}
-                  disabled={link.name === lastLink}
-                />
+                <>
+                  {notLink ? (
+                    <ListItem
+                      sx={{
+                        typography: 'body2',
+                        alignItems: 'center',
+                        color: 'text.primary',
+                        display: 'inline-flex',
+                        cursor: 'pointer',
+                        ...(link.name === lastLink &&
+                          !activeLast && {
+                            cursor: 'default',
+                            pointerEvents: 'none',
+                            color: 'text.disabled',
+                          }),
+                      }}
+                      onClick={() => onClick(link.href)}
+                    >
+                      {link.name}
+                    </ListItem>
+                  ) : (
+                    <LinkItem
+                      key={link.name || ''}
+                      link={link}
+                      activeLast={activeLast}
+                      disabled={link.name === lastLink}
+                    />
+                  )}
+                </>
               ))}
             </Breadcrumbs>
           )}
@@ -78,6 +104,8 @@ CustomBreadcrumbs.propTypes = {
   heading: PropTypes.string,
   moreLink: PropTypes.array,
   activeLast: PropTypes.bool,
+  notLink: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 // ----------------------------------------------------------------------

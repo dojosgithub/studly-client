@@ -216,31 +216,48 @@ export default function FileManagerView() {
     />
   );
 
-  const fetchData = () => {
-    dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
+  const fetchData = (props) => {
+    dispatch(getDocumentsList({ search: filters.query, status: filters.status, ...props }));
   };
 
+  const clicked = (item) => {
+    if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
+      console.log('Clicked', item);
+      fetchData({ parentId: item.replace('/', '') });
+    } else {
+      fetchData({ parentId: null });
+    }
+  };
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-        <CustomBreadcrumbs
-          heading="Documents"
-          links={[
-            { name: 'Dashboard' },
-            { name: 'Documents', href: paths.subscriber.documents.list },
-            { name: 'Logs' },
-          ]}
-          action={
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleClick}
-              style={{ paddingRight: 46 }}
-            >
-              Upload
-            </Button>
-          }
-        />
+        {listData?.links && (
+          <CustomBreadcrumbs
+            notLink
+            heading="Documents"
+            // links={[
+            //   { name: 'Dashboard' },
+            //   { name: 'Documents', href: paths.subscriber.documents.list, onClick: clicked },
+            //   { name: 'Documentss', href: paths.subscriber.documents.list, onClick: clicked },
+            // ]}
+            links={listData?.links?.map((item) => ({
+              name: item.name,
+              href: item.href,
+            }))}
+            onClick={clicked}
+            action={
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleClick}
+                style={{ paddingRight: 46 }}
+              >
+                Upload
+              </Button>
+            }
+          />
+        )}
+
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
           <MenuItem onClick={handleUpload}>
             <NoteAddIcon style={{ marginRight: 8 }} /> {/* Add some margin for spacing */}

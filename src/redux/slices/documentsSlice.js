@@ -5,10 +5,8 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 export const uploadDocument = createAsyncThunk(
   'documents/upload',
   async (documentsData, { getState, rejectWithValue }) => {
-    console.log('documentsData', documentsData);
 
     try {
-      console.log('Sending data:', documentsData);
       const response = await axiosInstance.post(endpoints.documents.upload, documentsData);
       console.log('API Response:', response.data);
       return response.data.data;
@@ -26,19 +24,29 @@ export const getDocumentsList = createAsyncThunk(
   'documents/list',
 
   async (listOptions, { getState, rejectWithValue }) => {
-    console.log('ListsData', listOptions);
     try {
       const projectId = getState().project?.current?.id;
-      console.log('Sending data:', listOptions);
+      let parentId;
+
+      if ('parentId' in listOptions) {
+        
+        parentId = listOptions.parentId;
+      } else {
+        const listData = getState().documents?.list;
+        parentId =
+          listData?.links?.length > 2
+            ? listData.links[listData.links.length - 1].href.replace('/', '')
+            : null;
+      }
+
       const { status, ...data } = listOptions;
       const response = await axiosInstance.post(
         endpoints.documents.list(projectId),
-        { status },
+        { status, parentId },
         {
           params: data,
         }
       );
-      console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -68,11 +76,8 @@ export const deleteDocument = createAsyncThunk(
 export const updateDocument = createAsyncThunk(
   'documents/update',
   async (id, documentsData, { getState, rejectWithValue }) => {
-    console.log('documentsData', documentsData);
 
     try {
-      console.log('documentsData', id);
-      console.log('Sending data:', documentsData);
       const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
       console.log('API Response:', response.data);
       return response.data.data;

@@ -37,6 +37,8 @@ export default function FileManagerNewFolderDialog({
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const currentProject = useSelector((state) => state?.project?.current);
+  const listData = useSelector((state) => state?.documents?.list);
+
   useEffect(() => {
     if (!open) {
       setFiles([]);
@@ -54,10 +56,14 @@ export default function FileManagerNewFolderDialog({
     try {
       const formData = new FormData();
 
+      console.log(listData);
       const body = {
         name: folderName,
         type: 'folder',
-        parentId: null,
+        parentId:
+          listData.links.length > 2
+            ? listData.links[listData.links.length - 1].href.replace('/', '')
+            : null,
         projectId: currentProject.id,
       };
 

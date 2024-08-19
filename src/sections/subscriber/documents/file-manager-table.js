@@ -72,6 +72,7 @@ export default function FileManagerTable({
   const dispatch = useDispatch();
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
+  
   useEffect(() => {
     dispatch(getDocumentsList({ search: filters.query, page }));
   }, [dispatch, filters.query, page]);
