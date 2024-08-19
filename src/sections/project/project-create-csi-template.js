@@ -64,6 +64,7 @@ function EndIcon(props) {
 
 const ProjectCreateCsiTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
+  const [checkedItems, setCheckedItems] = useState([]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -78,6 +79,25 @@ const ProjectCreateCsiTrade = () => {
   //         setValue('trades', currentTrades)
   //     // }
   // }, [currentTrades, setValue])
+  useEffect(() => {
+    console.log('Checked items array:', checkedItems);
+  }, [checkedItems]);
+
+  const handleCheckboxChange = (event, node) => {
+    const isChecked = event.target.checked;
+
+    setCheckedItems((prevCheckedItems) => {
+      if (isChecked) {
+        const exists = prevCheckedItems.some((item) => item.id === node.id);
+        if (!exists) {
+          return [...prevCheckedItems, node];
+        }
+        return prevCheckedItems;
+      }
+
+      return prevCheckedItems.filter((item) => item.id !== node.id);
+    });
+  };
 
   const handleAdd = useCallback(() => {
     append({
@@ -153,7 +173,9 @@ const ProjectCreateCsiTrade = () => {
       itemId={nodes.id}
       label={
         <>
-          {(!nodes.children || nodes.children.length === 0) && <Checkbox />}
+          {(!nodes.children || nodes.children.length === 0) && (
+            <Checkbox onChange={(event) => handleCheckboxChange(event, nodes)} />
+          )}
           {nodes.name}
         </>
       }
@@ -45766,7 +45788,7 @@ const ProjectCreateCsiTrade = () => {
   };
   return (
     <>
-      <Box sx={{ marginBottom: '2rem', width: '100%' }}>
+      <Box sx={{ marginBottom: '2rem', width: 'maxwidth' }}>
         <Box
           sx={{
             display: 'grid',
