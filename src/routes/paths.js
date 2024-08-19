@@ -199,7 +199,7 @@ export const paths = {
     },
     documents: {
       new: `${ROOTS.SUBSCRIBER}/documents/new`,
-      list: `${ROOTS.SUBSCRIBER}/documents/list`,
+      list:`${ROOTS.SUBSCRIBER}/documents/list`,
       edit: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/edit`,
       details: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}`,
       response: (id) => `${ROOTS.SUBSCRIBER}/documents/${id}/response`,
