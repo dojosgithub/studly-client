@@ -63,7 +63,9 @@ function EndIcon(props) {
 const ProjectCreateCsiTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
   const [checkedItems, setCheckedItems] = useState([]);
+  const [template, setTemplate] = useState(CSI_CODE_TEMPLATE);
   const MemoizedTreeItem = React.memo(CustomTreeItem);
+  const { trades } = getValues();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -72,56 +74,91 @@ const ProjectCreateCsiTrade = () => {
 
   useEffect(() => {
     console.log('Checked items array:', checkedItems);
+    console.log('trades:', trades);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedItems]);
 
   // Define handleCheckboxChange with useCallback
-  const handleCheckboxChange = useCallback((event, node) => {
-    const isChecked = event.target.checked;
-    const transformedNode = {
-      _id: node.id, // Rename `id` to `_id`
-      name: node.name,
-      tradeId: node.tradeId,
-      // Exclude `children` property
-    };
+  const handleCheckboxChange = useCallback(
+    (event, node) => {
+      const isChecked = event.target.checked;
+      const transformedNode = {
+        _id: node.id, // Rename `id` to `_id`
+        name: node.name,
+        tradeId: node.tradeId,
+        // Exclude `children` property
+      };
 
-    setCheckedItems((prevCheckedItems) => {
-      // If the checkbox is checked
-      if (isChecked) {
-        // Check if the item already exists in the state
-        const exists = prevCheckedItems.some((item) => item._id === transformedNode._id);
-        // If it doesn't exist, add it to the state
-        if (!exists) {
-          return [...prevCheckedItems, transformedNode];
+      setCheckedItems((prevCheckedItems) => {
+        // If the checkbox is checked
+        if (isChecked) {
+          // Check if the item already exists in the state
+          const exists = prevCheckedItems.some((item) => item._id === transformedNode._id);
+          // If it doesn't exist, add it to the state
+          if (!exists) {
+            const newTrades = [...prevCheckedItems, transformedNode];
+            setValue('trades', newTrades);
+            return newTrades;
+          }
+        } else {
+          // If the checkbox is unchecked, remove the item from the state
+          const updatedTrades = prevCheckedItems.filter((item) => item._id !== transformedNode._id);
+          setValue('trades', updatedTrades);
+          return updatedTrades;
         }
-      } else {
-        // If the checkbox is unchecked, remove the item from the state
-        return prevCheckedItems.filter((item) => item._id !== transformedNode._id);
-      }
 
-      // Return the previous state if no changes were made
-      return prevCheckedItems;
-    });
-  }, []);
+        // Return the previous state if no changes were made
+        setValue('trades', prevCheckedItems);
+        return prevCheckedItems;
+      });
+    },
+    [setValue]
+  );
 
+  function checkIfIdExistsInTree(id, nodes) {
+    // Check if the current node's ID matches
+    if (nodes.id === id) {
+      return true;
+    }
+
+    // If there are children, recursively check each child
+    if (nodes.children && nodes.children.length > 0) {
+      return nodes.children.some((child) => checkIfIdExistsInTree(id, child));
+    }
+
+    // If no match found
+    return false;
+  }
   const renderTree = useCallback(
-    (nodes) => (
-      <MemoizedTreeItem
-        key={nodes.id}
-        itemId={nodes.id}
-        label={
-          <>
-            {(!nodes.children || nodes.children.length === 0) && (
-              <Checkbox onChange={(event) => handleCheckboxChange(event, nodes)} />
-            )}
-            {nodes.name}
-          </>
-        }
-      >
-        {Array.isArray(nodes.children) &&
-          nodes.children.length > 0 &&
-          nodes.children.map((node) => renderTree(node))}
-      </MemoizedTreeItem>
-    ),
+    (nodes) => {
+      const isChecked = template.children.some((item) =>
+        checkedItems.some((nestedItem) => checkIfIdExistsInTree(nestedItem._id, nodes))
+      );
+
+      return (
+        <MemoizedTreeItem
+          key={nodes.id}
+          itemId={nodes.id}
+          label={
+            <>
+              {(!nodes.children || nodes.children.length === 0) && (
+                <Checkbox
+                  name={nodes.name}
+                  onChange={(event) => handleCheckboxChange(event, nodes)}
+                  isChecked={isChecked}
+                />
+              )}
+              {nodes.name}
+            </>
+          }
+        >
+          {Array.isArray(nodes.children) &&
+            nodes.children.length > 0 &&
+            nodes.children.map((node) => renderTree(node))}
+        </MemoizedTreeItem>
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleCheckboxChange]
   );
 
@@ -142,7 +179,7 @@ const ProjectCreateCsiTrade = () => {
             width: '100%',
           }}
         >
-          {renderTree(CSI_CODE_TEMPLATE)}
+          {renderTree(template)}
         </SimpleTreeView>
       </Box>
 
