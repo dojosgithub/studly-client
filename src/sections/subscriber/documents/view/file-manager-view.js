@@ -107,8 +107,8 @@ export default function FileManagerView() {
       setView(newView);
     }
   }, []);
-  const handleChangeFolderName = useCallback((event) => {
-    setFolderName(event.target.value);
+  const handleChangeFolderName = useCallback((value) => {
+    setFolderName(value);
   }, []);
 
   const handleFilters = useCallback(
