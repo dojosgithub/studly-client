@@ -6,6 +6,8 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 // components
 import { LoadingScreen } from 'src/components/loading-screen';
+import RoleGuard from 'src/auth/guard/role-guard';
+import { STUDLY_ROLES } from 'src/_mock';
 
 // ----------------------------------------------------------------------
 
@@ -82,9 +84,21 @@ export const subscriberRoutes = [
       </AuthGuard>
     ),
     children: [
-      { path: 'settings', element: <ProjectSettingsPage /> },
+      {
+        path: 'settings',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.projectSetting}>
+            <ProjectSettingsPage />
+          </RoleGuard>
+        ),
+      },
       {
         path: 'submittals',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.submittals}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <SubmittalsListPage />, index: true },
           { path: 'list', element: <SubmittalsListPage /> },
@@ -99,6 +113,11 @@ export const subscriberRoutes = [
       },
       {
         path: 'rfi',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.rfis}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <RfiListPage />, index: true },
           { path: 'list', element: <RfiListPage /> },
@@ -111,6 +130,11 @@ export const subscriberRoutes = [
       },
       {
         path: 'plan-room',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.planRoom}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <PlanRoomListPage />, index: true },
           { path: 'list', element: <PlanRoomListPage /> },
@@ -123,6 +147,11 @@ export const subscriberRoutes = [
       },
       {
         path: 'meeting-minutes',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.meetingMinutes}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <MeetingMinutesListPage />, index: true },
           { path: 'list', element: <MeetingMinutesListPage /> },
@@ -133,6 +162,11 @@ export const subscriberRoutes = [
       },
       {
         path: 'daily-logs',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.logs}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <DailyLogsListPage />, index: true },
           { path: 'list', element: <DailyLogsListPage /> },

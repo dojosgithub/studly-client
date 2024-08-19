@@ -10,6 +10,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { Grid } from '@mui/material';
 // auth
 import { useAuthContext } from 'src/auth/hooks';
 // routes
@@ -108,20 +109,18 @@ export default function OnboardingView() {
         Hi {startCase(user?.firstName)}! Which project would you <br /> like to start working on
         today?
       </Typography>
-      <Stack
+      {/* <Stack
         component="div"
         direction="row"
         flexWrap="wrap"
-        // sx={{
-        //     minHeight: '100vh',
-        // }}
-      >
-        {/* {renderLogo} */}
+      > */}
+      {/* {renderLogo} */}
+      <Grid container alignItems="center" justifyContent="center" columnGap={4}>
+        {upMd && <Grid>{renderSection}</Grid>}
 
-        {upMd && renderSection}
-
-        {renderContent}
-      </Stack>
+        <Grid>{renderContent}</Grid>
+      </Grid>
+      {/* </Stack> */}
     </Stack>
   );
 }

@@ -1,8 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PROJECTS, PROJECT_INVITE_USERS_EXTERNAL, PROJECT_INVITE_USERS_INTERNAL, PROJECT_SUBCONTRACTORS, PROJECT_TEMPLATES, PROJECT_WORKFLOWS, _userList } from "src/_mock";
-import axiosInstance, { endpoints } from "src/utils/axios";
-import uuidv4 from "src/utils/uuidv4";
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  PROJECTS,
+  PROJECT_INVITE_USERS_EXTERNAL,
+  PROJECT_INVITE_USERS_INTERNAL,
+  PROJECT_SUBCONTRACTORS,
+  PROJECT_TEMPLATES,
+  PROJECT_WORKFLOWS,
+  _userList,
+} from 'src/_mock';
+import axiosInstance, { endpoints } from 'src/utils/axios';
+import uuidv4 from 'src/utils/uuidv4';
 
 export const createNewProject = createAsyncThunk(
   'project/create',
@@ -10,21 +17,16 @@ export const createNewProject = createAsyncThunk(
     try {
       const response = await axiosInstance.post(endpoints.project.create, projectData);
 
-      return response.data.data
+      return response.data.data;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the project.'
-      );
+      throw Error('An error occurred while creating the project.');
     }
-  },
-)
-
+  }
+);
 export const getProjectList = createAsyncThunk(
   'project/list',
   async (_, { getState, rejectWithValue }) => {
@@ -32,41 +34,32 @@ export const getProjectList = createAsyncThunk(
       const email = getState()?.user?.user?.email; // Access the current state
       const response = await axiosInstance.get(endpoints.project.list);
 
-      return response.data.data.project
+      return response.data.data.project;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while fetching project list.'
-      );
+      throw Error('An error occurred while fetching project list.');
     }
-  },
-)
+  }
+);
 export const getCurrentProjectTradesById = createAsyncThunk(
   'project/trades',
   async (id, { getState, rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(endpoints.project.trades(id));
 
-      return response.data.data.trades
+      return response.data.data.trades;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while fetching project list.'
-      );
+      throw Error('An error occurred while fetching project list.');
     }
-  },
-)
-
+  }
+);
 
 // get users list from
 export const getCompanyUserList = createAsyncThunk(
@@ -75,20 +68,16 @@ export const getCompanyUserList = createAsyncThunk(
     try {
       const response = await axiosInstance.get(endpoints.company.userList);
 
-      return response.data.data
+      return response.data.data;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
+  }
+);
 
 // get subcontractor list in company
 export const getCompanySubcontractorList = createAsyncThunk(
@@ -97,20 +86,16 @@ export const getCompanySubcontractorList = createAsyncThunk(
     try {
       const response = await axiosInstance.get(endpoints.company.subcontractorCompanyList);
 
-      return response.data.data
+      return response.data.data;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
+  }
+);
 // get subcontractor list in db
 export const getAllSubcontractorList = createAsyncThunk(
   'subcontractor/dbList',
@@ -118,20 +103,16 @@ export const getAllSubcontractorList = createAsyncThunk(
     try {
       const response = await axiosInstance.get(endpoints.company.subcontractorList);
 
-      return response.data.data
+      return response.data.data;
     } catch (err) {
-      console.error("errSlice", err)
+      console.error('errSlice', err);
       if (err && err.message) {
-        throw Error(
-          err.message
-        );
+        throw Error(err.message);
       }
-      throw Error(
-        'An error occurred while creating the company.'
-      );
+      throw Error('An error occurred while creating the company.');
     }
-  },
-)
+  }
+);
 
 // export const inviteSubcontractor = createAsyncThunk(
 //   'project/inviteSubcontractor',
@@ -153,7 +134,6 @@ export const getAllSubcontractorList = createAsyncThunk(
 //     }
 //   },
 // )
-
 
 // const initialState = {
 //   list: PROJECTS || [],
@@ -186,16 +166,15 @@ const projectInitialState = {
   },
   activeTab: 'create', // existing
   selectedTradeTemplate: '', // default || create || [template]
-  isDefaultTemplateModified: false, // if true open name modal for creating a new template 
-}
+  isDefaultTemplateModified: false, // if true open name modal for creating a new template
+};
 const subcontractorInitialState = {
   list: {
     all: [],
     company: [],
   },
   invited: [],
-}
-
+};
 
 // PROJECTS ||
 const initialState = {
@@ -212,8 +191,8 @@ const initialState = {
     external: [],
   },
   isLoading: false,
-  error: null
-}
+  error: null,
+};
 
 const project = createSlice({
   name: 'project',
@@ -221,65 +200,73 @@ const project = createSlice({
   reducers: {
     setProjectName: (state, action) => {
       // state.create.name = action.payload
-      state.create.name = action.payload.name
-      state.create.address = action.payload.address
-      state.create.state = action.payload.state
-      state.create.city = action.payload.city
-      state.create.zipCode = action.payload.zipCode
+      state.create.name = action.payload.name;
+      state.create.address = action.payload.address;
+      state.create.state = action.payload.state;
+      state.create.city = action.payload.city;
+      state.create.zipCode = action.payload.zipCode;
     },
     setProjectTrades: (state, action) => {
-      state.create.trades = action.payload
+      state.create.trades = action.payload;
     },
     setProjectWorkflow: (state, action) => {
-      state.create.workflow = action.payload
+      state.create.workflow = action.payload;
     },
     setCurrentProject: (state, action) => {
-      state.current = action.payload
+      state.current = action.payload;
     },
     setCreateProject: (state, action) => {
-      state.create = action.payload
+      state.create = action.payload;
     },
     setCurrentProjectRole: (state, action) => {
-      state.current = { ...state.current, role: action.payload }
+      state.current = { ...state.current, role: action.payload };
     },
     setCurrentProjectTrades: (state, action) => {
-      state.current = { ...state.current, trades: action.payload }
+      state.current = { ...state.current, trades: action.payload };
     },
     setInternalUsers: (state, action) => {
-      state.inviteUsers.internal = action.payload
+      state.inviteUsers.internal = action.payload;
     },
     setExternalUsers: (state, action) => {
-      state.inviteUsers.external = action.payload
+      state.inviteUsers.external = action.payload;
     },
     setAddInternalUser: (state, action) => {
       // state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
       // Check if the email already exists in the internal users array
-      const isExistingUser = state.inviteUsers.internal.some(user => user.email === action.payload.email);
+      const isExistingUser = state.inviteUsers.internal.some(
+        (user) => user.email === action.payload.email
+      );
 
       // If the user does not already exist, add them to the internal users array
       if (!isExistingUser) {
-        state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
+        state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload];
       }
     },
     setAddExternalUser: (state, action) => {
       // state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
       // Check if the email already exists in the internal users array
-      const isExistingUser = state.inviteUsers.external.some(user => user.email === action.payload.email);
+      const isExistingUser = state.inviteUsers.external.some(
+        (user) => user.email === action.payload.email
+      );
 
       // If the user does not already exist, add them to the external users array
       if (!isExistingUser) {
-        state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
+        state.inviteUsers.external = [...state.inviteUsers.external, action.payload];
       }
     },
     setRemoveInternalUser: (state, action) => {
-      state.inviteUsers.internal = state.inviteUsers.internal.filter((row) => row.email !== action.payload);
+      state.inviteUsers.internal = state.inviteUsers.internal.filter(
+        (row) => row.email !== action.payload
+      );
     },
     setRemoveExternalUser: (state, action) => {
-      state.inviteUsers.external = state.inviteUsers.external.filter((row) => row.email !== action.payload);
+      state.inviteUsers.external = state.inviteUsers.external.filter(
+        (row) => row.email !== action.payload
+      );
     },
     setInvitedSubcontractor: (state, action) => {
-      const subcontractorExists = state.subcontractors?.invited?.some(subcontractor =>
-        subcontractor.email === action.payload.email
+      const subcontractorExists = state.subcontractors?.invited?.some(
+        (subcontractor) => subcontractor.email === action.payload.email
       );
 
       // If the subcontractor does not exist, add them to the invited array
@@ -290,13 +277,11 @@ const project = createSlice({
     removeInvitedSubcontractor: (state, action) => {
       // Filter out the subcontractor with the matching email
       state.subcontractors.invited = state.subcontractors.invited.filter(
-        subcontractor => subcontractor.email !== action.payload
+        (subcontractor) => subcontractor.email !== action.payload
       );
     },
     setMembers: (state, action) => {
-      const memberExists = state.members.some(member =>
-        member.email === action.payload.email
-      );
+      const memberExists = state.members.some((member) => member.email === action.payload.email);
 
       // If the member does not exist, add them to the members array
       if (!memberExists) {
@@ -305,18 +290,18 @@ const project = createSlice({
     },
     removeMember: (state, action) => {
       // const filteredMembers = state.members.filter(member => member?.id !== action?.payload)
-      const filteredMembers = state.members.filter(member => member?.email !== action?.payload)
-      state.members = filteredMembers
+      const filteredMembers = state.members.filter((member) => member?.email !== action?.payload);
+      state.members = filteredMembers;
     },
     resetMembers: (state, action) => {
-      state.members = []
+      state.members = [];
     },
     resetCreateProject: (state) => {
       state.create = projectInitialState;
       state.members = [];
       // state.subcontractors.invited = [];
       // ? Changed subcontractor to initial state
-      state.subcontractors={ ...subcontractorInitialState };
+      state.subcontractors = { ...subcontractorInitialState };
       state.users = [];
       state.inviteUsers = {
         internal: [],
@@ -324,16 +309,16 @@ const project = createSlice({
       };
     },
     setProjectDrawerState: (state, action) => {
-      state.isProjectDrawerOpen = action.payload
+      state.isProjectDrawerOpen = action.payload;
     },
     setActiveTab: (state, action) => {
-      state.create.activeTab = action.payload
+      state.create.activeTab = action.payload;
     },
     setDefaultTemplateModified: (state, action) => {
-      state.create.isDefaultTemplateModified = action.payload
+      state.create.isDefaultTemplateModified = action.payload;
     },
     setSelectedTradeTemplate: (state, action) => {
-      state.create.selectedTradeTemplate = action.payload
+      state.create.selectedTradeTemplate = action.payload;
     },
 
     resetSubcontractorState: () => subcontractorInitialState,
@@ -352,7 +337,7 @@ const project = createSlice({
     });
     builder.addCase(createNewProject.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
     builder.addCase(getProjectList.pending, (state) => {
       state.isLoading = true;
@@ -365,20 +350,20 @@ const project = createSlice({
     });
     builder.addCase(getProjectList.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
     builder.addCase(getCurrentProjectTradesById.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
     builder.addCase(getCurrentProjectTradesById.fulfilled, (state, action) => {
-      state.current = { ...state.current, trades: action.payload }
+      state.current = { ...state.current, trades: action.payload };
       state.isLoading = false;
       state.error = null;
     });
     builder.addCase(getCurrentProjectTradesById.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message
+      state.error = action.error.message;
     });
 
     // * Get Company User List
@@ -396,7 +381,7 @@ const project = createSlice({
       state.error = action.error.message;
     });
 
-    // * Get Subcontractor List in Company 
+    // * Get Subcontractor List in Company
     builder.addCase(getCompanySubcontractorList.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -410,7 +395,7 @@ const project = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-    // * Get Subcontractor List in DB 
+    // * Get Subcontractor List in DB
     builder.addCase(getAllSubcontractorList.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -437,8 +422,35 @@ const project = createSlice({
     //   state.isLoading = false;
     //   state.error = action.error.message;
     // });
-  }
-})
+  },
+});
 
-export const { setProjectName, setProjectTrades, setCreateTemplate, setProjectWorkflow, setCurrentProject, setCreateProject, setCurrentProjectRole, setCurrentProjectTrades, setInternalUsers, setExternalUsers, setAddInternalUser, setAddExternalUser, resetCreateProject, setRemoveInternalUser, setRemoveExternalUser, resetProjectState, resetSubcontractorState, setInvitedSubcontractor,removeInvitedSubcontractor, setMembers, removeMember, resetMembers, setProjectDrawerState, setActiveTab, setDefaultTemplateModified, setSelectedTradeTemplate } = project.actions
-export default project.reducer
+export const {
+  setProjectName,
+  setProjectTrades,
+  setCreateTemplate,
+  setProjectWorkflow,
+  setCurrentProject,
+  setCreateProject,
+  setCurrentProjectRole,
+  setCurrentProjectTrades,
+  setInternalUsers,
+  setExternalUsers,
+  setAddInternalUser,
+  setAddExternalUser,
+  resetCreateProject,
+  setRemoveInternalUser,
+  setRemoveExternalUser,
+  resetProjectState,
+  resetSubcontractorState,
+  setInvitedSubcontractor,
+  removeInvitedSubcontractor,
+  setMembers,
+  removeMember,
+  resetMembers,
+  setProjectDrawerState,
+  setActiveTab,
+  setDefaultTemplateModified,
+  setSelectedTradeTemplate,
+} = project.actions;
+export default project.reducer;

@@ -17,7 +17,7 @@ import { isValidToken, setSession } from './utils';
 
 // ----------------------------------------------------------------------
 // const USER_ROLE = 'subscriber'
-const USER_ROLE = 'admin'
+const USER_ROLE = 'admin';
 const initialState = {
   user: null,
   loading: true,
@@ -28,21 +28,21 @@ const reducer = (state, action) => {
     return {
       loading: false,
       // user: { ...action.payload.user, role: USER_ROLE },
-      user: action.payload.user
+      user: action.payload.user,
     };
   }
   if (action.type === 'LOGIN') {
     return {
       ...state,
       // user: { ...action.payload.user, role: USER_ROLE },
-      user: action.payload.user
+      user: action.payload.user,
     };
   }
   if (action.type === 'REGISTER') {
     return {
       ...state,
       // user: { ...action.payload.user, role: USER_ROLE },
-      user: action.payload.user
+      user: action.payload.user,
     };
   }
   if (action.type === 'FORGOT_PASSWORD') {
@@ -53,7 +53,7 @@ const reducer = (state, action) => {
   if (action.type === 'NEW_PASSWORD') {
     return {
       ...state,
-      user: action.payload.user
+      user: action.payload.user,
     };
   }
   if (action.type === 'LOGOUT') {
@@ -71,7 +71,7 @@ const STORAGE_KEY = 'accessToken';
 
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const dispatchRedux = useDispatch()
+  const dispatchRedux = useDispatch();
 
   const initialize = useCallback(async () => {
     try {
@@ -82,9 +82,11 @@ export function AuthProvider({ children }) {
 
         const response = await axios.get(endpoints.auth.profile);
 
-        const { data: { user } } = response.data;
+        const {
+          data: { user },
+        } = response.data;
         setSession(accessToken);
-        dispatchRedux(setUserData(user))
+        dispatchRedux(setUserData(user));
 
         dispatch({
           type: 'INITIAL',
@@ -99,7 +101,7 @@ export function AuthProvider({ children }) {
             user: null,
           },
         });
-        logoutRedux()
+        logoutRedux();
       }
     } catch (error) {
       console.error(error);
@@ -109,8 +111,7 @@ export function AuthProvider({ children }) {
           user: null,
         },
       });
-      logoutRedux()
-
+      logoutRedux();
     }
   }, [dispatchRedux]);
 
@@ -119,24 +120,29 @@ export function AuthProvider({ children }) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback(async (email, password) => {
-    const data = {
-      email,
-      password,
-    };
+  const login = useCallback(
+    async (email, password) => {
+      const data = {
+        email,
+        password,
+      };
 
-    const response = await axios.get(endpoints.auth.login, { params: data });
+      const response = await axios.get(endpoints.auth.login, { params: data });
 
-    const { data: { accessToken, user, refreshToken } } = response.data;
-    setSession(accessToken);
-    dispatchRedux(signIn({ accessToken, user, refreshToken }))
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user,
-      },
-    });
-  }, [dispatchRedux]);
+      const {
+        data: { accessToken, user, refreshToken },
+      } = response.data;
+      setSession(accessToken);
+      dispatchRedux(signIn({ accessToken, user, refreshToken }));
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          user,
+        },
+      });
+    },
+    [dispatchRedux]
+  );
 
   // REGISTER
   const register = useCallback(async (email, password, firstName, lastName) => {
@@ -174,30 +180,34 @@ export function AuthProvider({ children }) {
   }, []);
 
   // NEW PASSWORD
-  const newPassword = useCallback(async (email, password, code) => {
-    const data = {
-      email,
-      password,
-      code
-    };
+  const newPassword = useCallback(
+    async (email, password, code) => {
+      const data = {
+        email,
+        password,
+        code,
+      };
 
-    const response = await axios.post(endpoints.auth.newPassword, data);
-    const { data: { accessToken, user, refreshToken } } = response.data;
-    setSession(accessToken);
-    dispatchRedux(signIn({ accessToken, user, refreshToken }))
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user,
-      },
-    });
-    
-  }, [dispatchRedux]);
+      const response = await axios.post(endpoints.auth.newPassword, data);
+      const {
+        data: { accessToken, user, refreshToken },
+      } = response.data;
+      setSession(accessToken);
+      dispatchRedux(signIn({ accessToken, user, refreshToken }));
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          user,
+        },
+      });
+    },
+    [dispatchRedux]
+  );
 
   // LOGOUT
   const logout = useCallback(async () => {
     setSession(null);
-    logoutRedux()
+    logoutRedux();
     dispatch({
       type: 'LOGOUT',
     });
@@ -208,7 +218,6 @@ export function AuthProvider({ children }) {
   const checkAuthenticated = state.user ? 'authenticated' : 'unauthenticated';
 
   const status = state.loading ? 'loading' : checkAuthenticated;
-
 
   const memoizedValue = useMemo(
     () => ({

@@ -20,7 +20,16 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList, _submittalsList, _roles, USER_STATUS_OPTIONS, STATUS_WORKFLOW, STATUS_RFIS } from 'src/_mock';
+import {
+  _userList,
+  _submittalsList,
+  _roles,
+  USER_STATUS_OPTIONS,
+  STATUS_WORKFLOW,
+  STATUS_RFIS,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  getUserRoleKeyByValue,
+} from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -52,7 +61,7 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
+  { id: 'rfiId', label: 'ID', minWidth: 100, width: 100 },
   { id: 'status', label: 'Status', width: 100 },
   { id: 'name', label: 'Title', minWidth: 150, width: 220 },
   { id: 'description', label: 'Description', minWidth: 170, width: 220 },
@@ -71,15 +80,15 @@ const defaultFilters = {
   role: [],
   status: [],
   // status: 'all',
-  query: ''
+  query: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function RfiListView() {
   const table = useTable();
-  const listData = useSelector(state => state?.rfi?.list)
-  const role = useSelector(state => state?.user?.user?.role?.shortName);
+  const listData = useSelector((state) => state?.rfi?.list);
+  const role = useSelector((state) => state?.user?.user?.role);
   const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
@@ -89,7 +98,7 @@ export default function RfiListView() {
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
-  }
+  };
   const handleSortChange = () => {
     if (sortDir === 'asc') {
       setSortDir('desc');
@@ -128,25 +137,22 @@ export default function RfiListView() {
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = listData?.totalDocs === 0
+  const notFound = listData?.totalDocs === 0;
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      // table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleFilters = useCallback((name, value) => {
+    // table.onResetPage();
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
 
   const handleDeleteRow = useCallback(
     async (id, onDelete) => {
-      await dispatch(deleteRfi(id))
-      const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }))
-      onDelete.onFalse()
-      enqueueSnackbar('RFI Deleted Successfully', { variant: "success" });
+      await dispatch(deleteRfi(id));
+      const { error, payload } = await dispatch(getRfiList({ search: '', page: 1, status: [] }));
+      onDelete.onFalse();
+      enqueueSnackbar('RFI Deleted Successfully', { variant: 'success' });
     },
     [dispatch, enqueueSnackbar]
   );
@@ -200,14 +206,17 @@ export default function RfiListView() {
             { name: 'Log' },
           ]}
           action={
-            ((role === "CAD" || role === "PWU") && <Button
-              component={RouterLink}
-              href={paths.subscriber.rfi.new}
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              Create New RFI
-            </Button>)
+            (role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+              role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+              <Button
+                component={RouterLink}
+                href={paths.subscriber.rfi.new}
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                Create New RFI
+              </Button>
+            )
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -318,19 +327,20 @@ export default function RfiListView() {
 
                 <TableBody>
                   {
-                  // dataFiltered && dataFiltered?
-                  listData?.docs &&
-                    listData?.docs?.map((row) => (
-                    <RfiTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onViewRow={() => handleViewRow(row.id)}
-                    />
-                  ))}
+                    // dataFiltered && dataFiltered?
+                    listData?.docs &&
+                      listData?.docs?.map((row) => (
+                        <RfiTableRow
+                          key={row.id}
+                          row={row}
+                          selected={table.selected.includes(row.id)}
+                          onSelectRow={() => table.onSelectRow(row.id)}
+                          onDeleteRow={(onDelete) => handleDeleteRow(row.id, onDelete)}
+                          onEditRow={() => handleEditRow(row.id)}
+                          onViewRow={() => handleViewRow(row.id)}
+                        />
+                      ))
+                  }
 
                   <TableEmptyRows
                     height={denseHeight}

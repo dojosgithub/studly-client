@@ -21,20 +21,17 @@ import { RouterLink } from 'src/routes/components';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
+import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { bgGradient } from 'src/theme/css';
 import { ProjectView } from '../project/view';
 // components
 
-
 // ----------------------------------------------------------------------
 
-
 export default function OnboardingWithoutProjects() {
-
-  const navigate = useNavigate()
-  const user = useSelector(state => state?.user?.user);
-  const [openDrawer, setOpenDrawer] = useState(false)
-
+  const navigate = useNavigate();
+  const user = useSelector((state) => state?.user?.user);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
     <>
@@ -47,7 +44,7 @@ export default function OnboardingWithoutProjects() {
           borderRadius: '1rem',
           p: 6,
           maxWidth: { md: 580, lg: 680 },
-          mx: 'auto'
+          mx: 'auto',
         }}
       >
         {/* <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
@@ -57,31 +54,33 @@ export default function OnboardingWithoutProjects() {
           Let’s get started by creating a new project!
         </Typography>
 
-
-
-        <Stack
-          p={2}
-          maxWidth={400}
-          mx='auto'
-        >
-
-          {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && <Button
-            variant="contained"
-            color="secondary"
-            size='large'
-            onClick={() => setOpenDrawer(true)}
-          // onClick={() => navigate(paths.subscriber.submittals.list)}
-          >
-            Create a new Project
-          </Button>}
-         
+        <Stack p={2} maxWidth={400} mx="auto">
+          {user?.userType === 'Subscriber' &&
+            (user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+              user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                onClick={() => setOpenDrawer(true)}
+                // onClick={() => navigate(paths.subscriber.submittals.list)}
+              >
+                Create a new Project
+              </Button>
+            )}
         </Stack>
-
       </Stack>
       {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}
-      {(user?.userType === "Subscriber" && (user?.role?.shortName === "CAD" || user?.role?.shortName === "PWU")) && (<CustomDrawer isOnboarding open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} />)}
-
+      {user?.userType === 'Subscriber' &&
+        (user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+          user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+          <CustomDrawer
+            isOnboarding
+            open={openDrawer}
+            onClose={() => setOpenDrawer(false)}
+            Component={ProjectView}
+          />
+        )}
     </>
   );
 }
-

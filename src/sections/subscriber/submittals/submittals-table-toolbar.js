@@ -20,6 +20,7 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
+import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ export default function SubmittalsTableToolbar({
 }) {
   const popover = usePopover();
   const dispatch = useDispatch();
-  const userRole = useSelector(state => state.user.user.role.shortName);
+  const userRole = useSelector((state) => state.user.user.role);
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -187,7 +188,12 @@ export default function SubmittalsTableToolbar({
           variant="contained"
           loading={isLoading}
           sx={{ ml: 'auto' }}
-          disabled={!(userRole === "CAD" || userRole === "PWU")}
+          disabled={
+            !(
+              userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+              userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
+            )
+          }
         >
           <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
           Export

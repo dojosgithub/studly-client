@@ -20,6 +20,13 @@ import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 // components
 import { paths } from 'src/routes/paths';
 import Iconify from 'src/components/iconify';
+import { authSwitchProject } from 'src/redux/slices/userSlice';
+import {
+  getKeyByValue,
+  getUserRoleKeyByValue,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  USER_TYPES_STUDLY,
+} from 'src/_mock';
 import Scrollbar from '../scrollbar';
 
 export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
@@ -36,20 +43,71 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   // const handleClose = () => {
   //     setOpen(!open);
   // };
+  // const handleProject = (project, redirect) => {
+  //   dispatch(setCurrentProject(project));
+  //   // dispatch(getSubmittalList())
+  //   const { members } = project;
+  //   if (role !== 'CAD') {
+  //     if (members && members.length > 0) {
+  //       const projectRole = members.find((member) => member.email === email);
+  //       dispatch(setCurrentProjectRole(projectRole?.role));
+  //     }
+  //   }
+  //   if (redirect) {
+  //     dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+  //     navigate(paths.subscriber.submittals.list);
+  //   }
+  //   handleClose();
+  // };
+
   const handleProject = (project, redirect) => {
     dispatch(setCurrentProject(project));
-    // dispatch(getSubmittalList())
-    const { members } = project;
-    if (role !== 'CAD' || role !== 'PWU') {
-      if (members && members.length > 0) {
-        const projectRole = members.find((member) => member.email === email);
-        dispatch(setCurrentProjectRole(projectRole?.role));
-      }
+
+    const { members, id: projectId, company: companyId } = project;
+    const isCompanyAdmin = role === 'CAD';
+    let projectData;
+    let updatedRole;
+
+    // if (!isCompanyAdmin && role !== 'PWU') {
+    // Non-Company Admin and Non-Power User Logic
+    const projectMember = members.find((member) => member.email === email);
+
+    if (projectMember) {
+      updatedRole = projectMember.role;
+      projectData = {
+        role: updatedRole,
+        userType: updatedRole.loggedInAs,
+        projectId,
+        companyId,
+      };
+      dispatch(setCurrentProjectRole(updatedRole));
+      console.log('Other User Role');
+    } else {
+      // Company Admin Logic
+      updatedRole = {
+        name: SUBSCRIBER_USER_ROLE_STUDLY.CAD,
+        shortName: getUserRoleKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY.CAD),
+        loggedInAs: USER_TYPES_STUDLY.SUB,
+      };
+      projectData = {
+        role: updatedRole,
+        userType: USER_TYPES_STUDLY.SUB,
+        projectId,
+        companyId,
+      };
+      dispatch(setCurrentProjectRole(updatedRole));
+      console.log('Company Admin Role');
     }
+
+    if (projectData) {
+      dispatch(authSwitchProject(projectData));
+    }
+
     if (redirect) {
       dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
       navigate(paths.subscriber.submittals.list);
     }
+
     handleClose();
   };
 
