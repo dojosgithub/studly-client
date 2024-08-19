@@ -263,7 +263,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           link,
           projectId,
           trade,
-          parentSubmittal: params?._id,
+          parentSubmittal: params?.id,
         };
       } else {
         finalData = { ...currentSubmittal, ...data, creator, owner, trade };

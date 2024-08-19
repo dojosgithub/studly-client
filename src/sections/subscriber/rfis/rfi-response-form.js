@@ -131,20 +131,20 @@ export default function RfiResponseForm({ currentRfi, id }) {
       data.attachments = attachments;
       formData.append('body', JSON.stringify(data));
 
-      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?._id }))
+      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
 
       let error;
       let payload;
-      if (currentRfi?.isResponseSubmitted && value === 'update' && params?._id) {
-        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?._id }));
+      if (currentRfi?.isResponseSubmitted && value === 'update' && params?.id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }));
         error = res.error;
         payload = res.payload;
-      } else if (!currentRfi?.isResponseSubmitted && value === 'save' && params?._id) {
-        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?._id }));
+      } else if (!currentRfi?.isResponseSubmitted && value === 'save' && params?.id) {
+        const res = await dispatch(updateSubmittalResponseDetails({ formData, id: params?.id }));
         error = res.error;
         payload = res.payload;
       } else {
-        const res = await dispatch(respondToSubmittalRequest({ formData, id: params?._id }));
+        const res = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }));
         error = res.error;
         payload = res.payload;
       }
@@ -163,7 +163,7 @@ export default function RfiResponseForm({ currentRfi, id }) {
         message = 'Submittal response submitted successfully!';
       }
       enqueueSnackbar(message, { variant: 'success' });
-      router.push(paths.subscriber.submittals.details(params?._id));
+      router.push(paths.subscriber.submittals.details(params?.id));
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
