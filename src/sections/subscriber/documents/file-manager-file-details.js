@@ -56,7 +56,7 @@ export default function FileManagerFileDetails({
   onDelete,
   ...other
 }) {
-  const { name, size, url, _type, shared, updatedAt, fileType, _id } = item;
+  const { name, size, preview, _type, shared, updatedAt, fileType, _id } = item;
 
   const hasShared = shared && !!shared.length;
 
@@ -252,10 +252,11 @@ export default function FileManagerFileDetails({
               bgcolor: 'background.neutral',
             }}
           >
+            {console.log('preview', preview)}
             <FileThumbnail
               imageView
-              // file={type === 'folder' ? type : url}
-              file={_type === 'file' ? fileType : _type}
+              // file={type === 'folder' ? type : preview}
+              file={_type === 'file' ? preview : _type}
               sx={{ width: 64, height: 64 }}
               imgSx={{ borderRadius: 1 }}
             />

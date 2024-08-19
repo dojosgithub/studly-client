@@ -77,6 +77,7 @@ export default function FileManagerNewFolderDialog({
 
       console.log(formData);
       await dispatch(uploadDocument(formData));
+      onChangeFolderName('');
       console.log('Upload successful');
       fetchData();
       onClose();
@@ -106,7 +107,7 @@ export default function FileManagerNewFolderDialog({
             fullWidth
             label="Folder name"
             value={folderName}
-            onChange={onChangeFolderName}
+            onChange={(e) => onChangeFolderName(e.target.value)}
             sx={{ mb: 3 }}
           />
         )}

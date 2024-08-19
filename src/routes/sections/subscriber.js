@@ -177,6 +177,11 @@ export const subscriberRoutes = [
       },
       {
         path: 'documents',
+        element: (
+          <RoleGuard allowedRoles={STUDLY_ROLES.documents}>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           { element: <DocumentsListPage />, index: true },
           { path: 'list', element: <DocumentsListPage /> },
