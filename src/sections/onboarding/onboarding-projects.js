@@ -146,7 +146,7 @@ export default function OnboardingProjects({ projects }) {
           </Scrollbar>
           {/* // {user?.userType === 'Subscriber' && */}
           {/* // (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && ( */}
-          <RoleAccessWrapper>
+          <RoleAccessWrapper allowedRoles={['CAD', 'PWU']}>
             <Button
               variant="contained"
               color="secondary"
