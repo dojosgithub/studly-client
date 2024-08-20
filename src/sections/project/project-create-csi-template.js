@@ -71,7 +71,9 @@ const ProjectCreateCsiTrade = () => {
     control,
     name: 'trades',
   });
-
+  useEffect(() => {
+    setCheckedItems(trades || []);
+  }, [trades]);
   useEffect(() => {
     console.log('Checked items array:', checkedItems);
     console.log('trades:', trades);
@@ -115,24 +117,22 @@ const ProjectCreateCsiTrade = () => {
     [setValue]
   );
 
-  function checkIfIdExistsInTree(id, nodes) {
-    // Check if the current node's ID matches
+  const checkIfIdExistsInTree = useCallback((id, nodes) => {
     if (nodes.id === id) {
       return true;
     }
 
-    // If there are children, recursively check each child
     if (nodes.children && nodes.children.length > 0) {
       return nodes.children.some((child) => checkIfIdExistsInTree(id, child));
     }
 
-    // If no match found
     return false;
-  }
+  }, []);
+
   const renderTree = useCallback(
     (nodes) => {
-      const isChecked = template.children.some((item) =>
-        checkedItems.some((nestedItem) => checkIfIdExistsInTree(nestedItem._id, nodes))
+      const isChecked = checkedItems.some((nestedItem) =>
+        checkIfIdExistsInTree(nestedItem._id, nodes)
       );
 
       return (
@@ -145,7 +145,7 @@ const ProjectCreateCsiTrade = () => {
                 <Checkbox
                   name={nodes.name}
                   onChange={(event) => handleCheckboxChange(event, nodes)}
-                  isChecked={isChecked}
+                  checked={isChecked}
                 />
               )}
               {nodes.name}
@@ -158,8 +158,7 @@ const ProjectCreateCsiTrade = () => {
         </MemoizedTreeItem>
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [handleCheckboxChange]
+    [checkedItems, handleCheckboxChange, checkIfIdExistsInTree]
   );
 
   return (
