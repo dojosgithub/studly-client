@@ -232,7 +232,7 @@ export default function FileManagerTableRow({
         arrow="right-top"
         sx={{ width: 160 }}
       >
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             popover.onClose();
             handleCopy();
@@ -250,7 +250,7 @@ export default function FileManagerTableRow({
         >
           <Iconify icon="solar:share-bold" />
           Share
-        </MenuItem>
+        </MenuItem> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

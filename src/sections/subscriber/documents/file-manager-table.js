@@ -47,7 +47,7 @@ const defaultFilters = {
 export default function FileManagerTable({
   table,
   tableData,
-  notFound,
+
   onDeleteRow,
   fetchData,
   onOpenConfirm,
@@ -83,6 +83,7 @@ export default function FileManagerTable({
   const handleFilters = useCallback((name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   }, []);
+  const notFound = dataFiltered?.docs?.length === 0;
   return (
     <>
       <Box
@@ -168,30 +169,27 @@ export default function FileManagerTable({
             />
 
             <TableBody>
-              {dataFiltered?.docs?.map((row) => (
-                <FileManagerTableRow
-                  key={row._id}
-                  row={row}
-                  selected={selected.includes(row._id)}
-                  onSelectRow={() => onSelectRow(row._id)}
-                  onDeleteRow={() => onDeleteRow(row._id)}
-                  fetchData={fetchData}
-                />
-              ))}
+              {dataFiltered?.docs?.length > 0 ? (
+                <>
+                  {dataFiltered?.docs?.map((row) => (
+                    <FileManagerTableRow
+                      key={row._id}
+                      row={row}
+                      selected={selected.includes(row._id)}
+                      onSelectRow={() => onSelectRow(row._id)}
+                      onDeleteRow={() => onDeleteRow(row._id)}
+                      fetchData={fetchData}
+                    />
+                  ))}
 
-              <TableEmptyRows
-                height={denseHeight}
-                emptyRows={emptyRows(dataFiltered?.docs?.length)}
-              />
-
-              <TableNoData
-                notFound={notFound}
-                sx={{
-                  m: -2,
-                  borderRadius: 1.5,
-                  border: `dashed 1px ${theme.palette.divider}`,
-                }}
-              />
+                  <TableEmptyRows
+                    height={denseHeight}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered?.docs?.length)}
+                  />
+                </>
+              ) : (
+                <TableNoData notFound={notFound} />
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -207,15 +205,13 @@ export default function FileManagerTable({
     </>
   );
 }
-function emptyRows(rowCount) {
-  return Math.max(0, 10 - rowCount);
-}
-
 FileManagerTable.propTypes = {
-  notFound: PropTypes.bool,
   onDeleteRow: PropTypes.func,
   onOpenConfirm: PropTypes.func,
   table: PropTypes.object,
   tableData: PropTypes.array,
   fetchData: PropTypes.func,
 };
+export function emptyRows(page, rowsPerPage, arrayLength) {
+  return page ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;
+}

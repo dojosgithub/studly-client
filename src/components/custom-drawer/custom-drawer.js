@@ -16,7 +16,6 @@ import { RouterLink } from 'src/routes/components';
 // components
 // // import { ProjectView } from 'src/sections/project/view';
 
-
 // theme
 import { paper } from 'src/theme/css';
 //
@@ -26,32 +25,39 @@ import Logo from '../logo';
 //
 // import { useSettingsContext } from './context';
 
-
 // ----------------------------------------------------------------------
 
-export default function CustomDrawer({ open, onClose, isOnboarding = false, Component, type = "project",setTrades }) {
-    const theme = useTheme();
+export default function CustomDrawer({
+  open,
+  onClose,
+  isOnboarding = false,
+  Component,
+  type = 'project',
+  setTrades,
+}) {
+  const theme = useTheme();
 
-    const renderHead = (
-        <Stack
-            direction="row"
-            // // alignItems="flex-start"
-            // // justifyContent={((type === "template") || (type === "workflow")) ? "flex-end" : "space-between"}
-            // sx={{ py: 2, pr: 2.5, pl: 5 }}
-            // alignItems={((type === "template") || (type === "workflow")) ? "center" : "flex-start"}
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ py: 2, pr: 2.5, pl: 5 }}
-        >
-
-            <>
-                <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type.charAt(0).toUpperCase() + type.slice(1)}</Typography>
-                <Logo/>
-                <IconButton onClick={onClose} >
-                    <Iconify icon="gg:close-o" color="black" height={32} width={32} />
-                </IconButton>
-            </>
-            {/* {((type === "template") || (type === "workflow")) ?
+  const renderHead = (
+    <Stack
+      direction="row"
+      // // alignItems="flex-start"
+      // // justifyContent={((type === "template") || (type === "workflow")) ? "flex-end" : "space-between"}
+      // sx={{ py: 2, pr: 2.5, pl: 5 }}
+      // alignItems={((type === "template") || (type === "workflow")) ? "center" : "flex-start"}
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{ py: 2, pr: 2.5, pl: 5 }}
+    >
+      <>
+        <Typography fontSize="1.5rem" fontWeight="bold">
+          Create New {type.charAt(0).toUpperCase() + type.slice(1)}
+        </Typography>
+        {/* <Logo/> */}
+        <IconButton onClick={onClose}>
+          <Iconify icon="gg:close-o" color="black" height={32} width={32} />
+        </IconButton>
+      </>
+      {/* {((type === "template") || (type === "workflow")) ?
                 (
                     <>
                         <Typography fontSize='1.5rem' fontWeight='bold'>Create New {type}</Typography>
@@ -82,47 +88,42 @@ export default function CustomDrawer({ open, onClose, isOnboarding = false, Comp
                         flexGrow: 1
                     }}
                 />)} */}
+    </Stack>
+  );
 
+  return (
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={onClose}
+      slotProps={{
+        backdrop: { invisible: true },
+      }}
+      sx={{
+        [`& .${drawerClasses.paper}`]: {
+          // ...paper({ theme, bgcolor: theme.palette.background.default }),
+          width: `calc(100% - ${280}px)`,
+          background: 'white',
+          ...(isOnboarding && {
+            width: '100%',
+          }),
+        },
+      }}
+    >
+      {renderHead}
 
+      <Divider sx={{ borderStyle: 'dashed' }} />
 
-        </Stack>
-    );
-
-
-    return (
-        <Drawer
-            anchor="right"
-            open={open}
-            onClose={onClose}
-            slotProps={{
-                backdrop: { invisible: true },
-            }}
-            sx={{
-                [`& .${drawerClasses.paper}`]: {
-                    // ...paper({ theme, bgcolor: theme.palette.background.default }),
-                    width: `calc(100% - ${280}px)`,
-                    'background': 'white',
-                    ...isOnboarding && {
-                        width: '100%',
-                    }
-                },
-            }}
-        >
-            {renderHead}
-
-            <Divider sx={{ borderStyle: 'dashed' }} />
-
-            {/* <ProjectView /> */}
-            <Component type={type} onClose={onClose} open={open} setTrades={setTrades}/>
-
-        </Drawer>
-    );
+      {/* <ProjectView /> */}
+      <Component type={type} onClose={onClose} open={open} setTrades={setTrades} />
+    </Drawer>
+  );
 }
 CustomDrawer.propTypes = {
-    onClose: PropTypes.func,
-    setTrades: PropTypes.func,
-    open: PropTypes.bool,
-    Component: PropTypes.node,
-    type: PropTypes.string,
-    isOnboarding: PropTypes.bool,
+  onClose: PropTypes.func,
+  setTrades: PropTypes.func,
+  open: PropTypes.bool,
+  Component: PropTypes.node,
+  type: PropTypes.string,
+  isOnboarding: PropTypes.bool,
 };
