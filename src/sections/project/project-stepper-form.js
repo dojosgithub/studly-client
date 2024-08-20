@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -443,7 +443,7 @@ export default function ProjectStepperForm() {
           dispatch(setProjectWorkflow(formValues?.workflow));
           break;
         case 'trades':
-          dispatch(setProjectTrades(formValues?.trades));
+          dispatch(setProjectTrades(cloneDeep(formValues?.trades)));
           break;
         // case 'workflow':
         //   dispatch(setProjectWorkflow(formValues?.workflow));
