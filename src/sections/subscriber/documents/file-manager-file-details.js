@@ -33,6 +33,8 @@ import {
 } from 'src/redux/slices/documentsSlice';
 import FileThumbnail, { fileFormat } from 'src/components/file-thumbnail';
 //
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
+import { STUDLY_ROLES_ACTION } from 'src/_mock';
 import FileManagerShareDialog from './file-manager-share-dialog';
 import FileManagerInvitedItem from './file-manager-invited-item';
 
@@ -275,18 +277,20 @@ export default function FileManagerFileDetails({
           {renderShared}
         </Scrollbar>
 
-        <Box sx={{ p: 2.5 }}>
-          <Button
-            fullWidth
-            variant="soft"
-            color="error"
-            size="large"
-            startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-            onClick={confirm.onTrue}
-          >
-            Delete
-          </Button>
-        </Box>
+        <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.delete}>
+          <Box sx={{ p: 2.5 }}>
+            <Button
+              fullWidth
+              variant="soft"
+              color="error"
+              size="large"
+              startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+              onClick={confirm.onTrue}
+            >
+              Delete
+            </Button>
+          </Box>
+        </RoleAccessWrapper>
 
         <ConfirmDialog
           open={confirm.value}

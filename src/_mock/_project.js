@@ -18,6 +18,22 @@ export const STUDLY_ROLES = {
   // coi: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
   projectSetting: ['CAD', 'PWU'],
 };
+
+export const STUDLY_ROLES_ACTION = {
+  project: { create: ['CAD', 'PWU'] },
+  documents: {
+    create: ['CAD', 'PWU'],
+    edit: ['CAD', 'PWU'],
+    delete: ['CAD', 'PWU'],
+  },
+  logs: {
+    create: ['CAD', 'PWU', 'FIU'],
+    edit: ['CAD'],
+    delete: ['CAD'],
+  },
+  // ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
+};
+
 export const CSI_CODE_TEMPLATE = {
   id: '1',
   name: 'CSI TEMPLATE',

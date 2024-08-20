@@ -19,7 +19,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { fTimestamp } from 'src/utils/format-time';
 // _mock
 
-import { _allFiles, FILE_TYPE_OPTIONS } from 'src/_mock';
+import { _allFiles, FILE_TYPE_OPTIONS, STUDLY_ROLES_ACTION } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -36,6 +36,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import { useTable, getComparator } from 'src/components/table';
 //
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import FileManagerTable from '../file-manager-table';
 import FileManagerFilters from '../file-manager-filters';
 
@@ -246,14 +247,16 @@ export default function FileManagerView() {
             }))}
             onClick={clicked}
             action={
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={handleClick}
-                style={{ paddingRight: 46 }}
-              >
-                Upload
-              </Button>
+              <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.create}>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={handleClick}
+                  style={{ paddingRight: 46 }}
+                >
+                  Upload
+                </Button>
+              </RoleAccessWrapper>
             }
           />
         )}

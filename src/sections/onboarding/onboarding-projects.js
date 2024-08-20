@@ -31,6 +31,7 @@ import Scrollbar from 'src/components/scrollbar';
 import {
   getKeyByValue,
   getUserRoleKeyByValue,
+  STUDLY_ROLES_ACTION,
   SUBSCRIBER_USER_ROLE_STUDLY,
   USER_TYPES_STUDLY,
 } from 'src/_mock';
@@ -146,7 +147,7 @@ export default function OnboardingProjects({ projects }) {
           </Scrollbar>
           {/* // {user?.userType === 'Subscriber' && */}
           {/* // (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && ( */}
-          <RoleAccessWrapper allowedRoles={['CAD', 'PWU']}>
+          <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.project.create}>
             <Button
               variant="contained"
               color="secondary"

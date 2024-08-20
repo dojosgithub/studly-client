@@ -21,7 +21,8 @@ import { RouterLink } from 'src/routes/components';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
-import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
+import { STUDLY_ROLES_ACTION, SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { bgGradient } from 'src/theme/css';
 import { ProjectView } from '../project/view';
 // components
@@ -55,19 +56,21 @@ export default function OnboardingWithoutProjects() {
         </Typography>
 
         <Stack p={2} maxWidth={400} mx="auto">
-          {user?.userType === 'Subscriber' &&
+          {/* {user?.userType === 'Subscriber' &&
             (user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-              user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-              <Button
-                variant="contained"
-                color="secondary"
-                size="large"
-                onClick={() => setOpenDrawer(true)}
-                // onClick={() => navigate(paths.subscriber.submittals.list)}
-              >
-                Create a new Project
-              </Button>
-            )}
+              user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && ( */}
+          <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.project.create}>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={() => setOpenDrawer(true)}
+              // onClick={() => navigate(paths.subscriber.submittals.list)}
+            >
+              Create a new Project
+            </Button>
+          </RoleAccessWrapper>
+          {/* )} */}
         </Stack>
       </Stack>
       {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}

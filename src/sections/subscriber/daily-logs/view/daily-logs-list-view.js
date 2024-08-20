@@ -25,6 +25,8 @@ import {
   TableEmptyRows,
   TablePaginationCustom,
 } from 'src/components/table';
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
+import { STUDLY_ROLES_ACTION } from 'src/_mock';
 import PlanRoomTableRow from '../daily-logs-table-row';
 import DailyLogsTableToolbar from '../daily-logs-table-toolbar';
 
@@ -116,7 +118,7 @@ export default function DailyLogsListView() {
           { name: 'Logs' },
         ]}
         action={
-          (role === 'CAD' || role === 'PWU') && (
+          <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.logs.create}>
             <Button
               component={RouterLink}
               href={paths.subscriber.logs.new}
@@ -125,7 +127,7 @@ export default function DailyLogsListView() {
             >
               Create New Log
             </Button>
-          )
+          </RoleAccessWrapper>
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />

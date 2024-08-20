@@ -7,6 +7,8 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
+import { STUDLY_ROLES_ACTION } from 'src/_mock';
 
 const DailyLogsTableRow = memo(
   ({ row, selected, onSelectRow, onDeleteRow, onEditRow, onViewRow }) => {
@@ -83,17 +85,19 @@ const DailyLogsTableRow = memo(
         >
           {row.status !== 'Minutes' && (
             <>
-              <MenuItem
-                onClick={() => {
-                  confirm.onTrue();
-                  popover.onClose();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon="solar:trash-bin-trash-bold" />
-                Delete
-              </MenuItem>
-              {(role === 'CAD' || role === 'PWU') && (
+              <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.logs.delete}>
+                <MenuItem
+                  onClick={() => {
+                    confirm.onTrue();
+                    popover.onClose();
+                  }}
+                  sx={{ color: 'error.main' }}
+                >
+                  <Iconify icon="solar:trash-bin-trash-bold" />
+                  Delete
+                </MenuItem>
+              </RoleAccessWrapper>
+              <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.logs.edit}>
                 <MenuItem
                   onClick={() => {
                     onEditRow(row._id);
@@ -103,7 +107,7 @@ const DailyLogsTableRow = memo(
                   <Iconify icon="solar:pen-bold" />
                   Edit
                 </MenuItem>
-              )}
+              </RoleAccessWrapper>
             </>
           )}
 

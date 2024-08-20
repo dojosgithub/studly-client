@@ -30,6 +30,8 @@ import { useSnackbar } from 'src/components/snackbar';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import FileThumbnail from 'src/components/file-thumbnail';
 //
+import { STUDLY_ROLES_ACTION } from 'src/_mock';
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import FileManagerShareDialog from './file-manager-share-dialog';
 import FileManagerFileDetails from './file-manager-file-details';
 
@@ -204,26 +206,19 @@ export default function FileManagerTableRow({
           </AvatarGroup>
         </TableCell> */}
 
-        <TableCell
-          align="right"
-          sx={{
-            px: 1,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {/* <Checkbox
-            color="warning"
-            icon={<Iconify icon="eva:star-outline" />}
-            checkedIcon={<Iconify icon="eva:star-fill" />}
-            checked={favorite.value}
-            onChange={favorite.onToggle}
-            sx={{ p: 0.75 }}
-          /> */}
-
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
+        <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.delete}>
+          <TableCell
+            align="right"
+            sx={{
+              px: 1,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </TableCell>
+        </RoleAccessWrapper>
       </TableRow>
 
       <CustomPopover
@@ -232,26 +227,6 @@ export default function FileManagerTableRow({
         arrow="right-top"
         sx={{ width: 160 }}
       >
-        {/* <MenuItem
-          onClick={() => {
-            popover.onClose();
-            handleCopy();
-          }}
-        >
-          <Iconify icon="eva:link-2-fill" />
-          Copy Link
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            share.onTrue();
-          }}
-        >
-          <Iconify icon="solar:share-bold" />
-          Share
-        </MenuItem> */}
-
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem
