@@ -5,7 +5,7 @@ import { useEffect, useReducer, useCallback, useMemo } from 'react';
 import axios, { endpoints } from 'src/utils/axios';
 //
 import { logoutRedux } from 'src/redux/store';
-import { setUserData, signIn } from 'src/redux/slices/userSlice';
+import { setUserData, setUserTokens, signIn } from 'src/redux/slices/userSlice';
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';
 
@@ -77,16 +77,20 @@ export function AuthProvider({ children }) {
     try {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
+      // TODO: handle token (save session) based on new profile data
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
-
         const response = await axios.get(endpoints.auth.profile);
-
+        console.log('response', response);
+        console.log('accessTokenPrev', accessToken);
         const {
-          data: { user },
+          data: { user, tokens },
         } = response.data;
-        setSession(accessToken);
+        // setSession(accessToken);
+        console.log('tokens', tokens);
+        setSession(tokens?.accessToken);
         dispatchRedux(setUserData(user));
+        dispatchRedux(setUserTokens(tokens));
 
         dispatch({
           type: 'INITIAL',

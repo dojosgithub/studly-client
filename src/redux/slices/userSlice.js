@@ -24,6 +24,11 @@ export const authSwitchProject = createAsyncThunk(
     try {
       // const email = getState()?.user?.user?.email; // Access the current state
       const response = await axiosInstance.post(endpoints.project.switch, projectData);
+      // setting token in session
+      window.sessionStorage.setItem(
+        'accessToken',
+        JSON.stringify(response?.data?.data?.tokens?.accessToken)
+      );
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -50,6 +55,12 @@ const user = createSlice({
     signIn: (state, action) => {
       state.user = action.payload.user;
       state.isLoggedIn = true;
+      state.tokens = {
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+      };
+    },
+    setUserTokens: (state, action) => {
       state.tokens = {
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
@@ -96,5 +107,5 @@ const user = createSlice({
   },
 });
 
-export const { signIn, signOut, setUserData } = user.actions;
+export const { signIn, signOut, setUserData, setUserTokens } = user.actions;
 export default user.reducer;
