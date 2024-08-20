@@ -73,6 +73,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     [currentSubmittal]
   );
   const [files, setFiles] = useState(existingAttachments);
+  const [tradeObject, setTradeObject] = useState(null);
   useEffect(() => {
     if (pathname.includes('revision')) {
       setFiles([]);
@@ -218,7 +219,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     (option) => {
       const sequence = option.submittalCreatedCount + 1;
       const id1 = concat(option.tradeId, '-', sequence).join('');
-
+      setTradeObject(option);
       setValue(`submittalId`, id1);
     },
     [setValue]
@@ -231,14 +232,17 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
         .map((item) => item.user);
-      const tradeId = getStrTradeId(data.trade);
-      const tradeObj = trades.find((t) => t.tradeId === tradeId);
+      // const tradeId = getStrTradeId(data.trade);
+      // const tradeObj = trades.find((t) => t.tradeId === tradeId);
 
       // TODO: if it's a revision then donot increment submittalCreatedCount
       const trade = {
-        ...tradeObj,
-        submittalCreatedCount: (tradeObj?.submittalCreatedCount || 0) + 1,
+        // ...tradeObj,
+        ...tradeObject,
+        submittalCreatedCount: (tradeObject?.submittalCreatedCount || 0) + 1,
       };
+      console.log('tradeObject', tradeObject);
+      console.log('trade', trade);
       // delete trade._id;
       if (!trade) {
         return;
@@ -402,7 +406,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                         value={`${trade?.tradeId || ''}-${trade?.name || ''}`}
                         onClick={() => handleSelectTrade(trade)}
                       >
-                        {trade?.name}
+                        {trade?.tradeId}-{trade?.name}
                       </MenuItem>
                     ))}
                   </RHFSelect>
