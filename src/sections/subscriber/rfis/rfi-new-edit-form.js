@@ -85,7 +85,8 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       .min(startOfDay(addDays(new Date(), 1)), 'Due Date must be later than today'),
     costImpact: Yup.string(),
     scheduleDelay: Yup.string(),
-    owner: Yup.array().min(1).required('Owner is required'),
+    // owner: Yup.array().min(1).required('Owner is required'),
+    owner: Yup.array(),
     ccList: Yup.array(),
     // status: Yup.string().required('Status is required'),
   });
@@ -198,8 +199,9 @@ export default function RfiNewEditForm({ currentRfi, id }) {
         router.push(paths.subscriber.rfi.details(payload?._id));
         return;
       }
-      await dispatch(submitRfiToArchitect(payload?._id));
-      enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
+      await handleSubmitToArchitect(payload?._id);
+      // await dispatch(submitRfiToArchitect(payload?._id));
+      // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       reset();
       isSubmittingRef.current = false;
       router.push(paths.subscriber.rfi.list);
@@ -209,6 +211,17 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       });
     }
   });
+
+  const handleSubmitToArchitect = async (SubmittalId) => {
+    isSubmittingRef.current = true;
+    const { error, payload } = await dispatch(submitRfiToArchitect(SubmittalId));
+    isSubmittingRef.current = false;
+    if (!isEmpty(error)) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+      return;
+    }
+    enqueueSnackbar('Rfi has been successfully sent for review', { variant: 'success' });
+  };
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {

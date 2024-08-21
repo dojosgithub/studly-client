@@ -104,7 +104,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       .required('Return Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Return Date must be later than today'),
     // owner: Yup.string().required('Owner is required'),
-    owner: Yup.array().min(1).required('Owner is required'),
+    // owner: Yup.array().min(1).required('Owner is required'),
+    owner: Yup.array(),
     ccList: Yup.array(),
     // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
     // attachments: Yup.array().min(1),
