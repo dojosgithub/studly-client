@@ -140,16 +140,19 @@ const ProjectCreateCsiTrade = () => {
           key={nodes.id}
           itemId={nodes.id}
           label={
-            <>
-              {(!nodes.children || nodes.children.length === 0) && (
-                <Checkbox
-                  name={nodes.name}
-                  onChange={(event) => handleCheckboxChange(event, nodes)}
-                  checked={isChecked}
-                />
-              )}
-              {nodes.name}
-            </>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
+                {(!nodes.children || nodes.children.length === 0) && (
+                  <Checkbox
+                    name={nodes.name}
+                    onChange={(event) => handleCheckboxChange(event, nodes)}
+                    checked={isChecked}
+                  />
+                )}
+                {nodes.tradeId}
+              </Box>
+              <Box>{nodes.name}</Box>
+            </Box>
           }
         >
           {Array.isArray(nodes.children) &&

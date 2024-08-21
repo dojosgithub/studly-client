@@ -31,7 +31,9 @@ export default function NavMini() {
   // // const navDataSubscriber = useNavDataSubscriber();
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const { user } = useAuthContext();
+  // const { user } = useAuthContext();
+  const user = useSelector((state) => state.user.user);
+
   const isProjectDrawerOpen = useSelector((state) => state.project.isProjectDrawerOpen);
 
   return (

@@ -201,7 +201,7 @@ const ProjectSubcontractor = () => {
           {trades?.map(({ tradeId, name }) => (
             <Card
               sx={{
-                maxWidth: '500px',
+                // maxWidth: '500px',
                 width: '100%',
                 p: '1rem',
                 display: 'flex',
@@ -210,7 +210,12 @@ const ProjectSubcontractor = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <Typography>{name}</Typography>
+              <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <Typography fontSize=".75rem" minWidth="max-content">
+                  {tradeId}
+                </Typography>
+                <Typography fontSize=".75rem">{name}</Typography>
+              </Box>
               <Box
                 width="100%"
                 maxWidth="200px"
