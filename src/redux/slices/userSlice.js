@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { setSession } from 'src/auth/context/jwt/utils';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 export const updatePasswordFirstLogin = createAsyncThunk(
@@ -25,10 +26,8 @@ export const authSwitchProject = createAsyncThunk(
       // const email = getState()?.user?.user?.email; // Access the current state
       const response = await axiosInstance.post(endpoints.project.switch, projectData);
       // setting token in session
-      window.sessionStorage.setItem(
-        'accessToken',
-        JSON.stringify(response?.data?.data?.tokens?.accessToken)
-      );
+      console.log('response authSwitchProject: ', response.data?.data?.tokens?.accessToken);
+      setSession(response?.data?.data?.tokens?.accessToken);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);

@@ -87,7 +87,7 @@ export function AuthProvider({ children }) {
           data: { user, tokens },
         } = response.data;
         // setSession(accessToken);
-        console.log('tokens', tokens);
+        console.log('tokens Auth', tokens);
         setSession(tokens?.accessToken);
         dispatchRedux(setUserData(user));
         dispatchRedux(setUserTokens(tokens));

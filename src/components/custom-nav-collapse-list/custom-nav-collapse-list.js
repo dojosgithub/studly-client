@@ -63,7 +63,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
   const handleProject = (project, redirect) => {
     dispatch(setCurrentProject(project));
 
-    const { members, id: projectId, company: companyId } = project;
+    const { members, _id: projectId, company: companyId } = project;
     const isCompanyAdmin = role === 'CAD';
     let projectData;
     let updatedRole;
@@ -101,6 +101,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
 
     if (projectData) {
       dispatch(authSwitchProject(projectData));
+      console.log('Project Data', projectData);
     }
 
     if (redirect) {

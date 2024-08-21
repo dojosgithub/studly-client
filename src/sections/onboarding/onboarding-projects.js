@@ -51,7 +51,7 @@ export default function OnboardingProjects({ projects }) {
   const handleProject = (project) => {
     dispatch(setCurrentProject(project));
 
-    const { members, admin, id: projectId, company: companyId } = project;
+    const { members, admin, _id: projectId, company: companyId } = project;
     const isCompanyAdmin = role === 'CAD';
 
     let projectData;
