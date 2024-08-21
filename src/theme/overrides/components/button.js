@@ -21,6 +21,8 @@ export function button(theme) {
 
     const softVariant = ownerState.variant === 'soft';
 
+    const customVariant = ownerState.variant === 'custom';
+
     const smallSize = ownerState.size === 'small';
 
     const mediumSize = ownerState.size === 'medium';
@@ -58,12 +60,20 @@ export function button(theme) {
             backgroundColor: alpha(theme.palette.grey[500], 0.24),
           },
         }),
-      }),
-      ...(outlinedVariant && {
-        '&:hover': {
-          borderColor: 'currentColor',
-          boxShadow: '0 0 0 0.5px currentColor',
-        },
+
+        ...(outlinedVariant && {
+          '&:hover': {
+            borderColor: 'currentColor',
+            boxShadow: '0 0 0 0.5px currentColor',
+          },
+        }),
+        // CUSTOM
+        ...(customVariant && {
+          backgroundColor: alpha('#fff', 0.7),
+          '&:hover': {
+            backgroundColor: alpha('#fff', 0.5),
+          },
+        }),
       }),
     };
 

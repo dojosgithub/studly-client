@@ -15,6 +15,7 @@ import Logo from 'src/components/logo';
 import SvgColor from 'src/components/svg-color';
 import { useSettingsContext } from 'src/components/settings';
 //
+import { CompanyMenu } from 'src/components/company-menu';
 import { HEADER, NAV } from '../config-layout';
 import {
   Searchbar,
@@ -57,6 +58,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
       {/* <Searchbar /> */}
 
+      {lgUp && !isOnboarding && <CompanyMenu />}
       <Stack
         flexGrow={1}
         direction="row"
