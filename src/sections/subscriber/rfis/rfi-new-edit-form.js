@@ -147,6 +147,10 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
         .map((item) => item.user);
+      if (val === 'review' && owner.length === 0) {
+        enqueueSnackbar('Rfi can not be submitted without owner', { variant: 'error' });
+        return;
+      }
 
       let finalData;
       const { _id, firstName, lastName, email } = currentUser;

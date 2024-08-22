@@ -73,7 +73,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     [currentSubmittal]
   );
   const [files, setFiles] = useState(existingAttachments);
-  const [tradeObject, setTradeObject] = useState(null);
+  const [tradeObject, setTradeObject] = useState(currentSubmittal ? currentSubmittal?.trade : null);
   useEffect(() => {
     if (pathname.includes('revision')) {
       setFiles([]);
@@ -150,6 +150,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     const ccListInside = currentSubmittal?.ccList || [];
     const owner = currentSubmittal?.owner?.map((item) => item.email) || [];
     if (currentSubmittal) {
+      console.log('currentSubmittal', currentSubmittal);
+      console.log('currentSubmittal.trade', currentSubmittal.trade);
       submittalId = currentSubmittal.submittalId || '';
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
 
@@ -235,15 +237,36 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         .map((item) => item.user);
       // const tradeId = getStrTradeId(data.trade);
       // const tradeObj = trades.find((t) => t.tradeId === tradeId);
+      if (val === 'review' && owner.length === 0) {
+        enqueueSnackbar('Submittal can not be submitted without owner', { variant: 'error' });
+        return;
+      }
 
+      let trade;
       // TODO: if it's a revision then donot increment submittalCreatedCount
-      const trade = {
-        // ...tradeObj,
-        ...tradeObject,
-        submittalCreatedCount: (tradeObject?.submittalCreatedCount || 0) + 1,
-      };
-      console.log('tradeObject', tradeObject);
-      console.log('trade', trade);
+      if (isEmpty(currentSubmittal)) {
+        trade = {
+          // ...tradeObj,
+          ...tradeObject,
+          submittalCreatedCount: (tradeObject?.submittalCreatedCount || 0) + 1,
+        };
+      } else if (!isEmpty(currentSubmittal) && pathname.includes('revision')) {
+        trade = {
+          // ...tradeObj,
+          ...tradeObject,
+          submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
+        };
+      } else {
+        // edit
+        trade = {
+          // ...tradeObj,
+          ...tradeObject,
+          submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
+        };
+
+        console.log('tradeObject', tradeObject);
+        console.log('trade', trade);
+      }
       // delete trade._id;
       if (!trade) {
         return;
@@ -318,7 +341,8 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
         return;
       }
-      await handleSubmitToArchitect(payload?._id);
+      const result = await handleSubmitToArchitect(payload?._id);
+      if (!result) return;
       reset();
 
       router.push(paths.subscriber.submittals.list);
@@ -336,10 +360,11 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     isSubmittingRef.current = false;
     if (!isEmpty(error)) {
       enqueueSnackbar(error.message, { variant: 'error' });
-      return;
+      return false;
     }
     enqueueSnackbar('Submittal has been successfully sent for review', { variant: 'success' });
     await dispatch(getSubmittalDetails(SubmittalId));
+    return true;
   };
 
   // const handleDrop = useCallback(

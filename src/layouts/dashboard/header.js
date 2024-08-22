@@ -58,7 +58,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
       {/* <Searchbar /> */}
 
-      {lgUp && !isOnboarding && <CompanyMenu />}
+      {/* {lgUp && !isOnboarding && <CompanyMenu />} */}
       <Stack
         flexGrow={1}
         direction="row"
