@@ -247,7 +247,7 @@ const RfiDetails = ({ id }) => {
     const { error, payload } = await dispatch(submitRfiToArchitect(id));
     setIsSubmitting(false);
     if (!isEmpty(error)) {
-      enqueueSnackbar(`Error submitting RFI to architect/engineer.`, { variant: 'error' });
+      enqueueSnackbar(error?.message, { variant: 'error' });
       return;
     }
     enqueueSnackbar(`RFI is submitted to architect/engineer.`, { variant: 'success' });
@@ -534,7 +534,6 @@ const RfiDetails = ({ id }) => {
                   label={response?.date && fDateISO(response?.date)}
                   // sx={{ flexShrink: 0 }} // Prevent Chip from shrinking
                   sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
-
                 />
                 <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
               </Stack>
