@@ -27,6 +27,7 @@ export default function CompanyTableRow({
   row,
   selected,
   onEditRow,
+  onAccessRow,
   onSelectRow,
   onDeleteRow,
   onUpdate,
@@ -114,13 +115,12 @@ export default function CompanyTableRow({
       >
         <MenuItem
           onClick={() => {
-            confirm.onTrue();
+            onAccessRow();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          <Iconify icon="solar:circle-bottom-up-line-duotone" />
+          Access Info
         </MenuItem>
 
         <MenuItem
@@ -131,6 +131,17 @@ export default function CompanyTableRow({
         >
           <Iconify icon="solar:pen-bold" />
           Edit
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
         </MenuItem>
       </CustomPopover>
 
@@ -152,6 +163,7 @@ export default function CompanyTableRow({
 CompanyTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
+  onAccessRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onUpdate: PropTypes.func,
   row: PropTypes.object,

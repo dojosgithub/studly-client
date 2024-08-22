@@ -8,6 +8,7 @@ import {
   PROJECT_WORKFLOWS,
   _userList,
 } from 'src/_mock';
+import { setSession } from 'src/auth/context/jwt/utils';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 import uuidv4 from 'src/utils/uuidv4';
 
@@ -101,6 +102,48 @@ export const updateCompanyStatus = createAsyncThunk(
       const response = await axiosInstance.put(endpoints.company.status(id, status));
 
       return response.data.data.company;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the company.');
+    }
+  }
+);
+
+export const accessCompany = createAsyncThunk(
+  'company/access',
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(endpoints.company.access(id));
+
+      console.log('response', response.data.data);
+      const { accessToken } = response.data.data;
+      setSession(accessToken);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the company.');
+    }
+  }
+);
+
+export const exitCompanyAccess = createAsyncThunk(
+  'company/exit-access',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(endpoints.company.exitAccess());
+
+      console.log('response', response.data.data);
+      const { accessToken } = response.data.data;
+      setSession(accessToken);
+
+      return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
       if (err && err.message) {

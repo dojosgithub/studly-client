@@ -1,18 +1,24 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { jwtDecode } from 'jwt-decode';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import { Button } from '@mui/material';
 // theme
 import { bgBlur } from 'src/theme/css';
 // hooks
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { useRouter } from 'src/routes/hooks';
 // components
 import Logo from 'src/components/logo';
 import SvgColor from 'src/components/svg-color';
+import { exitCompanyAccess } from 'src/redux/slices/companySlice';
 import { useSettingsContext } from 'src/components/settings';
 //
 import { CompanyMenu } from 'src/components/company-menu';
@@ -28,6 +34,10 @@ import {
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav, isOnboarding = false }) {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [isViewAs, setIsViewAs] = useState(false);
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -42,6 +52,28 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   const offsetTop = offset && !isNavHorizontal;
 
+  const accessToken = sessionStorage.getItem('accessToken');
+
+  useEffect(() => {
+    const decodedToken = jwtDecode(accessToken);
+    console.log(decodedToken);
+    if (decodedToken.temp) {
+      setIsViewAs(true);
+    } else {
+      setIsViewAs(false);
+    }
+  }, [accessToken]);
+
+  const exitAccess = useCallback(async () => {
+    try {
+      const data = await dispatch(exitCompanyAccess({ id: 1 }));
+      console.log('DATA:', data);
+      router.push('/');
+      router.reload();
+    } catch (e) {
+      console.log(e);
+    }
+  }, [dispatch, router]);
   const renderContent = (
     <>
       {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} */}
@@ -59,15 +91,21 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
       {/* <Searchbar /> */}
 
       {/* {lgUp && !isOnboarding && <CompanyMenu />} */}
-      <Stack
-        flexGrow={1}
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-end"
-        spacing={{ xs: 0.5, sm: 1 }}
-      >
-        <AccountPopover />
-      </Stack>
+      {isViewAs ? (
+        <Button type="button" variant="contained" onClick={exitAccess}>
+          Exit Access
+        </Button>
+      ) : (
+        <Stack
+          flexGrow={1}
+          direction="row"
+          alignItems="center"
+          justifyContent="flex-end"
+          spacing={{ xs: 0.5, sm: 1 }}
+        >
+          <AccountPopover />
+        </Stack>
+      )}
     </>
   );
 

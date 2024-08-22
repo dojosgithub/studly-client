@@ -22,6 +22,7 @@ import { useParams, useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // Redux API Functions
 import {
+  accessCompany,
   deleteCompany,
   fetchCompanyList,
   updateCompanyStatus,
@@ -156,6 +157,20 @@ export default function CompanyListView() {
       await dispatch(fetchCompanyList());
     },
     [dispatch]
+  );
+
+  const handleAccessRow = useCallback(
+    async (id) => {
+      try {
+        const data = await dispatch(accessCompany({ id }));
+        console.log('DATA:', data);
+        router.push('/');
+        router.reload()
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [dispatch, router]
   );
 
   const handleFilterStatus = useCallback(
@@ -308,6 +323,7 @@ export default function CompanyListView() {
                       onDeleteRow={() => handleDeleteRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
                       onUpdate={() => handleUpdateStatus(row._id, row.status)}
+                      onAccessRow={() => handleAccessRow(row._id)}
                     />
                   ))}
 

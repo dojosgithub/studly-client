@@ -65,6 +65,8 @@ export const endpoints = {
     delete: (id) => `/api/user/company/${id}`,
     details: (id) => `/api/user/company/${id}`,
     status: (id, status) => `/api/user/company/status/${id}/${status}`,
+    access: (id) => `/api/user/company/access/${id}`,
+    exitAccess: '/api/user/company/exit-access',
     userList: '/api/user/list',
     subcontractorList: '/api/user/subcontractor/list',
     subcontractorCompanyList: '/api/user/subcontractor/list/company',
