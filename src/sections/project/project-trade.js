@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha, styled } from '@mui/system';
 import { Tabs } from '@mui/base/Tabs';
+import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { buttonClasses } from '@mui/base/Button';
@@ -31,7 +32,7 @@ import ProjectTradeSelect from './project-trade-select';
 export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
   const { getValues, setValue } = useFormContext();
   const projectName = getValues('name');
-
+  const currentProject = useSelector((state) => state?.project?.current);
   const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.project?.create?.activeTab);
   const selectedTradeTemplate = useSelector(
@@ -75,12 +76,12 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
 
       <Tabs value={activeTab} onChange={handleTabChange}>
         <TabsList>
-          <Tab value="create" name="create">
+          {/* <Tab value="create" name="create">
             Create Trade
-          </Tab>
-          <Tab value="existing" name="existing">
+          </Tab> */}
+          {/* <Tab value="existing" name="existing">
             Use Exisiting Template
-          </Tab>
+          </Tab> */}
         </TabsList>
         <TabPanel value="create">
           <ProjectCreateTrade />
