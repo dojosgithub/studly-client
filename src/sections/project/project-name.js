@@ -1,32 +1,14 @@
 // @mui
 import { Divider, Typography, Box, alpha } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 // form
-import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 import { RHFTextField } from 'src/components/hook-form';
 
 const ProjectName = () => {
-  const { trigger, reset } = useFormContext();
-
-  const currentProject = useSelector((state) => state?.project?.current);
-  console.log('raahim', currentProject);
-
-  useEffect(() => {
-    if (currentProject) {
-      const updatedProject = cloneDeep(currentProject);
-
-      // Extract the fields from the updated project
-      const { name, address, state, city, zipCode } = updatedProject;
-
-      // Reset the form with the updated project fields
-      reset({ name, address, state, city, zipCode });
-    }
-  }, [currentProject, reset]);
-
+  const { trigger } = useFormContext();
   return (
     <>
+      {/* <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Let’s give your new project a name!</Typography> */}
       <Typography sx={{ my: 2 }} fontSize="1.5rem" fontWeight="bold">
         Your new project information
       </Typography>

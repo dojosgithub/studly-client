@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
-import { isEmpty, cloneDeep, isBoolean } from 'lodash';
 // @mui
 import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material';
 
@@ -27,9 +26,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 const ProjectCreateTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
-  const { trigger, reset } = useFormContext();
-  const currentProject = useSelector((state) => state?.project?.current);
-  const projectList = useSelector((state) => state?.project?.list);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'trades',
@@ -87,22 +84,6 @@ const ProjectCreateTrade = () => {
     [resetField]
   );
 
-  useEffect(() => {
-    if (currentProject) {
-      const updatedProject = cloneDeep(currentProject);
-
-      // Extract the fields from the updated project
-      updatedProject.trades = Array.isArray(updatedProject.trades)
-        ? updatedProject.trades.map((trade) => ({
-            ...trade,
-          }))
-        : [];
-
-      // Reset the form with the updated project fields
-      reset(updatedProject);
-    }
-  }, [currentProject, reset]);
-
   // const currentDefaultValues = {
   //     name: '',
   //     tradeId: '',
@@ -137,8 +118,8 @@ const ProjectCreateTrade = () => {
             flexWrap: { xs: 'wrap', md: 'nowrap' },
           }}
         >
-          {/* <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>ID</Typography>
-          <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Name</Typography> */}
+          <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>ID</Typography>
+          <Typography sx={{ fontSize: '.75rem', fontWeight: '600' }}>Name</Typography>
           <Typography> </Typography>
         </Box>
         <Stack gap="1.5rem">
