@@ -655,16 +655,23 @@ const MeetingMinutesDescription = () => {
           <Controller
             name="description.timezone"
             control={control}
-            defaultValue={dropdownOptions2[0]} // Set the default value to the first option object
+            defaultValue={dropdownOptions2[0].zone} // Set the default value to the zone identifier
             render={({ field }) => (
               <Select
                 {...field}
                 label="timezone"
-                onChange={(event) => field.onChange(event.target.value)} // Save the whole object
-                value={field.value?.zone || ''} // Ensure the correct value is displayed
+                onChange={(event) => {
+                  const selectedZone = event.target.value;
+                  const selectedTimezone = dropdownOptions2.find(
+                    (timezone) => timezone.zone === selectedZone
+                  );
+                  console.log('selectedTimezone', selectedTimezone)
+                  field.onChange(selectedTimezone); // Save the whole object in the form state
+                }}
+                value={field.value.zone || ''} // Ensure the correct value is displayed
               >
                 {dropdownOptions2.map((timezone) => (
-                  <MenuItem key={timezone.zone} value={timezone}>
+                  <MenuItem key={timezone.zone} value={timezone.zone}>
                     {`${timezone.utc} ${timezone.name}`}
                   </MenuItem>
                 ))}
