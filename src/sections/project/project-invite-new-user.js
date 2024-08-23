@@ -75,7 +75,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
 
   const defaultValues = useMemo(
     () => ({
-      user: '',
+      user: {},
       role: '',
     }),
     []

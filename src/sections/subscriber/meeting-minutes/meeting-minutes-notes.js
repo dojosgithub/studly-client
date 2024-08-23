@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 
 // hook-form
-import { RHFEditor, RHFTextField } from 'src/components/hook-form';
+import { RHFEditor, RHFSelect, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 //
@@ -161,11 +161,14 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
       // _id: uuidv4(),
     });
   };
+  const handleDropdown = (option) => {
+    console.log('option', option);
+  };
 
   return (
     <>
       {topicFields.map((topic, topicIndex) => (
-        <Box key={topic?._id} sx={{ position: 'relative' }}>
+        <Box key={topic?.id} sx={{ position: 'relative' }}>
           <StyledIconButton color="inherit" onClick={() => removeTopic(topicIndex)}>
             <Iconify icon="ion:close-circle" width="40px" height="40px" />
           </StyledIconButton>
@@ -201,24 +204,41 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                   control={control}
                   // defaultValue={null}
                   render={({ field }) => (
-                    <Select
-                      {...field}
+                    // <Select
+                    //   {...field}
+                    //   label="Assignee"
+                    //   onChange={(event) => {
+                    //     const selectedEmail = event.target.value;
+                    //     const selectedAssignee = inviteAttendee.find(
+                    //       (attendee) => attendee.email === selectedEmail
+                    //     );
+                    //     field.onChange(selectedAssignee);
+                    //   }}
+                    //   value={field.value?.email || ''}
+                    // >
+                    //   {dropdownOptions1.map((option) => (
+                    //     <MenuItem
+                    //       key={option.value}
+                    //       value={option.value}
+                    //       onClick={handleDropdown(option)}
+                    //     >
+                    //       {option.label}
+                    //     </MenuItem>
+                    //   ))}
+                    // </Select>
+                    <RHFSelect
+                      name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
                       label="Assignee"
-                      onChange={(event) => {
-                        const selectedEmail = event.target.value;
-                        const selectedAssignee = inviteAttendee.find(
-                          (attendee) => attendee.email === selectedEmail
-                        );
-                        field.onChange(selectedAssignee);
-                      }}
-                      value={field.value?.email || ''}
+                      control={control}
+                      defaultValue="" // Set default value to an empty string or null
+                      rules={{ required: 'Assignee is required' }} // Add validation rule
                     >
                       {dropdownOptions1.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
                       ))}
-                    </Select>
+                    </RHFSelect>
                   )}
                 />
               </FormControl>
@@ -262,7 +282,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
             <RHFEditor
               simple
               name={`notes[${noteIndex}].topics[${topicIndex}].description`}
-              id={`description-${topic._id}`}
+              id={`description-${topic.id}`}
               label="Description"
               InputLabelProps={{ shrink: true }}
             />
