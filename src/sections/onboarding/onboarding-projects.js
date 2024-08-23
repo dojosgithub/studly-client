@@ -21,7 +21,11 @@ import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
 import { bgGradient } from 'src/theme/css';
-import { setCurrentProject, setCurrentProjectRole } from 'src/redux/slices/projectSlice';
+import {
+  setCurrentProject,
+  setCurrentProjectRole,
+  setUpdateProject,
+} from 'src/redux/slices/projectSlice';
 import { authSwitchProject } from 'src/redux/slices/userSlice';
 //
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
@@ -88,6 +92,7 @@ export default function OnboardingProjects({ projects }) {
       console.log('Company Admin or Power User', isAdmin);
     }
 
+    dispatch(setUpdateProject());
     if (projectData) {
       dispatch(authSwitchProject(projectData));
       dispatch(setCurrentProjectRole(updatedRole));

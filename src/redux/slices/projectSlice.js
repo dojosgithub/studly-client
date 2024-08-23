@@ -27,6 +27,22 @@ export const createNewProject = createAsyncThunk(
     }
   }
 );
+export const updateExistingProject = createAsyncThunk(
+  'project/update',
+  async (projectData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(endpoints.project.update, projectData);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while updating the project.');
+    }
+  }
+);
 export const getProjectList = createAsyncThunk(
   'project/list',
   async (_, { getState, rejectWithValue }) => {
@@ -181,6 +197,7 @@ const initialState = {
   list: [],
   isProjectDrawerOpen: false,
   current: null,
+  update: null,
   create: { ...projectInitialState },
   members: [],
   // Invite
@@ -206,11 +223,25 @@ const project = createSlice({
       state.create.city = action.payload.city;
       state.create.zipCode = action.payload.zipCode;
     },
+    setProjectSettingsName: (state, action) => {
+      // state.update.name = action.payload
+      state.update.name = action.payload.name;
+      state.update.address = action.payload.address;
+      state.update.state = action.payload.state;
+      state.update.city = action.payload.city;
+      state.update.zipCode = action.payload.zipCode;
+    },
     setProjectTrades: (state, action) => {
       state.create.trades = action.payload;
     },
+    setProjectSettingsTrades: (state, action) => {
+      state.update.trades = action.payload;
+    },
     setProjectWorkflow: (state, action) => {
       state.create.workflow = action.payload;
+    },
+    setProjectSettingsWorkflow: (state, action) => {
+      state.update.workflow = action.payload;
     },
     setCurrentProject: (state, action) => {
       state.current = action.payload;
@@ -218,11 +249,20 @@ const project = createSlice({
     setCreateProject: (state, action) => {
       state.create = action.payload;
     },
+    setUpdateProject: (state, action) => {
+      state.update = { ...state.current };
+    },
     setCurrentProjectRole: (state, action) => {
       state.current = { ...state.current, role: action.payload };
     },
+    setUpdateProjectRole: (state, action) => {
+      state.update = { ...state.update, role: action.payload };
+    },
     setCurrentProjectTrades: (state, action) => {
       state.current = { ...state.current, trades: action.payload };
+    },
+    setUpdateProjectTrades: (state, action) => {
+      state.update = { ...state.update, trades: action.payload };
     },
     setInternalUsers: (state, action) => {
       state.inviteUsers.internal = action.payload;
@@ -292,6 +332,22 @@ const project = createSlice({
       const filteredMembers = state.members.filter((member) => member?.email !== action?.payload);
       state.members = filteredMembers;
     },
+    setUpdateProjectMembers: (state, action) => {
+      const memberExists = state.update?.members.some(
+        (member) => member.email === action.payload.email
+      );
+
+      // If the member does not exist, add them to the members array
+      if (!memberExists) {
+        state.update.members = [...state.update.members, action.payload];
+      }
+    },
+    removeUpdateProjectMember: (state, action) => {
+      const filteredMembers = state.update?.members?.filter(
+        (member) => member?.email !== action?.payload
+      );
+      state.update.members = filteredMembers;
+    },
     resetMembers: (state, action) => {
       state.members = [];
     },
@@ -306,6 +362,10 @@ const project = createSlice({
         internal: [],
         external: [],
       };
+    },
+    resetUpdateProject: (state) => {
+      state.update = null;
+      state.update = { ...state.current };
     },
     setProjectDrawerState: (state, action) => {
       state.isProjectDrawerOpen = action.payload;
@@ -335,6 +395,20 @@ const project = createSlice({
       state.error = null;
     });
     builder.addCase(createNewProject.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // * Update Existing Project
+    builder.addCase(updateExistingProject.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateExistingProject.fulfilled, (state, action) => {
+      state.current = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(updateExistingProject.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });
@@ -433,6 +507,12 @@ export const {
   setCreateProject,
   setCurrentProjectRole,
   setCurrentProjectTrades,
+  setProjectSettingsName,
+  setProjectSettingsTrades,
+  setProjectSettingsWorkflow,
+  setUpdateProject,
+  setUpdateProjectRole,
+  setUpdateProjectTrades,
   setInternalUsers,
   setExternalUsers,
   setAddInternalUser,
@@ -441,11 +521,14 @@ export const {
   setRemoveInternalUser,
   setRemoveExternalUser,
   resetProjectState,
+  resetUpdateProject,
   resetSubcontractorState,
   setInvitedSubcontractor,
   removeInvitedSubcontractor,
   setMembers,
+  setUpdateProjectMembers,
   removeMember,
+  removeUpdateProjectMember,
   resetMembers,
   setProjectDrawerState,
   setActiveTab,

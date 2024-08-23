@@ -147,6 +147,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
           height: 1,
           px: { lg: 5 },
           backgroundColor: isOnboarding ? '#3E3E3E' : theme.palette.background.brandPrimary,
+          justifyContent: isOnboarding ? 'space-between' : 'flex-end',
         }}
       >
         {renderContent}
