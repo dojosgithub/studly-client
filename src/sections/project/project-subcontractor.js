@@ -211,10 +211,10 @@ const ProjectSubcontractor = () => {
               }}
             >
               <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <Typography fontSize=".75rem" minWidth="max-content">
+                <Typography fontSize="1 rem" minWidth="max-content">
                   {tradeId}
                 </Typography>
-                <Typography fontSize=".75rem">{name}</Typography>
+                <Typography fontSize="1 rem">{name}</Typography>
               </Box>
               <Box
                 width="100%"

@@ -129,6 +129,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         site: '',
         date: new Date(),
         time: '',
+        timezone: '',
         minutesBy: '',
         conferenceCallId: '',
         conferenceCallLink: '',
@@ -198,6 +199,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
   } = methods;
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
+  console.log('getValues', getValues());
   // const { name, address, state, city, zipCode } = formValues;
 
   useEffect(() => {
@@ -343,7 +345,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
     if (isEdit) {
       console.log('status', status);
-      await dispatch(
+      dispatch(
         updateMeetingMinutes({
           data: {
             description,
@@ -357,7 +359,10 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         })
       );
     } else {
-      await dispatch(
+      console.log('vlau', {
+        description,
+      });
+      dispatch(
         createMeetingMinutes({
           description,
           inviteAttendee,
