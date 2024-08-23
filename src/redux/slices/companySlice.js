@@ -137,7 +137,7 @@ export const exitCompanyAccess = createAsyncThunk(
   'company/exit-access',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(endpoints.company.exitAccess());
+      const response = await axiosInstance.get(endpoints.company.exitAccess);
 
       console.log('response', response.data.data);
       const { accessToken } = response.data.data;
