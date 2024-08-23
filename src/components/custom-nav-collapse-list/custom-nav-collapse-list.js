@@ -15,6 +15,7 @@ import {
   getProjectList,
   setCurrentProject,
   setCurrentProjectRole,
+  setUpdateProject,
 } from 'src/redux/slices/projectSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 // components
@@ -99,6 +100,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
       console.log('Company Admin Role');
     }
 
+    dispatch(setUpdateProject());
     if (projectData) {
       dispatch(authSwitchProject(projectData));
       console.log('Project Data', projectData);

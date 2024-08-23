@@ -97,12 +97,10 @@ const steps = [
   },
 ];
 
-export default function ProjectStepperForm() {
+export default function ProjectSettingsStepperForm() {
   const [activeStep, setActiveStep] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState('');
-  // const [activeTab, setActiveTab] = useState('')
-  // [0, 1, 2, 3, 4]
   const [skipped, setSkipped] = useState(new Set([0, 1, 2, 3]));
 
   const [open, setOpen] = useState(false);
@@ -114,6 +112,8 @@ export default function ProjectStepperForm() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const currentProject = useSelector((state) => state.project.update);
+  console.log('currentProject', currentProject);
   const projectList = useSelector((state) => state.project.list);
   const newTemplate = useSelector((state) => state.project.template);
   const inviteUsers = useSelector((state) => state.project.inviteUsers);
@@ -190,41 +190,6 @@ export default function ProjectStepperForm() {
       // returnDate: Yup.date().min(addDays(new Date(), 1)),
       returnDate: Yup.string().required('Date is required'),
     }),
-    // inviteUsers: Yup.lazy((value) => (
-    //   value ? Yup.object().shape({
-    //     inside: Yup.object().shape({
-    //       internal: Yup.array(),
-    //       external: Yup.array(),
-    //     }).nullable(), // Make inside object optional
-    //     outside: Yup.array()
-    //       .of(
-    //         Yup.object().shape({
-    //           email: Yup.string().email('Invalid email').required('User email is required'),
-    //           name: Yup.string().required('User name is required'),
-    //           role: Yup.string().required('User role is required'),
-    //           _id: Yup.string(),
-    //         })
-    //       )
-    //       .nullable() // Make outside array optional
-    //       .default([]) // Provide a default empty array
-    //   })
-    //     : Yup.object().nullable()
-    // ))
-    // inviteUsers: Yup.object().shape({
-    //   inside: Yup.object().shape({
-    //     internal: Yup.array(),
-    //     external: Yup.array(),
-    //   }),
-    //   outside: Yup.array()
-    //     .of(
-    //       Yup.object().shape({
-    //         email: Yup.string().email('Invalid email').required('User email is required'),
-    //         name: Yup.string().required('User name is required'),
-    //         role: Yup.string().required('User role is required'),
-    //         _id: Yup.string(),
-    //       })
-    //     ).min(1,"1 value")
-    // })
   });
 
   const defaultValues = useMemo(() => {
@@ -234,11 +199,11 @@ export default function ProjectStepperForm() {
     const isNewEntry = activeStep === 2 || activeStep === 3;
     // TODO: currentSelectedTemplate from redux
     return {
-      name: '',
-      address: '',
-      state: '',
-      city: '',
-      zipCode: '',
+      name: currentProject?.name || '',
+      address: currentProject?.address || '',
+      state: currentProject?.state || '',
+      city: currentProject?.city || '',
+      zipCode: currentProject?.zipCode || '',
       trades:
         activeTab === 'create'
           ? [
@@ -255,24 +220,8 @@ export default function ProjectStepperForm() {
         returnDate: new Date(),
         // returnDate: "2024-03-05T07:23:21.004Z"
       },
-      // trades: selectedTemplate ? getTemplateTrades(selectedTemplate) : [{
-      //   name: '',
-      //   tradeId: '',
-      //   _id: uuidv4(),
-      // }],
-      // inviteUsers: {
-      //   inside: {
-      //     internal: [],
-      //     external: []
-      //   },
-      //   outside: isNewEntry ? [{
-      //     name: '',
-      //     email: '',
-      //     _id: uuidv4()
-      //   }] : [] // Provide default value conditionally
-      // }
     };
-  }, [activeTab, activeStep]);
+  }, [activeTab, activeStep, currentProject]);
 
   const methods = useForm({
     resolver: yupResolver(ProjectSchema),
@@ -292,27 +241,6 @@ export default function ProjectStepperForm() {
 
   const formValues = getValues();
   const { name, address, state, city, zipCode } = formValues;
-  const watchValues = watch();
-  function processInviteUsers() {
-    // Check if both internal and external arrays are not empty
-    const hasInternal = inviteUsers.internal && inviteUsers.internal.length > 0;
-    const hasExternal = inviteUsers.external && inviteUsers.external.length > 0;
-
-    // Process internal array if not empty, otherwise return as-is
-    const updatedInternalTeams = hasInternal
-      ? inviteUsers.internal.map(({ _id, ...rest }) => rest)
-      : inviteUsers.internal;
-
-    // Process external array if not empty, otherwise return as-is
-    const updatedExternalTeams = hasExternal
-      ? inviteUsers.external.map(({ _id, ...rest }) => rest)
-      : inviteUsers.external;
-
-    return {
-      internal: updatedInternalTeams,
-      external: updatedExternalTeams,
-    };
-  }
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -321,10 +249,6 @@ export default function ProjectStepperForm() {
       }
       setIsFormSubmitting(true);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
-      // // const teams = processInviteUsers(inviteUsers);
-      // // const members = teamMembers?.map(({ _id, ...rest }) => rest);
-      // const { id, ...rest } = data.workflow;
-      // const updatedWorkflow = rest;
       const updatedWorkflow = data.workflow;
 
       const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members };
@@ -373,50 +297,6 @@ export default function ProjectStepperForm() {
     return { isFormValid, currentStepValue };
   };
 
-  // const handleNext = async () => {
-  //   // new change
-  //   if (activeStep === steps.length) return;
-
-  //   let newSkipped = skipped;
-  //   // console.log('newSkipped Before', newSkipped)
-  //   if (isStepSkipped(activeStep)) {
-  //     newSkipped = new Set(newSkipped.values());
-  //     newSkipped.delete(activeStep);
-  //   }
-  //   // console.log('newSkipped After', newSkipped)
-
-  //   const { isFormValid, currentStepValue } = await getFormValidation();
-  //   // console.log('isFormValid', { isFormValid, currentStepValue })
-
-  //   // ?  setting name to redux
-  //   if ((currentStepValue === 'name') && isFormValid) {
-  //     // console.log('formValues.name', formValues?.name);
-  //     dispatch(setProjectName(formValues?.name))
-  //   }
-  //   // ?  setting trades to redux
-  //   if ((currentStepValue === 'trades') && isFormValid) {
-  //     dispatch(setProjectTrades(formValues?.trades))
-  //   }
-
-  //   if ((currentStepValue === 'workflow') && isFormValid) {
-  //     dispatch(setProjectWorkflow(formValues?.workflow))
-  //   }
-  //   // TODO:  NEW CODE
-  //   if (isDefaultTemplate && !isTemplateNameAdded && activeStep === 1) {
-  //     setOpen(true)
-  //     return
-  //   }
-  //   // TODO:  NEW CODE END
-
-  //   if (activeTab === "existing" && isFormValid && selectedTemplate === 'default' && activeStep === 1) {
-  //     setOpen(true)
-  //     return
-  //   }
-  //   if (isFormValid) {
-  //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  //   }
-  //   setSkipped(newSkipped);
-  // };
   const handleNext = async () => {
     if (activeStep === steps.length) return; // Prevent submission if already on last step
 

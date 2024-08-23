@@ -181,6 +181,7 @@ const initialState = {
   list: [],
   isProjectDrawerOpen: false,
   current: null,
+  update: null,
   create: { ...projectInitialState },
   members: [],
   // Invite
@@ -217,6 +218,9 @@ const project = createSlice({
     },
     setCreateProject: (state, action) => {
       state.create = action.payload;
+    },
+    setUpdateProject: (state, action) => {
+      state.update = { ...state.current };
     },
     setCurrentProjectRole: (state, action) => {
       state.current = { ...state.current, role: action.payload };
@@ -430,6 +434,7 @@ export const {
   setCreateTemplate,
   setProjectWorkflow,
   setCurrentProject,
+  setUpdateProject,
   setCreateProject,
   setCurrentProjectRole,
   setCurrentProjectTrades,
