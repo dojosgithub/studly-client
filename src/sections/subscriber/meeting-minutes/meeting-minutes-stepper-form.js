@@ -129,7 +129,11 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         site: '',
         date: new Date(),
         time: '',
-        timezone: '',
+        timezone: {
+          zone: '',
+          utc: '',
+          name: '',
+        },
         minutesBy: '',
         conferenceCallId: '',
         conferenceCallLink: '',

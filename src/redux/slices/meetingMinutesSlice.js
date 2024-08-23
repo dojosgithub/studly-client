@@ -362,7 +362,11 @@ const meetingMinutesInitialState = {
     site: '',
     date: null,
     time: '',
-    timezone: '',
+    timezone: {
+      zone: '',
+      utc: '',
+      name: '',
+    },
     minutesBy: '',
     conferenceCallId: '',
     conferenceCallLink: '',
