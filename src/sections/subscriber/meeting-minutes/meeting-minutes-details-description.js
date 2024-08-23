@@ -88,6 +88,13 @@ export default function Description({ data }) {
           {new Date(data?.time).toLocaleTimeString()}
         </Typography>
       </StyledCard>
+      <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
+        <Typography className="submittalTitle">Tinezone</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {data?.timezone}
+          {`${data?.timezone.utc} ${data?.timezone.name}`}
+        </Typography>
+      </StyledCard>
 
       <StyledCard sx={{ width: '100%' }}>
         <Typography className="submittalTitle">Video Conference Link</Typography>

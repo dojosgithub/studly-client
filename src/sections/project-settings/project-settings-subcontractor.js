@@ -19,15 +19,15 @@ import CustomAutoComplete from 'src/components/custom-automcomplete';
 import {
   removeInvitedSubcontractor,
   setMembers,
-  setProjectTrades,
+  setProjectSettingsTrades,
 } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
-import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog';
+import ProjectSettingsInviteSubcontractorDialog from './project-settings-invite-subcontractor-dialog';
 
-const ProjectSubcontractor = () => {
+const ProjectSettingsSubcontractor = () => {
   // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
   const { getValues, setValue } = useFormContext();
-  // const { trades } = getValues()
+  const { trades: formTrades } = getValues();
   const [open, setOpen] = useState(false);
   const [ID, setID] = useState('');
   // GET Subcontractor list in Company
@@ -37,7 +37,9 @@ const ProjectSubcontractor = () => {
     () => [...subcontractorsList, ...subcontractorsInvitedList],
     [subcontractorsList, subcontractorsInvitedList]
   );
-  const trades = useSelector((state) => state.project.create.trades);
+  const trades = useSelector((state) => state.project.update.trades);
+  console.log('trades', trades);
+  console.log('formTrades', formTrades);
   const initialOptions = trades.reduce((acc, { tradeId, email, firstName, lastName }) => {
     acc[tradeId] = {
       tradeId,
@@ -56,74 +58,10 @@ const ProjectSubcontractor = () => {
   useEffect(() => {}, [subcontractors, options, trades]);
 
   const handleSelect = (tradeId, email) => {
-    // console.log('subcontractorId', subcontractorId)
     if (email === 'create') {
       setOpen(true);
       setID(tradeId);
     }
-    // const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
-    // console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
-    // const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
-    // console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
-    // // const { email } = subcontractorObj
-    // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
-    // const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
-    // // TODO ADD EXISTING SUBCONTRACTOR
-
-    // const data = { email }
-    // // if there is an id of subcontractor
-    // if (hasEmailAndId) {
-    //     data.subcontractorId = filteredSubcontractorByEmail._id
-    // }
-
-    // console.log('handleSelect', data);
-
-    // const modifiedTrades = trades.map(trade => {
-    //     if (trade.tradeId === tradeId) {
-    //         // return { ...trade, subcontractorId };
-    //         if (!isEmailExistsInCompanyList && trade.subcontractorId) {
-    //             // Remove subcontractorId from the trade
-    //             const { subcontractorId, ...restOfTrade } = trade;
-    //             return { ...restOfTrade, ...data };
-    //         }
-    //         return { ...trade, ...data };
-
-    //     }
-    //     return trade;
-    // });
-    // console.log('modifiedTrades', modifiedTrades)
-    // setValue('trades', modifiedTrades)
-    // dispatch(setProjectTrades(modifiedTrades))
-
-    // // ? set options
-
-    // setOptions(prevOptions => {
-    //     const tradeIds = Object.keys(prevOptions);
-
-    //     // Check if the options object is empty or if the tradeId is not present in prevOptions
-    //     if (tradeIds.length === 0 || !prevOptions[tradeId]) {
-    //         // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
-    //         // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-    //         return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-    //     }
-
-    //     // Check if there's already an option with the same tradeId
-    //     const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
-
-    //     if (existingTradeIndex !== -1) {
-    //         // If an option with the same tradeId exists, update its subcontractorId
-    //         const updatedOptions = { ...prevOptions };
-    //         if (hasEmailAndId) {
-    //             updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail._id;
-    //         }
-    //         updatedOptions[tradeId].email = email;
-    //         return updatedOptions;
-    //     }
-
-    //     // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
-    //     // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-    //     return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-    // });
   };
 
   const handleRemove = (tradeId, emailId) => {
@@ -137,7 +75,7 @@ const ProjectSubcontractor = () => {
       return trade;
     });
     setValue('trades', modifiedTrades);
-    dispatch(setProjectTrades(modifiedTrades));
+    dispatch(setProjectSettingsTrades(modifiedTrades));
 
     setOptions((prevOptions) => {
       const tradeIds = Object.keys(prevOptions);
@@ -211,10 +149,10 @@ const ProjectSubcontractor = () => {
               }}
             >
               <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <Typography fontSize="1 rem" minWidth="max-content">
+                <Typography fontSize=".75rem" minWidth="max-content">
                   {tradeId}
                 </Typography>
-                <Typography fontSize="1 rem">{name}</Typography>
+                <Typography fontSize=".75rem">{name}</Typography>
               </Box>
               <Box
                 width="100%"
@@ -256,8 +194,14 @@ const ProjectSubcontractor = () => {
 
                 {options[tradeId] && options[tradeId].email && (
                   <>
-                    <Button variant="outlined" onClick={() => handleSelect(tradeId, 'create')}>
-                      {options[tradeId].firstName} {options[tradeId].lastName}
+                    <Button
+                      variant="outlined"
+                      sx={{ fontSize: '.75rem' }}
+                      onClick={() => handleSelect(tradeId, 'create')}
+                    >
+                      {options[tradeId]?.firstName && options[tradeId]?.lastName
+                        ? `${options[tradeId]?.firstName} ${options[tradeId]?.lastName}`
+                        : options[tradeId]?.email?.split('@')[0]}
                     </Button>
                     <IconButton
                       variant="contained"
@@ -273,7 +217,7 @@ const ProjectSubcontractor = () => {
         </Stack>
 
         {open && (
-          <ProjectInviteSubcontractorDialog
+          <ProjectSettingsInviteSubcontractorDialog
             ID={ID}
             options={options}
             setOptions={setOptions}
@@ -287,4 +231,4 @@ const ProjectSubcontractor = () => {
   );
 };
 
-export default ProjectSubcontractor;
+export default ProjectSettingsSubcontractor;
