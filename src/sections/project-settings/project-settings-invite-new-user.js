@@ -22,7 +22,12 @@ import {
 } from '@mui/material';
 //
 import { enqueueSnackbar } from 'notistack';
-import { setAddExternalUser, setAddInternalUser, setMembers } from 'src/redux/slices/projectSlice';
+import {
+  setAddExternalUser,
+  setAddInternalUser,
+  setMembers,
+  setUpdateProjectMembers,
+} from 'src/redux/slices/projectSlice';
 import FormProvider, { RHFSelect } from 'src/components/hook-form';
 
 // components
@@ -58,7 +63,7 @@ const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
   },
 }));
 
-const ProjectInviteNewUser = ({ type = 'internal' }) => {
+const ProjectSettingsInviteNewUser = ({ type = 'internal' }) => {
   const dispatch = useDispatch();
   // const userListOptions = PROJECT_INVITE_USERS_INTERNAL;
   const userListOptions = useSelector((state) => state?.project?.users);
@@ -136,7 +141,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
         finalData.status = 'joined';
       }
       // ? if user id exists then the user already exist in the system we directly add in the project but if it doesn't we need to create new user first send invitation via email along with login credentials
-      dispatch(setMembers(finalData));
+      dispatch(setUpdateProjectMembers(finalData));
       reset(defaultValues);
     } catch (e) {
       console.error(e);
@@ -249,7 +254,7 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
   );
 };
 
-export default ProjectInviteNewUser;
-ProjectInviteNewUser.propTypes = {
+export default ProjectSettingsInviteNewUser;
+ProjectSettingsInviteNewUser.propTypes = {
   type: PropTypes.string,
 };

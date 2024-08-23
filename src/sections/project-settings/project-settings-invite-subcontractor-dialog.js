@@ -34,6 +34,7 @@ import {
   setAddInternalUser,
   setInvitedSubcontractor,
   setMembers,
+  setProjectSettingsTrades,
   setProjectTrades,
 } from 'src/redux/slices/projectSlice';
 // inviteSubcontractor,
@@ -42,7 +43,7 @@ import CustomAutoComplete from 'src/components/custom-automcomplete';
 
 // ----------------------------------------------------------------------
 
-export default function ProjectInviteSubcontractorDialog({
+export default function ProjectSettingsInviteSubcontractorDialog({
   //
   ID: tradeId,
   options,
@@ -61,7 +62,7 @@ export default function ProjectInviteSubcontractorDialog({
     () => [...subcontractorsList, ...subcontractorsInvitedList],
     [subcontractorsList, subcontractorsInvitedList]
   );
-  const trades = useSelector((state) => state.project.create.trades);
+  const trades = useSelector((state) => state.project.update.trades);
   const { getValues, setValue } = useFormContext();
   const stepperFormValues = getValues();
   console.table('object', {
@@ -115,7 +116,7 @@ export default function ProjectInviteSubcontractorDialog({
   // );
 
   const isEmailAlreadyExists = async ({ email, firstName, lastName }) => {
-    const filteredSubcontractorByEmail = subcontractors.filter((sub) => sub.email === email);
+    // const filteredSubcontractorByEmail = subcontractors.filter((sub) => sub.email === email);
     const filteredSubcontractorCompany = subcontractorsList.filter((sub) => sub.email === email);
     // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
     const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0;
@@ -142,7 +143,7 @@ export default function ProjectInviteSubcontractorDialog({
       return trade;
     });
     setValue('trades', modifiedTrades);
-    dispatch(setProjectTrades(modifiedTrades));
+    dispatch(setProjectSettingsTrades(modifiedTrades));
 
     setOptions((prevOptions) => {
       const tradeIds = Object.keys(prevOptions);
@@ -280,7 +281,7 @@ export default function ProjectInviteSubcontractorDialog({
   );
 }
 
-ProjectInviteSubcontractorDialog.propTypes = {
+ProjectSettingsInviteSubcontractorDialog.propTypes = {
   ID: PropTypes.string,
   open: PropTypes.bool,
   options: PropTypes.array,

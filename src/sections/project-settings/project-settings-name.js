@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 // form
 import { RHFTextField } from 'src/components/hook-form';
 
-const ProjectName = () => {
+const ProjectSettingsName = () => {
   const { trigger } = useFormContext();
   return (
     <>
@@ -51,4 +51,4 @@ const ProjectName = () => {
   );
 };
 
-export default ProjectName;
+export default ProjectSettingsName;

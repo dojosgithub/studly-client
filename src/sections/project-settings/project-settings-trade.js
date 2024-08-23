@@ -23,12 +23,12 @@ import { PROJECT_TEMPLATES } from 'src/_mock';
 // components
 import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
-import ProjectCreateTrade from './project-create-trade';
+import ProjectSettingsCreateTrade from './project-settings-create-trade';
 import ProjectCreateCsiTrade from './project-create-csi-template';
 import ProjectExistingTrade from './project-existing-trade';
 import ProjectTradeSelect from './project-trade-select';
 
-export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
+export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTabChange }) {
   const { getValues, setValue } = useFormContext();
   const projectName = getValues('name');
 
@@ -74,32 +74,29 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
       />
 
       <Tabs value={activeTab} onChange={handleTabChange}>
-        <TabsList>
+        {/* <TabsList>
           <Tab value="create" name="create">
             Create Trade
           </Tab>
           <Tab value="existing" name="existing">
             Use Exisiting Template
           </Tab>
-        </TabsList>
+        </TabsList> */}
         <TabPanel value="create">
-          <ProjectCreateTrade />
+          <ProjectSettingsCreateTrade />
         </TabPanel>
-        <TabPanel value="existing">
-          {/* PROJECT_TEMPLATES */}
+        {/* <TabPanel value="existing">
           <ProjectTradeSelect />
           {selectedTradeTemplate === 'default' && <ProjectCreateCsiTrade />}
           {selectedTradeTemplate !== 'default' && <ProjectExistingTrade />}
 
-          {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
-          {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}
-        </TabPanel>
+        </TabPanel> */}
       </Tabs>
     </>
   );
 }
 
-ProjectTrade.propTypes = {
+ProjectSettingsTrade.propTypes = {
   selectedTemplate: PropTypes.string,
   onSelect: PropTypes.func,
   onTabChange: PropTypes.func,

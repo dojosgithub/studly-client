@@ -44,6 +44,7 @@ import {
 //
 import {
   removeMember,
+  removeUpdateProjectMember,
   setExternalUsers,
   setInternalUsers,
   setRemoveExternalUser,
@@ -53,7 +54,7 @@ import {
 import ProjectTableRow from './project-table-row';
 import ProjectTableToolbar from './project-table-toolbar';
 import ProjectTableFiltersResult from './project-table-filters-result';
-import ProjectInviteNewUser from './project-invite-new-user';
+import ProjectSettingsInviteNewUser from './project-settings-invite-new-user';
 
 // ----------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function ProjectInviteUserListView({ type }) {
+export default function ProjectSetttingsInviteUserListView({ type }) {
   const table = useTable();
   const dispatch = useDispatch();
   const { control, setValue, getValues, watch, resetField } = useFormContext();
@@ -86,7 +87,7 @@ export default function ProjectInviteUserListView({ type }) {
   const internal = useSelector((state) => state?.project?.inviteUsers?.internal);
   const external = useSelector((state) => state?.project?.inviteUsers?.external);
   // const userList = type === 'internal' ? internal : external;
-  const members = useSelector((state) => state?.project?.members);
+  const members = useSelector((state) => state?.project?.update?.members);
 
   useEffect(() => {
     const userList = members.filter((member) => member.team === type);
@@ -137,7 +138,7 @@ export default function ProjectInviteUserListView({ type }) {
       // enqueueSnackbar('User removed from the team successfully!');
       // const setUsersActions = type === "internal" ? setRemoveInternalUser : setRemoveExternalUser
       // dispatch(setUsersActions(email))
-      dispatch(removeMember(email));
+      dispatch(removeUpdateProjectMember(email));
 
       setTableData(filteredRows);
       table.onUpdatePageDeleteRow(dataInPage.length);
@@ -206,7 +207,7 @@ export default function ProjectInviteUserListView({ type }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       {/* <Box mb={5}>
-                <ProjectInviteNewUser type={type} />
+                <ProjectSettingsInviteNewUser type={type} />
             </Box> */}
 
       <Card>
@@ -295,7 +296,7 @@ export default function ProjectInviteUserListView({ type }) {
                       // onEditRow={() => handleEditRow(row._id)}
                     />
                   ))}
-                <ProjectInviteNewUser type={type} />
+                <ProjectSettingsInviteNewUser type={type} />
 
                 <TableEmptyRows
                   height={denseHeight}
@@ -355,6 +356,6 @@ function applyFilter({ inputData, comparator, filters }) {
   return inputData;
 }
 
-ProjectInviteUserListView.propTypes = {
+ProjectSetttingsInviteUserListView.propTypes = {
   type: PropTypes.string,
 };

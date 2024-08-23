@@ -7,7 +7,7 @@ import { PROJECT_SUBCONTRACTORS } from 'src/_mock';
 import CustomAutoComplete from 'src/components/custom-automcomplete';
 import { setMembers, setProjectTrades } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
-import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog';
+import ProjectInviteSubcontractorDialog from './project-settings-invite-subcontractor-dialog';
 
 const ProjectSubcontractor = () => {
   // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])

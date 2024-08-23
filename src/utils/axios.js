@@ -74,6 +74,7 @@ export const endpoints = {
   project: {
     list: '/api/user/project',
     create: '/api/user/project',
+    update: '/api/user/project',
     switch: '/api/user/project/change',
     invite: '/api/user/project/invite/subcontractor',
     trades: (id) => `/api/user/project/${id}/trades`,

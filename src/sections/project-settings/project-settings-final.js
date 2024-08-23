@@ -18,12 +18,12 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/custom-breadcru
 import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
 
-const ProjectFinal = () => {
+const ProjectSettingsFinal = () => {
   const [first, setfirst] = useState('second');
-  const { name, trades, workflow } = useSelector((state) => state.project.create);
+  const { name, trades, workflow } = useSelector((state) => state.project.update);
   const { internal, external } = useSelector((state) => state.project.inviteUsers);
-  const members = useSelector((state) => state.project.members);
-  const filteredTrades = trades.filter((item) => 'email' in item);
+  const members = useSelector((state) => state.project?.update?.members);
+  const filteredTrades = trades?.filter((item) => 'email' in item);
 
   const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -194,4 +194,4 @@ const ProjectFinal = () => {
   );
 };
 
-export default ProjectFinal;
+export default ProjectSettingsFinal;

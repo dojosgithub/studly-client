@@ -24,7 +24,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const ProjectCreateTrade = () => {
+const ProjectSettingsCreateTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
@@ -165,4 +165,4 @@ const ProjectCreateTrade = () => {
   );
 };
 
-export default ProjectCreateTrade;
+export default ProjectSettingsCreateTrade;
