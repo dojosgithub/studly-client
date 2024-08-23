@@ -67,13 +67,13 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
   const exitAccess = useCallback(async () => {
     try {
       const data = await dispatch(exitCompanyAccess({ id: 1 }));
-      console.log('DATA:', data);
       router.push('/');
       router.reload();
     } catch (e) {
       console.log(e);
     }
   }, [dispatch, router]);
+
   const renderContent = (
     <>
       {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} */}
