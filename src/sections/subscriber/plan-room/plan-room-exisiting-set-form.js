@@ -294,7 +294,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   };
   const handleSelectExisting = useCallback(
     (option) => {
-      const { planName, issueDate, id: versionId } = option;
+      const { planName, issueDate, _id: versionId } = option;
       existingNameRef.current = planName;
       setValue(`planName`, planName);
       setValue(`issueDate`, issueDate);
