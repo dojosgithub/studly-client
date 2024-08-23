@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
+import { Divider, FormControl, InputLabel, Select } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { addDays } from 'date-fns';
@@ -49,10 +50,12 @@ import {
 } from 'src/redux/slices/submittalSlice';
 import { REVIEW_STATUS } from 'src/utils/constants';
 import SubmittalAttachments from './submittals-attachment';
+import PdfModifier from '../pdfs/annotator';
 
 // ----------------------------------------------------------------------
 
 export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
+  console.log('currentSubmittal:', currentSubmittal);
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
@@ -64,6 +67,7 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   );
 
   const [files, setFiles] = useState(existingAttachments);
+  const [markupFile, setMarkupFile] = useState(null);
   const [hasFileChanges, setHasFileChanges] = useState(
     JSON.stringify(files) !== JSON.stringify(existingAttachments)
   );
@@ -171,6 +175,10 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
     }
   });
 
+  const handleSelect = (e) => {
+    console.log('e.target.value', e.target.value);
+    setMarkupFile(e.target.value);
+  };
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
@@ -193,6 +201,33 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
               <RHFTextField name="comment" label="Add a comment" />
 
               <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
+
+              {currentSubmittal?.attachments.length > 0 && (
+                <>
+                  <Divider>OR</Divider>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Add Markup</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      label="Add Markup"
+                      name="Add Markup"
+                      value={markupFile}
+                      onChange={(e) => handleSelect(e)}
+                    >
+                      {currentSubmittal?.attachments.map((item) => (
+                        <MenuItem
+                          key={item.key}
+                          value={item}
+                          sx={{ height: 50, px: 3, borderRadius: 0 }}
+                        >
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <PdfModifier />
+                </>
+              )}
             </Box>
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>
