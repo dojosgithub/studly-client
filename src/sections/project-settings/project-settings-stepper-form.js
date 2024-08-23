@@ -263,23 +263,23 @@ export default function ProjectSettingsStepperForm() {
         members,
       };
       console.log('finalData UPDATE PROJECT-->', finalData);
-      // const { error, payload } = await dispatch(updateExistingProject(finalData));
-      // if (!isEmpty(error)) {
-      //   enqueueSnackbar(error.message, { variant: 'error' });
-      //   return;
-      // }
-      // setIsFormSubmitting(false);
-      // handleReset();
-      // enqueueSnackbar('Project update successfully!', { variant: 'success' });
-      // await dispatch(getProjectList());
-      // dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
+      const { error, payload } = await dispatch(updateExistingProject(finalData));
+      if (!isEmpty(error)) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
+      }
+      setIsFormSubmitting(false);
+      handleReset();
+      enqueueSnackbar('Project update successfully!', { variant: 'success' });
+      await dispatch(getProjectList());
+      dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
 
-      // // if(isEmpty(projectList)){
-      // //   router.push(paths.subscriber.onboarding);
-      // //   return
-      // // }
-      // // router.push(paths.subscriber.submittals.list);
-      // navigate(paths.subscriber.submittals.list);
+      // if(isEmpty(projectList)){
+      //   router.push(paths.subscriber.onboarding);
+      //   return
+      // }
+      // router.push(paths.subscriber.submittals.list);
+      navigate(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
       console.log('error-->', error);
