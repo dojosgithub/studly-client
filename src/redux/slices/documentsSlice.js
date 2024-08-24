@@ -18,7 +18,102 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
+// export const renameDocument = createAsyncThunk(
+//   'documents/rename',
+//   async (id, documentsData, { getState, rejectWithValue }) => {
+//     try {
+//       // Assuming you have an API endpoint for renaming
+//       console.log('data 22k-4289', documentsData);
+//       const response = await axiosInstance.put(endpoints.documents.rename(id), documentsData);
+//       return response.data;
+//     } catch (err) {
+//       return rejectWithValue(err.response.data);
+//     }
+//   }
+// );
+export const renameDocument = createAsyncThunk(
+  'documents/rename',
+  async ({ newName, _id }, { rejectWithValue }) => {
+    try {
+      console.log('Renaming document with ID:', _id, 'Data:', newName);
 
+      const response = await axiosInstance.put(endpoints.documents.rename(_id), { name: newName });
+
+      console.log('Rename document response:', response.data);
+      return response.data;
+    } catch (err) {
+      console.error('Rename document error:', err);
+
+      const errorMessage =
+        err.response?.data?.message || 'An error occurred while renaming the document.';
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const updateDailyLogs = createAsyncThunk(
+  'dailyLogs/update',
+  async ({ data, id }, { getState, rejectWithValue }) => {
+    console.log(data, id);
+
+    try {
+      const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while creating the plan.');
+    }
+  }
+);
+
+export const downloadDocument = createAsyncThunk(
+  'documents/download',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      // Fetch the document as a blob
+      const response = await axiosInstance.get(endpoints.documents.download(id), {
+        responseType: 'blob',
+      });
+
+      const buffer = response.data;
+
+      // Determine the MIME type and file name from the response headers
+      const contentType = response.headers['content-type'] || 'application/octet-stream';
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = 'document';
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?(.+)"?/);
+        if (match) {
+          fileName = match[1];
+        }
+      }
+
+      // Create a blob from the buffer and a download URL
+      const blob = new Blob([buffer], { type: contentType });
+      const url = URL.createObjectURL(blob);
+
+      // Trigger download via a temporary anchor element
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a); // Required for Firefox
+      a.click();
+      a.remove();
+
+      // Cleanup the temporary URL
+      URL.revokeObjectURL(url);
+
+      return response.data;
+    } catch (err) {
+      console.error('Download error:', err);
+      return rejectWithValue(err.message || 'An error occurred while downloading the document.');
+    }
+  }
+);
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
 
@@ -147,6 +242,36 @@ const documents = createSlice({
       state.error = null;
     });
     builder.addCase(updateDocument.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // builder.addCase(renameDocument.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(renameDocument.fulfilled, (state, action) => {
+    //   // Update the document with the new name in the state if necessary
+    //   const updatedDocument = action.payload;
+    //   state.list = state.list.map((doc) =>
+    //     doc.id === updatedDocument.id ? { ...doc, ...updatedDocument } : doc
+    //   );
+    //   state.isLoading = false;
+    //   state.error = null;
+    // });
+    // builder.addCase(renameDocument.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message;
+    // });
+    builder.addCase(downloadDocument.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(downloadDocument.fulfilled, (state, action) => {
+      // Handle successful download if needed
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(downloadDocument.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

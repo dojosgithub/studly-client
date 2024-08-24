@@ -148,6 +148,9 @@ export const endpoints = {
   documents: {
     list: (id) => `/api/user/documents/${id}`,
     upload: `/api/user/documents`,
+    download: (id) => `/api/user/documents/${id}`,
+    rename: (id) => `/api/user/documents/${id}`,
+
     update: (id) => `/api/user/documents/${id}`,
     submit: (id) => `/api/user/documents/${id}/submit`,
     // edit: (id) => `/api/user/daily-logs/${id}`,

@@ -163,6 +163,7 @@ export default function FileManagerView() {
     },
     [dispatch, enqueueSnackbar, filters.status, filters.query]
   );
+
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);

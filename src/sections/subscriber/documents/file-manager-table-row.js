@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { useDispatch } from 'react-redux';
+
 import { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
+import DownloadIcon from '@mui/icons-material/Download';
+import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -19,11 +23,17 @@ import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useDoubleClick } from 'src/hooks/use-double-click';
+
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 // utils
 import { fData } from 'src/utils/format-number';
 // components
-import { deleteDocument } from 'src/redux/slices/documentsSlice';
+import {
+  getDocumentsList,
+  deleteDocument,
+  downloadDocument,
+  renameDocument,
+} from 'src/redux/slices/documentsSlice';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
@@ -33,6 +43,7 @@ import FileThumbnail from 'src/components/file-thumbnail';
 import { STUDLY_ROLES_ACTION } from 'src/_mock';
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import FileManagerShareDialog from './file-manager-share-dialog';
+import RenameDialog from './file-manager-rename-dialogue';
 import FileManagerFileDetails from './file-manager-file-details';
 
 // ----------------------------------------------------------------------
@@ -42,6 +53,8 @@ export default function FileManagerTableRow({
   selected,
   onSelectRow,
   onDeleteRow,
+  onRenameRow,
+  onDownloadRow,
   fetchData,
 }) {
   const theme = useTheme();
@@ -49,14 +62,20 @@ export default function FileManagerTableRow({
   const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview, _id } =
     row;
 
+  console.log('preview', preview);
   const { enqueueSnackbar } = useSnackbar();
 
   const { copy } = useCopyToClipboard();
+  const currentdocument = useSelector((state) => state.documents?.current);
 
   const [inviteEmail, setInviteEmail] = useState('');
-
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [currentName, setCurrentName] = useState(name);
   const favorite = useBoolean(isFavorited);
-
+  const handleRenameClick = () => {
+    setCurrentName(name);
+    setRenameDialogOpen(true);
+  };
   const details = useBoolean();
 
   const share = useBoolean();
@@ -109,6 +128,57 @@ export default function FileManagerTableRow({
     confirm.onFalse();
     onDeleteRow();
   }, [dispatch, enqueueSnackbar, confirm, row, onDeleteRow]);
+  // const handleRenameRow = (id) => {
+  //   dispatch(downloadDocument(row, id));
+  // };
+  const handleRenameRow = async (newName) => {
+    try {
+      // Dispatch the rename action with the new name
+      console.log('raaaahimmmmmm', row, newName);
+
+      dispatch(renameDocument({ newName, _id }));
+      dispatch(getDocumentsList());
+
+      // Provide feedback to the user
+      enqueueSnackbar('Renamed Successfully', { variant: 'success' });
+
+      // Optionally, refresh the data or perform other actions
+      fetchData();
+    } catch (error) {
+      console.error('Error renaming item:', error);
+      enqueueSnackbar('Failed to rename item', { variant: 'error' });
+    }
+  };
+
+  // Function to handle downloading a row
+  const handleDownloadRow = (id) => {
+    if (_type === 'file') {
+      // const a = document.createElement('a');
+      // a.href = preview;
+      // a.download = name;
+      // a.click();
+      const a = document.createElement('a');
+
+      // Set the href attribute to the file URL
+      a.href = preview;
+
+      // Set the download attribute to specify the filename
+      a.download = name;
+
+      // Append the anchor element to the body
+      document.body.appendChild(a);
+
+      // Programmatically click the link to trigger the download
+      a.click();
+
+      // Remove the anchor element from the body
+      document.body.removeChild(a);
+    } else if (_type === 'folder') {
+      dispatch(downloadDocument(_id));
+      dispatch(getDocumentsList());
+    }
+    popover.onClose();
+  };
 
   console.log(row);
   return (
@@ -231,6 +301,24 @@ export default function FileManagerTableRow({
 
         <MenuItem
           onClick={() => {
+            handleRenameClick(); // Open the rename dialog
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Rename
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleDownloadRow(_id);
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:download-minimalistic-bold" />
+          Download
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
@@ -282,12 +370,20 @@ export default function FileManagerTableRow({
           </Button>
         }
       />
+      <RenameDialog
+        open={renameDialogOpen}
+        onClose={() => setRenameDialogOpen(false)}
+        initialName={name}
+        onConfirm={handleRenameRow}
+      />
     </>
   );
 }
 
 FileManagerTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
+  onRenameRow: PropTypes.func,
+  onDownloadRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,

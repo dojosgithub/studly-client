@@ -47,7 +47,8 @@ const defaultFilters = {
 export default function FileManagerTable({
   table,
   tableData,
-
+  onDownloadRow,
+  onRenameRow,
   onDeleteRow,
   fetchData,
   onOpenConfirm,
@@ -177,7 +178,9 @@ export default function FileManagerTable({
                       row={row}
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
+                      onDownloadRow={() => onDownloadRow(row._id)}
                       onDeleteRow={() => onDeleteRow(row._id)}
+                      onRenameRow={() => onDeleteRow(row._id)}
                       fetchData={fetchData}
                     />
                   ))}
@@ -207,6 +210,8 @@ export default function FileManagerTable({
 }
 FileManagerTable.propTypes = {
   onDeleteRow: PropTypes.func,
+  onDownloadRow: PropTypes.func,
+  onRenameRow: PropTypes.func,
   onOpenConfirm: PropTypes.func,
   table: PropTypes.object,
   tableData: PropTypes.array,
