@@ -45,6 +45,7 @@ import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import FileManagerShareDialog from './file-manager-share-dialog';
 import RenameDialog from './file-manager-rename-dialogue';
 import FileManagerFileDetails from './file-manager-file-details';
+import FileManagerMoveDialog from './file-manager-move-dialogue';
 
 // ----------------------------------------------------------------------
 
@@ -71,6 +72,8 @@ export default function FileManagerTableRow({
   const [inviteEmail, setInviteEmail] = useState('');
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [currentName, setCurrentName] = useState(name);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+
   const favorite = useBoolean(isFavorited);
   const handleRenameClick = () => {
     setCurrentName(name);
@@ -337,6 +340,10 @@ export default function FileManagerTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
+        <MenuItem onClick={() => setMoveDialogOpen(true)}>
+          <Iconify icon="fluent:folder-move-16-regular" />
+          Move
+        </MenuItem>
       </CustomPopover>
 
       <FileManagerFileDetails
@@ -385,6 +392,12 @@ export default function FileManagerTableRow({
         onClose={() => setRenameDialogOpen(false)}
         initialName={name}
         onConfirm={handleRenameRow}
+      />
+
+      <FileManagerMoveDialog
+        open={moveDialogOpen}
+        onClose={() => setMoveDialogOpen(false)}
+        row={row}
       />
     </>
   );

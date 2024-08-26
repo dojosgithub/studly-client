@@ -18,6 +18,20 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
+export const moveFolder = createAsyncThunk(
+  'folders/move',
+  async ({ folderId, targetFolderId }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/api/folders/move-folder', {
+        folderId,
+        targetFolderId,
+      });
+      return response.data; // Adjust if your API returns different data
+    } catch (err) {
+      return rejectWithValue(err.response ? err.response.data : err.message);
+    }
+  }
+);
 // export const renameDocument = createAsyncThunk(
 //   'documents/rename',
 //   async (id, documentsData, { getState, rejectWithValue }) => {
@@ -102,6 +116,7 @@ export const downloadDocument = createAsyncThunk(
     }
   }
 );
+
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
 
@@ -138,6 +153,44 @@ export const getDocumentsList = createAsyncThunk(
     }
   }
 );
+
+export const getDocumentsMoveList = createAsyncThunk(
+  'documents/moveList',
+
+  async (listOptions, { getState, rejectWithValue }) => {
+    try {
+      const projectId = getState().project?.current?._id;
+      let parentId;
+
+      if ('parentId' in listOptions) {
+        parentId = listOptions.parentId;
+      } else {
+        const listData = getState().documents?.list;
+        parentId =
+          listData?.links?.length > 2
+            ? listData.links[listData.links.length - 1].href.replace('/', '')
+            : null;
+      }
+
+      const { status, ...data } = listOptions;
+      const response = await axiosInstance.post(
+        endpoints.documents.list(projectId),
+        { status, parentId },
+        {
+          params: data,
+        }
+      );
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
+
 export const deleteDocument = createAsyncThunk(
   'documents/delete',
   async (id, { getState, rejectWithValue }) => {
@@ -176,6 +229,7 @@ const documentsInitialState = {};
 const initialState = {
   notes: '',
   list: [],
+  moveList: [],
   upload: cloneDeep(documentsInitialState),
   current: {},
   isLoading: false,
@@ -278,6 +332,20 @@ const documents = createSlice({
       state.error = action.error.message;
     });
 
+    builder.addCase(getDocumentsMoveList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getDocumentsMoveList.fulfilled, (state, action) => {
+      state.moveList = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getDocumentsMoveList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+
     builder.addCase(deleteDocument.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -290,6 +358,19 @@ const documents = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
+    builder
+      .addCase(moveFolder.pending, (state) => {
+        state.moveStatus = 'loading';
+      })
+      .addCase(moveFolder.fulfilled, (state, action) => {
+        state.moveStatus = 'succeeded';
+
+        state.folders = action.payload;
+      })
+      .addCase(moveFolder.rejected, (state, action) => {
+        state.moveStatus = 'failed';
+        state.error = action.payload;
+      });
   },
 });
 export default documents.reducer;
