@@ -79,33 +79,21 @@ export const downloadDocument = createAsyncThunk(
         responseType: 'blob',
       });
 
-      const buffer = response.data;
+      // Create a URL for the blob object
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      // Determine the MIME type and file name from the response headers
-      const contentType = response.headers['content-type'] || 'application/octet-stream';
-      const contentDisposition = response.headers['content-disposition'];
-      let fileName = 'document';
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename="?(.+)"?/);
-        if (match) {
-          fileName = match[1];
-        }
-      }
+      // Create a link element and trigger a click to start the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'files.zip'); // Set the filename for the download
 
-      // Create a blob from the buffer and a download URL
-      const blob = new Blob([buffer], { type: contentType });
-      const url = URL.createObjectURL(blob);
+      // Append to the DOM and trigger the download
+      document.body.appendChild(link);
+      link.click();
 
-      // Trigger download via a temporary anchor element
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a); // Required for Firefox
-      a.click();
-      a.remove();
-
-      // Cleanup the temporary URL
-      URL.revokeObjectURL(url);
+      // Clean up the URL object and remove the link element
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
 
       return response.data;
     } catch (err) {

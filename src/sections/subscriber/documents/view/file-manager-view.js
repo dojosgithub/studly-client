@@ -49,7 +49,7 @@ import FileManagerNewFileDialog from '../file-manager-new-file';
 // ----------------------------------------------------------------------
 
 const defaultFilters = {
-  name: '',
+  query: '',
   type: [],
   startDate: null,
   endDate: null,
@@ -70,6 +70,7 @@ export default function FileManagerView() {
   const { enqueueSnackbar } = useSnackbar();
   const upload = useBoolean();
   const newFolder = useBoolean();
+  const [page, setPage] = useState(1);
 
   const [view, setView] = useState('list');
 
@@ -90,8 +91,12 @@ export default function FileManagerView() {
   });
 
   useEffect(() => {
-    dispatch(getDocumentsList({ search: filters.query }));
-  }, [dispatch, filters.query]);
+    dispatch(getDocumentsList({ search: filters.query, page }));
+  }, [dispatch, filters.query, page]);
+
+  // useEffect(() => {
+  //   dispatch(getDocumentsList({ search: filters.query, page }));
+  // }, [dispatch, filters.query,  page]);
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
@@ -112,16 +117,24 @@ export default function FileManagerView() {
     setFolderName(value);
   }, []);
 
-  const handleFilters = useCallback(
-    (name, value) => {
-      table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    [table]
-  );
+  // const handleFilters = useCallback(
+  //   (name, value) => {
+  //     table.onResetPage();
+  //     setFilters((prevState) => ({
+  //       ...prevState,
+  //       [name]: value,
+  //     }));
+  //   },
+  //   [table]
+  // );
+
+  const handleFilters = useCallback((name, value) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+
   const handleUpload = () => {
     handleClose();
     upload.onTrue(); // Call your upload function here
@@ -131,6 +144,7 @@ export default function FileManagerView() {
     handleClose();
     newFolder.onTrue(); // Call your new folder function here
   };
+  const handlePageChange = (e, newPage) => setPage(newPage + 1);
 
   // const handleDeleteItem = useCallback(
   //   (id) => {
@@ -175,6 +189,7 @@ export default function FileManagerView() {
     setAnchorEl(null);
   };
 
+  console.log('filters', filters);
   const renderFilters = (
     <Stack
       spacing={2}
@@ -274,7 +289,7 @@ export default function FileManagerView() {
         </Menu>
         <Stack spacing={2.5} sx={{ my: { xs: 3, md: 5 } }}>
           {renderFilters}
-          {canReset && renderResults}
+          {/* {canReset && renderResults} */}
         </Stack>
 
         {notFound ? (
@@ -307,6 +322,8 @@ export default function FileManagerView() {
               notFound={notFound}
               onOpenConfirm={confirm.onTrue}
               fetchData={fetchData}
+              page={page}
+              handlePageChange={handlePageChange}
             />
           </>
         )}

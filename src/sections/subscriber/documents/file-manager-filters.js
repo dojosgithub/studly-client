@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 // @mui
+import { debounce } from 'lodash';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -31,7 +32,12 @@ export default function FileManagerFilters({
 }) {
   const popover = usePopover();
 
+  console.log('filters.query', filters.query)
+  useEffect(() => {
+    console.log('INSIDEE');
+  }, []);
   const renderLabel = filters.type.length ? filters.type.slice(0, 2).join(',') : 'All type';
+  const [inputValue, setInputValue] = useState('');
 
   const handleFilterName = useCallback(
     (event) => {
@@ -69,10 +75,28 @@ export default function FileManagerFilters({
     onFilters('type', []);
   }, [onFilters, popover]);
 
+  // Event handler for input change
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  // Debounce the call to onFilters
+  const debouncedOnFilters = debounce((query) => {
+    onFilters('query', query);
+  }, 1000);
+
+  useEffect(() => {
+    // Call the debounced function in the effect whenever inputValue changes
+    debouncedOnFilters(inputValue);
+
+    // Cleanup function to cancel the debounce on component unmount or before re-running the effect
+    return () => debouncedOnFilters.cancel();
+  }, [inputValue, debouncedOnFilters]);
+
   const renderFilterName = (
     <TextField
-      value={filters.name}
-      onChange={handleFilterName}
+      value={inputValue}
+      onChange={handleInputChange}
       placeholder="Search..."
       InputProps={{
         startAdornment: (

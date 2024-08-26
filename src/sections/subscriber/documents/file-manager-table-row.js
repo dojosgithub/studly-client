@@ -151,16 +151,26 @@ export default function FileManagerTableRow({
   };
 
   // Function to handle downloading a row
-  const handleDownloadRow = (id) => {
+  const handleDownloadRow = () => {
     if (_type === 'file') {
       // const a = document.createElement('a');
       // a.href = preview;
       // a.download = name;
       // a.click();
+      let downloadUrl = preview;
+      const uploadIndex = downloadUrl.indexOf('/upload/');
+      if (uploadIndex !== -1) {
+        // If /upload/ is not found in the URL, return the original URL
+        const part1 = downloadUrl.slice(0, uploadIndex + 8); // Up to and including /upload/
+        const part2 = downloadUrl.slice(uploadIndex + 8); // Everything after /upload/
+
+        downloadUrl = `${part1}fl_attachment/${part2}`;
+      }
+
       const a = document.createElement('a');
 
       // Set the href attribute to the file URL
-      a.href = preview;
+      a.href = downloadUrl;
 
       // Set the download attribute to specify the filename
       a.download = name;
@@ -175,7 +185,7 @@ export default function FileManagerTableRow({
       document.body.removeChild(a);
     } else if (_type === 'folder') {
       dispatch(downloadDocument(_id));
-      dispatch(getDocumentsList());
+      // dispatch(getDocumentsList());
     }
     popover.onClose();
   };

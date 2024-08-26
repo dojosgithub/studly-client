@@ -52,6 +52,10 @@ export default function FileManagerTable({
   onDeleteRow,
   fetchData,
   onOpenConfirm,
+  filters,
+  onFilters,
+  handlePageChange,
+  page,
 }) {
   const theme = useTheme();
 
@@ -71,19 +75,19 @@ export default function FileManagerTable({
     onChangeRowsPerPage,
   } = table;
   const dispatch = useDispatch();
-  const [filters, setFilters] = useState(defaultFilters);
-  const [page, setPage] = useState(1);
+  // const [filters, setFilters] = useState(defaultFilters);
+  // const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    dispatch(getDocumentsList({ search: filters.query, page }));
-  }, [dispatch, filters.query, page]);
+  // useEffect(() => {
+  //   dispatch(getDocumentsList({ search: filters.query, page }));
+  // }, [dispatch, filters.query, page]);
 
-  const handlePageChange = (e, newPage) => setPage(newPage + 1);
+  // const handlePageChange = (e, newPage) => setPage(newPage + 1);
   const denseHeight = dense ? 58 : 78;
   const dataFiltered = useSelector((state) => state?.documents?.list);
-  const handleFilters = useCallback((name, value) => {
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  // const handleFilters = useCallback((name, value) => {
+  //   setFilters((prev) => ({ ...prev, [name]: value }));
+  // }, []);
   const notFound = dataFiltered?.docs?.length === 0;
   return (
     <>
@@ -216,6 +220,10 @@ FileManagerTable.propTypes = {
   table: PropTypes.object,
   tableData: PropTypes.array,
   fetchData: PropTypes.func,
+  filters: PropTypes.object,
+  onFilters: PropTypes.func,
+  handlePageChange: PropTypes.func,
+  page: PropTypes.number,
 };
 export function emptyRows(page, rowsPerPage, arrayLength) {
   return page ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;
