@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { cloneDeep, isEmpty } from 'lodash';
+import { dropdownOptions2 } from 'src/_mock';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 // * Meeting Minutes
@@ -362,11 +363,12 @@ const meetingMinutesInitialState = {
     site: '',
     date: null,
     time: '',
-    timezone: {
-      zone: '',
-      utc: '',
-      name: '',
-    },
+    // timezone: {
+    //   zone: '',
+    //   utc: '',
+    //   name: '',
+    // },
+    timezone: dropdownOptions2[0],
     minutesBy: '',
     conferenceCallId: '',
     conferenceCallLink: '',

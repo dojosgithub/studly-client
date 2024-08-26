@@ -14,7 +14,7 @@ const MeetingMinutesTimePicker = ({ name, label, ...other }) => {
       control={control}
       defaultValue={null}
       render={({ field, fieldState: { error } }) => (
-       // const selectedDate = field.value || null;
+        // const selectedDate = field.value || null;
         // const isDateNextDay = selectedDate && isTomorrow(selectedDate);
         // const dateStyle = isDateNextDay
         // ? {
@@ -38,7 +38,7 @@ const MeetingMinutesTimePicker = ({ name, label, ...other }) => {
         // : {};
 
         <TimePicker
-          ampm
+          ampm={false}
           label={label}
           value={field.value}
           onChange={(time) => field.onChange(time)}

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { cloneDeep, isEmpty } from 'lodash';
+import moment from 'moment-timezone';
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -40,7 +41,7 @@ import {
 } from 'src/redux/slices/projectSlice';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
-import { PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
+import { dropdownOptions2, PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // form
@@ -129,11 +130,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         site: '',
         date: new Date(),
         time: '',
-        timezone: {
-          zone: '',
-          utc: '',
-          name: '',
-        },
+        // timezone: {
+        //   zone: '',
+        //   utc: '',
+        //   name: '',
+        // },
+        timezone: dropdownOptions2[0],
         minutesBy: '',
         conferenceCallId: '',
         conferenceCallLink: '',
@@ -347,12 +349,30 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
     // Dispatch the clonedPlan to your Redux store or perform other actions
     dispatch(setMeetingMinutesPlanTracking(clonedPlan));
+
+    let formattedTime = '';
+    if (description.time) {
+      const date = new Date(description.time);
+
+      // Extract the time components
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+
+      // Format the time in HH:MM:SS format
+      formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+
+    console.log(formattedTime);
+
     if (isEdit) {
       console.log('status', status);
       dispatch(
         updateMeetingMinutes({
           data: {
-            description,
+            description: {
+              ...description,
+              timeInString: formattedTime,
+            },
             inviteAttendee,
             notes,
             permit,
@@ -363,12 +383,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         })
       );
     } else {
-      console.log('vlau', {
-        description,
-      });
       dispatch(
         createMeetingMinutes({
-          description,
+          description: {
+            ...description,
+            timeInString: formattedTime,
+          },
           inviteAttendee,
           notes,
           permit,
