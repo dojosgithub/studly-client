@@ -387,7 +387,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         createMeetingMinutes({
           description: {
             ...description,
-            time: formattedTime,
+            timeInString: formattedTime,
           },
           inviteAttendee,
           notes,
