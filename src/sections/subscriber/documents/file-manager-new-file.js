@@ -102,6 +102,7 @@ export default function FileManagerNewFileDialog({
           onDrop={handleDrop}
           onRemove={handleRemoveFile}
           maxFiles={10}
+          maxSize={20000000}
         />
       </DialogContent>
 
