@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
+
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 import {
@@ -11,6 +12,7 @@ import {
   DialogTitle,
   Button,
   Table,
+  Checkbox,
   TableBody,
   TableCell,
   TableHead,
@@ -31,16 +33,14 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
   const { enqueueSnackbar } = useSnackbar();
   // console.log(row);
   const handleClick = useDoubleClick({
-    click: (e, data) => {
-      console.log('INSIDE SINGLE', data);
-      if (data._type === 'folder') {
-        setSelectedFolder(data._id);
+    click: (e, folder) => {
+      if (folder._type === 'folder') {
+        setSelectedFolder((prevSelected) => (prevSelected === folder._id ? null : folder._id));
       }
     },
-    doubleClick: (e, data) => {
-      console.log('INSIDE DOUBLE', data);
-      if (data._type === 'folder') {
-        fetchData({ parentId: data._id });
+    doubleClick: (e, folder) => {
+      if (folder._type === 'folder') {
+        fetchData({ parentId: folder._id });
       }
     },
   });
@@ -76,7 +76,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Folder Name</TableCell>
+                <TableCell>Documents Name</TableCell>
                 {/* <TableCell>Action</TableCell> */}
               </TableRow>
             </TableHead>
@@ -84,15 +84,29 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
               {folders?.docs?.length > 0 ? (
                 folders.docs.map((folder) => {
                   const isFolder = folder._type === 'folder';
+                  const isSelected = selectedFolder === folder._id;
+
+                  const rowBackgroundColor = isSelected ? ' #D2E3FC' : 'inherit';
+                  let hoverBackgroundColor;
+
+                  if (isSelected) {
+                    hoverBackgroundColor = ' #D2E3FC';
+                  } else if (isFolder) {
+                    hoverBackgroundColor = '#d3d3d3';
+                  } else {
+                    hoverBackgroundColor = 'inherit';
+                  }
 
                   return (
                     <TableRow
                       key={folder._id}
-                      onClick={isFolder ? (e) => handleClick(e, folder) : undefined}
+                      onClick={(e) => handleClick(e, folder)}
                       sx={{
                         cursor: isFolder ? 'pointer' : 'not-allowed',
+                        backgroundColor: rowBackgroundColor,
+
                         '&:hover': {
-                          backgroundColor: isFolder ? '#d3d3d3' : 'inherit',
+                          backgroundColor: hoverBackgroundColor,
                         },
                         opacity: isFolder ? 1 : 0.6,
                         borderRadius: '10px',
@@ -100,6 +114,10 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                       }}
                     >
                       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+                        {/* <Checkbox
+                          checked={isSelected} // Checkbox is checked if the folder is selected
+                          sx={{ marginRight: 2 }}
+                        /> */}
                         <FileThumbnail
                           file={isFolder ? 'folder' : 'file'}
                           sx={{ width: 36, height: 36, marginRight: 2 }}
@@ -111,7 +129,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={2} align="center">
+                  <TableCell colSpan={1} align="center">
                     No folders available
                   </TableCell>
                 </TableRow>
