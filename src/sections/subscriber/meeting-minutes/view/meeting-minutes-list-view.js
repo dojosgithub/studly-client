@@ -148,11 +148,14 @@ export default function MeetingMinutesListView() {
     async (row, onDelete) => {
       // const { projectId, planRoomId, _id: sheetId } = row
       // console.log('id-->', projectId, planRoomId, sheetId)
-      dispatch(deleteMeeting(row));
+      await dispatch(deleteMeeting(row));
       // await dispatch(getPlanRoomList({ search: '', page: 1, status: [] }))
       onDelete.onFalse();
       enqueueSnackbar('Meeting Deleted Successfully', { variant: 'success' });
       // navigate(paths.subscriber.meetingMinutes.list);
+      // dispatch(
+      //   getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status })
+      // );
       dispatch(
         getMeetingMinutesList({ search: filters.query, page, sortDir, status: filters.status })
       );

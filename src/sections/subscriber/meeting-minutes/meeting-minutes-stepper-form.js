@@ -362,7 +362,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     }
 
     if (isEdit) {
-      dispatch(
+      await dispatch(
         updateMeetingMinutes({
           data: {
             description: {
@@ -379,7 +379,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         })
       );
     } else {
-      dispatch(
+      await dispatch(
         createMeetingMinutes({
           description: {
             ...description,

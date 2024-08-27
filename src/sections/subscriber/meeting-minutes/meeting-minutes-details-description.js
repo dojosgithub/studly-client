@@ -85,11 +85,12 @@ export default function Description({ data }) {
       <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Time</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {new Date(data?.time).toLocaleTimeString()}
+          {/* {new Date(data?.time).toLocaleTimeString()} */}
+          {data?.timeInString}
         </Typography>
       </StyledCard>
       <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-        <Typography className="submittalTitle">Tinezone</Typography>
+        <Typography className="submittalTitle">Tine Zone</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
           {data?.timezone?.zone} {data?.timezone?.utc}
         </Typography>
