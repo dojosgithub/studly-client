@@ -14,6 +14,7 @@ import {
   Table,
   Checkbox,
   TableBody,
+  Box,
   TableCell,
   TableHead,
   TableRow,
@@ -23,8 +24,10 @@ import {
 } from '@mui/material';
 import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { useDoubleClick } from 'src/hooks/use-double-click';
+import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { getDocumentsMoveList, moveDocument } from 'src/redux/slices/documentsSlice';
 import FileThumbnail from 'src/components/file-thumbnail';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/custom_breadcrumbs-move';
 
 export default function FileManagerMoveDialog({ open, onClose, row }) {
   const dispatch = useDispatch();
@@ -57,7 +60,13 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
     dispatch(getDocumentsMoveList({ limit: 1000 }));
     onClose();
   };
-
+  const clicked = (item) => {
+    if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
+      fetchData({ parentId: item.replace('/', '') });
+    } else {
+      fetchData({ parentId: null });
+    }
+  };
   const handleMove = async () => {
     if (selectedFolder) {
       console.log('Moving item to folder:', selectedFolder);
@@ -117,9 +126,9 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                     >
                       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
                         {/* <Checkbox
-              checked={isSelected} // Checkbox is checked if the folder is selected
-              sx={{ marginRight: 2 }}
-            /> */}
+                        checked={isSelected} // Checkbox is checked if the folder is selected
+                        sx={{ marginRight: 2 }}
+                      /> */}
                         <FileThumbnail
                           file={isFolder ? 'folder' : 'file'}
                           sx={{ width: 36, height: 36, marginRight: 2 }}
@@ -140,6 +149,39 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
           </Table>
         </TableContainer>
       </DialogContent>
+
+      {/* <CustomBreadcrumbs
+        notLink
+        // heading="Documents"
+        links={folders?.links?.map((item) => ({
+          name: item.name,
+          href: item.href,
+        }))}
+        // onClick={clicked}
+        // action={
+        <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.create}>
+        // <Button
+        //   variant="contained"
+        //   startIcon={<AddIcon />}
+        //   onClick={handleClick}
+        //   style={{ paddingRight: 46 }}
+        // >
+        //   Upload
+        // </Button>
+        // </RoleAccessWrapper>
+        // }
+      /> */}
+      <Box sx={{ padding: '8px 24px', width: '100%', marginTop: '30px' }}>
+        <CustomBreadcrumbs
+          notLink
+          links={folders?.links?.map((item) => ({
+            name: item.name,
+            href: item.href,
+          }))}
+          onClick={clicked}
+        />
+      </Box>
+
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" onClick={handleMove} disabled={!selectedFolder}>
