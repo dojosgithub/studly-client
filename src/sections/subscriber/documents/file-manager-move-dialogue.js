@@ -46,15 +46,15 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
   });
 
   useEffect(() => {
-    dispatch(getDocumentsMoveList({}));
+    dispatch(getDocumentsMoveList({ limit: 1000 }));
   }, [dispatch]);
 
   const fetchData = (params) => {
-    dispatch(getDocumentsMoveList(params));
+    dispatch(getDocumentsMoveList({ ...params, limit: 1000 }));
   };
 
   const handleClose = () => {
-    dispatch(getDocumentsMoveList({}));
+    dispatch(getDocumentsMoveList({ limit: 1000 }));
     onClose();
   };
 
