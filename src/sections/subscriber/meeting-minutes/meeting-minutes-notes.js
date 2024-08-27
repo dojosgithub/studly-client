@@ -229,7 +229,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                       label="Assignee"
                       control={control}
                       defaultValue="" // Set default value to an empty string or null
-                      value={field.value?.email || ''}
+                      value={field.value?.name || ''}
                     >
                       {dropdownOptions1.map((option) => (
                         <MenuItem key={option.value} value={option}>

@@ -90,7 +90,7 @@ export default function Description({ data }) {
         </Typography>
       </StyledCard>
       <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-        <Typography className="submittalTitle">Tine Zone</Typography>
+        <Typography className="submittalTitle">Time Zone</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
           {data?.timezone?.zone} {data?.timezone?.utc}
         </Typography>
