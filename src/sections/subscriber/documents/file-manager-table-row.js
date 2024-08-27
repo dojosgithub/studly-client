@@ -337,7 +337,12 @@ export default function FileManagerTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-        <MenuItem onClick={() => setMoveDialogOpen(true)}>
+        <MenuItem
+          onClick={() => {
+            setMoveDialogOpen(true);
+            popover.onClose();
+          }}
+        >
           <Iconify icon="fluent:folder-move-16-regular" />
           Move
         </MenuItem>
@@ -391,11 +396,16 @@ export default function FileManagerTableRow({
         onConfirm={handleRenameRow}
       />
 
-      <FileManagerMoveDialog
-        open={moveDialogOpen}
-        onClose={() => setMoveDialogOpen(false)}
-        row={row}
-      />
+      {moveDialogOpen && (
+        <FileManagerMoveDialog
+          open={moveDialogOpen}
+          onClose={() => {
+            setMoveDialogOpen(false);
+            fetchData();
+          }}
+          row={row}
+        />
+      )}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
@@ -18,24 +19,25 @@ import {
 } from '@mui/material';
 import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { useDoubleClick } from 'src/hooks/use-double-click';
-import { getDocumentsMoveList } from 'src/redux/slices/documentsSlice';
+import { getDocumentsMoveList, moveDocument } from 'src/redux/slices/documentsSlice';
 
 export default function FileManagerMoveDialog({ open, onClose, row }) {
   const dispatch = useDispatch();
   const [selectedFolder, setSelectedFolder] = useState(null);
   const folders = useSelector((state) => state.documents.moveList);
-
-  const { _type, _id } = row;
-
+  const { enqueueSnackbar } = useSnackbar();
+  // console.log(row);
   const handleClick = useDoubleClick({
-    click: () => {
-      if (_type === 'folder') {
-        setSelectedFolder(_id);
+    click: (e, data) => {
+      console.log('INSIDE SINGLE', data);
+      if (data._type === 'folder') {
+        setSelectedFolder(data._id);
       }
     },
-    doubleClick: () => {
-      if (_type === 'folder') {
-        fetchData({ parentId: _id });
+    doubleClick: (e, data) => {
+      console.log('INSIDE DOUBLE', data);
+      if (data._type === 'folder') {
+        fetchData({ parentId: data._id });
       }
     },
   });
@@ -53,9 +55,12 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
     onClose();
   };
 
-  const handleMove = () => {
+  const handleMove = async () => {
     if (selectedFolder) {
       console.log('Moving item to folder:', selectedFolder);
+      await dispatch(moveDocument({ id: row._id, to: selectedFolder }));
+      enqueueSnackbar('Moved Successfully', { variant: 'success' });
+      // await fetchData();
       handleClose();
     }
   };
@@ -69,22 +74,19 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
             <TableHead>
               <TableRow>
                 <TableCell>Folder Name</TableCell>
-                <TableCell>Action</TableCell>
+                {/* <TableCell>Action</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
               {folders?.docs?.length > 0 ? (
                 folders.docs.map((folder) => (
-                  <TableRow key={folder._id}>
+                  <TableRow key={folder._id} onClick={(e) => handleClick(e, folder)}>
                     <TableCell>{folder.name}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        color={selectedFolder === folder._id ? 'primary' : 'default'}
-                        onClick={() => handleClick(folder)}
-                      >
+                    {/* <TableCell>
+                      <IconButton color={selectedFolder === folder._id ? 'primary' : 'default'}>
                         <ArrowForwardIcon />
                       </IconButton>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               ) : (

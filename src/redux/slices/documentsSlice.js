@@ -18,14 +18,11 @@ export const uploadDocument = createAsyncThunk(
     }
   }
 );
-export const moveFolder = createAsyncThunk(
+export const moveDocument = createAsyncThunk(
   'folders/move',
-  async ({ folderId, targetFolderId }, { rejectWithValue }) => {
+  async ({ id, to }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/api/folders/move-folder', {
-        folderId,
-        targetFolderId,
-      });
+      const response = await axiosInstance.get(`/api/user/documents/move/${id}/${to}`);
       return response.data; // Adjust if your API returns different data
     } catch (err) {
       return rejectWithValue(err.response ? err.response.data : err.message);
@@ -359,15 +356,15 @@ const documents = createSlice({
       state.error = action.error.message;
     });
     builder
-      .addCase(moveFolder.pending, (state) => {
+      .addCase(moveDocument.pending, (state) => {
         state.moveStatus = 'loading';
       })
-      .addCase(moveFolder.fulfilled, (state, action) => {
+      .addCase(moveDocument.fulfilled, (state, action) => {
         state.moveStatus = 'succeeded';
 
         state.folders = action.payload;
       })
-      .addCase(moveFolder.rejected, (state, action) => {
+      .addCase(moveDocument.rejected, (state, action) => {
         state.moveStatus = 'failed';
         state.error = action.payload;
       });
