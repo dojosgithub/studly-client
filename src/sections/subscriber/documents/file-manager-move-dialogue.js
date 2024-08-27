@@ -85,39 +85,41 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                 folders.docs.map((folder) => {
                   const isFolder = folder._type === 'folder';
                   const isSelected = selectedFolder === folder._id;
+                  const isBeingMoved = folder._id === row._id;
 
-                  const rowBackgroundColor = isSelected ? ' #D2E3FC' : 'inherit';
+                  const rowBackgroundColor = isSelected ? '#D2E3FC' : 'inherit';
                   let hoverBackgroundColor;
 
                   if (isSelected) {
-                    hoverBackgroundColor = ' #D2E3FC';
-                  } else if (isFolder) {
+                    hoverBackgroundColor = '#D2E3FC';
+                  } else if (isFolder && !isBeingMoved) {
                     hoverBackgroundColor = '#d3d3d3';
                   } else {
                     hoverBackgroundColor = 'inherit';
                   }
 
+                  const isDisabled = !isFolder || isBeingMoved;
+
                   return (
                     <TableRow
                       key={folder._id}
-                      onClick={(e) => handleClick(e, folder)}
+                      onClick={(e) => !isDisabled && handleClick(e, folder)}
                       sx={{
-                        cursor: isFolder ? 'pointer' : 'not-allowed',
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
                         backgroundColor: rowBackgroundColor,
-
                         '&:hover': {
                           backgroundColor: hoverBackgroundColor,
                         },
-                        opacity: isFolder ? 1 : 0.6,
+                        opacity: isDisabled ? 0.6 : 1,
                         borderRadius: '10px',
                         overflow: 'hidden',
                       }}
                     >
                       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
                         {/* <Checkbox
-                          checked={isSelected} // Checkbox is checked if the folder is selected
-                          sx={{ marginRight: 2 }}
-                        /> */}
+              checked={isSelected} // Checkbox is checked if the folder is selected
+              sx={{ marginRight: 2 }}
+            /> */}
                         <FileThumbnail
                           file={isFolder ? 'folder' : 'file'}
                           sx={{ width: 36, height: 36, marginRight: 2 }}
