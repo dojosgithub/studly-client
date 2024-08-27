@@ -63,7 +63,6 @@ export default function FileManagerTableRow({
   const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview, _id } =
     row;
 
-  console.log('preview', preview);
   const { enqueueSnackbar } = useSnackbar();
 
   const { copy } = useCopyToClipboard();
@@ -137,7 +136,6 @@ export default function FileManagerTableRow({
   const handleRenameRow = async (newName) => {
     try {
       // Dispatch the rename action with the new name
-      console.log('raaaahimmmmmm', row, newName);
 
       dispatch(renameDocument({ newName, _id }));
       dispatch(getDocumentsList());
@@ -193,7 +191,6 @@ export default function FileManagerTableRow({
     popover.onClose();
   };
 
-  console.log(row);
   return (
     <>
       <TableRow

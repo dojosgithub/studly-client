@@ -7,7 +7,7 @@ export const uploadDocument = createAsyncThunk(
   async (documentsData, { getState, rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(endpoints.documents.upload, documentsData);
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('API Error:', err);
@@ -49,14 +49,14 @@ export const renameDocument = createAsyncThunk(
   'documents/rename',
   async ({ newName, _id }, { rejectWithValue }) => {
     try {
-      console.log('Renaming document with ID:', _id, 'Data:', newName);
+      // console.log('Renaming document with ID:', _id, 'Data:', newName);
 
       const response = await axiosInstance.put(endpoints.documents.rename(_id), { name: newName });
 
-      console.log('Rename document response:', response.data);
+      // console.log('Rename document response:', response.data);
       return response.data;
     } catch (err) {
-      console.error('Rename document error:', err);
+      // console.error('Rename document error:', err);
 
       const errorMessage =
         err.response?.data?.message || 'An error occurred while renaming the document.';
@@ -68,7 +68,7 @@ export const renameDocument = createAsyncThunk(
 export const updateDailyLogs = createAsyncThunk(
   'dailyLogs/update',
   async ({ data, id }, { getState, rejectWithValue }) => {
-    console.log(data, id);
+    // console.log(data, id);
 
     try {
       const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
@@ -212,7 +212,7 @@ export const updateDocument = createAsyncThunk(
   async (id, documentsData, { getState, rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('API Error:', err);

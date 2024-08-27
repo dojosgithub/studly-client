@@ -49,7 +49,7 @@ export const getCompanyDetails = createAsyncThunk(
 export const updateCompany = createAsyncThunk(
   'company/update',
   async ({ data, id }, { getState, rejectWithValue }) => {
-    console.log('hehvsveh', data, id);
+    // console.log('hehvsveh', data, id);
 
     try {
       const response = await axiosInstance.put(endpoints.company.update(id), data);
@@ -118,7 +118,7 @@ export const accessCompany = createAsyncThunk(
     try {
       const response = await axiosInstance.put(endpoints.company.access(id));
 
-      console.log('response', response.data.data);
+      // console.log('response', response.data.data);
       const { accessToken } = response.data.data;
       setSession(accessToken);
 
@@ -139,7 +139,7 @@ export const exitCompanyAccess = createAsyncThunk(
     try {
       const response = await axiosInstance.get(endpoints.company.exitAccess);
 
-      console.log('response', response.data.data);
+      // console.log('response', response.data.data);
       const { accessToken } = response.data.data;
       setSession(accessToken);
 

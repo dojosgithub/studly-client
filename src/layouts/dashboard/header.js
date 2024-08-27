@@ -56,7 +56,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   useEffect(() => {
     const decodedToken = jwtDecode(accessToken);
-    console.log(decodedToken);
+    // console.log(decodedToken);
     if (decodedToken.temp) {
       setIsViewAs(true);
     } else {
@@ -70,7 +70,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
       router.push('/');
       router.reload();
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   }, [dispatch, router]);
 

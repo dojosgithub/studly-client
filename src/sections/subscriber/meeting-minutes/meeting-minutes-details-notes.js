@@ -23,7 +23,6 @@ const Notes = ({ data }) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  console.log('raahim', data);
   return (
     <div>
       {data.map((note, noteIndex) => (
@@ -148,7 +147,7 @@ Notes.propTypes = {
           topic: PropTypes.string.isRequired,
           action: PropTypes.string,
           date: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]).isRequired,
-          assignee: PropTypes.string,
+          assignee: PropTypes.object,
           status: PropTypes.string,
           priority: PropTypes.string,
           description: PropTypes.string,

@@ -168,7 +168,6 @@ export default function FileManagerView() {
   // }, [dataFiltered.length, dataInPage.length, table, tableData]);
   const handleDeleteItems = useCallback(
     async (row) => {
-      console.log(row);
       await dispatch(deleteDocument(row));
 
       enqueueSnackbar('Document Deleted Successfully', { variant: 'success' });
@@ -189,7 +188,6 @@ export default function FileManagerView() {
     setAnchorEl(null);
   };
 
-  console.log('filters', filters);
   const renderFilters = (
     <Stack
       spacing={2}
@@ -239,7 +237,6 @@ export default function FileManagerView() {
 
   const clicked = (item) => {
     if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
-      console.log('Clicked', item);
       fetchData({ parentId: item.replace('/', '') });
     } else {
       fetchData({ parentId: null });

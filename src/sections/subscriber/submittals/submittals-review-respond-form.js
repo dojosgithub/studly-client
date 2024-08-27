@@ -55,7 +55,6 @@ import PdfModifier from '../pdfs/annotator';
 // ----------------------------------------------------------------------
 
 export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
-  console.log('currentSubmittal:', currentSubmittal);
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
@@ -176,7 +175,6 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   });
 
   const handleSelect = (e) => {
-    console.log('e.target.value', e.target.value);
     setMarkupFile(e.target.value);
   };
   return (

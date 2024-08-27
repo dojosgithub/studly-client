@@ -75,8 +75,8 @@ const ProjectCreateCsiTrade = () => {
     setCheckedItems(trades || []);
   }, [trades]);
   useEffect(() => {
-    console.log('Checked items array:', checkedItems);
-    console.log('trades:', trades);
+    // console.log('Checked items array:', checkedItems);
+    // console.log('trades:', trades);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedItems]);
 

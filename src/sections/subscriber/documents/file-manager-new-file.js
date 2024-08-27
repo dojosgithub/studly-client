@@ -69,9 +69,7 @@ export default function FileManagerNewFileDialog({
       });
       formData.append('body', JSON.stringify(body));
 
-      console.log(formData);
       await dispatch(uploadDocument(formData));
-      console.log('Upload successful');
       fetchData();
       onClose();
     } catch (error) {

@@ -7,10 +7,10 @@ const RoleAccessWrapper = ({ allowedRoles = [], children, isSysAdmin = false }) 
   const accessToken = useSelector((state) => state.user.tokens.accessToken);
   const decodedToken = jwtDecode(accessToken);
   const authRole = decodedToken.role.shortName;
-  console.log('decodedToken', decodedToken);
-  console.log('authRole', authRole);
-  console.log('userRole', userRole);
-  console.log('matched', allowedRoles.includes(authRole));
+  // console.log('decodedToken', decodedToken);
+  // console.log('authRole', authRole);
+  // console.log('userRole', userRole);
+  // console.log('matched', allowedRoles.includes(authRole));
 
   return allowedRoles.includes(authRole) ? children : null;
 };

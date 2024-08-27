@@ -84,10 +84,8 @@ export default function FileManagerFileDetails({
     setTags(newValue);
   }, []);
   useEffect(() => {
-    console.log('raahim', tags);
-    return () => {
-      dispatch(updateDocument(tags));
-    };
+    console.log('Running');
+    return () => dispatch(updateDocument(tags));
   }, [tags, dispatch, item._id]);
   const renderTags = (
     <Stack spacing={1.5}>
@@ -254,7 +252,6 @@ export default function FileManagerFileDetails({
               bgcolor: 'background.neutral',
             }}
           >
-            {console.log('preview', preview)}
             <FileThumbnail
               imageView
               // file={type === 'folder' ? type : preview}

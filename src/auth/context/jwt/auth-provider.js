@@ -81,13 +81,13 @@ export function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
         const response = await axios.get(endpoints.auth.profile);
-        console.log('response', response);
-        console.log('accessTokenPrev', accessToken);
+        // console.log('response', response);
+        // console.log('accessTokenPrev', accessToken);
         const {
           data: { user, tokens },
         } = response.data;
         // setSession(accessToken);
-        console.log('tokens Auth', tokens);
+        // console.log('tokens Auth', tokens);
         setSession(tokens?.accessToken);
         dispatchRedux(setUserData(user));
         dispatchRedux(setUserTokens(tokens));

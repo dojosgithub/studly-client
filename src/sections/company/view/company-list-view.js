@@ -144,11 +144,11 @@ export default function CompanyListView() {
   // );
   const handleEditRow = useCallback(
     (id) => {
-      console.log('id', id);
-      console.log('path', params);
+      // console.log('id', id);
+      // console.log('path', params);
       router.push(paths.admin.company.edit(id));
     },
-    [router, params]
+    [router]
   );
   const handleUpdateStatus = useCallback(
     async (id, value) => {
@@ -163,11 +163,11 @@ export default function CompanyListView() {
     async (id) => {
       try {
         const data = await dispatch(accessCompany({ id }));
-        console.log('DATA:', data);
+        // console.log('DATA:', data);
         router.push('/');
         router.reload()
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     },
     [dispatch, router]

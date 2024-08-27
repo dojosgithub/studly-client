@@ -151,7 +151,6 @@ const MeetingMinutesDetails = ({ id }) => {
     docStatus,
   } = currentMeeting;
 
-  console.log('isSubmitting', isSubmitting);
   // useEffect(() => {
   //   getMenus();
   //   // eslint-disable-next-line react-hooks/exhaustive-deps

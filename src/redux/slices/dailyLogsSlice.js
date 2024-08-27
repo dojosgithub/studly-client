@@ -30,15 +30,15 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 export const createDailyLogs = createAsyncThunk(
   'dailyLogs/create',
   async (dailyLogsData, { getState, rejectWithValue }) => {
-    console.log('dailyLogsData', dailyLogsData);
+    // console.log('dailyLogsData', dailyLogsData);
     // if (isEmpty(dailyLogsData)) {
     //   return rejectWithValue('daily logs cannot be empty.');
     // }
 
     try {
-      console.log('Sending data:', dailyLogsData);
+      // console.log('Sending data:', dailyLogsData);
       const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('API Error:', err);
@@ -71,10 +71,10 @@ export const getDailyLogsList = createAsyncThunk(
   'dailyLogs/list',
 
   async (listOptions, { getState, rejectWithValue }) => {
-    console.log('ListsData', listOptions);
+    // console.log('ListsData', listOptions);
     try {
       const projectId = getState().project?.current?._id;
-      console.log('Sending data:', listOptions);
+      // console.log('Sending data:', listOptions);
       const { status, ...data } = listOptions;
       const response = await axiosInstance.post(
         endpoints.dailyLogs.list(projectId),
@@ -83,7 +83,7 @@ export const getDailyLogsList = createAsyncThunk(
           params: data,
         }
       );
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -98,7 +98,7 @@ export const getDailyLogsList = createAsyncThunk(
 export const updateDailyLogs = createAsyncThunk(
   'dailyLogs/update',
   async ({ data, id }, { getState, rejectWithValue }) => {
-    console.log(data, id);
+    // console.log(data, id);
 
     try {
       const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);

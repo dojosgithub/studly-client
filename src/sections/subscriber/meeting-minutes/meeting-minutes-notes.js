@@ -125,9 +125,9 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
   const dropdownOptions1 = inviteAttendee.map((attendee) => ({
+    ...attendee, // Keep the full object for later use
     value: attendee.email, // Use a unique identifier for comparison
     label: attendee.name,
-    attendee, // Keep the full object for later use
   }));
 
   const dropdownOptions2 = [
@@ -160,9 +160,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
       description: '',
       // _id: uuidv4(),
     });
-  };
-  const handleDropdown = (option) => {
-    console.log('option', option);
   };
 
   return (
@@ -198,7 +195,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
               {/* Dropdown 1 */}
 
               <FormControl>
-                <InputLabel>Assignee</InputLabel>
+                {/* <InputLabel>Assignee</InputLabel> */}
                 <Controller
                   name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
                   control={control}
@@ -227,14 +224,15 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                     //   ))}
                     // </Select>
                     <RHFSelect
+                      {...field}
                       name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
                       label="Assignee"
                       control={control}
                       defaultValue="" // Set default value to an empty string or null
-                      rules={{ required: 'Assignee is required' }} // Add validation rule
+                      value={field.value?.email || ''}
                     >
                       {dropdownOptions1.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
+                        <MenuItem key={option.value} value={option}>
                           {option.label}
                         </MenuItem>
                       ))}

@@ -89,7 +89,7 @@ export default function OnboardingProjects({ projects }) {
         companyId,
       };
 
-      console.log('Company Admin or Power User', isAdmin);
+      // console.log('Company Admin or Power User', isAdmin);
     }
 
     dispatch(setUpdateProject());

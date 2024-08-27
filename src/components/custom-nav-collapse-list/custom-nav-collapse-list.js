@@ -82,7 +82,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
         companyId,
       };
       dispatch(setCurrentProjectRole(updatedRole));
-      console.log('Other User Role');
+      // console.log('Other User Role');
     } else {
       // Company Admin Logic
       updatedRole = {
@@ -97,13 +97,13 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
         companyId,
       };
       dispatch(setCurrentProjectRole(updatedRole));
-      console.log('Company Admin Role');
+      // console.log('Company Admin Role');
     }
 
     dispatch(setUpdateProject());
     if (projectData) {
       dispatch(authSwitchProject(projectData));
-      console.log('Project Data', projectData);
+      // console.log('Project Data', projectData);
     }
 
     if (redirect) {

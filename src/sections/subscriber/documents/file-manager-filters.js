@@ -32,10 +32,6 @@ export default function FileManagerFilters({
 }) {
   const popover = usePopover();
 
-  console.log('filters.query', filters.query)
-  useEffect(() => {
-    console.log('INSIDEE');
-  }, []);
   const renderLabel = filters.type.length ? filters.type.slice(0, 2).join(',') : 'All type';
   const [inputValue, setInputValue] = useState('');
 

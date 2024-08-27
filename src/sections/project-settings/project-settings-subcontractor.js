@@ -38,8 +38,8 @@ const ProjectSettingsSubcontractor = () => {
     [subcontractorsList, subcontractorsInvitedList]
   );
   const trades = useSelector((state) => state.project.update.trades);
-  console.log('trades', trades);
-  console.log('formTrades', formTrades);
+  // console.log('trades', trades);
+  // console.log('formTrades', formTrades);
   const initialOptions = trades.reduce((acc, { tradeId, email, firstName, lastName }) => {
     acc[tradeId] = {
       tradeId,

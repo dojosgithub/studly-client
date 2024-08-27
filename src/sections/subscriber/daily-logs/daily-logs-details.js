@@ -110,7 +110,7 @@ const TABS = [
 
 const DailyLogsDetails = ({ id }) => {
   const currentLog = useSelector((state) => state.dailyLogs?.current);
-  console.log('raahim', currentLog);
+  // console.log('raahim', currentLog);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
@@ -156,7 +156,7 @@ const DailyLogsDetails = ({ id }) => {
     docStatus,
   } = currentLog;
 
-  console.log('isSubmitting', isSubmitting);
+  // console.log('isSubmitting', isSubmitting);
   // useEffect(() => {
   //   getMenus();
   //   // eslint-disable-next-line react-hooks/exhaustive-deps

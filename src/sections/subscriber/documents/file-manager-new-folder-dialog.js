@@ -56,7 +56,6 @@ export default function FileManagerNewFolderDialog({
     try {
       const formData = new FormData();
 
-      console.log(listData);
       const body = {
         name: folderName,
         type: 'folder',
@@ -75,10 +74,8 @@ export default function FileManagerNewFolderDialog({
 
       formData.append('body', JSON.stringify(body));
 
-      console.log(formData);
       await dispatch(uploadDocument(formData));
       onChangeFolderName('');
-      console.log('Upload successful');
       fetchData();
       onClose();
     } catch (error) {

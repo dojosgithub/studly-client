@@ -85,7 +85,7 @@ export default function CompanyNewEditForm({ isEdit }) {
   }, [id, dispatch, isEdit]);
   const currentProject = useSelector((state) => state?.project?.current);
   const currentLog = useSelector((state) => state?.company?.current);
-  console.log('raahim', currentLog, id);
+  // console.log('raahim', currentLog, id);
   const defaultValues = useMemo(
     () => ({
       name: '',

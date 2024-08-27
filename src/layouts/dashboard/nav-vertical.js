@@ -53,7 +53,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
   }, [pathname]);
 
   useEffect(() => {
-    console.log('navDataSubscriber', user?.role?.shortName);
+    // console.log('navDataSubscriber', user?.role?.shortName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

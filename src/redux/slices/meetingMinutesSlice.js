@@ -39,7 +39,7 @@ export const updateMeetingMinutes = createAsyncThunk(
       return rejectWithValue('Meeting minutes data cannot be empty.');
     }
 
-    console.log(data, id);
+    // console.log(data, id);
 
     const projectId = getState().project?.current?._id;
 
@@ -47,7 +47,7 @@ export const updateMeetingMinutes = createAsyncThunk(
     try {
       const response = await axiosInstance.put(endpoints.meetingMinutes.update(id), data);
 
-      console.log(response);
+      // console.log(response);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);

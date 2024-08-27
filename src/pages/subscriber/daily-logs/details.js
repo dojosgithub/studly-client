@@ -15,7 +15,7 @@ export default function DailyLogsDetailsPage() {
   const dispatch = useDispatch();
 
   const { id } = params;
-  console.log('hehe', id);
+  // console.log('hehe', id);
   useEffect(() => {
     dispatch(getDailyLogsDetails(id));
   }, [dispatch, id]);

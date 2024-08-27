@@ -205,7 +205,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
   } = methods;
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
-  console.log('getValues', getValues());
   // const { name, address, state, city, zipCode } = formValues;
 
   useEffect(() => {
@@ -362,10 +361,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     }
 
-    console.log(formattedTime);
-
     if (isEdit) {
-      console.log('status', status);
       dispatch(
         updateMeetingMinutes({
           data: {

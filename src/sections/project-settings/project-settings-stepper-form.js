@@ -117,7 +117,7 @@ export default function ProjectSettingsStepperForm() {
   const dispatch = useDispatch();
   // ? update project state
   const currentProject = useSelector((state) => state.project.update);
-  console.log('currentProject', currentProject);
+  // console.log('currentProject', currentProject);
   const projectList = useSelector((state) => state.project.list);
   const newTemplate = useSelector((state) => state.project.template);
   const inviteUsers = useSelector((state) => state.project.inviteUsers);
@@ -251,7 +251,7 @@ export default function ProjectSettingsStepperForm() {
         return;
       }
       setIsFormSubmitting(true);
-      console.log('trades UPDATE PROJECT-->', data.trades);
+      // console.log('trades UPDATE PROJECT-->', data.trades);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
       const updatedWorkflow = data.workflow;
 
@@ -262,7 +262,7 @@ export default function ProjectSettingsStepperForm() {
         workflow: updatedWorkflow,
         members,
       };
-      console.log('finalData UPDATE PROJECT-->', finalData);
+      // console.log('finalData UPDATE PROJECT-->', finalData);
       const { error, payload } = await dispatch(updateExistingProject(finalData));
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
@@ -282,7 +282,7 @@ export default function ProjectSettingsStepperForm() {
       navigate(paths.subscriber.submittals.list);
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
+      // console.log('error-->', error);
       enqueueSnackbar(`Error Updating Password`, { variant: 'error' });
     }
   });

@@ -166,7 +166,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
       router.push(paths.subscriber.submittals.details(params?.id));
     } catch (error) {
       // console.error(error);
-      console.log('error-->', error);
       // enqueueSnackbar(`Error ${currentRfi?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });

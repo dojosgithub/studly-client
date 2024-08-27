@@ -26,7 +26,7 @@ export const authSwitchProject = createAsyncThunk(
       // const email = getState()?.user?.user?.email; // Access the current state
       const response = await axiosInstance.post(endpoints.project.switch, projectData);
       // setting token in session
-      console.log('response authSwitchProject: ', response.data?.data?.tokens?.accessToken);
+      // console.log('response authSwitchProject: ', response.data?.data?.tokens?.accessToken);
       setSession(response?.data?.data?.tokens?.accessToken);
       return response.data.data;
     } catch (err) {

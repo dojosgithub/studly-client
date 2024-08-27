@@ -60,14 +60,14 @@ const StyledButton = styled(Button)(({ theme, selected }) => ({
 const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
 
 const CreateDailyLog = ({ isEdit }) => {
-  console.log('hehehe', isEdit);
+  // console.log('hehehe', isEdit);
   const dispatch = useDispatch();
   const params = useParams();
 
   const currentLog = useSelector((state) => state?.dailyLogs?.current);
   const { id } = params;
-  console.log('raahim', currentLog, id);
-  console.log('id, id', id);
+  // console.log('raahim', currentLog, id);
+  // console.log('id, id', id);
   const router = useRouter();
 
   useEffect(() => {
@@ -194,7 +194,7 @@ const CreateDailyLog = ({ isEdit }) => {
     }
   }, [isEdit, currentLog, dispatch, reset]);
 
-  console.log('errors', errors);
+  // console.log('errors', errors);
   const handleWeatherChange = (value) => {
     // setSelectedWeather(value);
     // dispatch(setCreateDailyLogs({ weather: value }));
@@ -208,12 +208,12 @@ const CreateDailyLog = ({ isEdit }) => {
       array.splice(index, 1);
     }
 
-    console.log('array', array);
+    // console.log('array', array);
     setValue('weather', array);
   };
 
   const formValues = getValues();
-  console.log(formValues);
+  // console.log(formValues);
 
   const existingAttachments = useMemo(
     () => (currentLog?.attachments ? currentLog?.attachments : []),
@@ -257,7 +257,7 @@ const CreateDailyLog = ({ isEdit }) => {
   });
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true); // Start loading spinner
-    console.log('Form Values:', data);
+    // console.log('Form Values:', data);
 
     try {
       // Map visitor fields to correct structure
@@ -277,7 +277,7 @@ const CreateDailyLog = ({ isEdit }) => {
       });
 
       data.attachments = attachments;
-      console.log(data);
+      // console.log(data);
 
       formData.append('body', JSON.stringify(data));
 
@@ -345,7 +345,7 @@ const CreateDailyLog = ({ isEdit }) => {
   }));
   const getStatus = (index) => {
     const value = getValues(`inspection[${index}].status`);
-    console.log(isBoolean(value), value);
+    // console.log(isBoolean(value), value);
     if (isBoolean(value)) {
       return !value;
     }

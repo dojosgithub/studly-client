@@ -104,7 +104,6 @@ const MeetingMinutesDescription = () => {
                   const selectedTimezone = dropdownOptions2.find(
                     (timezone) => timezone.zone === selectedZone
                   );
-                  console.log('selectedTimezone', selectedTimezone);
                   field.onChange(selectedTimezone); // Save the whole object in the form state
                 }}
                 value={field.value.zone || ''} // Ensure the correct value is displayed

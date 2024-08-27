@@ -150,8 +150,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     const ccListInside = currentSubmittal?.ccList || [];
     const owner = currentSubmittal?.owner?.map((item) => item.email) || [];
     if (currentSubmittal) {
-      console.log('currentSubmittal', currentSubmittal);
-      console.log('currentSubmittal.trade', currentSubmittal.trade);
       submittalId = currentSubmittal.submittalId || '';
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
 
@@ -264,8 +262,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
         };
 
-        console.log('tradeObject', tradeObject);
-        console.log('trade', trade);
       }
       // delete trade._id;
       if (!trade) {
