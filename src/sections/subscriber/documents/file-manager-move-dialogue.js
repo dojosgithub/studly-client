@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+
 import {
   Dialog,
   DialogActions,
@@ -20,6 +22,7 @@ import {
 import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { useDoubleClick } from 'src/hooks/use-double-click';
 import { getDocumentsMoveList, moveDocument } from 'src/redux/slices/documentsSlice';
+import FileThumbnail from 'src/components/file-thumbnail';
 
 export default function FileManagerMoveDialog({ open, onClose, row }) {
   const dispatch = useDispatch();
@@ -79,19 +82,38 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
             </TableHead>
             <TableBody>
               {folders?.docs?.length > 0 ? (
-                folders.docs.map((folder) => (
-                  <TableRow key={folder._id} onClick={(e) => handleClick(e, folder)}>
-                    <TableCell>{folder.name}</TableCell>
-                    {/* <TableCell>
-                      <IconButton color={selectedFolder === folder._id ? 'primary' : 'default'}>
-                        <ArrowForwardIcon />
-                      </IconButton>
-                    </TableCell> */}
-                  </TableRow>
-                ))
+                folders.docs.map((folder) => {
+                  const isFolder = folder._type === 'folder';
+
+                  return (
+                    <TableRow
+                      key={folder._id}
+                      onClick={isFolder ? (e) => handleClick(e, folder) : undefined}
+                      sx={{
+                        cursor: isFolder ? 'pointer' : 'not-allowed',
+                        '&:hover': {
+                          backgroundColor: isFolder ? '#d3d3d3' : 'inherit',
+                        },
+                        opacity: isFolder ? 1 : 0.6,
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+                        <FileThumbnail
+                          file={isFolder ? 'folder' : 'file'}
+                          sx={{ width: 36, height: 36, marginRight: 2 }}
+                        />
+                        {folder.name}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={2}>No folders available</TableCell>
+                  <TableCell colSpan={2} align="center">
+                    No folders available
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
