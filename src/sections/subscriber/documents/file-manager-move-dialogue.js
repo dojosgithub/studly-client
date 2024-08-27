@@ -171,18 +171,19 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
         // </RoleAccessWrapper>
         // }
       /> */}
-      <Box sx={{ padding: '8px 24px', width: '100%', marginTop: '30px' }}>
-        <CustomBreadcrumbs
-          notLink
-          links={folders?.links?.map((item) => ({
-            name: item.name,
-            href: item.href,
-          }))}
-          onClick={clicked}
-        />
-      </Box>
 
-      <DialogActions>
+      <DialogActions sx={{ marginTop: '30px', marginBottom: '30px' }}>
+        <Box sx={{ width: '100%' }}>
+          <CustomBreadcrumbs
+            notLink
+            links={folders?.links?.slice(1).map((item) => ({
+              name: item.name,
+              href: item.href,
+            }))}
+            onClick={clicked}
+          />
+        </Box>
+
         <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" onClick={handleMove} disabled={!selectedFolder}>
           Move
