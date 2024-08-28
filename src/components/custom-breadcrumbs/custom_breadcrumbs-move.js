@@ -54,6 +54,7 @@ export default function CustomBreadcrumbs({
                             pointerEvents: 'none',
                             color: 'text.disabled',
                           }),
+                          padding: 0
                       }}
                       onClick={() => onClick(link.href)}
                     >

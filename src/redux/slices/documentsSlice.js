@@ -238,7 +238,7 @@ const documents = createSlice({
   reducers: {
     setdocuments: (state, action) => {
       // state.list = action.payload;
-      state.list = [...state.list, action.payload];
+      state.list = action.payload;
     },
     setCurrentdocuments: (state, action) => {
       state.current = action.payload;
@@ -370,4 +370,6 @@ const documents = createSlice({
       });
   },
 });
+
+export const { setdocuments } = documents.actions;
 export default documents.reducer;

@@ -77,6 +77,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
       enqueueSnackbar('Moved Successfully', { variant: 'success' });
       // await fetchData();
       handleClose();
+      return;
     }
     if (isOnRoot) {
       await dispatch(moveDocument({ id: row._id, to: null }));
@@ -104,6 +105,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                   const isFolder = folder._type === 'folder';
                   const isSelected = selectedFolder === folder._id;
                   const isBeingMoved = folder._id === row._id;
+                  const isParentOfMove = folder.parentId === row.parentId;
 
                   const rowBackgroundColor = isSelected ? '#D2E3FC' : 'inherit';
                   let hoverBackgroundColor;
@@ -116,7 +118,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                     hoverBackgroundColor = 'inherit';
                   }
 
-                  const isDisabled = !isFolder || isBeingMoved;
+                  const isDisabled = !isFolder || isBeingMoved || isParentOfMove;
 
                   return (
                     <TableRow
@@ -209,6 +211,7 @@ FileManagerMoveDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   row: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    parentId: PropTypes.string,
     _type: PropTypes.string.isRequired,
   }).isRequired,
 };

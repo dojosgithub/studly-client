@@ -266,7 +266,7 @@ export default function FileManagerFileDetails({
 
             <Divider sx={{ borderStyle: 'dashed' }} />
 
-            {renderTags}
+            {/* {renderTags} */}
 
             {renderProperties}
           </Stack>

@@ -43,7 +43,8 @@ export default function CustomBreadcrumbs({
                   {notLink ? (
                     <ListItem
                       sx={{
-                        typography: 'body2',
+
+                        // typography: 'body2',
                         alignItems: 'center',
                         color: 'text.primary',
                         display: 'inline-flex',
@@ -54,6 +55,8 @@ export default function CustomBreadcrumbs({
                             pointerEvents: 'none',
                             color: 'text.disabled',
                           }),
+                          margin: 0,
+                          padding: 0
                       }}
                       onClick={() => onClick(link.href)}
                     >

@@ -29,7 +29,7 @@ import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // components
 import Iconify from 'src/components/iconify';
-import { getDocumentsList, deleteDocument } from 'src/redux/slices/documentsSlice';
+import { getDocumentsList, deleteDocument, setdocuments } from 'src/redux/slices/documentsSlice';
 import EmptyContent from 'src/components/empty-content';
 import { fileFormat } from 'src/components/file-thumbnail';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -92,6 +92,7 @@ export default function FileManagerView() {
 
   useEffect(() => {
     dispatch(getDocumentsList({ search: filters.query, page }));
+    return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
   }, [dispatch, filters.query, page]);
 
   // useEffect(() => {

@@ -137,8 +137,8 @@ export default function FileManagerTableRow({
     try {
       // Dispatch the rename action with the new name
 
-      dispatch(renameDocument({ newName, _id }));
-      dispatch(getDocumentsList());
+      await dispatch(renameDocument({ newName, _id }));
+      // dispatch(getDocumentsList());
 
       // Provide feedback to the user
       enqueueSnackbar('Renamed Successfully', { variant: 'success' });
