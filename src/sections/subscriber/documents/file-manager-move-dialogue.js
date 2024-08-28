@@ -32,6 +32,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/custom_breadcru
 export default function FileManagerMoveDialog({ open, onClose, row }) {
   const dispatch = useDispatch();
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const [isOnRoot, setIsOnRoot] = useState(false);
   const folders = useSelector((state) => state.documents.moveList);
   const { enqueueSnackbar } = useSnackbar();
   // console.log(row);
@@ -63,14 +64,22 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
   const clicked = (item) => {
     if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
       fetchData({ parentId: item.replace('/', '') });
+      setIsOnRoot(false);
     } else {
       fetchData({ parentId: null });
+      setIsOnRoot(true);
     }
   };
   const handleMove = async () => {
     if (selectedFolder) {
       console.log('Moving item to folder:', selectedFolder);
       await dispatch(moveDocument({ id: row._id, to: selectedFolder }));
+      enqueueSnackbar('Moved Successfully', { variant: 'success' });
+      // await fetchData();
+      handleClose();
+    }
+    if (isOnRoot) {
+      await dispatch(moveDocument({ id: row._id, to: null }));
       enqueueSnackbar('Moved Successfully', { variant: 'success' });
       // await fetchData();
       handleClose();
@@ -141,7 +150,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
               ) : (
                 <TableRow>
                   <TableCell colSpan={1} align="center">
-                    No folders available
+                    No documents available
                   </TableCell>
                 </TableRow>
               )}
@@ -174,18 +183,20 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
 
       <DialogActions sx={{ marginTop: '30px', marginBottom: '30px' }}>
         <Box sx={{ width: '100%' }}>
-          <CustomBreadcrumbs
-            notLink
-            links={folders?.links?.slice(1).map((item) => ({
-              name: item.name,
-              href: item.href,
-            }))}
-            onClick={clicked}
-          />
+          {folders?.links && (
+            <CustomBreadcrumbs
+              notLink
+              links={folders?.links?.slice(1).map((item) => ({
+                name: item.name,
+                href: item.href,
+              }))}
+              onClick={clicked}
+            />
+          )}
         </Box>
 
         <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleMove} disabled={!selectedFolder}>
+        <Button variant="contained" onClick={handleMove} disabled={!selectedFolder && !isOnRoot}>
           Move
         </Button>
       </DialogActions>
