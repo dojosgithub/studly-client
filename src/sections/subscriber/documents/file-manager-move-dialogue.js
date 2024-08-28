@@ -105,8 +105,9 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                   const isFolder = folder._type === 'folder';
                   const isSelected = selectedFolder === folder._id;
                   const isBeingMoved = folder._id === row._id;
-                  const isParentOfMove = folder.parentId === row.parentId;
+                  // const isParentOfMove = folder.parentId === row.parentId;
 
+                  console.log('isParentOfMove', folder, row)
                   const rowBackgroundColor = isSelected ? '#D2E3FC' : 'inherit';
                   let hoverBackgroundColor;
 
@@ -118,7 +119,9 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                     hoverBackgroundColor = 'inherit';
                   }
 
-                  const isDisabled = !isFolder || isBeingMoved || isParentOfMove;
+                  // const isDisabled = !isFolder || isBeingMoved || isParentOfMove;
+                  const isDisabled = !isFolder || isBeingMoved;
+
 
                   return (
                     <TableRow
