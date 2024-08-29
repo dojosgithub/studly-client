@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 // theme
 import { bgBlur } from 'src/theme/css';
 // hooks
@@ -92,9 +92,19 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
       {/* {lgUp && !isOnboarding && <CompanyMenu />} */}
       {isViewAs ? (
-        <Button type="button" variant="contained" onClick={exitAccess}>
-          Exit Access
-        </Button>
+        // <Button type="button" variant="contained" onClick={exitAccess}>
+        //   Exit Access
+        // </Button>
+        <Alert
+          severity="info"
+          action={
+            <Button type="button" variant="contained" onClick={exitAccess}>
+              Exit Access
+            </Button>
+          }
+        >
+         You are now operating as the Company Admin.
+        </Alert>
       ) : (
         <Stack
           flexGrow={1}
