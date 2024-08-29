@@ -57,6 +57,7 @@ export default function FileManagerTable({
   handlePageChange,
   page,
 }) {
+  console.log('page', page)
   const theme = useTheme();
 
   const {

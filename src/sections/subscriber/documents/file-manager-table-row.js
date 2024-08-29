@@ -191,7 +191,6 @@ export default function FileManagerTableRow({
     popover.onClose();
   };
 
-  console.log(_type, fileType, name)
   return (
     <>
       <TableRow

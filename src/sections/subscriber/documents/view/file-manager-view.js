@@ -96,7 +96,7 @@ export default function FileManagerView() {
   }, [dispatch, filters.query, page]);
 
   useEffect(() => {
-    console.log('Hello')
+    console.log('Dont remove this');
     return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
   }, [dispatch]);
   // useEffect(() => {
@@ -236,15 +236,18 @@ export default function FileManagerView() {
     />
   );
 
-  const fetchData = (props) => {
-    dispatch(getDocumentsList({ search: filters.query, status: filters.status, ...props }));
+  const fetchData = async (props, setPages) => {
+    await dispatch(getDocumentsList({ search: filters.query, status: filters.status, ...props }));
+    if(setPages){
+      setPage(1)
+    }
   };
 
   const clicked = (item) => {
     if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
-      fetchData({ parentId: item.replace('/', '') });
+      fetchData({ parentId: item.replace('/', '')}, true);
     } else {
-      fetchData({ parentId: null });
+      fetchData({ parentId: null }, true);
     }
   };
   return (
