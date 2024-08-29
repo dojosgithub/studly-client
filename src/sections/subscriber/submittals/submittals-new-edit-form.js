@@ -74,6 +74,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   );
   const [files, setFiles] = useState(existingAttachments);
   const [tradeObject, setTradeObject] = useState(currentSubmittal ? currentSubmittal?.trade : null);
+
+  useEffect(() => {
+    if (currentSubmittal) setTradeObject(currentSubmittal?.trade);
+  }, [currentSubmittal]);
+  // console.log('tradeObject', tradeObject);
+
   useEffect(() => {
     if (pathname.includes('revision')) {
       setFiles([]);
@@ -261,7 +267,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
           ...tradeObject,
           submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
         };
-
       }
       // delete trade._id;
       if (!trade) {
