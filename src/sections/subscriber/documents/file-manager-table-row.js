@@ -191,6 +191,7 @@ export default function FileManagerTableRow({
     popover.onClose();
   };
 
+  console.log(_type, fileType, name)
   return (
     <>
       <TableRow
@@ -221,7 +222,8 @@ export default function FileManagerTableRow({
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <FileThumbnail
-              file={_type === 'file' ? fileType : _type}
+              // file={_type === 'file' ? fileType : _type}
+              file={_type === 'file' ? preview : _type}
               // file={preview}
               sx={{ width: 36, height: 36 }}
             />

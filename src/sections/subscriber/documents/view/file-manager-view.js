@@ -92,9 +92,13 @@ export default function FileManagerView() {
 
   useEffect(() => {
     dispatch(getDocumentsList({ search: filters.query, page }));
-    return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
+    // return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
   }, [dispatch, filters.query, page]);
 
+  useEffect(() => {
+    console.log('Hello')
+    return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
+  }, [dispatch]);
   // useEffect(() => {
   //   dispatch(getDocumentsList({ search: filters.query, page }));
   // }, [dispatch, filters.query,  page]);
