@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import MenuItem from '@mui/material/MenuItem';
@@ -15,8 +15,9 @@ import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import { Divider, FormControl, InputLabel, Select } from '@mui/material';
+import { Divider, FormControl, IconButton, InputLabel, Paper, Select } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { addDays } from 'date-fns';
 // @mui
@@ -49,8 +50,10 @@ import {
   updateSubmittalResponseDetails,
 } from 'src/redux/slices/submittalSlice';
 import { REVIEW_STATUS } from 'src/utils/constants';
+import { useBoolean } from 'src/hooks/use-boolean';
 import SubmittalAttachments from './submittals-attachment';
 import PdfModifier from '../pdfs/annotator';
+import SubmittalPdfEditorDrawer from './submittal-pdf-editor-drawer';
 
 // ----------------------------------------------------------------------
 
@@ -58,6 +61,8 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
+  const confirm = useBoolean();
+
   // const currentSubmittal = useSelector(state => state.submittal.current)
 
   const existingAttachments = useMemo(
@@ -65,22 +70,15 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
     [currentSubmittal?.response]
   );
 
-  const [files, setFiles] = useState(existingAttachments);
+  const [files, setFiles] = useState([]);
   const [markupFile, setMarkupFile] = useState(null);
-  const [hasFileChanges, setHasFileChanges] = useState(
-    JSON.stringify(files) !== JSON.stringify(existingAttachments)
-  );
-  const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    // Check if files have changed
-    const hasChanges = JSON.stringify(files) !== JSON.stringify(existingAttachments);
-    setHasFileChanges(hasChanges);
-  }, [files, existingAttachments]);
+  const { enqueueSnackbar } = useSnackbar();
 
   const NewSubmittalSchema = Yup.object().shape({
     comment: Yup.string().required('Comment is required'),
     status: Yup.string().required('Status is required'),
+    markedUpFiles: Yup.array(),
     // attachments: Yup.array().min(1),
   });
 
@@ -107,6 +105,20 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   } = methods;
 
   const values = watch();
+
+  const [hasFileChanges, setHasFileChanges] = useState(
+    JSON.stringify(files) !== JSON.stringify(existingAttachments)
+  );
+
+  useEffect(() => {
+    if (existingAttachments) setFiles(existingAttachments);
+  }, [existingAttachments]);
+
+  useEffect(() => {
+    // Check if files have changed
+    const hasChanges = JSON.stringify(files) !== JSON.stringify(existingAttachments);
+    setHasFileChanges(hasChanges);
+  }, [files, existingAttachments]);
 
   useEffect(() => {
     // dispatch(setSubmittalResponse(currentSubmittal?.response))
@@ -177,99 +189,171 @@ export default function SubmittalsReviewRespondForm({ currentSubmittal, id }) {
   const handleSelect = (e) => {
     setMarkupFile(e.target.value);
   };
+
+  const openDrawer = () => {
+    confirm.onTrue();
+  };
+
+  const closeEditor = () => {
+    confirm.onFalse();
+  };
+
+  const onSaveComments = (notes) => {
+    console.log('NOTES', notes);
+    const currentFiles = cloneDeep(files);
+    currentFiles.push({
+      ...markupFile,
+      name: `reviewed_${markupFile.name}`,
+      notes,
+      isMarkedUp: true,
+    });
+    // setMarkedUpFiles(currentFiles);
+    // setValue('markedUpFiles', currentFiles);
+    setFiles(currentFiles);
+    closeEditor();
+  };
+
+  console.log(values.markedUpFiles);
+
+  const handleDelete = (index) => {
+    console.log(index);
+    const currentFiles = cloneDeep(values.markedUpFiles);
+    currentFiles.splice(index, 1);
+    // setMarkedUpFiles(currentFiles);
+    setValue('markedUpFiles', currentFiles);
+  };
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Grid container spacing={3}>
-        <Grid xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
-            <Box rowGap={4} my={3} display="flex" flexDirection="column">
-              {/* // TODO: SHOW CHIP */}
-              <RHFSelect
-                name="status"
-                label="Status"
-                chip
-                disabled={currentSubmittal?.isResponseSubmitted}
-              >
-                {REVIEW_STATUS?.map((item) => (
-                  <MenuItem selected value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </RHFSelect>
-              <RHFTextField name="comment" label="Add a comment" />
+    <>
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Grid container spacing={3}>
+          <Grid xs={12} md={12}>
+            <Card sx={{ p: 3 }}>
+              <Box rowGap={4} my={3} display="flex" flexDirection="column">
+                {/* // TODO: SHOW CHIP */}
+                <RHFSelect
+                  name="status"
+                  label="Status"
+                  chip
+                  disabled={currentSubmittal?.isResponseSubmitted}
+                >
+                  {REVIEW_STATUS?.map((item) => (
+                    <MenuItem selected value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+                <RHFTextField name="comment" label="Add a comment" />
 
-              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
+                <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
 
-              {currentSubmittal?.attachments.length > 0 && (
-                <>
-                  <Divider>OR</Divider>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Add Markup</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      label="Add Markup"
-                      name="Add Markup"
-                      value={markupFile}
-                      onChange={(e) => handleSelect(e)}
-                    >
-                      {currentSubmittal?.attachments.map((item) => (
-                        <MenuItem
-                          key={item.key}
-                          value={item}
-                          sx={{ height: 50, px: 3, borderRadius: 0 }}
+                {currentSubmittal?.attachments.length > 0 && (
+                  <>
+                    <Divider>OR</Divider>
+                    <Stack direction="row" spacing={1}>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Add Markup</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          label="Add Markup"
+                          name="Add Markup"
+                          value={markupFile}
+                          onChange={(e) => handleSelect(e)}
                         >
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <PdfModifier />
-                </>
-              )}
-            </Box>
+                          {currentSubmittal?.attachments.map((item) => (
+                            <MenuItem
+                              key={item.key}
+                              value={item}
+                              sx={{ height: 50, px: 3, borderRadius: 0 }}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Button onClick={openDrawer} disabled={!markupFile} variant="outlined">
+                        Add
+                      </Button>
+                    </Stack>
 
-            <Stack alignItems="flex-end" sx={{ my: 3 }}>
-              <Box display="flex" justifyContent="flex-end" gap={2}>
-                {!currentSubmittal?.isResponseSubmitted && (
-                  <LoadingButton
-                    type="button"
-                    onClick={() => onSubmit('save')}
-                    variant="outlined"
-                    size="large"
-                    loading={isSubmitting}
-                    disabled={!isDirty && !hasFileChanges}
-                  >
-                    Save
-                  </LoadingButton>
-                )}
-                {currentSubmittal?.isResponseSubmitted ? (
-                  <LoadingButton
-                    type="button"
-                    onClick={() => onSubmit('update')}
-                    variant="contained"
-                    size="large"
-                    loading={isSubmitting}
-                    disabled={!isDirty && !hasFileChanges}
-                  >
-                    Update
-                  </LoadingButton>
-                ) : (
-                  <LoadingButton
-                    type="button"
-                    onClick={() => onSubmit('submit')}
-                    variant="contained"
-                    size="large"
-                    loading={isSubmitting}
-                  >
-                    Submit
-                  </LoadingButton>
+                    {/* {values.markedUpFiles?.length > 0 && (
+                      <Typography variant="h6">Markuped Files</Typography>
+                    )}
+                    {values.markedUpFiles?.map((file, index) => (
+                      <Paper
+                        key={index}
+                        elevation={3}
+                        style={{ marginBottom: '16px', padding: '16px' }}
+                      >
+                        <Box display="flex" alignItems="center" justifyContent="space-between">
+                          <Typography variant="body1">{file.file.name}</Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Notes ({file.notes.length})
+                          </Typography>
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={() => handleDelete(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      </Paper>
+                    ))} */}
+                  </>
                 )}
               </Box>
-            </Stack>
-          </Card>
+
+              <Stack alignItems="flex-end" sx={{ my: 3 }}>
+                <Box display="flex" justifyContent="flex-end" gap={2}>
+                  {!currentSubmittal?.isResponseSubmitted && (
+                    <LoadingButton
+                      type="button"
+                      onClick={() => onSubmit('save')}
+                      variant="outlined"
+                      size="large"
+                      loading={isSubmitting}
+                      disabled={!isDirty && !hasFileChanges}
+                    >
+                      Save
+                    </LoadingButton>
+                  )}
+                  {currentSubmittal?.isResponseSubmitted ? (
+                    <LoadingButton
+                      type="button"
+                      onClick={() => onSubmit('update')}
+                      variant="contained"
+                      size="large"
+                      loading={isSubmitting}
+                      disabled={!isDirty && !hasFileChanges}
+                    >
+                      Update
+                    </LoadingButton>
+                  ) : (
+                    <LoadingButton
+                      type="button"
+                      onClick={() => onSubmit('submit')}
+                      variant="contained"
+                      size="large"
+                      loading={isSubmitting}
+                    >
+                      Submit
+                    </LoadingButton>
+                  )}
+                </Box>
+              </Stack>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </FormProvider>
+      </FormProvider>
+      {confirm.value && (
+        <SubmittalPdfEditorDrawer
+          open={confirm.value}
+          onClose={closeEditor}
+          file={markupFile}
+          onSave={onSaveComments}
+        />
+      )}
+    </>
   );
 }
 

@@ -15,6 +15,8 @@ import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import { isEmpty } from 'lodash';
 import { useSnackbar } from 'notistack';
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import 'pdfjs-dist/build/pdf.worker.entry';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -46,6 +48,8 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
+import PdfViewerAnotator from 'src/components/lighboxcustom/PdfViewerAnotator';
+
 //
 import { deleteSubmittal, getSubmittalList } from 'src/redux/slices/submittalSlice';
 import SubmittalsTableRow from '../submittals-table-row';
@@ -217,6 +221,8 @@ export default function SubmittalsListView() {
             mb: { xs: 3, md: 5 },
           }}
         />
+
+        {/* <PdfViewerAnotator fileUrl="https://res.cloudinary.com/dojo-dev/image/upload/v1724944400/studly-dev/1724944398715.pdf" /> */}
 
         <Card>
           {/* <Tabs

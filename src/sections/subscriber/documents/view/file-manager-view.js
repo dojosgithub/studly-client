@@ -238,14 +238,14 @@ export default function FileManagerView() {
 
   const fetchData = async (props, setPages) => {
     await dispatch(getDocumentsList({ search: filters.query, status: filters.status, ...props }));
-    if(setPages){
-      setPage(1)
+    if (setPages) {
+      setPage(1);
     }
   };
 
   const clicked = (item) => {
     if (/\b[a-fA-F0-9]{24}\b/.test(item)) {
-      fetchData({ parentId: item.replace('/', '')}, true);
+      fetchData({ parentId: item.replace('/', '') }, true);
     } else {
       fetchData({ parentId: null }, true);
     }

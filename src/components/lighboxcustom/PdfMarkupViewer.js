@@ -18,7 +18,7 @@
 // import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
 // import { PDFDocument, rgb } from 'pdf-lib';
 
-// const PDFViewerAnotator = ({ fileUrl }) => {
+// const PdfMarkupViewer = ({ fileUrl }) => {
 //   const [message, setMessage] = React.useState('');
 //   const [notes, setNotes] = React.useState([]);
 //   console.log('notes', notes);
@@ -279,9 +279,9 @@
 //   );
 // };
 
-// export default React.memo(PDFViewerAnotator);
+// export default React.memo(PdfMarkupViewer);
 
-// PDFViewerAnotator.propTypes = {
+// PdfMarkupViewer.propTypes = {
 //   fileUrl: PropTypes.string,
 // };
 
@@ -309,12 +309,11 @@ import '@react-pdf-viewer/page-navigation/lib/styles/index.css';
 import { PDFDocument, rgb } from 'pdf-lib';
 import Scrollbar from '../scrollbar';
 
-const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
+const PdfMarkupViewer = ({ fileUrl, notes }) => {
   // const fileUrl =
   // 'https://res.cloudinary.com/dojo-dev/image/upload/v1724944400/studly-dev/1724944398715.pdf';
-  const [message, setMessage] = React.useState('');
   console.log('notes', notes);
-  let noteId = notes.length;
+  // let noteId = notes.length;
   const zoomPluginInstance = zoomPlugin();
   const [zoomLevel, setZoomLevel] = useState(1); // Initial zoom level
   const [hoveredNote, setHoveredNote] = useState(null);
@@ -357,17 +356,17 @@ const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
   );
   const renderHighlightContent = (prop) => {
     const addNote = () => {
-      if (message !== '') {
-        noteId = +1;
-        const note = {
-          id: noteId,
-          content: message,
-          highlightAreas: prop.highlightAreas,
-          quote: prop.selectedText,
-        };
-        setNotes(notes.concat([note]));
-        prop.cancel();
-      }
+      // if (message !== '') {
+      //   noteId = +1;
+      //   const note = {
+      //     id: noteId,
+      //     content: message,
+      //     highlightAreas: prop.highlightAreas,
+      //     quote: prop.selectedText,
+      //   };
+      //   setNotes(notes.concat([note]));
+      //   prop.cancel();
+      // }
     };
     return (
       <div
@@ -382,7 +381,7 @@ const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
           zIndex: 1,
         }}
       >
-        <div>
+        {/* <div>
           <textarea
             rows={3}
             style={{
@@ -390,7 +389,7 @@ const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
             }}
             onChange={(e) => setMessage(e.target.value)}
           />
-        </div>
+        </div> */}
         <div
           style={{
             display: 'flex',
@@ -439,8 +438,8 @@ const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
     </div>
   );
   const highlightPluginInstance = highlightPlugin({
-    renderHighlightTarget,
-    renderHighlightContent,
+    // renderHighlightTarget,
+    // renderHighlightContent,
     renderHighlights,
   });
 
@@ -679,10 +678,10 @@ const PDFViewerAnotator = ({ fileUrl, notes, setNotes }) => {
     </div>
   );
 };
-export default React.memo(PDFViewerAnotator);
+export default React.memo(PdfMarkupViewer);
 
-PDFViewerAnotator.propTypes = {
+PdfMarkupViewer.propTypes = {
   fileUrl: PropTypes.string,
   notes: PropTypes.array,
-  setNotes: PropTypes.func,
+  // setNotes: PropTypes.func,
 };

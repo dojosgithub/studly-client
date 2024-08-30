@@ -10,7 +10,7 @@ import { fData } from 'src/utils/format-number';
 //
 import Iconify from '../iconify';
 import { varFade } from '../animate';
-import FileThumbnail, { fileData } from '../file-thumbnail';
+import FileThumbnail, { fileData, MarkedUpFileThumbnail } from '../file-thumbnail';
 
 // ----------------------------------------------------------------------
 
@@ -47,14 +47,24 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, downloadA
                   ...sx,
                 }}
               >
-                <FileThumbnail
-                  downloadAble
-                  tooltip
-                  imageView
-                  file={file}
-                  sx={{ position: 'absolute' }}
-                  imgSx={{ position: 'absolute' }}
-                />
+                {file.isMarkedUp ? (
+                  <MarkedUpFileThumbnail
+                    tooltip
+                    imageView
+                    file={file}
+                    sx={{ position: 'absolute' }}
+                    imgSx={{ position: 'absolute' }}
+                  />
+                ) : (
+                  <FileThumbnail
+                    downloadAble
+                    tooltip
+                    imageView
+                    file={file}
+                    sx={{ position: 'absolute' }}
+                    imgSx={{ position: 'absolute' }}
+                  />
+                )}
 
                 {onRemove && (
                   <IconButton
