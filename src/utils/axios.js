@@ -8,7 +8,22 @@ const axiosInstance = axios.create({ baseURL: HOST_API });
 
 axiosInstance.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
+  (error) => {
+    console.log('error.response', error.response);
+    if (
+      error.response &&
+      error.response.status === 403 &&
+      error.response.data &&
+      error.response.data.message === 'Forbidden'
+    ) {
+      sessionStorage.removeItem('accessToken');
+
+      delete axios.defaults.headers.common.Authorization;
+      window.location.replace(window.location.origin);
+      // logoutRedux();
+    }
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  }
 );
 
 export default axiosInstance;
