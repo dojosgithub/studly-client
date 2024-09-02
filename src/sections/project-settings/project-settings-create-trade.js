@@ -31,6 +31,7 @@ const ProjectSettingsCreateTrade = () => {
     control,
     name: 'trades',
   });
+  console.log('fields', fields);
   // const [rows, setRows] = useState(trades)
   // const currentTrades = useSelector(state => state.project?.create?.trades);
   // useEffect(() => {

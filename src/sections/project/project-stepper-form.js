@@ -36,6 +36,7 @@ import {
   setProjectName,
   setProjectTrades,
   setProjectWorkflow,
+  setTemplateCreationType,
 } from 'src/redux/slices/projectSlice';
 import ProjectName from 'src/sections/project/project-name';
 import ProjectTrade from 'src/sections/project/project-trade';
@@ -320,15 +321,28 @@ export default function ProjectStepperForm() {
         return;
       }
       setIsFormSubmitting(true);
-      const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
+      const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => ({
+        ...rest,
+        uid: _id,
+      }));
+      console.log('trades UPDATE PROJECT-->', data.trades);
+      console.log('updatedTrades-->', updatedTrades);
+
       // // const teams = processInviteUsers(inviteUsers);
       // // const members = teamMembers?.map(({ _id, ...rest }) => rest);
       // const { id, ...rest } = data.workflow;
       // const updatedWorkflow = rest;
+      dispatch(setTemplateCreationType());
+      const isCreatedWithCSI = selectedTradeTemplate === 'default' && activeTab === 'existing';
       const updatedWorkflow = data.workflow;
 
-      const finalData = { ...data, trades: updatedTrades, workflow: updatedWorkflow, members };
-
+      const finalData = {
+        ...data,
+        trades: updatedTrades,
+        workflow: updatedWorkflow,
+        members,
+        isCreatedWithCSI,
+      };
       const { error, payload } = await dispatch(createNewProject(finalData));
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });

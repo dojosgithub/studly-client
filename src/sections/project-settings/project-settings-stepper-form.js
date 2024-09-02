@@ -132,6 +132,7 @@ export default function ProjectSettingsStepperForm() {
   const templates = useSelector((state) => state.template.list);
   const defaultTemplate = templates.find((item) => item.name === 'default');
   const defaultTemplateTrades = defaultTemplate ? defaultTemplate?.trades : [];
+  const isCreatedWithCSI = useSelector((state) => state.project?.update?.isCreatedWithCSI);
 
   const templateList = useSelector((state) => state.template.list);
   const workflowList = useSelector((state) => state.workflow.list);
@@ -251,7 +252,7 @@ export default function ProjectSettingsStepperForm() {
         return;
       }
       setIsFormSubmitting(true);
-      // console.log('trades UPDATE PROJECT-->', data.trades);
+      console.log('trades UPDATE PROJECT-->', data.trades);
       const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
       const updatedWorkflow = data.workflow;
 

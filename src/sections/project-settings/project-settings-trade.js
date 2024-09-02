@@ -24,16 +24,17 @@ import { PROJECT_TEMPLATES } from 'src/_mock';
 import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
 import ProjectSettingsCreateTrade from './project-settings-create-trade';
-import ProjectCreateCsiTrade from './project-create-csi-template';
-import ProjectExistingTrade from './project-existing-trade';
-import ProjectTradeSelect from './project-trade-select';
+import ProjectSettingsCreateCsiTrade from './project-settings-create-csi-template';
+import ProjectSettingsExistingTrade from './project-existing-trade';
+import ProjectSettingsTradeSelect from './project-trade-select';
 
 export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTabChange }) {
   const { getValues, setValue } = useFormContext();
   const projectName = getValues('name');
 
   const dispatch = useDispatch();
-  const activeTab = useSelector((state) => state.project?.create?.activeTab);
+  const activeTab = useSelector((state) => state.project?.update?.activeTab);
+  const isCreatedWithCSI = useSelector((state) => state.project?.update?.isCreatedWithCSI);
   const selectedTradeTemplate = useSelector(
     (state) => state.project?.create?.selectedTradeTemplate
   );
@@ -73,7 +74,7 @@ export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTab
         }}
       />
 
-      <Tabs value={activeTab} onChange={handleTabChange}>
+      <Tabs value="create" onChange={handleTabChange}>
         {/* <TabsList>
           <Tab value="create" name="create">
             Create Trade
@@ -83,12 +84,12 @@ export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTab
           </Tab>
         </TabsList> */}
         <TabPanel value="create">
-          <ProjectSettingsCreateTrade />
+          {isCreatedWithCSI ? <ProjectSettingsCreateCsiTrade /> : <ProjectSettingsCreateTrade />}
         </TabPanel>
         {/* <TabPanel value="existing">
-          <ProjectTradeSelect />
-          {selectedTradeTemplate === 'default' && <ProjectCreateCsiTrade />}
-          {selectedTradeTemplate !== 'default' && <ProjectExistingTrade />}
+          <ProjectSettingsTradeSelect />
+          {selectedTradeTemplate === 'default' && <ProjectSettingsCreateCsiTrade />}
+          {selectedTradeTemplate !== 'default' && <ProjectSettingsExistingTrade />}
 
         </TabPanel> */}
       </Tabs>

@@ -1,5 +1,5 @@
 import { SimpleTreeView, TreeItem, treeItemClasses } from '@mui/x-tree-view';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
@@ -17,6 +17,7 @@ import { RHFTextField } from 'src/components/hook-form';
 import uuidv4 from 'src/utils/uuidv4';
 //
 import Iconify from 'src/components/iconify';
+import { setProjectSettingsTrades } from 'src/redux/slices/projectSlice';
 
 // ----------------------------------------------------------------------
 const CustomTreeItem = styled(TreeItem)(({ theme }) => ({
@@ -66,6 +67,7 @@ const ProjectCreateCsiTrade = () => {
   const [template, setTemplate] = useState(CSI_CODE_TEMPLATE);
   const MemoizedTreeItem = React.memo(CustomTreeItem);
   const { trades } = getValues();
+  const dispatch = useDispatch();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -85,7 +87,7 @@ const ProjectCreateCsiTrade = () => {
     (event, node) => {
       const isChecked = event.target.checked;
       const transformedNode = {
-        _id: node.id, // Rename `id` to `_id`
+        uid: node.id, // Rename `id` to `_id`
         name: node.name,
         tradeId: node.tradeId,
         // Exclude `children` property
@@ -95,26 +97,30 @@ const ProjectCreateCsiTrade = () => {
         // If the checkbox is checked
         if (isChecked) {
           // Check if the item already exists in the state
-          const exists = prevCheckedItems.some((item) => item._id === transformedNode._id);
+          const exists = prevCheckedItems.some((item) => item.uid === transformedNode.uid);
           // If it doesn't exist, add it to the state
           if (!exists) {
             const newTrades = [...prevCheckedItems, transformedNode];
             setValue('trades', newTrades);
+            dispatch(setProjectSettingsTrades(newTrades));
             return newTrades;
           }
         } else {
           // If the checkbox is unchecked, remove the item from the state
-          const updatedTrades = prevCheckedItems.filter((item) => item._id !== transformedNode._id);
+          const updatedTrades = prevCheckedItems.filter((item) => item.uid !== transformedNode.uid);
+          dispatch(setProjectSettingsTrades(updatedTrades));
           setValue('trades', updatedTrades);
           return updatedTrades;
         }
 
         // Return the previous state if no changes were made
         setValue('trades', prevCheckedItems);
+        dispatch(setProjectSettingsTrades(prevCheckedItems));
+
         return prevCheckedItems;
       });
     },
-    [setValue]
+    [setValue, dispatch]
   );
 
   const checkIfIdExistsInTree = useCallback((id, nodes) => {
@@ -132,7 +138,7 @@ const ProjectCreateCsiTrade = () => {
   const renderTree = useCallback(
     (nodes) => {
       const isChecked = checkedItems.some((nestedItem) =>
-        checkIfIdExistsInTree(nestedItem._id, nodes)
+        checkIfIdExistsInTree(nestedItem.uid, nodes)
       );
 
       return (

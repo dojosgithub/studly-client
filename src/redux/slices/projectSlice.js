@@ -183,6 +183,7 @@ const projectInitialState = {
   activeTab: 'create', // existing
   selectedTradeTemplate: '', // default || create || [template]
   isDefaultTemplateModified: false, // if true open name modal for creating a new template
+  isCreatedWithCSI: false,
 };
 const subcontractorInitialState = {
   list: {
@@ -379,7 +380,16 @@ const project = createSlice({
     setSelectedTradeTemplate: (state, action) => {
       state.create.selectedTradeTemplate = action.payload;
     },
-
+    setTemplateCreationType: (state, action) => {
+      if (
+        state.create.selectedTradeTemplate === 'default' &&
+        state.create.activeTab === 'existing'
+      ) {
+        state.create.isCreatedWithCSI = true;
+      } else {
+        state.create.isCreatedWithCSI = false;
+      }
+    },
     resetSubcontractorState: () => subcontractorInitialState,
     resetProjectState: () => initialState,
   },
@@ -534,5 +544,6 @@ export const {
   setActiveTab,
   setDefaultTemplateModified,
   setSelectedTradeTemplate,
+  setTemplateCreationType,
 } = project.actions;
 export default project.reducer;
