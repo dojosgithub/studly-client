@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { useMemo } from 'react';
 // utils
 import { fetcher, endpoints } from 'src/utils/axios';
-
+ 
 // ----------------------------------------------------------------------
 
 export function useGetPosts() {
