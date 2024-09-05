@@ -82,7 +82,7 @@ export const getCompanyUserList = createAsyncThunk(
   'company/user/list',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(endpoints.company.userList);
+      const response = await axiosInstance.get(endpoints.user.userList);
 
       return response.data.data;
     } catch (err) {
@@ -100,7 +100,7 @@ export const getCompanySubcontractorList = createAsyncThunk(
   'subcontractor/companyList',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(endpoints.company.subcontractorCompanyList);
+      const response = await axiosInstance.get(endpoints.user.subcontractorCompanyList);
 
       return response.data.data;
     } catch (err) {
@@ -117,7 +117,7 @@ export const getAllSubcontractorList = createAsyncThunk(
   'subcontractor/dbList',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(endpoints.company.subcontractorList);
+      const response = await axiosInstance.get(endpoints.user.subcontractorList);
 
       return response.data.data;
     } catch (err) {

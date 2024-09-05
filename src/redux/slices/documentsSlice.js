@@ -22,7 +22,7 @@ export const moveDocument = createAsyncThunk(
   'folders/move',
   async ({ id, to }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/api/user/documents/move/${id}/${to}`);
+      const response = await axiosInstance.get(endpoints.documents.move(id, to));
       return response.data; // Adjust if your API returns different data
     } catch (err) {
       return rejectWithValue(err.response ? err.response.data : err.message);
