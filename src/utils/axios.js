@@ -75,7 +75,7 @@ export const endpoints = {
     newPassword: '/api/user/verify-totp',
   },
   company: {
-    list: '/api/user/company',
+    list: '/api/company',
     create: '/api/company/admin/register',
     update: (id) => `/api/company/${id}`,
     delete: (id) => `/api/company/${id}`,
