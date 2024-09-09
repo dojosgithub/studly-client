@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
+import { getProjectRfiUsersList } from 'src/redux/slices/rfiSlice';
 import { getProjectAssigneeUsers, getProjectUsersList } from 'src/redux/slices/submittalSlice';
 // sections
 import { RfiCreateView } from 'src/sections/subscriber/rfis/view';
@@ -13,7 +14,8 @@ export default function RfiCreatePage() {
 
   // getting users list of project
   useEffect(() => {
-    dispatch(getProjectUsersList());
+    // dispatch(getProjectUsersList());
+    dispatch(getProjectRfiUsersList());
     dispatch(getProjectAssigneeUsers());
   }, [dispatch]);
   return (

@@ -55,7 +55,8 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   const { pathname } = useLocation();
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
-  const ccList = useSelector((state) => state.submittal.users);
+  // const ccList = useSelector((state) => state.submittal.users);
+  const ccList = useSelector((state) => state.rfi.users);
   const ownerList = useSelector((state) => state.submittal.assigneeUsers);
   const currentUser = useSelector((state) => state.user?.user);
   const projectId = useSelector((state) => state.project?.current?._id);

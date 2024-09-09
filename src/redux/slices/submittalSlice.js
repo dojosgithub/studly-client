@@ -124,7 +124,9 @@ export const getProjectUsersList = createAsyncThunk(
     try {
       const projectId = getState().project?.current?._id;
 
-      const response = await axiosInstance.get(endpoints.project.projectUsersList(projectId));
+      const response = await axiosInstance.get(
+        endpoints.project.projectSubmittalUsersList(projectId)
+      );
 
       return response.data.data;
     } catch (err) {

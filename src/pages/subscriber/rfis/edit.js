@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRfiDetails } from 'src/redux/slices/rfiSlice';
+import { getProjectRfiUsersList, getRfiDetails } from 'src/redux/slices/rfiSlice';
 import {
   getProjectAssigneeUsers,
   getProjectUsersList,
@@ -23,7 +23,8 @@ export default function SubmittalsEditPage() {
 
   // getting users list of project
   useEffect(() => {
-    dispatch(getProjectUsersList());
+    // dispatch(getProjectUsersList());
+    dispatch(getProjectRfiUsersList());
     dispatch(getProjectAssigneeUsers());
     async function getDetails() {
       await dispatch(getRfiDetails(id));
