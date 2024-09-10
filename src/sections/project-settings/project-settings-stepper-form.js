@@ -253,7 +253,8 @@ export default function ProjectSettingsStepperForm() {
       }
       setIsFormSubmitting(true);
       console.log('trades UPDATE PROJECT-->', data.trades);
-      const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => rest);
+      // firstName, lastName,
+      const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
       const updatedWorkflow = data.workflow;
 
       const finalData = {

@@ -321,7 +321,8 @@ export default function ProjectStepperForm() {
         return;
       }
       setIsFormSubmitting(true);
-      const updatedTrades = data?.trades?.map(({ _id, firstName, lastName, ...rest }) => ({
+      // firstName, lastName,
+      const updatedTrades = data?.trades?.map(({ _id, ...rest }) => ({
         ...rest,
         uid: _id,
       }));
