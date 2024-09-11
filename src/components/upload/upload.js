@@ -32,6 +32,7 @@ export default function Upload({
   onUpload,
   onRemove,
   onRemoveAll,
+  maxSizeString,
   sx,
   ...other
 }) {
@@ -164,7 +165,7 @@ export default function Upload({
 
       {helperText && helperText}
 
-      <RejectionFiles fileRejections={fileRejections} />
+      <RejectionFiles fileRejections={fileRejections} maxSizeString={maxSizeString} />
 
       {renderMultiPreview}
     </Box>
