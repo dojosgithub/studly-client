@@ -185,4 +185,5 @@ Upload.propTypes = {
   onUpload: PropTypes.func,
   sx: PropTypes.object,
   thumbnail: PropTypes.bool,
+  maxSizeString: PropTypes?.string,
 };
