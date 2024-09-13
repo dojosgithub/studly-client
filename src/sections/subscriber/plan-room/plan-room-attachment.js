@@ -90,9 +90,8 @@ export default function PlanRoomAttachments({
         }}
         {...other}
         maxFiles={10}
-        // maxSize={20000000} // 20 MB
-        maxSize={314572800} // 300 MB
-        maxSizeString="300 MB"
+        maxSize={100 * 1024 * 1024} // 100 MB
+        maxSizeString="100 MB"
         error={!!error}
         helperText={
           (!!error || helperText) && (

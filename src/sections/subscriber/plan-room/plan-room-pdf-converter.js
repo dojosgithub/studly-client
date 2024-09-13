@@ -207,6 +207,7 @@ function PlanRoomPdfConverter({ files }) {
                     /> */}
           <Box p={4}>
             <CustomImage
+              sx={{ width: 300 }}
               alt={`Corner of page ${index + 1}`}
               // ratio="1/1"
               src={image}

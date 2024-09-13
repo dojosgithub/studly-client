@@ -40,7 +40,7 @@ export default function RejectionFiles({ fileRejections, maxSizeString }) {
 
             {errors.map((error) => {
               if (error.code === 'file-too-large') {
-                error.message = `File is larger than ${maxSizeString || '20 MB'}`;
+                error.message = `File is larger than ${maxSizeString || '500 MB'}`;
               }
               return (
                 <Box key={error.code} component="span" sx={{ typography: 'caption' }}>
