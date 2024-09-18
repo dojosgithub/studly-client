@@ -257,12 +257,36 @@ export default function ProjectSettingsStepperForm() {
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
       const updatedWorkflow = data.workflow;
 
+      // const memberData = {
+      //   user: subcontractorId,
+      //   status: 'joined',
+      //   email: email,
+      //   role: inviteDataTrade.role,
+      //   team: null,
+      // }
+      // Get emails from the trades array
+      const tradeEmails = updatedTrades
+        .filter((trade) => trade.email) // Only include trades with an email field
+        .map((trade) => trade.email);
+
+      // Filter members based on !trade emails and role.shortName !== 'SCO'
+      const filteredUsers = members.filter(
+        (member) => !tradeEmails.includes(member.email) && member.role.shortName !== 'SCO'
+      );
+      // Filter members based on trade emails and role.shortName === 'SCO'
+      const filteredSCOUsers = members.filter(
+        (member) => tradeEmails.includes(member.email) && member.role.shortName === 'SCO'
+      );
+      const filteredMembers = [...filteredUsers, ...filteredSCOUsers];
+
+      console.log('filteredMembers', filteredMembers);
+
       const finalData = {
         ...currentProject,
         ...data,
         trades: updatedTrades,
         workflow: updatedWorkflow,
-        members,
+        members: filteredMembers,
       };
       // console.log('finalData UPDATE PROJECT-->', finalData);
       const { error, payload } = await dispatch(updateExistingProject(finalData));
