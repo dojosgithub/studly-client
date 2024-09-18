@@ -131,7 +131,7 @@ const ProjectSubcontractor = () => {
     const modifiedTrades = trades.map((trade) => {
       if (trade.tradeId === tradeId) {
         // Remove email from the trade
-        const { subcontractorId, email, ...restOfTrade } = trade;
+        const { subcontractorId, email, firstName, lastName, ...restOfTrade } = trade;
         return { ...restOfTrade };
       }
       return trade;
