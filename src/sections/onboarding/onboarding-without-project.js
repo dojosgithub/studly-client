@@ -1,36 +1,21 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
-import { startCase } from 'lodash';
 
 // @mui
-import { alpha, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
-// auth
-import { useAuthContext } from 'src/auth/hooks';
-// routes
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-// hooks
-import { useResponsive } from 'src/hooks/use-responsive';
 // theme
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { STUDLY_ROLES_ACTION, SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
-import { bgGradient } from 'src/theme/css';
 import { ProjectView } from '../project/view';
 // components
 
 // ----------------------------------------------------------------------
 
 export default function OnboardingWithoutProjects() {
-  const navigate = useNavigate();
   const user = useSelector((state) => state?.user?.user);
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -48,24 +33,17 @@ export default function OnboardingWithoutProjects() {
           mx: 'auto',
         }}
       >
-        {/* <Typography variant="p" sx={{ color: (theme) => theme.palette.text.secondary, textAlign: 'center' }}>
-          Hello {startCase(user?.firstName)}
-        </Typography> */}
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
           Let’s get started by creating a new project!
         </Typography>
 
         <Stack p={2} maxWidth={400} mx="auto">
-          {/* {user?.userType === 'Subscriber' &&
-            (user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-              user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && ( */}
           <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.project.create}>
             <Button
               variant="contained"
               color="secondary"
               size="large"
               onClick={() => setOpenDrawer(true)}
-              // onClick={() => navigate(paths.subscriber.submittals.list)}
             >
               Create a new Project
             </Button>
@@ -73,7 +51,6 @@ export default function OnboardingWithoutProjects() {
           {/* )} */}
         </Stack>
       </Stack>
-      {/* <CustomDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} Component={ProjectView} /> */}
       {user?.userType === 'Subscriber' &&
         (user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
           user?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (

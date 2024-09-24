@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getProjectAssigneeUsers, getProjectUsersList } from 'src/redux/slices/submittalSlice';
 // routes
 import { useParams } from 'src/routes/hooks';
@@ -14,7 +14,6 @@ export default function SubmittalsRevisionPage() {
   const { id } = params;
 
   const dispatch = useDispatch();
-  const projectId = useSelector((state) => state?.project?.current?._id);
 
   // getting users list of project
   useEffect(() => {

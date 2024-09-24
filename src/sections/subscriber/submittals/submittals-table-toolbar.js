@@ -8,17 +8,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
-import { Button, Menu } from '@mui/material';
+import { Menu } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 // components
 import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 
@@ -30,7 +28,6 @@ export default function SubmittalsTableToolbar({
   //
   roleOptions,
 }) {
-  const popover = usePopover();
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.user.user.role);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,13 +39,6 @@ export default function SubmittalsTableToolbar({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  // const handleFilterName = useCallback(
-  //   (event) => {
-  //     onFilters('name', event.target.value);
-  //   },
-  //   [onFilters]
-  // );
 
   const handleFilterStatus = useCallback(
     (event) => {
@@ -88,164 +78,96 @@ export default function SubmittalsTableToolbar({
   };
 
   return (
-    <>
-      <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
+    <Stack
+      spacing={2}
+      alignItems={{ xs: 'flex-end', md: 'center' }}
+      direction={{
+        xs: 'column',
+        md: 'row',
+      }}
+      sx={{
+        p: 2.5,
+        pr: { xs: 2.5, md: 1 },
+      }}
+    >
+      <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+        <TextField
+          fullWidth
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Search..."
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Stack>
+
+      <FormControl
         sx={{
-          p: 2.5,
-          pr: { xs: 2.5, md: 1 },
+          flexShrink: 0,
+          width: { xs: 1, md: 200 },
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            fullWidth
-            value={inputValue}
-            onChange={handleInputChange}
-            // value={filters.name}
-            // onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
+        <InputLabel>Status</InputLabel>
 
-          {/* <IconButton onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton> */}
-        </Stack>
-
-        <FormControl
-          sx={{
-            flexShrink: 0,
-            width: { xs: 1, md: 200 },
-          }}
-        >
-          <InputLabel>Status</InputLabel>
-
-          <Select
-            multiple
-            value={filters.status}
-            onChange={handleFilterStatus}
-            input={<OutlinedInput label="Status" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
-            MenuProps={{
-              PaperProps: {
-                sx: { maxHeight: 240 },
-              },
-            }}
-          >
-            {roleOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.status.includes(option)} />
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* <LoadingButton
-          onClick={handleDownloadReport}
-          type="button"
-          variant="contained"
-          loading={isLoading}
-          sx={{ ml: 'auto' }}
-        >
-          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
-          Export
-        </LoadingButton> */}
-        {/* <Menu
-          onChange={handleDownloadReport}
-          input={<OutlinedInput label="Export" />}
+        <Select
+          multiple
+          value={filters.status}
+          onChange={handleFilterStatus}
+          input={<OutlinedInput label="Status" />}
+          renderValue={(selected) => selected.map((value) => value).join(', ')}
           MenuProps={{
             PaperProps: {
               sx: { maxHeight: 240 },
             },
           }}
         >
-          <MenuItem key="pdf" value="pdf">
-            Export As PDF
-          </MenuItem>
-          <MenuItem key="csv" value="csv">
-            Export As CSV
-          </MenuItem>
-        </Menu> */}
-        <LoadingButton
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-          type="button"
-          variant="contained"
-          loading={isLoading}
-          sx={{ ml: 'auto' }}
-          disabled={
-            !(
-              userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-              userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
-            )
-          }
-        >
-          <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
-          Export
-        </LoadingButton>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <MenuItem onClick={() => handleDownloadReport('pdf')}>Export As PDF</MenuItem>
-          <MenuItem onClick={() => handleDownloadReport('csv')}>Export As CSV</MenuItem>
-        </Menu>
-      </Stack>
+          {roleOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              <Checkbox disableRipple size="small" checked={filters.status.includes(option)} />
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-      {/* <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 140 }}
+      <LoadingButton
+        id="basic-button"
+        aria-controls={open ? 'basic-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+        type="button"
+        variant="contained"
+        loading={isLoading}
+        sx={{ ml: 'auto' }}
+        disabled={
+          !(
+            userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+            userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU
+          )
+        }
       >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:printer-minimalistic-bold" />
-          Print
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:import-bold" />
-          Import
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:export-bold" />
-          Export
-        </MenuItem>
-      </CustomPopover> */}
-    </>
+        <Iconify icon="solar:export-bold" style={{ height: '2rem', width: '3rem' }} />
+        Export
+      </LoadingButton>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={() => handleDownloadReport('pdf')}>Export As PDF</MenuItem>
+        <MenuItem onClick={() => handleDownloadReport('csv')}>Export As CSV</MenuItem>
+      </Menu>
+    </Stack>
   );
 }
 

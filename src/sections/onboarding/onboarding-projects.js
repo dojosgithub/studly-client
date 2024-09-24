@@ -1,26 +1,16 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { jwtDecode } from 'jwt-decode';
 //
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 // @mui
-import { alpha, useTheme } from '@mui/material/styles';
 import { Button } from '@mui/material';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-// auth
-import { useAuthContext } from 'src/auth/hooks';
 // routes
 import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-// hooks
-import { useResponsive } from 'src/hooks/use-responsive';
 // theme
-import { bgGradient } from 'src/theme/css';
 import {
   setCurrentProject,
   setCurrentProjectRole,
@@ -33,7 +23,6 @@ import { CustomDrawer } from 'src/components/custom-drawer';
 //
 import Scrollbar from 'src/components/scrollbar';
 import {
-  getKeyByValue,
   getUserRoleKeyByValue,
   STUDLY_ROLES_ACTION,
   SUBSCRIBER_USER_ROLE_STUDLY,
@@ -76,7 +65,6 @@ export default function OnboardingProjects({ projects }) {
       }
     } else {
       // Company Admin Logic
-      const isAdmin = admin === user._id;
       updatedRole = {
         name: SUBSCRIBER_USER_ROLE_STUDLY.CAD,
         shortName: getUserRoleKeyByValue(SUBSCRIBER_USER_ROLE_STUDLY.CAD),
@@ -88,8 +76,6 @@ export default function OnboardingProjects({ projects }) {
         projectId,
         companyId,
       };
-
-      // console.log('Company Admin or Power User', isAdmin);
     }
 
     dispatch(setUpdateProject());
@@ -143,27 +129,21 @@ export default function OnboardingProjects({ projects }) {
                   onClick={() => handleProject(project)}
                   key={project?._id}
                 >
-                  {/* <RouterLink href="/subscriber" style={{ textDecoration: 'none', color: '#3e3e3e' }}>
-            </RouterLink> */}
                   {project?.name}
                 </Button>
               ))}
             </Stack>
           </Scrollbar>
-          {/* // {user?.userType === 'Subscriber' && */}
-          {/* // (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && ( */}
           <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.project.create}>
             <Button
               variant="contained"
               color="secondary"
               size="large"
               onClick={() => setOpenDrawer(true)}
-              // onClick={() => navigate(paths.subscriber.submittals.list)}
             >
               Create a new Project
             </Button>
           </RoleAccessWrapper>
-          {/* // )} */}
         </Stack>
       </Stack>
       {user?.userType === 'Subscriber' &&

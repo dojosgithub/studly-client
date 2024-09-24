@@ -12,38 +12,18 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { addDays, isAfter, isTomorrow, startOfDay } from 'date-fns';
+import { addDays, isTomorrow, startOfDay } from 'date-fns';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers';
-// utils
-import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
 import { useParams, useRouter } from 'src/routes/hooks';
-// assets
-import { countries } from 'src/assets/data';
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFAutocomplete,
-  RHFUpload,
-  RHFSelect,
-  RHFMultiSelect,
-  RHFMultiSelectChip,
-  RHFSelectChip,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFSelect, RHFMultiSelect } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
-import { getStrTradeId } from 'src/utils/split-string';
 import {
   createNewSubmittal,
   editSubmittal,
@@ -52,7 +32,6 @@ import {
 } from 'src/redux/slices/submittalSlice';
 import { getCurrentProjectTradesById, getProjectList } from 'src/redux/slices/projectSlice';
 import { updateSubmittalId } from 'src/utils/submittalId';
-import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import SubmittalAttachments from './submittals-attachment';
 
 // ----------------------------------------------------------------------
@@ -78,7 +57,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   useEffect(() => {
     if (currentSubmittal) setTradeObject(currentSubmittal?.trade);
   }, [currentSubmittal]);
-  // console.log('tradeObject', tradeObject);
 
   useEffect(() => {
     if (pathname.includes('revision')) {
@@ -92,14 +70,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
   const NewSubmittalSchema = Yup.object().shape({
     trade: Yup.string().required('Trade is required'),
-    // submittalId: Yup.number()
-    //   .typeError('submittalId must be a number')
-    //   .positive('submittalId must be greater than zero')
-    //   .integer('submittalId must be an integer')
-    //   .required('submittalId is required'),
-    // submittalId: Yup.string()
-    //   .matches(/^[0-9.-]+$/, 'Trade id must contain only numeric characters, dots, and hyphens')
-    //   .required('Trade id is required'),
     submittalId: Yup.string(),
     name: Yup.string().required('Name is required'),
     leadTime: Yup.string().required('Lead time is required'),
@@ -109,39 +79,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     returnDate: Yup.date()
       .required('Return Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Return Date must be later than today'),
-    // owner: Yup.string().required('Owner is required'),
-    // owner: Yup.array().min(1).required('Owner is required'),
     owner: Yup.array(),
     ccList: Yup.array(),
-    // ccList: Yup.array().min(1, 'At least one option in the CC List is required').required('cc List is required'),
-    // attachments: Yup.array().min(1),
-    // creator: Yup.string().required('Creator is required'),
-    // submittedDate: Yup.date().required('Submssion Date is required'),
-    // link: Yup.string().required('link is required'),
   });
 
-  // const defaultValues = useMemo(
-  //   () => ({
-  //     // currentSubmittal?.trade?.tradeId
-  //     trade: currentSubmittal
-  //       ? `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`
-  //       : '',
-  //     submittalId: currentSubmittal?.submittalId || '',
-  //     name: currentSubmittal?.name || '',
-  //     description: currentSubmittal?.description || '',
-  //     // owner: currentSubmittal?.owner?.email || '',
-  //     owner: currentSubmittal?.owner?.map(item => item.email) || [],
-  //     type: currentSubmittal?.type || '',
-  //     ccList: currentSubmittal?.ccList || [],
-  //     status: currentSubmittal?.status || 'Draft', // Set default values here
-  //     returnDate: currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null,
-  //     // attachments: currentSubmittal?.attachments || [],
-  //     // submittedDate: currentSubmittal?.submittedDate || '',
-  //     // creator: currentSubmittal?.creator || '',
-  //     // link: currentSubmittal?.link || '',
-  //   }),
-  //   [currentSubmittal]
-  // );
   const defaultValues = useMemo(() => {
     let submittalId = '';
     let trade = '';
@@ -149,8 +90,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     let leadTime = '';
     let description = '';
     let type = '';
-    // let owner = [];
-    // let ccListInside = [];
     let status = 'Draft';
     let returnDate = null;
     const ccListInside = currentSubmittal?.ccList || [];
@@ -160,11 +99,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
       trade = `${currentSubmittal?.trade?.tradeId}-${currentSubmittal?.trade?.name}`;
 
       if (pathname.includes('revision')) {
-        // if (currentSubmittal?.revisionCount === 0)
-        //   submittalId += '-R'
-        // else {
-        //   submittalId = updateRevision(submittalId, currentSubmittal?.revisionCount);
-        // }
         // ? currentSubmittal contains parentSubmittal we retrieve revisionCount from there.
         const revisionCount =
           currentSubmittal?.parentSubmittal?.revisionCount || currentSubmittal?.revisionCount;
@@ -174,8 +108,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         name = currentSubmittal?.name || '';
         leadTime = currentSubmittal?.leadTime || '';
         description = currentSubmittal?.description || '';
-        // owner = currentSubmittal?.owner?.map(item => item.email) || [];
-        // ccListInside = currentSubmittal?.ccList || [];
         type = currentSubmittal?.type || '';
         status = currentSubmittal?.status || 'Draft';
         returnDate = currentSubmittal?.returnDate ? new Date(currentSubmittal.returnDate) : null;
@@ -233,56 +165,44 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
   );
 
   const onSubmit = handleSubmit(async (data, val, secondVal) => {
-    // enqueueSnackbar(currentSubmittal ? 'Update success!' : 'Create success!');
     try {
-      // const owner = ownerList?.filter((item) => data.owner === item.email)[0]?.user;
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
         .map((item) => item.user);
-      // const tradeId = getStrTradeId(data.trade);
-      // const tradeObj = trades.find((t) => t.tradeId === tradeId);
       if (val === 'review' && owner.length === 0) {
         enqueueSnackbar('Submittal can not be submitted without owner', { variant: 'error' });
         return;
       }
 
       let trade;
-      // TODO: if it's a revision then donot increment submittalCreatedCount
       if (isEmpty(currentSubmittal)) {
         trade = {
-          // ...tradeObj,
           ...tradeObject,
           submittalCreatedCount: (tradeObject?.submittalCreatedCount || 0) + 1,
         };
       } else if (!isEmpty(currentSubmittal) && pathname.includes('revision')) {
         trade = {
-          // ...tradeObj,
           ...tradeObject,
           submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
         };
       } else {
         // edit
         trade = {
-          // ...tradeObj,
           ...tradeObject,
           submittalCreatedCount: tradeObject?.submittalCreatedCount || 0,
         };
       }
-      // delete trade._id;
       if (!trade) {
         return;
       }
 
       let finalData;
-      const { _id, firstName, lastName, email } = currentUser;
+      const { _id } = currentUser;
       const creator = _id;
       if (isEmpty(currentSubmittal)) {
-        // const creator = { _id, name: `${firstName} ${lastName}`, email }
-        // const submittedDate = new Date();
         const link = 'www.google.com';
         finalData = { ...data, owner, creator, link, projectId, trade };
       } else if (!isEmpty(currentSubmittal) && pathname.includes('revision')) {
-        // const submittedDate = new Date();
         const link = 'www.google.com';
 
         finalData = {
@@ -348,7 +268,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
 
       router.push(paths.subscriber.submittals.list);
     } catch (error) {
-      // console.error(error);
       enqueueSnackbar(`Error ${currentSubmittal ? 'Updating' : 'Creating'} Project`, {
         variant: 'error',
       });
@@ -367,22 +286,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     await dispatch(getSubmittalDetails(SubmittalId));
     return true;
   };
-
-  // const handleDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     const file = acceptedFiles[0];
-
-  //     const newFile = Object.assign(file, {
-  //       preview: URL.createObjectURL(file),
-  //     });
-
-  //     if (file) {
-  //       console.log("newFile", newFile)
-  //       setValue('attachment', newFile, { shouldValidate: true });
-  //     }
-  //   },
-  //   [setValue]
-  // );
 
   return (
     <>
@@ -406,17 +309,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
-              <Box
-                rowGap={4}
-                // columnGap={2}
-                // gridTemplateColumns={{
-                //   xs: 'repeat(1, 1fr)',
-                //   sm: 'repeat(2, 1fr)',
-                // }}
-                my={3}
-                display="flex"
-                flexDirection="column"
-              >
+              <Box rowGap={4} my={3} display="flex" flexDirection="column">
                 <Box
                   rowGap={3}
                   columnGap={2}
@@ -444,7 +337,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     value={submittalId}
                     disabled
                   />
-                  {/* type='number' */}
                 </Box>
                 <Box
                   rowGap={3}
@@ -468,94 +360,12 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     sm: 'repeat(3, 1fr)',
                   }}
                 >
-                  {/* <Controller
-                  name="submittedDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => (
-                    <DatePicker
-                      label="Select Submission Date"
-                      views={['day', 'month', 'year']}
-                      value={field.value || null}
-                      minDate={addDays(new Date(), 1)}
-                      onChange={(date) => field.onChange(date)}
-                      error={!!error}
-                      helperText={error && error?.message}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
-                        },
-                      }}
-                    />
-                  )}
-                /> */}
-
-                  {/* // TODO: SHOW CHIP */}
                   <RHFSelect name="status" label="Status" chip disabled>
                     <MenuItem selected value="Draft">
                       Draft
                     </MenuItem>
                   </RHFSelect>
 
-                  {/* <RHFMultiSelectChip
-                  name="status"
-                  label="Status"
-                  options={[
-                    { label: 'Option 1', value: 'option1' },
-                    { label: 'Option 2', value: 'option2' },
-                    // Add more options here
-                  ]}
-                  disabled
-                /> */}
-                  {/* <Controller
-                  name="returnDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => (
-                    <DatePicker
-                      label="Request Return Date"
-                      views={['day', 'month', 'year']}
-                      value={field.value || null}
-                      minDate={addDays(new Date(), 1)}
-                      onChange={(date) => field.onChange(date)}
-                      error={!!error}
-                      helperText={error && error?.message}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
-                        },
-                      }}
-                    />
-                  )}
-                /> */}
-                  {/* <Controller
-                  name="returnDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => (
-                    <DatePicker
-                      label="Request Return Date"
-                      views={['day', 'month', 'year']}
-                      value={field.value || null}
-                      minDate={addDays(new Date(), 1)}
-                      onChange={(date) => field.onChange(date)}
-                      format="dd/MM/yyyy" // Specify the desired date format
-                      error={!!error}
-                      helperText={error && error?.message}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
-                        },
-                      }}
-                    />
-                  )}
-                /> */}
                   <Controller
                     name="returnDate"
                     control={control}
@@ -602,20 +412,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                 </Box>
                 <SubmittalAttachments files={files} setFiles={setFiles} />
 
-                {/* <RHFSelect
-                  name="owner"
-                  label="Assignee/Owner"
-                  disabled={currentSubmittal && currentSubmittal?.status === "Submitted"}
-                // capitalize
-                >
-               
-                  {ownerList?.map((item) => (
-                    <MenuItem value={item?.email} key={item?.email}>
-                      {item?.email}
-                    </MenuItem>
-                  ))}
-                </RHFSelect> */}
-
                 <RHFMultiSelect
                   name="owner"
                   label="Assignee/Owner"
@@ -636,200 +432,10 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                       ? false
                       : currentSubmittal && currentSubmittal?.status !== 'Draft'
                   }
-                  // placeholder="Select multiple options"
                   chip
                   options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-                  // options={[
-                  //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-                  //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-                  // ]}
                 />
               </Box>
-
-              {/* <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                }}
-              >
-                <RHFTextField name="status" label="Status" />
-                <RHFTextField name="type" label="Type" />
-              </Box> */}
-              {/* <RHFTextField name="link" label="Link" /> */}
-              {/* <Box sx={{ mb: 5 }}>
-                  <RHFUpload
-                    name="attachment"
-                    maxSize={3145728}
-                    onDrop={handleDrop}
-                    helperText={
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          mt: 3,
-                          mx: 'auto',
-                          display: 'block',
-                          textAlign: 'center',
-                          color: 'text.disabled',
-                        }}
-                      >
-                        Allowed *.jpeg, *.jpg, *.png, *.gif
-                        <br /> max size of {fData(3145728)}
-                      </Typography>
-            }
-          />
-        </Box> */}
-              {/* 
-              <Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} />
-
-
-              <Button
-          variant="contained"
-          startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-          onClick={handleUpload}
-        >
-          Upload
-        </Button>
-
-        {!!files.length && (
-          <Button variant="outlined" color="inherit" onClick={handleRemoveAllFiles}>
-            Remove all
-          </Button>
-        )}
-
-        {(onCreate || onUpdate) && (
-          <Stack direction="row" justifyContent="flex-end" flexGrow={1}>
-            <Button variant="soft" onClick={onCreate || onUpdate}>
-              {onUpdate ? 'Save' : 'Create'}
-            </Button>
-          </Stack>
-        )} */}
-              {/* <RHFAutocomplete
-                name="country"
-                label="Country"
-                options={countries.map((country) => country.label)}
-                getOptionLabel={(option) => option}
-                isOptionEqualToValue={(option, value) => option === value}
-                renderOption={(props, option) => {
-                  const { code, label, phone } = countries.filter(
-                    (country) => country.label === option
-                  )[0];
-
-                  if (!label) {
-                    return null;
-                  }
-
-                  return (
-                    <li {...props} key={label}>
-                      <Iconify
-                        key={label}
-                        icon={`circle-flags:${code.toLowerCase()}`}
-                        width={28}
-                        sx={{ mr: 1 }}
-                      />
-                      {label} ({code}) +{phone}
-                    </li>
-                  );
-                }}
-              /> */}
-
-              {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentSubmittal && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentSubmittal && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentSubmittal && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
 
               <Stack
                 direction="row"
@@ -874,13 +480,6 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
                     Save Changes
                   </LoadingButton>
                 )}
-                {/* loading={isSubmitting} */}
-                {/* {!currentSubmittal ? 'Create New Submittal' : 'Save Changes'} */}
-                {/* {status === "Draft" && (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD || currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && <Box width="100%" display='flex' justifyContent='end'>
-                <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting} onClick={handleSubmitToArchitect}>
-                    Submit to Review
-                </LoadingButton >
-            </Box>} */}
               </Stack>
             </Card>
           </Grid>

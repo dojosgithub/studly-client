@@ -63,7 +63,6 @@ export default function JwtNewPasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.info('DATA', data);
       await newPassword?.(data.email, data.password, data.code);
 
       router.push(PATH_AFTER_LOGIN);

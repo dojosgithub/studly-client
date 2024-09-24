@@ -37,7 +37,6 @@ import {
   setProjectTrades,
 } from 'src/redux/slices/projectSlice';
 // inviteSubcontractor,
-import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
 
 // ----------------------------------------------------------------------

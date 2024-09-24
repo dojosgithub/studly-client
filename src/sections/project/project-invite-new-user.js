@@ -37,7 +37,6 @@ import {
   USER_TYPES_STUDLY,
   getRoleKeyByValue,
 } from 'src/_mock';
-import CustomAutoComplete from 'src/components/custom-automcomplete';
 import { CustomInviteAutoComplete } from 'src/components/custom-invite-autocomplete';
 
 const StyledIconButton = styled(IconButton)(({ theme, variant }) => ({
@@ -197,9 +196,6 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
             {/* USER_LIST_OPTIONS */}
 
             <Stack>
-              {/* setValue={(val) => handleSelectUser(val)} */}
-              {/* value={userObj}  */}
-              {/* <CustomAutoComplete optionsList={userListOptions} /> */}
               <CustomInviteAutoComplete optionsList={userListOptions} />
               {errors && errors?.user?.message && (
                 <Typography color="red" fontSize=".75rem">

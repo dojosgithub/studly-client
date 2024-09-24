@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock';
-import CustomAutoComplete from 'src/components/custom-automcomplete';
 import { setMembers, setProjectTrades } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
 import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog';

@@ -47,7 +47,6 @@ export default function JwtForgotPasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.info('DATA', data);
       await forgotPassword?.(data.email);
 
       router.push(paths.auth.jwt.newPassword);

@@ -15,7 +15,6 @@ import { isEmpty } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { PROJECT_SUBCONTRACTORS } from 'src/_mock';
-import CustomAutoComplete from 'src/components/custom-automcomplete';
 import {
   removeInvitedSubcontractor,
   setMembers,

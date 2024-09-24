@@ -4,7 +4,7 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 
 export const updatePasswordFirstLogin = createAsyncThunk(
   'auth/updatePasswordFirstLogin',
-  async (data, { rejectWithValue }) => {
+  async (data) => {
     try {
       const response = await axiosInstance.post(endpoints.auth.updatePassword, data);
 
@@ -19,25 +19,19 @@ export const updatePasswordFirstLogin = createAsyncThunk(
   }
 );
 
-export const authSwitchProject = createAsyncThunk(
-  'auth/project-switch',
-  async (projectData, { getState, rejectWithValue }) => {
-    try {
-      // const email = getState()?.user?.user?.email; // Access the current state
-      const response = await axiosInstance.post(endpoints.project.switch, projectData);
-      // setting token in session
-      // console.log('response authSwitchProject: ', response.data?.data?.tokens?.accessToken);
-      setSession(response?.data?.data?.tokens?.accessToken);
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while changing project.');
+export const authSwitchProject = createAsyncThunk('auth/project-switch', async (projectData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.project.switch, projectData);
+    setSession(response?.data?.data?.tokens?.accessToken);
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while changing project.');
   }
-);
+});
 
 const initialState = {
   user: {},

@@ -6,8 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useBoolean } from 'src/hooks/use-boolean';
 import SubmittalPdfViewerDrawer from 'src/sections/subscriber/submittals/submittal-pdf-viewer-drawer';
 
-import { fileData, fileFormat, fileThumb } from './utils'; 
-// import MarkupPreviewButton from './download-button';
+import { fileData, fileFormat, fileThumb } from './utils';
 import MarkupPreviewButton from './markup-preview-button';
 // ----------------------------------------------------------------------
 
@@ -20,17 +19,11 @@ export default function MarkedUpFileThumbnail({
   imgSx,
 }) {
   const { name = '', path = '', preview = '' } = fileData(file);
-  // console.log(name, path, preview);
   const format = fileFormat(path || preview);
   const confirm = useBoolean();
 
   const onPreviewHandler = () => {
-    // window.open(preview, '_blank', 'noreferrer');
     console.log('PREVIEW');
-    confirm.onTrue();
-  };
-
-  const openDrawer = () => {
     confirm.onTrue();
   };
 

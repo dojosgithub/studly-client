@@ -21,17 +21,24 @@ import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
-import FormProvider, {
-  RHFMultiSelect,
-  RHFSelect, RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFMultiSelect, RHFSelect, RHFTextField } from 'src/components/hook-form';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 // mock
-import { PROJECT_INVITE_USERS_INTERNAL, PROJECT_INVITE_USER_ROLES, SUBSCRIBER_USER_ROLE_STUDLY, USER_TYPES_STUDLY, getRoleKeyByValue } from 'src/_mock';
-import { setAddExternalUser, setAddInternalUser, setInvitedSubcontractor, setMembers } from 'src/redux/slices/projectSlice';
-// inviteSubcontractor, 
-import CustomAutoComplete from 'src/components/custom-automcomplete';
+import {
+  PROJECT_INVITE_USERS_INTERNAL,
+  PROJECT_INVITE_USER_ROLES,
+  SUBSCRIBER_USER_ROLE_STUDLY,
+  USER_TYPES_STUDLY,
+  getRoleKeyByValue,
+} from 'src/_mock';
+import {
+  setAddExternalUser,
+  setAddInternalUser,
+  setInvitedSubcontractor,
+  setMembers,
+} from 'src/redux/slices/projectSlice';
+// inviteSubcontractor,
 import { sendToAll } from 'src/redux/slices/submittalSlice';
 import Editor from 'src/components/editor/editor';
 import { submitRfiResponse } from 'src/redux/slices/rfiSlice';
@@ -50,18 +57,19 @@ export default function SubmittalSendAllDialog({
   const userList = useSelector((state) => state?.submittal?.projectUsersAll) || [];
   const userId = useSelector((state) => state?.user?.user?._id) || '';
 
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const RfiResponseSchema = Yup.object().shape({
     text: Yup.string().required('text is required'),
     respondedBy: Yup.string().required('user id is required'),
-
   });
 
-  const defaultValues = useMemo(() => ({
-    text: '',
-    respondedBy: userId || ''
-  }), [userId]);
+  const defaultValues = useMemo(
+    () => ({
+      text: '',
+      respondedBy: userId || '',
+    }),
+    [userId]
+  );
 
   const methods = useForm({
     resolver: yupResolver(RfiResponseSchema),
@@ -85,29 +93,24 @@ export default function SubmittalSendAllDialog({
     // Or plain text
     const textContent = editor.getText();
 
-
-    setValue("text", htmlContent);
+    setValue('text', htmlContent);
   };
-
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-
-      data.date = new Date()
+      data.date = new Date();
       const finalData = {
         id,
-        formData: data
-        }
-      const { error, payload } = await dispatch(submitRfiResponse(finalData))
+        formData: data,
+      };
+      const { error, payload } = await dispatch(submitRfiResponse(finalData));
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
         return;
       }
       enqueueSnackbar('RFI response submitted successfully', { variant: 'success' });
-      reset()
-      onClose()
-
-
+      reset();
+      onClose();
     } catch (e) {
       console.error(e);
     }
@@ -118,21 +121,23 @@ export default function SubmittalSendAllDialog({
       <DialogTitle> Add RFI Response: </DialogTitle>
 
       <DialogContent sx={{ overflow: 'unset' }}>
-
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <Editor onChange={handleEditorChange} simple />
-
         </FormProvider>
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between' }}>
-
         {onClose && (
           <Button variant="outlined" color="inherit" onClick={onClose}>
             Close
           </Button>
         )}
-        <LoadingButton loading={isSubmitting} color="inherit" onClick={handleSubmit(onSubmit)} variant="contained">
+        <LoadingButton
+          loading={isSubmitting}
+          color="inherit"
+          onClick={handleSubmit(onSubmit)}
+          variant="contained"
+        >
           Submit Response
         </LoadingButton>
       </DialogActions>

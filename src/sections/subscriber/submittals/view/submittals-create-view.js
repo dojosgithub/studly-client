@@ -20,7 +20,6 @@ export default function SubmittalsCreateView() {
         links={[
           {
             name: 'Dashboard',
-            // href: paths.subscriber.root,
           },
           {
             name: 'Submittals',

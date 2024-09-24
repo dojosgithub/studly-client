@@ -1,54 +1,29 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 // @mui
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
-import { addDays } from 'date-fns';
-// @mui
-import { DatePicker } from '@mui/x-date-pickers';
-// utils
-import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
 import { useParams, useRouter } from 'src/routes/hooks';
-// assets
-import { countries } from 'src/assets/data';
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFAutocomplete,
-  RHFUpload,
-  RHFSelect,
-  RHFMultiSelect,
-  RHFMultiSelectChip,
-  RHFSelectChip,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFSelect } from 'src/components/hook-form';
 import {
-  createNewSubmittal,
-  editSubmittal,
   respondToSubmittalRequest,
   updateSubmittalResponseDetails,
 } from 'src/redux/slices/submittalSlice';
 import { REVIEW_STATUS } from 'src/utils/constants';
-import SubmittalAttachments from './rfi-attachment';
+import RfiAttachments from './rfi-attachment';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +31,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
-  // const currentRfi = useSelector(state => state.submittal.current)
 
   const existingAttachments = useMemo(
     () => (currentRfi?.response?.attachments ? currentRfi?.response?.attachments : []),
@@ -96,22 +70,15 @@ export default function RfiResponseForm({ currentRfi, id }) {
 
   const {
     reset,
-    watch,
-    control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting, isDirty },
   } = methods;
 
-  const values = watch();
-
   useEffect(() => {
-    // dispatch(setSubmittalResponse(currentRfi?.response))
     reset(defaultValues);
   }, [dispatch, currentRfi, id, reset, defaultValues]);
 
   const onSubmit = handleSubmit(async (data, value) => {
-    // enqueueSnackbar(currentRfi ? 'Update success!' : 'Create success!');
     try {
       if (isEmpty(params)) {
         enqueueSnackbar('Submittal Id not Found', { variant: 'error' });
@@ -130,8 +97,6 @@ export default function RfiResponseForm({ currentRfi, id }) {
       }
       data.attachments = attachments;
       formData.append('body', JSON.stringify(data));
-
-      // const { error, payload } = await dispatch(respondToSubmittalRequest({ formData, id: params?.id }))
 
       let error;
       let payload;
@@ -165,7 +130,7 @@ export default function RfiResponseForm({ currentRfi, id }) {
       enqueueSnackbar(message, { variant: 'success' });
       router.push(paths.subscriber.submittals.details(params?.id));
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       // enqueueSnackbar(`Error ${currentRfi?.response ? "Updating" : "Creating"} Project`, { variant: "error" });
     }
   });
@@ -191,7 +156,7 @@ export default function RfiResponseForm({ currentRfi, id }) {
               </RHFSelect>
               <RHFTextField name="comment" label="Add a comment" />
 
-              <SubmittalAttachments files={files} setFiles={setFiles} thumbnail={false} />
+              <RfiAttachments files={files} setFiles={setFiles} thumbnail={false} />
             </Box>
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>

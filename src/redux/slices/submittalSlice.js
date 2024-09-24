@@ -1,82 +1,66 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { isEmpty } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 // * Submittal
-export const createNewSubmittal = createAsyncThunk(
-  'submittal/create',
-  async (submittalData, { getState, rejectWithValue }) => {
-    try {
-      // const projectId = getState().project.current._id
-      // console.log("projectId", projectId)
-      // { ...submittalData, projectId }
-      const response = await axiosInstance.post(endpoints.submittal.create, submittalData);
+export const createNewSubmittal = createAsyncThunk('submittal/create', async (submittalData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.submittal.create, submittalData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the submittal.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the submittal.');
   }
-);
+});
 
-export const editSubmittal = createAsyncThunk(
-  'submittal/edit',
-  async (submittalData, { getState, rejectWithValue }) => {
-    try {
-      const { id, formData } = submittalData;
+export const editSubmittal = createAsyncThunk('submittal/edit', async (submittalData) => {
+  try {
+    const { id, formData } = submittalData;
 
-      const response = await axiosInstance.put(endpoints.submittal.edit(id), formData);
+    const response = await axiosInstance.put(endpoints.submittal.edit(id), formData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the submittal.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the submittal.');
   }
-);
-export const deleteSubmittal = createAsyncThunk(
-  'submittal/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(endpoints.submittal.delete(id));
+});
+export const deleteSubmittal = createAsyncThunk('submittal/delete', async (id) => {
+  try {
+    const response = await axiosInstance.delete(endpoints.submittal.delete(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the submittal.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the submittal.');
   }
-);
-export const getSubmittalDetails = createAsyncThunk(
-  'submittal/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.submittal.details(id));
+});
+export const getSubmittalDetails = createAsyncThunk('submittal/details', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.submittal.details(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal details.');
   }
-);
+});
 
 export const getSubmittalList = createAsyncThunk(
   'submittal/list',
-  async (listOptions, { getState, rejectWithValue }) => {
+  async (listOptions, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -102,7 +86,7 @@ export const getSubmittalList = createAsyncThunk(
 
 export const getAllProjectUsersList = createAsyncThunk(
   'submittal/users/list/all',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -120,7 +104,7 @@ export const getAllProjectUsersList = createAsyncThunk(
 );
 export const getProjectUsersList = createAsyncThunk(
   'submittal/users/list',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -141,7 +125,7 @@ export const getProjectUsersList = createAsyncThunk(
 
 export const getProjectAssigneeUsers = createAsyncThunk(
   'submittal/users-assignee/list',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -162,7 +146,7 @@ export const getProjectAssigneeUsers = createAsyncThunk(
 
 export const getSubmittalLogPDF = createAsyncThunk(
   'submittal/pdf',
-  async (exptype, { getState, rejectWithValue }) => {
+  async (exptype, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -197,7 +181,7 @@ export const getSubmittalLogPDF = createAsyncThunk(
 
 export const submitSubmittalToArchitect = createAsyncThunk(
   'submittal/submitToArchitect',
-  async (id, { getState, rejectWithValue }) => {
+  async (id) => {
     try {
       const response = await axiosInstance.post(endpoints.submittal.submit(id));
 
@@ -213,7 +197,7 @@ export const submitSubmittalToArchitect = createAsyncThunk(
 );
 export const respondToSubmittalRequest = createAsyncThunk(
   'submittal/respondToSubmittalRequest',
-  async (submittalData, { getState, rejectWithValue }) => {
+  async (submittalData) => {
     try {
       const { id, formData } = submittalData;
 
@@ -231,7 +215,7 @@ export const respondToSubmittalRequest = createAsyncThunk(
 );
 export const getSubmittalResponseDetails = createAsyncThunk(
   'submittal/submittalResponseDetails',
-  async (id, { getState, rejectWithValue }) => {
+  async (id) => {
     try {
       const response = await axiosInstance.get(endpoints.submittal.responseDetails(id));
 
@@ -247,7 +231,7 @@ export const getSubmittalResponseDetails = createAsyncThunk(
 );
 export const updateSubmittalResponseDetails = createAsyncThunk(
   'submittal/updateSubmittalResponseDetails',
-  async (submittalData, { getState, rejectWithValue }) => {
+  async (submittalData) => {
     try {
       const { id, formData } = submittalData;
 
@@ -265,7 +249,7 @@ export const updateSubmittalResponseDetails = createAsyncThunk(
 );
 export const changeSubmittalStatus = createAsyncThunk(
   'submittal/changeSubmittalStatus',
-  async (submittalData, { getState, rejectWithValue }) => {
+  async (submittalData) => {
     try {
       const response = await axiosInstance.post(endpoints.submittal.status, submittalData);
 
@@ -281,7 +265,7 @@ export const changeSubmittalStatus = createAsyncThunk(
 );
 export const resendToSubcontractor = createAsyncThunk(
   'submittal/resendToSubcontractor',
-  async (id, { getState, rejectWithValue }) => {
+  async (id) => {
     try {
       const response = await axiosInstance.get(endpoints.submittal.resendToSubcontractor(id));
 
@@ -295,22 +279,19 @@ export const resendToSubcontractor = createAsyncThunk(
     }
   }
 );
-export const sendToAll = createAsyncThunk(
-  'submittal/sendToAll',
-  async (submittalData, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.submittal.sendToAll, submittalData);
+export const sendToAll = createAsyncThunk('submittal/sendToAll', async (submittalData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.submittal.sendToAll, submittalData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal details.');
   }
-);
+});
 const initialState = {
   list: [],
   create: {},
@@ -331,18 +312,6 @@ const submittal = createSlice({
   name: 'submittal',
   initialState,
   reducers: {
-    setSubmittalList: (state, action) => {
-      state.list = action.payload;
-    },
-    setCurrentSubmittal: (state, action) => {
-      state.current = action.payload;
-    },
-    setSubmittalResponse: (state, action) => {
-      state.response = action.payload;
-    },
-    setCreateSubmittal: (state, action) => {
-      state.create = action.payload;
-    },
     resetSubmittalState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -380,7 +349,6 @@ const submittal = createSlice({
       state.error = null;
     });
     builder.addCase(deleteSubmittal.fulfilled, (state, action) => {
-      // state.create = action.payload;
       state.isLoading = false;
       state.error = null;
     });
@@ -552,11 +520,5 @@ const submittal = createSlice({
   },
 });
 
-export const {
-  setSubmittal,
-  setCurrentSubmittal,
-  setSubmittalResponse,
-  setCreateSubmittal,
-  resetSubmittalState,
-} = submittal.actions;
+export const { resetSubmittalState } = submittal.actions;
 export default submittal.reducer;

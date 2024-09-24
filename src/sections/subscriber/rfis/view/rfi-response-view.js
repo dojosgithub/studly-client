@@ -18,11 +18,9 @@ import RfiResponseForm from '../rfi-response-form';
 
 export default function RfiResponseView({ id }) {
   const settings = useSettingsContext();
-  const dispatch = useDispatch()
-  const currentRfi = useSelector(state => state.rfi.current)
-  useEffect(() => {
-
-  }, [dispatch, currentRfi, id])
+  const dispatch = useDispatch();
+  const currentRfi = useSelector((state) => state.rfi.current);
+  useEffect(() => {}, [dispatch, currentRfi, id]);
 
   // console.log("currentRfiResponse", currentRfi)
   return (
@@ -47,7 +45,7 @@ export default function RfiResponseView({ id }) {
         }}
       />
       {/* <RfiResponseForm currentRfi={currentRfi}  id={id}/> */}
-      <Editor/>
+      <Editor />
     </Container>
   );
 }

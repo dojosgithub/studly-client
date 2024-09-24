@@ -37,7 +37,6 @@ import {
   setProjectTrades,
 } from 'src/redux/slices/projectSlice';
 // inviteSubcontractor,
-import CustomAutoComplete from 'src/components/custom-automcomplete';
 // components
 
 // ----------------------------------------------------------------------
@@ -268,10 +267,6 @@ export default function ProjectInviteSubcontractorDialog({
             </RHFSelect> */}
             <Stack>
               <RHFTextField name="email" label="Email address" />
-              {/* <CustomAutoComplete listOptions={subcontractorListOptions}
-                error={errors && errors.user && (errors.user.message) || (errors?.user?.email && errors?.user?.email?.message)}
-                value={userObj} setValue={(val) => handleSelectUser(val)} /> */}
-              {/* {errors && errors?.email?.message && <Typography color='red' fontSize=".75rem">{errors?.email?.message}</Typography>} */}
             </Stack>
           </Box>
         </FormProvider>

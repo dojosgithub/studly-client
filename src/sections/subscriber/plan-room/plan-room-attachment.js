@@ -1,15 +1,12 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 // @mui
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
 //
-import { useFormContext } from 'react-hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 // components
-import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
@@ -28,20 +25,9 @@ export default function PlanRoomAttachments({
   ...other
 }) {
   const { enqueueSnackbar } = useSnackbar();
-  // const { setValue, getValues } = useFormContext()
-  // const { attachments: files } = getValues()
-
-  // useEffect(() => {
-  //     setFiles([]);
-  // }, [setFiles]);
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
-      // const newFiles = acceptedFiles.map((file) =>
-      //   Object.assign(file, {
-      //     preview: URL.createObjectURL(file),
-      //   })
-      // );
       const totalFiles = acceptedFiles.length + files.length;
       if (totalFiles > 10) {
         enqueueSnackbar('You can upload maximum of 10 files', { variant: 'error' });
@@ -54,7 +40,6 @@ export default function PlanRoomAttachments({
       );
 
       setFiles([...files, ...newFiles]);
-      // setValue('attachments', [...files, ...newFiles])
     },
     [files, setFiles, enqueueSnackbar]
   );
@@ -62,11 +47,9 @@ export default function PlanRoomAttachments({
   const handleRemoveFile = (inputFile) => {
     const filtered = files.filter((file) => file !== inputFile);
     setFiles(filtered);
-    // setValue('attachments', filtered)
   };
 
   const handleRemoveAllFiles = () => {
-    // setValue('attachments', [])
     setFiles([]);
   };
 
