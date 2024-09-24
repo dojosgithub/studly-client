@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 
 // routes
-import { useSnackbar } from 'notistack';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -26,7 +25,6 @@ import { useRouter } from 'src/routes/hooks';
 export default function JwtForgotPasswordView() {
   const { forgotPassword } = useAuthContext();
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
   const [errorMsg, setErrorMsg] = useState('');
 
   const ForgotPasswordSchema = Yup.object().shape({
@@ -55,7 +53,6 @@ export default function JwtForgotPasswordView() {
       router.push(paths.auth.jwt.newPassword);
     } catch (error) {
       setErrorMsg(typeof error === 'string' ? error : error.message);
-
     }
   });
 
@@ -97,7 +94,8 @@ export default function JwtForgotPasswordView() {
         <Typography variant="h3">Forgot your password?</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Please enter the email address associated with your account and We will email you an OTP to reset your password.
+          Please enter the email address associated with your account and We will email you an OTP
+          to reset your password.
         </Typography>
       </Stack>
     </>
@@ -106,7 +104,11 @@ export default function JwtForgotPasswordView() {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       {renderHead}
-      {!!errorMsg && <Alert severity="error" sx={{ mb: 2 }}>{errorMsg}</Alert>}
+      {!!errorMsg && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMsg}
+        </Alert>
+      )}
 
       {renderForm}
     </FormProvider>

@@ -1,46 +1,25 @@
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
-import { isEmpty, cloneDeep, isBoolean } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
-// utils
-import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter, useParams } from 'src/routes/hooks';
-// assets
-import { countries } from 'src/assets/data';
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-  RHFAutocomplete,
-} from 'src/components/hook-form';
-import {
-  setCurrentCompany,
-  createNewCompany,
-  getCompanyDetails,
-  updateCompany,
-  fetchCompanyList,
-} from 'src/redux/slices/companySlice';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { createNewCompany, getCompanyDetails, updateCompany } from 'src/redux/slices/companySlice';
 
 // ----------------------------------------------------------------------
 
@@ -58,34 +37,13 @@ export default function CompanyNewEditForm({ isEdit }) {
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    // password: Yup.string().required('Password is required')
-    //   .min(7, 'Password must be at least 7 characters long')
-    //   .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    //   .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-    //   .matches(/[0-9]/, 'Password must contain at least one number')
-    //   .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)')
-    // ,
-    // adminName: Yup.string().required('Admin Name is required'),
-
-    // country: Yup.string().required('Country is required'),
-    // company: Yup.string().required('Company is required'),
-    // state: Yup.string().required('State is required'),
-    // city: Yup.string().required('City is required'),
-    // role: Yup.string().required('Role is required'),
-    // zipCode: Yup.string().required('Zip code is required'),
-    // avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    // status: Yup.string(),
-    // isVerified: Yup.boolean(),
   });
   useEffect(() => {
     if (isEdit) {
       dispatch(getCompanyDetails(id));
     }
   }, [id, dispatch, isEdit]);
-  const currentProject = useSelector((state) => state?.project?.current);
   const currentLog = useSelector((state) => state?.company?.current);
-  // console.log('raahim', currentLog, id);
   const defaultValues = useMemo(
     () => ({
       name: '',
@@ -94,17 +52,6 @@ export default function CompanyNewEditForm({ isEdit }) {
       email: '',
       firstName: '',
       lastName: '',
-      // password: currentLog?.password || '',
-      // adminName: currentLog?.adminName || '',
-
-      // city: currentLog?.city || '',
-      // role: currentLog?.role || '',
-      // state: currentLog?.state || '',
-      // status: currentLog?.status || '',
-      // country: currentLog?.country || '',
-      // zipCode: currentLog?.zipCode || '',
-      // avatarUrl: currentLog?.avatarUrl || null,
-      // isVerified: currentLog?.isVerified || true,
     }),
     []
   );
@@ -114,14 +61,7 @@ export default function CompanyNewEditForm({ isEdit }) {
     defaultValues,
   });
 
-  const {
-    reset,
-    watch,
-    control,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
+  const { reset, handleSubmit } = methods;
   useEffect(() => {
     if (isEdit && currentLog) {
       const clonedCompany = cloneDeep(currentLog);
@@ -137,7 +77,6 @@ export default function CompanyNewEditForm({ isEdit }) {
       });
     }
   }, [currentLog, id, reset, isEdit]);
-  const values = watch();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -146,31 +85,6 @@ export default function CompanyNewEditForm({ isEdit }) {
       let message;
       let res;
 
-      //   if (id) {
-      //     message = 'updated';
-      //     res = await dispatch(updateCompany({ data, currentLog }));
-      //   } else {
-      //     message = 'created';
-
-      //     res = await dispatch(createNewCompany(data));
-      //   }
-      //   // if (!isEmpty(error)) {
-      //   //   enqueueSnackbar(error.message, { variant: 'error' });
-      //   //   return;
-      //   // }
-      //   reset();
-      //   enqueueSnackbar(
-      //     currentLog ? 'Company updated successfully!' : 'Company created successfully!',
-      //     { variant: 'success' }
-      //   );
-      //   router.push(paths.admin.company.list);
-      // } catch (error) {
-      //   // console.error(error);
-      //   console.log('error-->', error);
-      //   enqueueSnackbar(`Error ${currentLog ? 'Updating' : 'Creating'} Company`, {
-      //     variant: 'error',
-      //   });
-      // }
       if (isEdit) {
         message = 'updated';
         res = await dispatch(updateCompany({ data, id }));
@@ -198,134 +112,12 @@ export default function CompanyNewEditForm({ isEdit }) {
     }
   });
 
-  // const handleDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     const file = acceptedFiles[0];
-
-  //     const newFile = Object.assign(file, {
-  //       preview: URL.createObjectURL(file),
-  //     });
-
-  //     if (file) {
-  //       setValue('avatarUrl', newFile, { shouldValidate: true });
-  //     }
-  //   },
-  //   [setValue]
-  // );
-
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentLog && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentLog && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentLog && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={4}
-              // columnGap={2}
-              // gridTemplateColumns={{
-              //   xs: 'repeat(1, 1fr)',
-              //   sm: 'repeat(2, 1fr)',
-              // }}
-              my={3}
-              display="flex"
-              flexDirection="column"
-            >
-              {/* <RHFTextField name="adminName" label="Admin Name" /> */}
+            <Box rowGap={4} my={3} display="flex" flexDirection="column">
               <RHFTextField name="name" label="Company Name" />
               <RHFTextField name="address" label="Company Address" />
               <Box
@@ -342,40 +134,6 @@ export default function CompanyNewEditForm({ isEdit }) {
               </Box>
               <RHFTextField name="email" label="Admin Email Address" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
-
-              {/* <RHFAutocomplete
-                name="country"
-                label="Country"
-                options={countries.map((country) => country.label)}
-                getOptionLabel={(option) => option}
-                isOptionEqualToValue={(option, value) => option === value}
-                renderOption={(props, option) => {
-                  const { code, label, phone } = countries.filter(
-                    (country) => country.label === option
-                  )[0];
-
-                  if (!label) {
-                    return null;
-                  }
-
-                  return (
-                    <li {...props} key={label}>
-                      <Iconify
-                        key={label}
-                        icon={`circle-flags:${code.toLowerCase()}`}
-                        width={28}
-                        sx={{ mr: 1 }}
-                      />
-                      {label} ({code}) +{phone}
-                    </li>
-                  );
-                }}
-              /> */}
-
-              {/* <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" /> */}
-              {/* <RHFTextField name="zipCode" label="Zip/Code" /> */}
-              {/* <RHFTextField name="role" label="Role" /> */}
             </Box>
 
             <Stack alignItems="flex-end" sx={{ my: 3 }}>

@@ -16,8 +16,7 @@ import { isValidToken, setSession } from './utils';
 // Customer will need to do some extra handling yourself if you want to extend the logic and other features...
 
 // ----------------------------------------------------------------------
-// const USER_ROLE = 'subscriber'
-const USER_ROLE = 'admin';
+
 const initialState = {
   user: null,
   loading: true,
@@ -27,21 +26,18 @@ const reducer = (state, action) => {
   if (action.type === 'INITIAL') {
     return {
       loading: false,
-      // user: { ...action.payload.user, role: USER_ROLE },
       user: action.payload.user,
     };
   }
   if (action.type === 'LOGIN') {
     return {
       ...state,
-      // user: { ...action.payload.user, role: USER_ROLE },
       user: action.payload.user,
     };
   }
   if (action.type === 'REGISTER') {
     return {
       ...state,
-      // user: { ...action.payload.user, role: USER_ROLE },
       user: action.payload.user,
     };
   }
@@ -81,13 +77,9 @@ export function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
         const response = await axios.get(endpoints.auth.profile);
-        // console.log('response', response);
-        // console.log('accessTokenPrev', accessToken);
         const {
           data: { user, tokens },
         } = response.data;
-        // setSession(accessToken);
-        // console.log('tokens Auth', tokens);
         setSession(tokens?.accessToken);
         dispatchRedux(setUserData(user));
         dispatchRedux(setUserTokens(tokens));

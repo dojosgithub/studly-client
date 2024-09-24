@@ -11,9 +11,6 @@ import { STUDLY_ROLES } from 'src/_mock';
 
 // ----------------------------------------------------------------------
 
-// OVERVIEW
-const IndexPage = lazy(() => import('src/pages/dashboard/app'));
-
 // Submittals
 const SubmittalsListPage = lazy(() => import('src/pages/subscriber/submittals/list'));
 const SubmittalsCreatePage = lazy(() => import('src/pages/subscriber/submittals/new'));
@@ -57,17 +54,9 @@ const DailyLogsDetailsPage = lazy(() => import('src/pages/subscriber/daily-logs/
 
 // Documents
 const DocumentsListPage = lazy(() => import('src/pages/subscriber/documents/list'));
-// const DailyLogsCreatePage = lazy(() => import('src/pages/subscriber/daily-logs/new'));
-// const DailyLogsEditPage = lazy(() => import('src/pages/subscriber/daily-logs/edit'));
-// const DailyLogsDetailsPage = lazy(() => import('src/pages/subscriber/daily-logs/details'));
 
 // Project
 const ProjectSettingsPage = lazy(() => import('src/pages/subscriber/settings'));
-
-// TEST RENDER PAGE BY ROLE
-const PermissionDeniedPage = lazy(() => import('src/pages/dashboard/permission'));
-// BLANK PAGE
-const BlankPage = lazy(() => import('src/pages/dashboard/blank'));
 
 // ----------------------------------------------------------------------
 
@@ -190,19 +179,6 @@ export const subscriberRoutes = [
           // { path: ':id/edit', element: <DailyLogsEditPage /> },
         ],
       },
-
-      //   {
-      //     path: 'user',
-      //     children: [
-      //       { element: <UserProfilePage />, index: true },
-      //       { path: 'profile', element: <UserProfilePage /> },
-      //       { path: 'cards', element: <UserCardsPage /> },
-      //       { path: 'list', element: <UserListPage /> },
-      //       { path: 'new', element: <UserCreatePage /> },
-      //       { path: ':id/edit', element: <UserEditPage /> },
-      //       { path: 'account', element: <UserAccountPage /> },
-      //     ],
-      //   },
     ],
   },
 ];

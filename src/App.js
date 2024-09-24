@@ -42,21 +42,12 @@ import { MotionLazy } from 'src/components/animate/motion-lazy';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 
-
 // sections
-// import { CheckoutProvider } from 'src/sections/checkout/context';
-// auth
 import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
-
-  // console.info(`%c${charAt}`, 'color: #5BE49B');
-
   useScrollToTop();
 
   return (

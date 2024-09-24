@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from '@mui/material/Alert';
 // routes
-import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 // hooks
@@ -31,7 +30,6 @@ export default function JwtNewPasswordView() {
   const password = useBoolean();
   const { newPassword } = useAuthContext();
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
   const [errorMsg, setErrorMsg] = useState('');
 
   const NewPasswordSchema = Yup.object().shape({
@@ -77,7 +75,6 @@ export default function JwtNewPasswordView() {
 
   const renderForm = (
     <Stack spacing={3} alignItems="center">
-
       <RHFTextField
         name="email"
         label="Email"
@@ -127,18 +124,6 @@ export default function JwtNewPasswordView() {
         Update Password
       </LoadingButton>
 
-      {/* <Typography variant="body2">
-        {`Don’t have a code? `}
-        <Link
-          variant="subtitle2"
-          sx={{
-            cursor: 'pointer',
-          }}
-        >
-          Resend code
-        </Link>
-      </Typography> */}
-
       <Link
         component={RouterLink}
         href={paths.auth.jwt.login}
@@ -174,7 +159,11 @@ export default function JwtNewPasswordView() {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       {renderHead}
-      {!!errorMsg && <Alert severity="error" sx={{mb:2}}>{errorMsg}</Alert>}
+      {!!errorMsg && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMsg}
+        </Alert>
+      )}
 
       {renderForm}
     </FormProvider>

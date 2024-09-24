@@ -24,21 +24,12 @@ import { paths } from 'src/routes/paths';
 
 export default function SubscriberUpdatePassword() {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch()
-  const email = useSelector(state => state.user?.user?.email)
+  const dispatch = useDispatch();
+  const email = useSelector((state) => state.user?.user?.email);
   const password = useBoolean();
   const router = useRouter();
 
   const ChangePassWordSchema = Yup.object().shape({
-    // oldPassword: Yup.string().required('Old Password is required'),
-    // newPassword: Yup.string()
-    //   .required('New Password is required')
-    //   .min(7, 'Password must be at least 7 characters')
-    //   .test(
-    //     'no-match',
-    //     'New password must be different than old password',
-    //     (value, { parent }) => value !== parent.oldPassword
-    //   ),
     newPassword: Yup.string()
       .required('New Password is required')
       .min(7, 'Password must be at least 7 characters'),
@@ -46,7 +37,6 @@ export default function SubscriberUpdatePassword() {
   });
 
   const defaultValues = {
-    // oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
   };
@@ -65,45 +55,29 @@ export default function SubscriberUpdatePassword() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const newData = { password: data.newPassword, email }
-      const { error, payload } = await dispatch(updatePasswordFirstLogin(newData))
+      const newData = { password: data.newPassword, email };
+      const { error, payload } = await dispatch(updatePasswordFirstLogin(newData));
       if (!isEmpty(error)) {
-        enqueueSnackbar(error.message, { variant: "error" });
-        return
+        enqueueSnackbar(error.message, { variant: 'error' });
+        return;
       }
       reset();
       enqueueSnackbar('Password updated successfully!', { variant: 'success' });
       router.push(paths.subscriber.onboarding);
-
-
     } catch (error) {
-      // console.error(error);
-      enqueueSnackbar(`Error Updating Password`, { variant: "error" });
+      enqueueSnackbar(`Error Updating Password`, { variant: 'error' });
     }
   });
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit} >
-      <Typography fontSize={27} fontWeight='bold' mb={1} textAlign='center'>Welcome to Studly!
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Typography fontSize={27} fontWeight="bold" mb={1} textAlign="center">
+        Welcome to Studly!
       </Typography>
-      <Typography fontSize={15} fontWeight='bold' mb={2} textAlign='center'>Please set a new password.
+      <Typography fontSize={15} fontWeight="bold" mb={2} textAlign="center">
+        Please set a new password.
       </Typography>
-      <Stack component={Card} spacing={3} sx={{ p: 3, minWidth: { xs: "100%", sm: 400 } }}>
-        {/* <RHFTextField
-          name="oldPassword"
-          type={password.value ? 'text' : 'password'}
-          label="Old Password"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        /> */}
-
+      <Stack component={Card} spacing={3} sx={{ p: 3, minWidth: { xs: '100%', sm: 400 } }}>
         <RHFTextField
           name="newPassword"
           label="New Password"

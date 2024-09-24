@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment';
 // routes
 import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 import { useSearchParams, useRouter } from 'src/routes/hooks';
 // config
 import { PATH_AFTER_LOGIN } from 'src/config-global';
@@ -44,18 +43,11 @@ export default function JwtLoginView() {
     password: Yup.string().required('Password is required'),
   });
 
-  // const defaultValues = {
-  //   email: 'demo@minimals.cc',
-  //   password: 'demo1234',
-  // };
-
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
-    // defaultValues,
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -75,14 +67,6 @@ export default function JwtLoginView() {
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
       <Typography variant="h4">Login to your Studly account</Typography>
-
-      {/* <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2">New user?</Typography>
-
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-          Create an account
-        </Link>
-      </Stack> */}
     </Stack>
   );
 
@@ -107,7 +91,13 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" href={ paths.auth.jwt.forgotPassword} sx={{ alignSelf: 'flex-end' }}>
+      <Link
+        variant="body2"
+        color="inherit"
+        underline="always"
+        href={paths.auth.jwt.forgotPassword}
+        sx={{ alignSelf: 'flex-end' }}
+      >
         Forgot password?
       </Link>
 
@@ -127,10 +117,6 @@ export default function JwtLoginView() {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       {renderHead}
-
-      {/* <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-      </Alert> */}
 
       {renderForm}
     </FormProvider>
