@@ -7,11 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 
 // ----------------------------------------------------------------------
 
-export default function Permit({ data }) {
+export default function MeetingMinutesDetailsPermit({ data }) {
   const handleToggleStatus = (permit) => {
     permit.status = permit.status === 'Active' ? 'Inactive' : 'Active';
   };
@@ -37,15 +36,6 @@ export default function Permit({ data }) {
                 {permit.date ? new Date(permit.date).toLocaleDateString() : 'N/A'}
               </TableCell>
               <TableCell>{permit.permitNumber}</TableCell>
-              {/* <TableCell>
-                <Button
-                // variant="contained"
-                // color={permit.status === 'Active' ? 'success' : 'primary'}
-                // onClick={() => handleToggleStatus(permit)}
-                >
-                  {permit.status === 'Active' ? 'Deactivate' : 'Activate'}
-                </Button>
-              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
@@ -54,7 +44,7 @@ export default function Permit({ data }) {
   );
 }
 
-Permit.propTypes = {
+MeetingMinutesDetailsPermit.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       status: PropTypes.string,

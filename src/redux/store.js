@@ -6,6 +6,7 @@ import { signOut } from './slices/userSlice';
 import { resetProjectState } from './slices/projectSlice';
 import { resetCompanyState } from './slices/companySlice';
 import { resetSubmittalState } from './slices/submittalSlice';
+import { resetRfiState } from './slices/rfiSlice';
 import { resetTemplateState } from './slices/templateSlice';
 import { resetWorkflowState } from './slices/workflowSlice';
 import { resetInviteState } from './slices/inviteSlice';
@@ -28,8 +29,8 @@ const logoutRedux = () => {
   dispatch(resetCompanyState());
   dispatch(resetProjectState());
   dispatch(resetSubmittalState());
+  dispatch(resetRfiState());
   dispatch(resetTemplateState());
-  dispatch(resetWorkflowState());
   dispatch(resetWorkflowState());
   dispatch(resetInviteState());
 

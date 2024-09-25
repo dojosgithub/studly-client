@@ -7,11 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 
 // ----------------------------------------------------------------------
 
-const Plan = ({ data }) => {
+const MeetingMinutesDetailsPlan = ({ data }) => {
   const handleTogglePlanTracking = (plan) => {
     plan.planTracking = plan.planTracking ? '' : 'Tracked';
   };
@@ -40,15 +39,6 @@ const Plan = ({ data }) => {
               <TableCell>
                 {plan.dateRecieved ? new Date(plan.dateRecieved).toLocaleDateString() : 'N/A'}
               </TableCell>
-              {/* <TableCell>
-                <Button
-                  variant="contained"
-                  color={plan.planTracking ? 'success' : 'primary'}
-                  onClick={() => handleTogglePlanTracking(plan)}
-                >
-                  {plan.planTracking ? 'Untrack' : 'Track'}
-                </Button>
-              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
@@ -57,7 +47,7 @@ const Plan = ({ data }) => {
   );
 };
 
-Plan.propTypes = {
+MeetingMinutesDetailsPlan.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       planTracking: PropTypes.string,
@@ -67,4 +57,4 @@ Plan.propTypes = {
   ).isRequired,
 };
 
-export default Plan;
+export default MeetingMinutesDetailsPlan;

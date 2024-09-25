@@ -1,16 +1,14 @@
 // @mui
-import { Divider, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useFormContext, Controller } from 'react-hook-form';
-import { DatePicker } from '@mui/x-date-pickers';
 // form
-import { addDays, isTomorrow, startOfDay } from 'date-fns';
 import { dropdownOptions2 } from 'src/_mock';
-import { RHFTextField, RHFSelect } from 'src/components/hook-form';
+import { RHFTextField } from 'src/components/hook-form';
 import MeetingMinutesTimePicker from './meeting-minutes-time-picker';
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
 const MeetingMinutesDescription = () => {
-  const { trigger, getValues, setValue, control } = useFormContext();
+  const { trigger, control } = useFormContext();
   const handleBlur = (fieldName) => {
     trigger(`description.${fieldName}`);
   };
@@ -74,20 +72,6 @@ const MeetingMinutesDescription = () => {
           label="Meeting Time"
           onBlur={() => handleBlur('time')}
         />
-
-        {/* <Controller
-          name="description.timezone"
-          control={control}
-          render={({ field }) => (
-            <RHFSelect {...field} label="Timezone">
-              {timezones.map((timezone) => (
-                <option key={timezone.zone} value={timezone.zone}>
-                  {`${timezone.utc} ${timezone.name}`}
-                </option>
-              ))}
-            </RHFSelect>
-          )}
-        /> */}
 
         <FormControl>
           <InputLabel>Timezone</InputLabel>

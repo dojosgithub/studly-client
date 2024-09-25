@@ -57,7 +57,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 // ----------------------------------------------------------------------
 
-export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id }) {
+export default function DailyLogsNewEditForm({ currentMeetingMinutes, id }) {
   const router = useRouter();
   const confirm = useBoolean();
 
@@ -294,7 +294,7 @@ export default function MeetingMinutesNewEditForm({ currentMeetingMinutes, id })
   );
 }
 
-MeetingMinutesNewEditForm.propTypes = {
+DailyLogsNewEditForm.propTypes = {
   currentMeetingMinutes: PropTypes.object,
   id: PropTypes.string,
 };

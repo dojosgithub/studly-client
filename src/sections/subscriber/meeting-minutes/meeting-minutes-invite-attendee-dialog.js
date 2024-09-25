@@ -1,22 +1,10 @@
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box, Button, IconButton, Divider, alpha, Typography } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
-import { useForm, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useSnackbar } from 'notistack'; // Import useSnackbar hook
-import FormProvider, { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import uuidv4 from 'src/utils/uuidv4';
-// import {
-//   setMeetingMinutesInviteAttendee,
-//   setMeetingMinutesDescription,
-//   setMeetingMinutesNotes,
-//   setMeetingMinutesPermit,
-//   setMeetingMinutesPlanTracking,
-// } from 'src/redux/slices/meetingMinutesSlice'; // Import actions accordingly
+import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 
 // Define the styled component for IconButton
@@ -34,38 +22,8 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 // Define Yup schema for validation
 
-const inviteAttendeeSchema = Yup.object().shape({
-  attendees: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string().required('Name is required'),
-      company: Yup.string().required('Company is required'),
-      email: Yup.string().email('Invalid email').required('Email is required'),
-      attended: Yup.boolean(),
-    })
-  ),
-});
-
 export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
-  const dispatch = useDispatch();
-  // const { trigger } = useFormContext();
-  const { enqueueSnackbar } = useSnackbar(); // Initialize useSnackbar hook
-
-  // Initialize useForm from react-hook-form
-  // const methods = useForm({
-  //   resolver: yupResolver(inviteAttendeeSchema),
-  //   defaultValues: {
-  //     attendees: [{name: '', company: '', email: '', attended: false}],
-  //   },
-  // });
-
-  // const { handleSubmit, control, reset } = methods;
-  // const { fields, append, remove } = useFieldArray({
-  //   control,
-  //   name: 'attendees',
-  // });
-
-  const { trigger, control, setValue, getValues, watch, resetField } = useFormContext();
-  const { notes } = getValues();
+  const { trigger, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'inviteAttendee',
@@ -89,7 +47,6 @@ export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
               rowGap={5}
               columnGap={4}
               display="grid"
-              // gridTemplateColumns="repeat(3, 1fr) 0.5fr 50px" // Set columns to 3 equal parts, a smaller part for the checkbox, and a fixed size for the button
               gridTemplateColumns={
                 isEdit
                   ? 'repeat(3, 1fr) 0.5fr 50px' // Include the smaller checkbox column if isEdit is true
@@ -136,10 +93,7 @@ export default function MeetingMinutesInviteAttendeeView({ isEdit }) {
           variant="outlined"
           startIcon={<Iconify icon="mingcute:add-line" />}
           color="secondary"
-          onClick={() =>
-            // append({ name: '', company: '', email: '', _id: uuidv4(), attended: false })
-            append({ name: '', company: '', email: '', attended: false })
-          }
+          onClick={() => append({ name: '', company: '', email: '', attended: false })}
         >
           Add Another Attendee
         </Button>

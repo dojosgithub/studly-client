@@ -10,21 +10,21 @@ import { MeetingMinutesDetailsView } from 'src/sections/subscriber/meeting-minut
 // ----------------------------------------------------------------------
 
 export default function MeetingMinutesDetailsPage() {
-    const params = useParams();
-    const dispatch = useDispatch();
+  const params = useParams();
+  const dispatch = useDispatch();
 
-    const { id } = params;
-    useEffect(() => {
-        dispatch(getMeetingMinutesDetails(id))
-    }, [dispatch, id])
+  const { id } = params;
+  useEffect(() => {
+    dispatch(getMeetingMinutesDetails(id));
+  }, [dispatch, id]);
 
-    return (
-        <>
-            <Helmet>
-                <title> Meeting Minutes Details</title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title> Meeting Minutes Details</title>
+      </Helmet>
 
-            <MeetingMinutesDetailsView id={`${id}`} />
-        </>
-    );
+      <MeetingMinutesDetailsView id={`${id}`} />
+    </>
+  );
 }

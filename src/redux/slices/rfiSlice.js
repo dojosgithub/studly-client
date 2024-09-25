@@ -1,44 +1,37 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { isEmpty } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 // * Submittal
-export const createRfi = createAsyncThunk(
-  'rfi/create',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.rfi.create, rfiData);
+export const createRfi = createAsyncThunk('rfi/create', async (rfiData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.rfi.create, rfiData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the rfi.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the rfi.');
   }
-);
+});
 
-export const submitRfiToArchitect = createAsyncThunk(
-  'rfi/submitToArchitect',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.rfi.submit(id));
+export const submitRfiToArchitect = createAsyncThunk('rfi/submitToArchitect', async (id) => {
+  try {
+    const response = await axiosInstance.post(endpoints.rfi.submit(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while submitting rfi for review.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while submitting rfi for review.');
   }
-);
+});
 export const getProjectRfiUsersList = createAsyncThunk(
   'rfi/users/list',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
 
@@ -55,136 +48,118 @@ export const getProjectRfiUsersList = createAsyncThunk(
   }
 );
 
-export const editRfi = createAsyncThunk(
-  'rfi/edit',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const { id, formData } = rfiData;
+export const editRfi = createAsyncThunk('rfi/edit', async (rfiData) => {
+  try {
+    const { id, formData } = rfiData;
 
-      const response = await axiosInstance.put(endpoints.rfi.edit(id), formData);
+    const response = await axiosInstance.put(endpoints.rfi.edit(id), formData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while updating the rfi.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while updating the rfi.');
   }
-);
+});
 
-export const getRfiList = createAsyncThunk(
-  'rfi/list',
-  async (listOptions, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?._id;
+export const getRfiList = createAsyncThunk('rfi/list', async (listOptions, { getState }) => {
+  try {
+    const projectId = getState().project?.current?._id;
 
-      const { status, ...data } = listOptions;
-      const response = await axiosInstance.post(
-        endpoints.rfi.list(projectId),
-        { status },
-        {
-          params: data,
-        }
-      );
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
+    const { status, ...data } = listOptions;
+    const response = await axiosInstance.post(
+      endpoints.rfi.list(projectId),
+      { status },
+      {
+        params: data,
       }
-      throw Error('An error occurred while fetching rfi list.');
+    );
+
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching rfi list.');
   }
-);
-export const deleteRfi = createAsyncThunk(
-  'rfi/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(endpoints.rfi.delete(id));
+});
+export const deleteRfi = createAsyncThunk('rfi/delete', async (id) => {
+  try {
+    const response = await axiosInstance.delete(endpoints.rfi.delete(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the rfi.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the rfi.');
   }
-);
-export const getRfiDetails = createAsyncThunk(
-  'submittal/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.rfi.details(id));
+});
+export const getRfiDetails = createAsyncThunk('submittal/details', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.rfi.details(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal details.');
   }
-);
+});
 
-export const submitRfiResponse = createAsyncThunk(
-  'rfi/response',
-  async (rfiData, { getState, rejectWithValue }) => {
-    try {
-      const { id, formData } = rfiData;
+export const submitRfiResponse = createAsyncThunk('rfi/response', async (rfiData) => {
+  try {
+    const { id, formData } = rfiData;
 
-      const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
+    const response = await axiosInstance.put(endpoints.rfi.response(id), formData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while submitting RFI response.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while submitting RFI response.');
   }
-);
+});
 
-export const getRFILogPDF = createAsyncThunk(
-  'rfi/pdf',
-  async (exptype, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?._id;
+export const getRFILogPDF = createAsyncThunk('rfi/pdf', async (exptype, { getState }) => {
+  try {
+    const projectId = getState().project?.current?._id;
 
-      const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
-        responseType: 'blob',
-      });
+    const response = await axiosInstance.get(endpoints.rfi.pdf(projectId, exptype), {
+      responseType: 'blob',
+    });
 
-      const buffer = response.data;
+    const buffer = response.data;
 
-      const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
-      const url = URL.createObjectURL(blob);
+    const blob = new Blob([buffer], { type: exptype === 'pdf' ? 'application/pdf' : 'text/csv' });
+    const url = URL.createObjectURL(blob);
 
-      // Create a temporary link and trigger a download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'rfi_logs';
-      a.click();
+    // Create a temporary link and trigger a download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rfi_logs';
+    a.click();
 
-      // Cleanup
-      URL.revokeObjectURL(url);
+    // Cleanup
+    URL.revokeObjectURL(url);
 
-      return response.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal list.');
+    return response.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal list.');
   }
-);
+});
 
 const initialState = {
   list: [],
@@ -199,15 +174,6 @@ const rfi = createSlice({
   name: 'rfi',
   initialState,
   reducers: {
-    setRfiList: (state, action) => {
-      state.list = action.payload;
-    },
-    setCurrentRfi: (state, action) => {
-      state.current = action.payload;
-    },
-    setCreateRfi: (state, action) => {
-      state.create = action.payload;
-    },
     resetRfiState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -245,7 +211,6 @@ const rfi = createSlice({
       state.error = null;
     });
     builder.addCase(deleteRfi.fulfilled, (state, action) => {
-      // state.create = action.payload;
       state.isLoading = false;
       state.error = null;
     });
@@ -268,7 +233,7 @@ const rfi = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-    // Get Submittal Details
+    // Get RFI Details
     builder.addCase(getRfiDetails.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -311,5 +276,5 @@ const rfi = createSlice({
   },
 });
 
-export const { setRfiList, setCurrentRfi, setCreateRfi, resetRfiState } = rfi.actions;
+export const { resetRfiState } = rfi.actions;
 export default rfi.reducer;

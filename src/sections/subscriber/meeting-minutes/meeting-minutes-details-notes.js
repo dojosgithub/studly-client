@@ -17,7 +17,7 @@ const TopicContainer = styled('div')(({ theme }) => ({
   backgroundColor: '#F2F3F5',
 }));
 
-const Notes = ({ data }) => {
+const MeetingMinutesDetailsNotes = ({ data }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -138,7 +138,7 @@ const Notes = ({ data }) => {
   );
 };
 
-Notes.propTypes = {
+MeetingMinutesDetailsNotes.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       subject: PropTypes.string.isRequired,
@@ -157,4 +157,4 @@ Notes.propTypes = {
   ).isRequired,
 };
 
-export default Notes;
+export default MeetingMinutesDetailsNotes;

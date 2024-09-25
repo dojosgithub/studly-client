@@ -13,8 +13,6 @@ import DailyLogsStepperForm from '../daily-logs-stepper-form';
 import DailyLogsStepperView from './daily-logs-stepper-view';
 //
 import DailyLogsNewEditForm from '../daily-logs-new-edit-form';
-// import MeetingMinutesStepperForm from '../meeting-minutes-stepper-form';
-// import MeetingMinutesStepperView from './meeting-minutes-stepper-view';
 
 // ----------------------------------------------------------------------
 

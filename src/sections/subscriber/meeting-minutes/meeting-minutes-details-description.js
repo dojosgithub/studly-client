@@ -1,17 +1,8 @@
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
-import Fab from '@mui/material/Fab';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import InputBase from '@mui/material/InputBase';
 import Grid from '@mui/material/Unstable_Grid2';
-import CardHeader from '@mui/material/CardHeader';
 import { styled, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -34,17 +25,7 @@ const StyledCard = styled(Card, {
   }),
 }));
 
-// meetingNumber: '',
-//         name: '',
-//         // title: '',
-//         site: '',
-//         date: new Date(),
-//         time: '',
-//         minutesBy: '',
-//         conferenceCallId: '',
-//         conferenceCallLink: '',
-
-export default function Description({ data }) {
+export default function MeetingMinutesDetailsDescription({ data }) {
   return (
     <Grid container spacing={3}>
       <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
@@ -85,7 +66,6 @@ export default function Description({ data }) {
       <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography className="submittalTitle">Time</Typography>
         <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-          {/* {new Date(data?.time).toLocaleTimeString()} */}
           {data?.timeInString}
         </Typography>
       </StyledCard>
@@ -106,6 +86,6 @@ export default function Description({ data }) {
   );
 }
 
-Description.propTypes = {
+MeetingMinutesDetailsDescription.propTypes = {
   data: PropTypes.object,
 };

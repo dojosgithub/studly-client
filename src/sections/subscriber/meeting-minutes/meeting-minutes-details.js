@@ -1,86 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Chip,
-  Divider,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  alpha,
-  styled,
-  tabsClasses,
-} from '@mui/material';
+import { Box, Button, Chip, Menu, MenuItem, Paper, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
-import { addDays, isAfter, isBefore, isTomorrow, parseISO } from 'date-fns';
-import { bgcolor } from '@mui/system';
 //
-import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
-import { fDateISO } from 'src/utils/format-time';
-import {
-  changeSubmittalStatus,
-  getSubmittalDetails,
-  resendToSubcontractor,
-  submitSubmittalToArchitect,
-} from 'src/redux/slices/submittalSlice';
-import { getRfiDetails, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
+
 //
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 
-import { getStatusColor } from 'src/utils/constants';
-import Label from 'src/components/label';
-import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
-import { MultiFilePreview } from 'src/components/upload';
-import { isIncluded } from 'src/utils/functions';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import {
   changeToMinutes,
   createFollowup,
   getMeetingMinutesPDF,
   sendToAttendees,
-  setCreateMeetingMinutes,
 } from 'src/redux/slices/meetingMinutesSlice';
-import { useBoolean } from 'src/hooks/use-boolean';
-import Editor from 'src/components/editor/editor';
-import Description from './meeting-minutes-details-description';
-import InviteAttendee from './meeting-minutes-details-inviteAttendee';
-import Notes from './meeting-minutes-details-notes';
-import Permit from './meeting-minutes-details-permit';
-import Plan from './meeting-minutes-details-plan';
-
-const StyledCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'isSubcontractor',
-})(({ isSubcontractor, theme }) => ({
-  '& .submittalTitle': {
-    flex: 0.25,
-    borderRight: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
-
-    fontWeight: 'bold',
-  },
-  display: 'flex',
-
-  borderRadius: '10px',
-  padding: '1rem',
-  gap: '1rem',
-  ...(isSubcontractor && {
-    maxHeight: 300,
-  }),
-}));
+import MeetingMinutesDetailsDescription from './meeting-minutes-details-description';
+import MeetingMinutesDetailsInviteAttendee from './meeting-minutes-details-inviteAttendee';
+import MeetingMinutesDetailsNotes from './meeting-minutes-details-notes';
+import MeetingMinutesDetailsPermit from './meeting-minutes-details-permit';
+import MeetingMinutesDetailsPlan from './meeting-minutes-details-plan';
 
 const TABS = [
   {
@@ -108,17 +50,13 @@ const TABS = [
 const MeetingMinutesDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const params = useParams();
-  const confirm = useBoolean();
   const [currentTab, setCurrentTab] = useState('description');
 
-  const { id: parentSubmittalId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentMeeting = useSelector((state) => state.meetingMinutes?.current);
 
-  // const  = useBoolean();
   const [menuItems, setMenuItems] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -133,28 +71,7 @@ const MeetingMinutesDetails = ({ id }) => {
     setCurrentTab(newValue);
   }, []);
 
-  const {
-    name,
-    description,
-    drawingSheet,
-    createdDate,
-    dueDate,
-    costImpact,
-    scheduleDelay,
-    attachments,
-    status,
-    creator,
-    owner,
-    ccList,
-    isResponseSubmitted,
-    response,
-    docStatus,
-  } = currentMeeting;
-
-  // useEffect(() => {
-  //   getMenus();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [currentMeeting]);
+  const { status } = currentMeeting;
 
   const getMenus = useCallback(() => {
     const optionsArray = [];
@@ -178,7 +95,6 @@ const MeetingMinutesDetails = ({ id }) => {
           </MenuItem>
         );
       }
-      // if (status === 'Draft') {
       optionsArray.push(
         <MenuItem onClick={() => handleSendToAttendees()}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
@@ -186,7 +102,6 @@ const MeetingMinutesDetails = ({ id }) => {
           </LoadingButton>
         </MenuItem>
       );
-      // }
 
       if (status === 'Draft') {
         optionsArray.push(
@@ -197,8 +112,6 @@ const MeetingMinutesDetails = ({ id }) => {
           </MenuItem>
         );
       }
-
-      // setMenuItems(optionsArray);
     }
     return optionsArray;
 
@@ -221,29 +134,23 @@ const MeetingMinutesDetails = ({ id }) => {
 
   const handleCreateFollowUp = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(createFollowup(currentMeeting?._id));
     setIsSubmitting(false);
-    // handleClose();
     enqueueSnackbar('Follow up created successfully', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
   const handleSendToAttendees = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(sendToAttendees(currentMeeting?._id));
     setIsSubmitting(false);
-    // handleClose();
     enqueueSnackbar('Meeting Minutes have been successfully distributed', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
 
   const handleChangeToMinutes = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(changeToMinutes(currentMeeting?._id));
-    // handleClose();
     enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     setIsSubmitting(false);
     navigate(paths.subscriber.meetingMinutes.list);
@@ -264,7 +171,6 @@ const MeetingMinutesDetails = ({ id }) => {
               width: '100%',
               paddingInline: '.75rem',
             },
-            // mr: 1
           }}
           label={status}
         />
@@ -301,44 +207,7 @@ const MeetingMinutesDetails = ({ id }) => {
           </div>
         )}
       </Box>
-      {/* <Tabs
-        value={currentTab}
-        onChange={handleChangeTab}
-        sx={{
-          width: 1,
-          bottom: 0,
-          zIndex: 9,
-          bgcolor: '#F4F6F8',
-          marginBottom: '35px',
-          borderBottom: '2px solid #FFCC3F',
-          mt: 1,
-          '& .MuiTabs-indicator': {
-            display: 'none',
-          },
-        }}
-      >
-        {TABS.map((tab) => (
-          <Tab
-            key={tab.value}
-            value={tab.value}
-            label={tab.label}
-            sx={{
-              fontFamily: 'Public Sans',
-              fontSize: '14px',
-              fontWeight: 400,
-              lineHeight: '22px',
-              textAlign: 'left',
-              width: 197,
-              color: 'inherit',
 
-              '&.Mui-selected': {
-                color: 'white',
-                bgcolor: '#FFCC3F',
-              },
-            }}
-          />
-        ))}
-      </Tabs> */}
       <Stack
         direction="row"
         sx={{
@@ -368,11 +237,15 @@ const MeetingMinutesDetails = ({ id }) => {
           </Paper>
         ))}
       </Stack>
-      {currentTab === 'description' && <Description data={currentMeeting?.description} />}
-      {currentTab === 'attendees' && <InviteAttendee data={currentMeeting?.inviteAttendee} />}
-      {currentTab === 'agenda' && <Notes data={currentMeeting?.notes} />}
-      {currentTab === 'permit' && <Permit data={currentMeeting?.permit} />}
-      {currentTab === 'plan' && <Plan data={currentMeeting?.plan} />}
+      {currentTab === 'description' && (
+        <MeetingMinutesDetailsDescription data={currentMeeting?.description} />
+      )}
+      {currentTab === 'attendees' && (
+        <MeetingMinutesDetailsInviteAttendee data={currentMeeting?.inviteAttendee} />
+      )}
+      {currentTab === 'agenda' && <MeetingMinutesDetailsNotes data={currentMeeting?.notes} />}
+      {currentTab === 'permit' && <MeetingMinutesDetailsPermit data={currentMeeting?.permit} />}
+      {currentTab === 'plan' && <MeetingMinutesDetailsPlan data={currentMeeting?.plan} />}
     </>
   );
 };

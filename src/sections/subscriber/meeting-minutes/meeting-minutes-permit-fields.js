@@ -4,7 +4,6 @@ import React, { useCallback } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Iconify from 'src/components/iconify';
 import { RHFTextField } from 'src/components/hook-form';
-import uuidv4 from 'src/utils/uuidv4';
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -20,7 +19,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const MeetingMinutesPermitFields = () => {
-  const { control, setValue, getValues, watch, resetField,trigger } = useFormContext();
+  const { control, trigger } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'permit',
@@ -31,22 +30,12 @@ const MeetingMinutesPermitFields = () => {
       status: '',
       permitNumber: '',
       date: null,
-      // _id: uuidv4(),
     });
   }, [append]);
 
   const handleRemove = (index) => {
     remove(index);
   };
-
-  const handleClearService = useCallback(
-    (index) => {
-      resetField(`permit[${index}].status`);
-      resetField(`permit[${index}].date`);
-      resetField(`permit[${index}].permitNumber`);
-    },
-    [resetField]
-  );
 
   return (
     <>

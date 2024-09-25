@@ -1,22 +1,17 @@
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useFieldArray, useFormContext, Controller } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
-import { DatePicker } from '@mui/x-date-pickers';
-
-import { addDays, isTomorrow, startOfDay } from 'date-fns';
 
 // @mui
 import {
   IconButton,
-  alpha,
   Box,
   Button,
   Stack,
   Typography,
   Card,
-  Divider,
   FormControl,
   Select,
   MenuItem,
@@ -24,9 +19,7 @@ import {
 } from '@mui/material';
 
 // hook-form
-import { RHFEditor, RHFSelect, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-// utils
-import uuidv4 from 'src/utils/uuidv4';
+import { RHFEditor, RHFSelect, RHFTextField } from 'src/components/hook-form';
 //
 import Iconify from 'src/components/iconify';
 
@@ -37,10 +30,8 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   height: 50,
   opacity: 1,
   borderRadius: '100%',
-  // outline: `1px solid ${alpha(theme.palette.grey[700], .2)} `,
   '&:hover': {
     opacity: 1,
-    // outline: `1px solid ${alpha(theme.palette.grey[700], 1)} `,
   },
   position: 'absolute',
   top: top ? '-0.5rem' : '-1.25rem',
@@ -49,9 +40,7 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
 }));
 
 const MeetingMinutesNotes = () => {
-  const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
-
-  const { control, setValue, getValues, watch, resetField } = useFormContext();
+  const { control } = useFormContext();
 
   const {
     fields: noteFields,
@@ -73,7 +62,6 @@ const MeetingMinutesNotes = () => {
   const handleRemoveNote = (index) => {
     removeNote(index);
   };
-  const formContext = useFormContext();
 
   return (
     <Box sx={{ marginBottom: '2rem', position: 'relative' }}>
@@ -158,7 +146,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
       status: 'Open',
       priority: 'Low',
       description: '',
-      // _id: uuidv4(),
     });
   };
 
@@ -195,34 +182,10 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
               {/* Dropdown 1 */}
 
               <FormControl>
-                {/* <InputLabel>Assignee</InputLabel> */}
                 <Controller
                   name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}
                   control={control}
-                  // defaultValue={null}
                   render={({ field }) => (
-                    // <Select
-                    //   {...field}
-                    //   label="Assignee"
-                    //   onChange={(event) => {
-                    //     const selectedEmail = event.target.value;
-                    //     const selectedAssignee = inviteAttendee.find(
-                    //       (attendee) => attendee.email === selectedEmail
-                    //     );
-                    //     field.onChange(selectedAssignee);
-                    //   }}
-                    //   value={field.value?.email || ''}
-                    // >
-                    //   {dropdownOptions1.map((option) => (
-                    //     <MenuItem
-                    //       key={option.value}
-                    //       value={option.value}
-                    //       onClick={handleDropdown(option)}
-                    //     >
-                    //       {option.label}
-                    //     </MenuItem>
-                    //   ))}
-                    // </Select>
                     <RHFSelect
                       {...field}
                       name={`notes[${noteIndex}].topics[${topicIndex}].assignee`}

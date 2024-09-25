@@ -227,7 +227,6 @@ const DailyLogsDetails = ({ id }) => {
 
   const handleCreateFollowUp = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(createFollowup(currentMeeting?._id));
     setIsSubmitting(false);
     // handleClose();
@@ -237,19 +236,15 @@ const DailyLogsDetails = ({ id }) => {
 
   const handleSendToAttendees = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(sendToAttendees(currentLog?._id));
     setIsSubmitting(false);
-    // handleClose();
     enqueueSnackbar('daily Logs have been successfully distributed', { variant: 'success' });
     navigate(paths.subscriber.logs.list);
   };
 
   const handleChangeToMinutes = async () => {
     setIsSubmitting(true);
-    // await dispatch(setCreateMeetingMinutes({ ...currentMeeting }));
     await dispatch(changeToMinutes(currentMeeting?._id));
-    // handleClose();
     enqueueSnackbar('Meeting status changed successfully', { variant: 'success' });
     setIsSubmitting(false);
     navigate(paths.subscriber.meetingMinutes.list);
@@ -258,22 +253,6 @@ const DailyLogsDetails = ({ id }) => {
   return (
     <>
       <Box display="flex" alignItems="center" justifyContent="flex-end">
-        {/* <Chip
-          size="large"
-          color="secondary"
-          variant="outlined"
-          sx={{
-            '&.MuiChip-root': {
-              height: '50px',
-              fontSize: '1rem',
-              maxWidth: 'max-content',
-              width: '100%',
-              paddingInline: '.75rem',
-            },
-            // mr: 1
-          }}
-          label={status}
-        /> */}
         {menuItems.length > 0 && (
           <div>
             <Button
