@@ -27,7 +27,6 @@ import { adminRoutes } from './admin';
 const OnboardingPage = lazy(() => import('src/pages/onboarding'));
 const UpdatePasswordPage = lazy(() => import('src/pages/update-password'));
 const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/review'));
-const RfiResponsePage = lazy(() => import('src/pages/subscriber/rfis/response'));
 
 // ----------------------------------------------------------------------
 
@@ -53,18 +52,6 @@ export default function Router() {
                 <DashboardLayout>
                   <Suspense fallback={<LoadingScreen />}>
                     <SubmittalsReviewPage />
-                  </Suspense>
-                </DashboardLayout>
-              </AuthGuard>
-            ),
-          },
-          {
-            path: '/subscriber/rfi/:id/response',
-            element: (
-              <AuthGuard>
-                <DashboardLayout>
-                  <Suspense fallback={<LoadingScreen />}>
-                    <RfiResponsePage />
                   </Suspense>
                 </DashboardLayout>
               </AuthGuard>

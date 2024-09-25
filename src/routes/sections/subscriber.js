@@ -27,7 +27,6 @@ const RfiListPage = lazy(() => import('src/pages/subscriber/rfis/list'));
 const RfiCreatePage = lazy(() => import('src/pages/subscriber/rfis/new'));
 const RfiEditPage = lazy(() => import('src/pages/subscriber/rfis/edit'));
 const RfiDetailsPage = lazy(() => import('src/pages/subscriber/rfis/details'));
-const RfiResponseDetailsPage = lazy(() => import('src/pages/subscriber/rfis/response-details'));
 
 // PlanRooms
 const PlanRoomListPage = lazy(() => import('src/pages/subscriber/plan-room/list'));
@@ -113,8 +112,6 @@ export const subscriberRoutes = [
           { path: 'new', element: <RfiCreatePage /> },
           { path: ':id', element: <RfiDetailsPage /> },
           { path: ':id/edit', element: <RfiEditPage /> },
-          { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
-          // { path: ':id/response/details', element: <RfiResponseDetailsPage /> },
         ],
       },
       {
