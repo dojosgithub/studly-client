@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 // @mui
 import Stack from '@mui/material/Stack';
@@ -8,19 +8,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
-import { Button, Menu } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 
 // components
 import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
-import { getRFILogPDF } from 'src/redux/slices/rfiSlice';
 
 // ----------------------------------------------------------------------
 
@@ -30,27 +24,7 @@ export default function RfiTableToolbar({
   //
   roleOptions,
 }) {
-  const popover = usePopover();
-  const dispatch = useDispatch();
-  const userRole = useSelector((state) => state.user.user.role.shortName);
-  const [isLoading, setIsLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
-
-  // const handleFilterName = useCallback(
-  //   (event) => {
-  //     onFilters('name', event.target.value);
-  //   },
-  //   [onFilters]
-  // );
 
   const handleFilterStatus = useCallback(
     (event) => {
@@ -82,13 +56,6 @@ export default function RfiTableToolbar({
     setInputValue(event.target.value);
   };
 
-  const handleDownloadReport = async (e) => {
-    handleClose();
-    setIsLoading(true);
-    await dispatch(getRFILogPDF(e));
-    setIsLoading(false);
-  };
-
   return (
     <Stack
       spacing={2}
@@ -107,8 +74,6 @@ export default function RfiTableToolbar({
           fullWidth
           value={inputValue}
           onChange={handleInputChange}
-          // value={filters.name}
-          // onChange={handleFilterName}
           placeholder="Search..."
           InputProps={{
             endAdornment: (
@@ -118,10 +83,6 @@ export default function RfiTableToolbar({
             ),
           }}
         />
-
-        {/* <IconButton onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton> */}
       </Stack>
 
       <FormControl

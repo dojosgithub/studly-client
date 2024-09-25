@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 const PdfModifier = () => {
   const [pdfUrl, setPdfUrl] = useState(null);

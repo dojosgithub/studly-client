@@ -1,34 +1,24 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 // hook-form
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useParams } from 'react-router';
 
 // @mui
-import { isEmpty, parseInt } from 'lodash';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Dialog from '@mui/material/Dialog';
-import MenuItem from '@mui/material/MenuItem';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
-import { AppBar, Stack, Table, Typography, Toolbar, IconButton, Divider } from '@mui/material';
+import { AppBar, Typography, Toolbar, IconButton, Divider } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 // components
 import { enqueueSnackbar } from 'notistack';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
-import FormProvider, { RHFMultiSelect, RHFSelect, RHFTextField } from 'src/components/hook-form';
-// utils
-import uuidv4 from 'src/utils/uuidv4';
+import FormProvider from 'src/components/hook-form';
+
 // mock
-import Scrollbar from 'src/components/scrollbar';
 import PlanRoomPdfConverter from './plan-room-pdf-converter';
 // components
 
@@ -42,9 +32,6 @@ export default function PlanRoomPDFSheetsDrawer({
   onFormSubmit,
   ...other
 }) {
-  const { id } = useParams();
-
-  const dispatch = useDispatch();
   const confirmIsFormDisabled = useBoolean(false);
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
@@ -73,14 +60,7 @@ export default function PlanRoomPDFSheetsDrawer({
     defaultValues,
   });
 
-  const {
-    reset,
-    setValue,
-    handleSubmit,
-    getValues,
-    watch,
-    formState: { isSubmitting, isValid, errors },
-  } = methods;
+  const { handleSubmit } = methods;
 
   const hasDuplicateTitles = (items) => {
     const titles = new Set();
@@ -95,18 +75,12 @@ export default function PlanRoomPDFSheetsDrawer({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // if (!isEmpty(error)) {
-      // enqueueSnackbar(error.message, { variant: 'error' });
-      //   return;
-      // }
       if (hasDuplicateTitles(data?.sheets)) {
         enqueueSnackbar('Sheet titles should be unique within a plan set', { variant: 'error' });
         return;
       }
       confirmIsFormDisabled.onTrue();
       onFormSubmit(data?.sheets, data?.attachments);
-      // reset()
-      // onClose()
     } catch (e) {
       console.error(e);
     }
@@ -137,12 +111,8 @@ export default function PlanRoomPDFSheetsDrawer({
       }}
       sx={{
         [`& .${drawerClasses.paper}`]: {
-          // ...paper({ theme, bgcolor: theme.palette.background.default }),
           width: `calc(100% - ${280}px)`,
           background: 'white',
-          // ...isOnboarding && {
-          //   width: '100%',
-          // }
         },
         position: 'relative',
         height: '100%',
@@ -153,11 +123,9 @@ export default function PlanRoomPDFSheetsDrawer({
       <Divider sx={{ borderStyle: 'dashed' }} />
 
       <Box flex={1} width="100%" paddingX="2rem">
-        {/* <Scrollbar> */}
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <PlanRoomPdfConverter files={files} />
         </FormProvider>
-        {/* </Scrollbar> */}
       </Box>
 
       <Box

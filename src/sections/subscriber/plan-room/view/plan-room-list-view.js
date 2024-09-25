@@ -1,130 +1,67 @@
-import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
-import { alpha } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 
-import { isEmpty } from 'lodash';
 import { useSnackbar } from 'notistack';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 // _mock
-import {
-  _userList,
-  _submittalsList,
-  _roles,
-  USER_STATUS_OPTIONS,
-  STATUS_WORKFLOW,
-  _mock,
-  FILTER_CATEGORIES_PLANROOM,
-} from 'src/_mock';
+import { FILTER_CATEGORIES_PLANROOM } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
   useTable,
-  getComparator,
   emptyRows,
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import Lightbox from 'src/components/lightbox/lightbox';
-import { useLightBox } from 'src/components/lightbox';
-//
-import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
-import {
-  deletePlanRoomSheet,
-  getPlanRoomList,
-  setCurrentPlanRoom,
-} from 'src/redux/slices/planRoomSlice';
-import CustomSlides from 'src/components/lighboxcustom/CustomLightBox';
-import SimpleSlider from 'src/components/lighboxcustom/CustomReactSwipe';
+import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
 import { CustomDrawerPlanRoom } from 'src/components/custom-drawer-planroom';
 
-import PdfViewer from 'src/components/lighboxcustom/PdfViewer';
 //
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
-import PlanRoomTableFiltersResult from '../plan-room-table-filters-result';
-import PdfModifier from '../../pdfs/annotator';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
-// const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...SUBMITTALS_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
-  // { id: 'rfiId', label: 'ID', minWidth: 100, width: 100, },
-  { id: 'name', label: 'Sheet Title', width: '20%' }, // minWidth: 150, width: 220,
-  { id: 'description', label: 'Plan set', width: '30%' }, // minWidth: 400, width: 500
-  { id: 'tags', label: 'Tags', width: '30%' }, // minWidth: 400, width: 500
-  { id: 'createdDate', label: 'Issue date', width: '20%' }, // minWidth: 170, width: 170
-  { id: 'creator', label: 'Uploaded by', width: '20%' }, // minWidth: 170,
-  // { id: 'status', label: 'Status', width: 100 },
-  { id: '', width: '5%' }, // width: 88
+  { id: 'name', label: 'Sheet Title', width: '20%' },
+  { id: 'description', label: 'Plan set', width: '30%' },
+  { id: 'tags', label: 'Tags', width: '30%' },
+  { id: 'createdDate', label: 'Issue date', width: '20%' },
+  { id: 'creator', label: 'Uploaded by', width: '20%' },
+  { id: '', width: '5%' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
   status: [],
-  // status: 'all',
   query: '',
 };
 
 // ----------------------------------------------------------------------
 
-const images = [...Array(4)].map((_, index) => ({
-  src: _mock.image.cover(index + 1),
-  title: 'Flamingo',
-  // description: 'Vicko Mozara \n Veliki zali, Dubravica, Croatia',
-}));
-
-const slides = [
-  ...images,
-  {
-    type: 'video',
-    width: 1280,
-    height: 720,
-    poster:
-      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
-    sources: [
-      {
-        src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        type: 'video/mp4',
-      },
-    ],
-  },
-];
-
 export default function PlanRoomListView() {
   const table = useTable();
-  // const listData = useSelector(state => state?.rfi?.list)
   const listData = useSelector((state) => state?.planRoom?.list);
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
-  const [tableData, setTableData] = useState(listData?.docs || []);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
@@ -146,45 +83,18 @@ export default function PlanRoomListView() {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const newSlides = useMemo(
-    () => listData?.docs?.map((item) => ({ title: item.title, src: item.src.preview })) || [],
-    [listData]
-  );
-  const lightbox = useLightBox(newSlides);
 
   const confirm = useBoolean();
-
-  // useEffect(() => {
-  //   console.log('filters.status', filters.status);
-  //   dispatch(getRfiList({ search: filters.query, page, status: filters.status }))
-  // }, [dispatch, filters.query, filters.status, page])
 
   useEffect(() => {
     dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
   }, [dispatch, filters.query, filters.status, page, sortDir]);
 
-  const dataFiltered = useMemo(
-    () =>
-      applyFilter({
-        inputData: listData?.docs,
-        comparator: getComparator(table.order, table.orderBy),
-      }),
-    [listData?.docs, table.order, table.orderBy]
-  );
-
-  // const dataInPage = dataFiltered.slice(
-  //   table.page * table.rowsPerPage,
-  //   table.page * table.rowsPerPage + table.rowsPerPage
-  // );
-
   const denseHeight = table.dense ? 52 : 72;
-
-  const canReset = !isEqual(defaultFilters, filters);
 
   const notFound = listData?.totalDocs === 0;
 
   const handleFilters = useCallback((name, value) => {
-    // table.onResetPage();
     setFilters((prevState) => ({
       ...prevState,
       [name]: value,
@@ -204,17 +114,6 @@ export default function PlanRoomListView() {
     [enqueueSnackbar, dispatch]
   );
 
-  // const handleDeleteRows = useCallback(() => {
-  //   const deleteRows = tableData?.filter((row) => !table.selected.includes(row._id));
-  //   setTableData(deleteRows);
-
-  //   table.onUpdatePageDeleteRows({
-  //     totalRows: tableData.length,
-  //     totalRowsInPage: dataInPage.length,
-  //     totalRowsFiltered: listData?.docs?.length,
-  //   });
-  // }, [listData?.docs?.length, dataInPage.length, table, tableData]);
-
   const handleEditRow = useCallback(
     (id) => {
       router.push(paths.subscriber.planRoom.edit(id));
@@ -224,36 +123,11 @@ export default function PlanRoomListView() {
 
   const handleViewRow = useCallback(
     (row) => {
-      // router.push(paths.subscriber.planRoom.details(title));
-      // const index = newSlides.findIndex((item) => item.title === title);
-      // lightbox.onOpen(newSlides[index]?.src);
-      // const index = listData.docs.findIndex((item) => item._id === id);
-      // if (index !== -1) {
-      //   dispatch(setCurrentPlanRoom(listData.docs[index]));
-      //   confirm.onTrue();
-      // }
       setActiveRow(row);
       confirm.onTrue();
     },
     [confirm]
   );
-  const handleViewRowOld = useCallback(
-    (id) => {
-      router.push(paths.subscriber.planRoom.details(id));
-    },
-    [router]
-  );
-
-  // const handleFilterStatus = useCallback(
-  //   (event, newValue) => {
-  //     handleFilters('status', newValue);
-  //   },
-  //   [handleFilters]
-  // );
-
-  // const handleResetFilters = useCallback(() => {
-  //   setFilters(defaultFilters);
-  // }, []);
 
   const closePlanRoomView = () => {
     confirm.onFalse();
@@ -268,7 +142,6 @@ export default function PlanRoomListView() {
           links={[
             {
               name: 'Dashboard',
-              // href: paths.subscriber.root
             },
             { name: 'Plan Room', href: paths.subscriber.planRoom.list },
             { name: 'Logs' },
@@ -291,124 +164,38 @@ export default function PlanRoomListView() {
         />
 
         <Card>
-          {/* <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {tab.value === 'all' && _submittalsList.length}
-                    {tab.value === 'active' &&
-                      _submittalsList?.filter((user) => user.status === 'active').length}
-
-                    {tab.value === 'pending' &&
-                      _submittalsList?.filter((user) => user.status === 'pending').length}
-                    {tab.value === 'banned' &&
-                      _submittalsList?.filter((user) => user.status === 'banned').length}
-                    {tab.value === 'rejected' &&
-                      _submittalsList?.filter((user) => user.status === 'rejected').length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs> */}
-
           <PlanRoomTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
-            // roleOptions={_roles}
             roleOptions={FILTER_CATEGORIES_PLANROOM}
           />
 
-          {/* {canReset && (
-            <PlanRoomTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={listData?.docs?.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )} */}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            {/* <TableSelectedAction
-              dense={table.dense}
-              numSelected={table.selected.length}
-              rowCount={tableData.length}
-              onSelectAllRows={(checked) =>
-                table.onSelectAllRows(
-                  checked,
-                  tableData.map((row) => row._id)
-                )
-              }
-              action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
-              }
-            /> */}
-
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
-                  // onSort={table.onSort}
                   rowCount={listData?.docs?.length}
-                  // numSelected={table.selected.length}
-                  // onSelectAllRows={(checked) =>
-                  //   table.onSelectAllRows(
-                  //     checked,
-                  //     tableData.map((row) => row._id)
-                  //   )
-                  // }
                   handleSortChange={handleSortChange}
                   sortDir={sortDir}
                 />
 
                 <TableBody>
-                  {
-                    // dataFiltered && dataFiltered?
-                    listData?.docs &&
-                      listData?.docs?.map((row) => (
-                        <PlanRoomTableRow
-                          key={row._id}
-                          row={row}
-                          selected={table.selected.includes(row._id)}
-                          onSelectRow={() => table.onSelectRow(row._id)}
-                          onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
-                          onEditRow={() => handleEditRow(row?._id)}
-                          onViewRow={() => handleViewRow(row)}
-                          // onViewRow={() => handleViewRow(row?.title)}
-                        />
-                      ))
-                  }
+                  {listData?.docs &&
+                    listData?.docs?.map((row) => (
+                      <PlanRoomTableRow
+                        key={row._id}
+                        row={row}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
+                        onEditRow={() => handleEditRow(row?._id)}
+                        onViewRow={() => handleViewRow(row)}
+                      />
+                    ))}
 
                   <TableEmptyRows
                     height={denseHeight}
@@ -428,55 +215,9 @@ export default function PlanRoomListView() {
             rowsPerPageOptions={[10]}
             onPageChange={handlePageChange}
           />
-          {/* <TablePaginationCustom
-            count={listData?.docs?.length}
-            page={table.page}
-            rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
-            dense={table.dense}
-            onChangeDense={table.onChangeDense}
-          /> */}
         </Card>
       </Container>
 
-      {/* {newSlides && newSlides?.length > 0 && (
-        <Lightbox
-          open={lightbox.open}
-          close={lightbox.onClose}
-          slides={newSlides}
-          index={lightbox.selected}
-          // disabledTotal
-          disabledSlideshow
-        />
-      )} */}
-      {/* <PdfModifier /> */}
-      {/* <CustomSlides /> */}
-      {/* <PdfViewer /> */}
-      {/* <SimpleSlider /> */}
-      {/* <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              // handleDeleteRows();
-              confirm.onFalse();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      /> */}
       {confirm.value && (
         <CustomDrawerPlanRoom
           open={confirm.value}
@@ -489,33 +230,3 @@ export default function PlanRoomListView() {
 }
 
 // ----------------------------------------------------------------------
-
-function applyFilter({ inputData, comparator, filters }) {
-  // const { name, status, role } = filters;
-
-  const stabilizedThis = inputData?.map((el, index) => [el, index]);
-
-  stabilizedThis?.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis?.map((el) => el[0]);
-
-  // if (name) {
-  //   inputData = inputData?.filter(
-  //     (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-  //   );
-  // }
-
-  // if (status !== 'all') {
-  //   inputData = inputData?.filter((user) => user.status === status);
-  // }
-
-  // if (role.length) {
-  //   inputData = inputData?.filter((user) => role.includes(user.role));
-  // }
-
-  return inputData;
-}

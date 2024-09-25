@@ -29,7 +29,6 @@ export default function PlanRoomCreateView() {
         links={[
           {
             name: 'Dashboard',
-            // href: paths.subscriber.root,
           },
           {
             name: 'Plan Room',
@@ -49,10 +48,11 @@ export default function PlanRoomCreateView() {
               color="primary"
               checked={versionType === 'new'}
               onChange={handleChange}
-              value="new" />
+              value="new"
+            />
           }
           label="New Version Set"
-          sx={{ mb: 1, "& .MuiFormControlLabel-label": { fontSize: '1rem', } }}
+          sx={{ mb: 1, '& .MuiFormControlLabel-label': { fontSize: '1rem' } }}
         />
         <FormControlLabel
           control={
@@ -64,13 +64,12 @@ export default function PlanRoomCreateView() {
             />
           }
           label="Add to Existing Version Set"
-          sx={{ mb: 1, "& .MuiFormControlLabel-label": { fontSize: '1rem', } }}
+          sx={{ mb: 1, '& .MuiFormControlLabel-label': { fontSize: '1rem' } }}
         />
       </Box>
 
-      {versionType === "new" && <PlanRoomNewEditForm />}
-      {versionType === "existing" && <PlanRoomExistingSetForm />}
-
+      {versionType === 'new' && <PlanRoomNewEditForm />}
+      {versionType === 'existing' && <PlanRoomExistingSetForm />}
     </Container>
   );
 }

@@ -30,11 +30,6 @@ const RfiDetailsPage = lazy(() => import('src/pages/subscriber/rfis/details'));
 // PlanRooms
 const PlanRoomListPage = lazy(() => import('src/pages/subscriber/plan-room/list'));
 const PlanRoomCreatePage = lazy(() => import('src/pages/subscriber/plan-room/new'));
-const PlanRoomEditPage = lazy(() => import('src/pages/subscriber/plan-room/edit'));
-const PlanRoomDetailsPage = lazy(() => import('src/pages/subscriber/plan-room/details'));
-const PlanRoomResponseDetailsPage = lazy(() =>
-  import('src/pages/subscriber/plan-room/response-details')
-);
 
 // MeetingMinutes
 const MeetingMinutesListPage = lazy(() => import('src/pages/subscriber/meeting-minutes/list'));
@@ -123,10 +118,6 @@ export const subscriberRoutes = [
           { element: <PlanRoomListPage />, index: true },
           { path: 'list', element: <PlanRoomListPage /> },
           { path: 'new', element: <PlanRoomCreatePage /> },
-          { path: ':id', element: <PlanRoomDetailsPage /> },
-          { path: ':id/edit', element: <PlanRoomEditPage /> },
-          // { path: ':id/details', element: <PlanRoomResponseDetailsPage /> },
-          // { path: ':id/response/details', element: <PlanRoomResponseDetailsPage /> },
         ],
       },
       {

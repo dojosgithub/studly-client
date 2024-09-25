@@ -4,7 +4,7 @@ import { MeetingMinutesEditView } from 'src/sections/subscriber/meeting-minutes/
 
 // ----------------------------------------------------------------------
 
-export default function PlanRoomEditPage() {
+export default function MeetingMinutesEditPage() {
   return (
     <>
       <Helmet>
