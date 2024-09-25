@@ -45,7 +45,7 @@ import { isIncluded } from 'src/utils/functions';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Editor from 'src/components/editor/editor';
-import RfiResponseDialog from './plan-room-pdf-sheets-drawer';
+import PlanRoomSheetsDrawer from './plan-room-pdf-sheets-drawer';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -445,22 +445,18 @@ const RfiDetails = ({ id }) => {
               Submit for Review
             </LoadingButton>
           )}
-        {
-          (
-            status === 'Submitted' &&
-            !isResponseSubmitted &&
-            isIncluded(currentRfi?.owner, currentUser?._id)
-          ) &&
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            // onClick={() => navigate(paths.subscriber.rfi.response(id))}
-            onClick={() => confirm.onToggle()}
-          >
-            Add Response
-          </LoadingButton>
-
-        }
+        {status === 'Submitted' &&
+          !isResponseSubmitted &&
+          isIncluded(currentRfi?.owner, currentUser?._id) && (
+            <LoadingButton
+              loading={isSubmitting}
+              variant="contained"
+              // onClick={() => navigate(paths.subscriber.rfi.response(id))}
+              onClick={() => confirm.onToggle()}
+            >
+              Add Response
+            </LoadingButton>
+          )}
         {/* {menuItems.length > 0 && (
           <div>
             <Button
@@ -504,9 +500,7 @@ const RfiDetails = ({ id }) => {
         {status === 'Submitted' &&
           (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-            <Alert severity="success">
-              RFI is submitted successfully!.
-            </Alert>
+            <Alert severity="success">RFI is submitted successfully!.</Alert>
           )}
 
         {/* {isResponseSubmitted && isIncluded(currentRfi?.owner, currentUser?._id) && (
@@ -648,22 +642,17 @@ const RfiDetails = ({ id }) => {
             )}
           </Box>
         </StyledCard>
-        {isResponseSubmitted &&
+        {isResponseSubmitted && (
           <StyledCard>
             <Typography className="submittalTitle">Response</Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <Box dangerouslySetInnerHTML={{__html: response?.text}}/>
+              <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
             </Box>
           </StyledCard>
-        }
+        )}
       </Stack>
 
-      <RfiResponseDialog
-        open={confirm.value}
-        onClose={() => confirm.onFalse()}
-      />
-
-
+      <PlanRoomSheetsDrawer open={confirm.value} onClose={() => confirm.onFalse()} />
     </>
   );
 };

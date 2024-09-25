@@ -4,4 +4,3 @@ export { default as RfiCreateView } from './rfi-create-view';
 export { default as RfiDetailsView } from './rfi-details-view';
 export { default as RfiResponseView } from './rfi-response-view';
 export { default as RfiResponseDetailsView } from './rfi-response-details-view';
-export { default as RfiRevisionView } from './rfi-revision-view';

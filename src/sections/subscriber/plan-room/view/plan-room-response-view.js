@@ -12,17 +12,15 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import Editor from 'src/components/editor/editor';
-import RfiResponseForm from '../plan-room-response-form';
+import PlanRoomResponseForm from '../plan-room-response-form';
 
 // ----------------------------------------------------------------------
 
 export default function PlanRoomResponseView({ id }) {
   const settings = useSettingsContext();
-  const dispatch = useDispatch()
-  const currentRfi = useSelector(state => state.rfi.current)
-  useEffect(() => {
-
-  }, [dispatch, currentRfi, id])
+  const dispatch = useDispatch();
+  const currentRfi = useSelector((state) => state.rfi.current);
+  useEffect(() => {}, [dispatch, currentRfi, id]);
 
   // console.log("currentRfiResponse", currentRfi)
   return (
@@ -46,8 +44,8 @@ export default function PlanRoomResponseView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      {/* <RfiResponseForm currentRfi={currentRfi}  id={id}/> */}
-      <Editor/>
+      {/* <PlanRoomResponseForm currentRfi={currentRfi}  id={id}/> */}
+      <Editor />
     </Container>
   );
 }

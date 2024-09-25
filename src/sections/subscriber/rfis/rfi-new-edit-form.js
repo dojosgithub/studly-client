@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { isEmpty, concat } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 // @mui
@@ -12,38 +12,18 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { addDays, isAfter, isTomorrow, startOfDay } from 'date-fns';
+import { addDays, isTomorrow, startOfDay } from 'date-fns';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers';
-// utils
-import { fData } from 'src/utils/format-number';
 // routes
 import { paths } from 'src/routes/paths';
-import { useParams, useRouter } from 'src/routes/hooks';
-// assets
-import { countries } from 'src/assets/data';
+import { useRouter } from 'src/routes/hooks';
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFAutocomplete,
-  RHFUpload,
-  RHFSelect,
-  RHFMultiSelect,
-  RHFMultiSelectChip,
-  RHFSelectChip,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFSelect, RHFMultiSelect } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
-import { getStrTradeId } from 'src/utils/split-string';
 import { createRfi, editRfi, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
 import RfiAttachments from './rfi-attachment';
 
@@ -51,11 +31,9 @@ import RfiAttachments from './rfi-attachment';
 
 export default function RfiNewEditForm({ currentRfi, id }) {
   const router = useRouter();
-  const params = useParams();
   const { pathname } = useLocation();
   const isSubmittingRef = useRef();
   const dispatch = useDispatch();
-  // const ccList = useSelector((state) => state.submittal.users);
   const ccList = useSelector((state) => state.rfi.users);
   const ownerList = useSelector((state) => state.submittal.assigneeUsers);
   const currentUser = useSelector((state) => state.user?.user);
@@ -79,29 +57,22 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     drawingSheet: Yup.string().required('Drawing sheet is required'),
-    // createdDate: Yup.date()
-    //   .required('Created Date is required'),
     dueDate: Yup.date()
       .required('Due Date is required')
       .min(startOfDay(addDays(new Date(), 1)), 'Due Date must be later than today'),
     costImpact: Yup.string(),
     scheduleDelay: Yup.string(),
-    // owner: Yup.array().min(1).required('Owner is required'),
     owner: Yup.array(),
     ccList: Yup.array(),
-    // status: Yup.string().required('Status is required'),
   });
 
   const defaultValues = useMemo(() => {
     const name = currentRfi?.name ? currentRfi?.name : '';
     const description = currentRfi?.description ? currentRfi?.description : '';
     const drawingSheet = currentRfi?.drawingSheet ? currentRfi?.drawingSheet : '';
-    // const createdDate = currentRfi ? new Date(currentRfi?.createdDate) : null;
     const dueDate = currentRfi ? new Date(currentRfi?.dueDate) : null;
     const costImpact = currentRfi?.costImpact ? currentRfi?.costImpact : '';
     const scheduleDelay = currentRfi?.scheduleDelay ? currentRfi?.scheduleDelay : '';
-    // let owner = [];
-    // let ccListInside = [];
     const owner = currentRfi?.owner?.map((item) => item.email) || [];
     const ccListInside = currentRfi?.ccList || [];
 
@@ -109,7 +80,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       name,
       description,
       drawingSheet,
-      // createdDate,
       dueDate,
       costImpact,
       scheduleDelay,
@@ -125,9 +95,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
 
   const {
     reset,
-    watch,
     control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = methods;
@@ -206,8 +174,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
         return;
       }
       await handleSubmitToArchitect(payload?._id);
-      // await dispatch(submitRfiToArchitect(payload?._id));
-      // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
       reset();
       isSubmittingRef.current = false;
       router.push(paths.subscriber.rfi.list);
@@ -228,22 +194,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
     }
     enqueueSnackbar('Rfi has been successfully sent for review', { variant: 'success' });
   };
-
-  // const handleDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     const file = acceptedFiles[0];
-
-  //     const newFile = Object.assign(file, {
-  //       preview: URL.createObjectURL(file),
-  //     });
-
-  //     if (file) {
-  //       console.log("newFile", newFile)
-  //       setValue('attachment', newFile, { shouldValidate: true });
-  //     }
-  //   },
-  //   [setValue]
-  // );
 
   return (
     <>
@@ -267,17 +217,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
-              <Box
-                rowGap={4}
-                // columnGap={2}
-                // gridTemplateColumns={{
-                //   xs: 'repeat(1, 1fr)',
-                //   sm: 'repeat(2, 1fr)',
-                // }}
-                my={3}
-                display="flex"
-                flexDirection="column"
-              >
+              <Box rowGap={4} my={3} display="flex" flexDirection="column">
                 <Box
                   rowGap={3}
                   columnGap={2}
@@ -300,45 +240,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                     sm: 'repeat(3, 1fr)',
                   }}
                 >
-                  {/* <Controller
-                  name="createdDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => {
-                    const selectedDate = field.value || null;
-                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                    const dateStyle = isDateNextDay
-                      ? {
-                        '.MuiInputBase-root.MuiOutlinedInput-root': {
-                          color: 'red',
-                          borderColor: 'red',
-                          border: '1px solid',
-                        },
-                      }
-                      : {};
-                    console.log(isDateNextDay);
-                    return (
-                      <DatePicker
-                        label="Created Date"
-                        views={['day']}
-                        value={selectedDate}
-                        minDate={startOfDay(addDays(new Date(), 1))}
-                        onChange={(date) => field.onChange(date)}
-                        format="MM/dd/yyyy" // Specify the desired date format
-                        error={!!error}
-                        helperText={error && error?.message}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                        }}
-                      // sx={dateStyle} // Apply conditional style based on the date comparison
-                      />
-                    );
-                  }}
-                /> */}
                   <Controller
                     name="dueDate"
                     control={control}
@@ -399,7 +300,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                       ? false
                       : currentRfi && currentRfi?.status !== 'Draft'
                   }
-                  // placeholder="Select multiple options"
                   chip
                   options={ownerList?.map((item) => ({ label: item.email, value: item.email }))}
                 />
@@ -411,13 +311,8 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                       ? false
                       : currentRfi && currentRfi?.status !== 'Draft'
                   }
-                  // placeholder="Select multiple options"
                   chip
                   options={ccList?.map((item) => ({ label: item.email, value: item.email }))}
-                  // options={[
-                  //   { label: 'engr@mailinator.com', value: 'engr@mailinator.com' },
-                  //   { label: 'arch@mailinator.com', value: 'arch@mailinator.com' },
-                  // ]}
                 />
               </Box>
 
@@ -452,7 +347,6 @@ export default function RfiNewEditForm({ currentRfi, id }) {
                       </LoadingButton>
                     </>
                   )}
-                {/* && !pathname.includes('revision') */}
                 {!isEmpty(currentRfi) && (
                   <LoadingButton
                     type="button"

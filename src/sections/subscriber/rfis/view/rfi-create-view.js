@@ -20,7 +20,6 @@ export default function RfiCreateView() {
         links={[
           {
             name: 'Dashboard',
-            // href: paths.subscriber.root,
           },
           {
             name: 'RFIs',

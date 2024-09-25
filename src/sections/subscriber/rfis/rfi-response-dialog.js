@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 // hook-form
@@ -10,51 +10,28 @@ import { useParams } from 'react-router';
 // @mui
 import { isEmpty } from 'lodash';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
-import MenuItem from '@mui/material/MenuItem';
-import { Stack, Table, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFMultiSelect, RHFSelect, RHFTextField } from 'src/components/hook-form';
-// utils
-import uuidv4 from 'src/utils/uuidv4';
-// mock
-import {
-  PROJECT_INVITE_USERS_INTERNAL,
-  PROJECT_INVITE_USER_ROLES,
-  SUBSCRIBER_USER_ROLE_STUDLY,
-  USER_TYPES_STUDLY,
-  getRoleKeyByValue,
-} from 'src/_mock';
-import {
-  setAddExternalUser,
-  setAddInternalUser,
-  setInvitedSubcontractor,
-  setMembers,
-} from 'src/redux/slices/projectSlice';
-// inviteSubcontractor,
-import { sendToAll } from 'src/redux/slices/submittalSlice';
+import FormProvider from 'src/components/hook-form';
+
 import Editor from 'src/components/editor/editor';
 import { submitRfiResponse } from 'src/redux/slices/rfiSlice';
 // components
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalSendAllDialog({
+export default function RfiResponseDialog({
   //
   open,
   onClose,
-  // userList,
   ...other
 }) {
   const { id } = useParams();
-  const userList = useSelector((state) => state?.submittal?.projectUsersAll) || [];
   const userId = useSelector((state) => state?.user?.user?._id) || '';
 
   const dispatch = useDispatch();
@@ -80,9 +57,7 @@ export default function SubmittalSendAllDialog({
     reset,
     setValue,
     handleSubmit,
-    getValues,
-    watch,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting },
   } = methods;
 
   const handleEditorChange = (content, delta, source, editor) => {
@@ -145,8 +120,7 @@ export default function SubmittalSendAllDialog({
   );
 }
 
-SubmittalSendAllDialog.propTypes = {
+RfiResponseDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
-  // userList: PropTypes.array,
 };
