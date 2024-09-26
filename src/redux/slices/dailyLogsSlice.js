@@ -1,80 +1,40 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { cloneDeep, isEmpty } from 'lodash';
+import { cloneDeep } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
-// * Meeting Minutes
-
-// export const createDailyLogs = createAsyncThunk(
-//   'dailyLogs/create',
-//   async (dailyLogsData, { getState, rejectWithValue }) => {
-//     if (isEmpty(dailyLogsData)) {
-//       return rejectWithValue('daily logs cannot be empty.');
-//     }
-
-//     const projectId = getState().project?.current?._id;
-
-//     dailyLogsData.projectId = projectId;
-//     try {
-//       const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
-
-//       return response.data.data;
-//     } catch (err) {
-//       console.error('errSlice', err);
-//       if (err && err.message) {
-//         throw Error(err.message);
-//       }
-//       throw Error('An error occurred while creating the plan.');
-//     }
-//   }
-// );
-export const createDailyLogs = createAsyncThunk(
-  'dailyLogs/create',
-  async (dailyLogsData, { getState, rejectWithValue }) => {
-    // console.log('dailyLogsData', dailyLogsData);
-    // if (isEmpty(dailyLogsData)) {
-    //   return rejectWithValue('daily logs cannot be empty.');
-    // }
-
-    try {
-      // console.log('Sending data:', dailyLogsData);
-      const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
-      // console.log('API Response:', response.data);
-      return response.data.data;
-    } catch (err) {
-      console.error('API Error:', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+export const createDailyLogs = createAsyncThunk('dailyLogs/create', async (dailyLogsData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.dailyLogs.create, dailyLogsData);
+    return response.data.data;
+  } catch (err) {
+    console.error('API Error:', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
-export const getDailyLogsDetails = createAsyncThunk(
-  'dailyLogs/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.dailyLogs.details(id));
+export const getDailyLogsDetails = createAsyncThunk('dailyLogs/details', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.dailyLogs.details(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal details.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal details.');
   }
-);
+});
 
 export const getDailyLogsList = createAsyncThunk(
   'dailyLogs/list',
 
-  async (listOptions, { getState, rejectWithValue }) => {
-    // console.log('ListsData', listOptions);
+  async (listOptions, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
-      // console.log('Sending data:', listOptions);
       const { status, ...data } = listOptions;
       const response = await axiosInstance.post(
         endpoints.dailyLogs.list(projectId),
@@ -83,7 +43,6 @@ export const getDailyLogsList = createAsyncThunk(
           params: data,
         }
       );
-      // console.log('API Response:', response.data);
       return response.data.data;
     } catch (err) {
       console.error('errSlice', err);
@@ -95,24 +54,19 @@ export const getDailyLogsList = createAsyncThunk(
   }
 );
 
-export const updateDailyLogs = createAsyncThunk(
-  'dailyLogs/update',
-  async ({ data, id }, { getState, rejectWithValue }) => {
-    // console.log(data, id);
+export const updateDailyLogs = createAsyncThunk('dailyLogs/update', async ({ data, id }) => {
+  try {
+    const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
 
-    try {
-      const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
 export const DailyLogs = createAsyncThunk(
   'dailyLogsSheet/delete',
@@ -133,108 +87,91 @@ export const DailyLogs = createAsyncThunk(
   }
 );
 
-export const createFollowup = createAsyncThunk(
-  'dailyLogs/followup',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.dailyLogs.followup(id));
+export const createFollowup = createAsyncThunk('dailyLogs/followup', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.dailyLogs.followup(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
-export const sendToAttendees = createAsyncThunk(
-  'dailyLogs/send',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.dailyLogs.sendToAttendees(id));
+export const sendToAttendees = createAsyncThunk('dailyLogs/send', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.dailyLogs.sendToAttendees(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
-export const changeToMinutes = createAsyncThunk(
-  'dailyLogs/changetominutes',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.dailyLogs.toMinutes(id));
+export const changeToMinutes = createAsyncThunk('dailyLogs/changetominutes', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.dailyLogs.toMinutes(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
-export const deleteLog = createAsyncThunk(
-  'dailyLogs/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(endpoints.dailyLogs.delete(id));
+export const deleteLog = createAsyncThunk('dailyLogs/delete', async (id) => {
+  try {
+    const response = await axiosInstance.delete(endpoints.dailyLogs.delete(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
-export const getDailyLogsPDF = createAsyncThunk(
-  'dailyLogs/pdf',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const projectId = getState().project?.current?._id;
+export const getDailyLogsPDF = createAsyncThunk('dailyLogs/pdf', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.dailyLogs.pdf(id), {
+      responseType: 'blob',
+    });
 
-      const response = await axiosInstance.get(endpoints.dailyLogs.pdf(id), {
-        responseType: 'blob',
-      });
+    const buffer = response.data;
 
-      const buffer = response.data;
+    const blob = new Blob([buffer], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
 
-      const blob = new Blob([buffer], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
+    // Create a temporary link and trigger a download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'daily_log';
+    a.click();
 
-      // Create a temporary link and trigger a download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'daily_log';
-      a.click();
+    // Cleanup
+    URL.revokeObjectURL(url);
 
-      // Cleanup
-      URL.revokeObjectURL(url);
-
-      return response.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching submittal list.');
+    return response.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching submittal list.');
   }
-);
+});
 
 const dailyLogsInitialState = {
   date: new Date('07-21-2024'),
@@ -250,48 +187,6 @@ const dailyLogsInitialState = {
   docStatus: 1,
 };
 
-// {
-//   date: {
-//     type: Date,
-//   },
-//   projectId: {
-//     type: Schema.Types.ObjectId,
-//     ref: 'Project',
-//   },
-//   accidentSafetyIssues: String,
-//   visitors: [String],
-//   inspection: [
-//     {
-//       value: String,
-//       status: Boolean,
-//       reason: String,
-//     },
-//   ],
-//   weather: [String],
-//   subcontractorAttendance: [
-//     {
-//       companyName: String,
-//       headCount: Number,
-//     },
-//   ],
-//   distributionList: [
-//     {
-//       name: String,
-//       email: String,
-//     },
-//   ],
-//   attachments: Array,
-//   summary: String,
-//   status: {
-//     type: Number,
-//     default: 1,
-//   },
-//   docStatus: {
-//     type: Number,
-//     default: DOC_STATUS.active,
-//   },
-// },
-
 const initialState = {
   notes: '',
   list: [],
@@ -304,37 +199,11 @@ const dailyLogs = createSlice({
   name: 'dailyLogs',
   initialState,
   reducers: {
-    setDailyLogs: (state, action) => {
-      // state.list = action.payload;
-      state.list = [...state.list, action.payload];
-    },
-    setCurrentDailyLogs: (state, action) => {
-      state.current = action.payload;
-    },
-    setCreateDailyLogs: (state, action) => {
-      state.create = action.payload;
-    },
-    setDailyLogsDescription: (state, action) => {
-      state.create.description = action.payload;
-    },
-    // setdailyLogsInviteAttendee: (state, action) => {
-    //   state.create.inviteAttendee = action.payload;
-    // },
-    // setdailyLogsNotes: (state, action) => {
-    //   state.create.notes = action.payload;
-    // },
-    // setdailyLogsPermit: (state, action) => {
-    //   state.create.permit = action.payload;
-    // },
-    // setdailyLogsPlanTracking: (state, action) => {
-    //   state.create.plan = action.payload;
-    // },
-
     resetDailyLogsCreateState: () => dailyLogsInitialState,
     resetDailyLogsState: () => initialState,
   },
   extraReducers: (builder) => {
-    // * Create New dailyLogs
+    // * Create New Daily Log
     builder.addCase(createDailyLogs.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -349,7 +218,7 @@ const dailyLogs = createSlice({
       state.error = action.error.message;
     });
 
-    // * Get PlanRoom List
+    // * Get Daily Logs List
     builder.addCase(getDailyLogsList.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -364,13 +233,12 @@ const dailyLogs = createSlice({
       state.error = action.error.message;
     });
 
-    // * Delete PlanRoom
+    // * Delete Daily Log
     builder.addCase(deleteLog.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
     builder.addCase(deleteLog.fulfilled, (state, action) => {
-      // state.create = action.payload;
       state.isLoading = false;
       state.error = null;
     });
@@ -379,7 +247,7 @@ const dailyLogs = createSlice({
       state.error = action.error.message;
     });
 
-    // // Get PlanRoom Details
+    // * Get Daily Log Details
     builder.addCase(getDailyLogsDetails.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -396,12 +264,5 @@ const dailyLogs = createSlice({
   },
 });
 
-export const {
-  setdailyLogs,
-  setCurrentDailyLogs,
-  setCreateDailyLogs,
-  setDailyLogsDescription,
-  resetdailyLogsState,
-  resetdailyLogsCreateState,
-} = dailyLogs.actions;
+export const { resetDailyLogsCreateState, resetDailyLogsState } = dailyLogs.actions;
 export default dailyLogs.reducer;

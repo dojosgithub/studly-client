@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch, useSelector } from 'react-redux';
-import { MeetingMinutesCreateView } from 'src/sections/subscriber/daily-logs/view';
+import { useDispatch } from 'react-redux';
+import { DailyLogsCreateView } from 'src/sections/subscriber/daily-logs/view';
 import { getExistingPlanRoomList } from 'src/redux/slices/planRoomSlice';
 // sections
 
@@ -9,7 +9,6 @@ import { getExistingPlanRoomList } from 'src/redux/slices/planRoomSlice';
 
 export default function DailyLogsCreatePage() {
   const dispatch = useDispatch();
-  const projectId = useSelector((state) => state?.project?.current?._id);
 
   // getting users list of project
   useEffect(() => {
@@ -21,7 +20,7 @@ export default function DailyLogsCreatePage() {
         <title> Create new daily log page</title>
       </Helmet>
 
-      <MeetingMinutesCreateView />
+      <DailyLogsCreateView />
     </>
   );
 }

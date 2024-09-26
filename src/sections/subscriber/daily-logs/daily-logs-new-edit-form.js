@@ -1,269 +1,589 @@
 import PropTypes from 'prop-types';
+import React, { useState, useMemo, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useMemo } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-// @mui
-import LoadingButton from '@mui/lab/LoadingButton';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Unstable_Grid2';
+import { styled } from '@mui/material/styles';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useFieldArray, useForm, Controller } from 'react-hook-form';
+import { cloneDeep, isBoolean } from 'lodash';
+import { LoadingButton } from '@mui/lab';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { useSnackbar } from 'notistack';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  FormControl,
+  Card,
+  alpha,
+  Grid,
+  Stack,
+  Divider,
+  IconButton,
+} from '@mui/material';
 
-import { isTomorrow } from 'date-fns';
-// @mui
-import { DatePicker } from '@mui/x-date-pickers';
-// routes
-import { useRouter } from 'src/routes/hooks';
-// components
-import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
-//
-import { useBoolean } from 'src/hooks/use-boolean';
+import {
+  createDailyLogs,
+  getDailyLogsDetails,
+  updateDailyLogs,
+} from 'src/redux/slices/dailyLogsSlice'; // Adjust import based on your project structure
 
-// ----------------------------------------------------------------------
+import FormProvider, { RHFEditor, RHFTextField } from 'src/components/hook-form';
+import { useParams, useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
-export default function DailyLogsNewEditForm({ currentMeetingMinutes, id }) {
-  const router = useRouter();
-  const confirm = useBoolean();
+import Iconify from 'src/components/iconify';
+import DailyLogsAttachments from './daily-logs-attachment';
 
+const StyledButton = styled(Button)(({ theme, selected }) => ({
+  backgroundColor: selected ? '#FFAB00' : theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  '&:hover': {
+    backgroundColor: selected ? '#FFAB00' : theme.palette.action.hover,
+  },
+  margin: theme.spacing(0.5),
+}));
+
+const weatherOptions = ['Clear', 'Windy', 'Rainy', 'Snow', 'Sun', 'Hot'];
+
+const DailyLogsNewEditForm = ({ isEdit }) => {
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user?.user);
-  const projectId = useSelector((state) => state.project?.current?._id);
+  const params = useParams();
 
+  const currentLog = useSelector((state) => state?.dailyLogs?.current);
+  const { id } = params;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isEdit) {
+      dispatch(getDailyLogsDetails(id));
+    }
+  }, [isEdit, id, dispatch]);
+
+  const currentProject = useSelector((state) => state?.project?.current);
+
+  const NewDailyLogSchema = Yup.object().shape({
+    date: Yup.date().required('Date is required'),
+    accidentSafetyIssues: Yup.string(),
+    visitors: Yup.array().of(
+      Yup.object().shape({
+        visitors: Yup.string(),
+      })
+    ),
+    inspection: Yup.array()
+      .of(
+        Yup.object().shape({
+          value: Yup.string(),
+          status: Yup.string(),
+          result: Yup.string(),
+        })
+      )
+      .required('Inspection is required'),
+    weather: Yup.array(),
+    subcontractorAttendance: Yup.array().of(
+      Yup.object().shape({
+        companyName: Yup.string(),
+        headCount: Yup.mixed().nullable(),
+      })
+    ),
+    distributionList: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string(),
+        email: Yup.string(),
+      })
+    ),
+    attachments: Yup.array(),
+    summary: Yup.string(),
+  });
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewPlanRoomSchema = Yup.object().shape({
-    planName: Yup.string().required('Plan Name is required'),
-    issueDate: Yup.date().required('Issue Date is required'),
-    // .min(startOfDay(addDays(new Date(), 1)), 'Issue Date must be later than today'),
-    creator: Yup.object().shape({
-      _id: Yup.string(),
-      firstName: Yup.string(),
-      lastName: Yup.string(),
+  const defaultValues = useMemo(
+    () => ({
+      date: new Date(),
+      accidentSafetyIssues: '',
+      visitors: [{ visitors: '' }],
+      inspection: [{ value: '', status: true, reason: '' }],
+      weather: [],
+      subcontractorAttendance: [{ companyName: '', headCount: null }],
+      distributionList: [{ name: '', email: '' }],
+      attachments: [],
+      summary: '',
     }),
-  });
-
-  const defaultValues = useMemo(() => {
-    const planName = currentMeetingMinutes?.name ? currentMeetingMinutes?.name : '';
-    const issueDate = currentMeetingMinutes?.issueDate
-      ? new Date(currentMeetingMinutes.issueDate)
-      : null;
-    const creator =
-      {
-        _id: currentUser._id,
-        firstName: currentUser?.firstName,
-        lastName: currentUser?.lastName,
-      } || null;
-
-    return {
-      planName,
-      issueDate,
-      creator,
-    };
-  }, [currentMeetingMinutes, currentUser]);
+    []
+  );
 
   const methods = useForm({
-    resolver: yupResolver(NewPlanRoomSchema),
+    resolver: yupResolver(NewDailyLogSchema),
     defaultValues,
   });
 
+  const { reset, handleSubmit, control, getValues, trigger, setValue } = methods;
+
+  useEffect(() => {
+    if (isEdit && currentLog) {
+      const meeting = cloneDeep(currentLog);
+
+      // Convert date field with default value if undefined
+      meeting.date = meeting.date ? new Date(meeting.date) : new Date();
+
+      // Handle inspection array with default empty array if undefined
+      meeting.inspection = Array.isArray(meeting.inspection)
+        ? meeting.inspection.map((inspection) => ({
+            ...inspection,
+            date: inspection.date ? new Date(inspection.date) : new Date(),
+          }))
+        : [];
+
+      // Handle distributionList array with default empty array if undefined
+      meeting.distributionList = Array.isArray(meeting.distributionList)
+        ? meeting.distributionList.map((distrib) => ({
+            ...distrib,
+          }))
+        : [];
+
+      // Handle subcontractorAttendance array with default empty array if undefined
+      meeting.subcontractorAttendance = Array.isArray(meeting.subcontractorAttendance)
+        ? meeting.subcontractorAttendance.map((subcontractor) => ({
+            ...subcontractor,
+          }))
+        : [];
+
+      // Handle weather array (assuming no transformation needed)
+      meeting.weather = Array.isArray(meeting.weather) ? [...meeting.weather] : [];
+
+      // Handle visitors array (assuming no transformation needed)
+      meeting.visitors = Array.isArray(meeting.visitors)
+        ? meeting.visitors.map((visitor) => ({ visitors: visitor }))
+        : [];
+
+      // Handle HTML strings (no transformation needed if they're in the correct format)
+      meeting.accidentSafetyIssues =
+        typeof meeting.accidentSafetyIssues === 'string' ? meeting.accidentSafetyIssues : '';
+
+      meeting.summary = typeof meeting.summary === 'string' ? meeting.summary : '';
+
+      // Handle attachments (assuming it's an array of objects)
+      meeting.attachments = Array.isArray(meeting.attachments) ? [...meeting.attachments] : [];
+      setFiles(meeting.attachments);
+      reset(meeting);
+    }
+  }, [isEdit, currentLog, dispatch, reset]);
+
+  const handleWeatherChange = (value) => {
+    const array = getValues('weather');
+    const index = array.indexOf(value);
+    if (index === -1) {
+      // value does not exist, add it
+      array.push(value);
+    } else {
+      // Item exists, remove it
+      array.splice(index, 1);
+    }
+
+    setValue('weather', array);
+  };
+
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const {
-    reset,
-    getValues,
+    fields: subcontractorFields,
+    append: appendSubcontractor,
+    remove: removeSubcontractor,
+  } = useFieldArray({
     control,
-    setValue,
-    handleSubmit,
-    trigger,
-    formState: { isSubmitting, errors, isValid },
-  } = methods;
+    name: 'subcontractorAttendance',
+  });
+  const {
+    fields: visitorFields,
+    append: appendVisitor,
+    remove: removeVisitor,
+  } = useFieldArray({
+    control,
+    name: 'visitors',
+  });
+  const {
+    fields: distributionFields,
+    append: appendDistribution,
+    remove: removeDistribution,
+  } = useFieldArray({
+    control,
+    name: 'distributionList',
+  });
+  const {
+    fields: inspectionFields,
+    append: appendInspection,
+    remove: removeInspection,
+  } = useFieldArray({
+    control,
+    name: 'inspection',
+  });
+  const onSubmit = handleSubmit(async (data) => {
+    setLoading(true); // Start loading spinner
 
-  // useEffect(() => {
-  //   reset(defaultValues);
-  //   setFiles(existingAttachments)
-  //   setAttachmentsError(false)
-  // }, [versionType, setFiles, defaultValues, reset, existingAttachments]);
-
-  if (!isEmpty(errors)) {
-    window.scrollTo(0, 0);
-  }
-
-  const onSubmit = handleSubmit(async (data, val) => {
     try {
-      confirm.onTrue();
+      // Map visitor fields to correct structure
+      data.visitors = data.visitors.map((visitor) => visitor.visitors);
+      data.projectId = currentProject._id;
 
-      // if (val === 'review') isSubmittingRef.current = true;
+      const formData = new FormData();
+      const attachments = [];
 
-      // let finalData;
-      // const { _id, firstName, lastName, email } = currentUser;
-      // const creator = _id;
-      // if (isEmpty(currentMeetingMinutes)) {
-      //   finalData = { ...data, owner, creator, projectId };
-      // } else {
-      //   finalData = { ...currentMeetingMinutes, ...data, creator, owner };
-      // }
-
-      // const formData = new FormData();
-      // const attachments = [];
-      // for (let index = 0; index < files.length; index += 1) {
-      //   const file = files[index];
-      //   if (file instanceof File) {
-      //     formData.append('attachments', file);
-      //   } else {
-      //     attachments.push(file);
-      //   }
-      // }
-      // finalData.attachments = attachments;
-      // formData.append('body', JSON.stringify(finalData));
-
-      // console.log('Final DATA', finalData);
-      // console.log('files ', files);
-      // console.log('formData ', formData);
-
-      // let error;
-      // let payload;
-      // if ((!isEmpty(currentMeetingMinutes) && val === 'update' && id) || val === 'review' && id) {
-      //   const res = await dispatch(editRfi({ formData, id }));
-      //   error = res.error;
-      //   payload = res.payload;
-      // } else {
-      //   const res = await dispatch(createRfi(formData));
-      //   error = res.error;
-      //   payload = res.payload;
-      // }
-      // if (!isEmpty(error)) {
-      //   enqueueSnackbar(error.message, { variant: 'error' });
-      //   return;
-      // }
-      // let message;
-      // if (val === 'review') {
-      //   message = `submitted`;
-      // } else if (val === 'draft') {
-      //   message = `saved`;
-      // } else {
-      //   message = `updated`;
-      // }
-
-      // if (val !== 'review') {
-      //   enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      //   router.push(paths.subscriber.rfi.details(payload?._id));
-      //   return;
-      // }
-      // await dispatch(submitRfiToArchitect(payload?._id));
-      // enqueueSnackbar(`RFI ${message} successfully!`, { variant: 'success' });
-      // console.log('payload', payload);
-      // reset();
-      // isSubmittingRef.current = false;
-      // router.push(paths.subscriber.rfi.list);
-    } catch (error) {
-      enqueueSnackbar(`Error ${currentMeetingMinutes ? 'Updating' : 'Creating'} RFI`, {
-        variant: 'error',
+      // Append files to FormData
+      files.forEach((file) => {
+        if (file instanceof File) {
+          formData.append('attachments', file);
+        } else {
+          attachments.push(file);
+        }
       });
+
+      data.attachments = attachments;
+
+      formData.append('body', JSON.stringify(data));
+
+      let message;
+      let res;
+
+      if (isEdit) {
+        message = 'updated';
+        res = await dispatch(updateDailyLogs({ data: formData, id }));
+      } else {
+        message = 'created';
+        res = await dispatch(createDailyLogs(formData));
+      }
+
+      const { error, payload } = res;
+
+      if (error) {
+        enqueueSnackbar(error.message || 'An error occurred while saving the daily log.', {
+          variant: 'error',
+        });
+        return;
+      }
+
+      enqueueSnackbar(`Daily log ${message} successfully!`, { variant: 'success' });
+      reset();
+      router.push(paths.subscriber.logs.list);
+    } catch (error) {
+      enqueueSnackbar('An unexpected error occurred.', { variant: 'error' });
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   });
 
+  const StyledIconButton = styled(IconButton)(({ theme }) => ({
+    width: 50,
+    height: 50,
+    opacity: 1,
+    borderRadius: '10px',
+    outline: `1px solid ${alpha(theme.palette.grey[700], 0.2)}`,
+    '&:hover': {
+      opacity: 1,
+      outline: `1px solid ${alpha(theme.palette.grey[700], 1)}`,
+    },
+  }));
+  const getStatus = (index) => {
+    const value = getValues(`inspection[${index}].status`);
+    if (isBoolean(value)) {
+      return !value;
+    }
+    return value === 'false';
+  };
+
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Grid container spacing={3}>
-        <Grid xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
-            <Box rowGap={4} my={3} display="flex" flexDirection="column">
+    <Box sx={{ padding: 3, width: '100%', paddingLeft: 0 }}>
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Box sx={{ marginTop: 2, borderWidth: '2px' }}>
+          <Card sx={{ padding: 2, borderWidth: '2px', margin: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 2 }}>
+              <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
+                Accident and Safety Issues
+              </Typography>
+
+              <RHFEditor
+                simple
+                name="accidentSafetyIssues"
+                sx={{ marginRight: 2, margin: 1 }}
+                label="Accident And Safety Issues"
+                InputLabelProps={{ shrink: true }}
+              />
+              <Typography variant="h6" margin={1}>
+                Visitors
+              </Typography>
+              <Divider sx={{ marginY: 2 }} />
+
+              {visitorFields?.map((visit, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginRight: 2,
+                    margin: 1,
+                    width: '100%',
+                  }}
+                >
+                  <RHFTextField
+                    name={`visitors[${index}].visitors`}
+                    label="Visitor"
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ margin: 2, marginLeft: 0, width: '50%' }}
+                    onBlur={() => trigger(`visitors[${index}].visitors`)}
+                  />
+
+                  <StyledIconButton color="inherit" onClick={() => removeVisitor(index)}>
+                    <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                  </StyledIconButton>
+                </Box>
+              ))}
+              {visitorFields.length > 1}
+              <Button
+                component="button"
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                color="secondary"
+                onClick={() => appendVisitor({ visitors: '' })}
+                sx={{ marginRight: 2, margin: 1, width: '20%' }}
+              >
+                Add Another
+              </Button>
+
+              <Typography variant="h6" margin={1}>
+                Inspection
+              </Typography>
+              <Divider sx={{ marginY: 2 }} />
+              {inspectionFields?.map((inspection, index) => (
+                <Stack direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
+                  <FormControl>
+                    <Controller
+                      name={`inspection[${index}].value`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Type"
+                          InputLabelProps={{ shrink: true }}
+                          sx={{ marginRight: 2 }}
+                          onBlur={() => trigger(`inspection[${index}].value`)}
+                        />
+                      )}
+                    />
+                  </FormControl>
+
+                  <FormControl>
+                    <Controller
+                      name={`inspection[${index}].status`}
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl component="fieldset">
+                          <RadioGroup {...field} row>
+                            <FormControlLabel value="true" control={<Radio />} label="Pass" />
+                            <FormControlLabel value="false" control={<Radio />} label="Fail" />
+                          </RadioGroup>
+                        </FormControl>
+                      )}
+                    />
+                  </FormControl>
+
+                  {getStatus(index) && (
+                    <FormControl>
+                      <Controller
+                        name={`inspection[${index}].reason`}
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Reason"
+                            InputLabelProps={{ shrink: true }}
+                            onBlur={() => trigger(`inspection[${index}].reason`)}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  )}
+
+                  <StyledIconButton color="inherit" onClick={() => removeInspection(index)}>
+                    <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                  </StyledIconButton>
+                </Stack>
+              ))}
+              {inspectionFields.length > 1}
+              <Button
+                component="button"
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                color="secondary"
+                onClick={() => appendInspection({ value: '', status: true, reason: '' })}
+                sx={{ marginRight: 2, margin: 1, width: '20%' }}
+              >
+                Add Another
+              </Button>
+            </Box>
+          </Card>
+
+          <Card sx={{ padding: 2, borderWidth: '2px', margin: 2 }}>
+            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+              Weather
+            </Typography>
+            <Grid container spacing={1}>
+              {weatherOptions.map((option, index) => (
+                <Grid item xs={4} key={option}>
+                  <StyledButton
+                    fullWidth
+                    selected={getValues('weather').includes(option)}
+                    onClick={() => handleWeatherChange(option)}
+                  >
+                    {option}
+                  </StyledButton>
+                </Grid>
+              ))}
+            </Grid>
+          </Card>
+
+          <Card sx={{ padding: 2, borderWidth: '2px', margin: 2 }}>
+            <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
+              Distribution List
+            </Typography>
+            <Divider sx={{ marginY: 2 }} />
+
+            {distributionFields?.map((person, index) => (
               <Box
-                rowGap={3}
-                columnGap={2}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: 2,
+                  marginLeft: 1,
+                  width: '100%',
                 }}
               >
-                <RHFTextField name="planName" label="Plan Set Name" />
-                <Controller
-                  name="issueDate"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field, fieldState: { error } }) => {
-                    const selectedDate = field.value || null;
-                    const isDateNextDay = selectedDate && isTomorrow(selectedDate);
-                    const dateStyle = isDateNextDay
-                      ? {
-                          '.MuiInputBase-root.MuiOutlinedInput-root': {
-                            color: 'red',
-                            borderColor: 'red',
-                            border: '1px solid',
-                          },
-                        }
-                      : {};
-                    return (
-                      <DatePicker
-                        label="Issue Date"
-                        views={['day']}
-                        value={selectedDate}
-                        // minDate={startOfDay(addDays(new Date(), 1))}
-                        onChange={(date) => field.onChange(date)}
-                        format="MM/dd/yyyy" // Specify the desired date format
-                        error={!!error}
-                        helperText={error && error?.message}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                        }}
-                        // sx={dateStyle} // Apply conditional style based on the date comparison
-                      />
-                    );
-                  }}
+                <RHFTextField
+                  name={`distributionList[${index}].name`}
+                  label="Name"
+                  InputLabelProps={{ shrink: true }}
+                  onBlur={() => trigger(`distributionList[${index}].name`)}
+                  sx={{ marginRight: 2 }}
                 />
-              </Box>
-            </Box>
-
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-              gap="2rem"
-              sx={{ my: 3 }}
-            >
-              {!currentMeetingMinutes &&
-                (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-                  currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-                  <LoadingButton
-                    type="button"
-                    onClick={() => {
-                      onSubmit('review');
-                    }}
-                    variant="contained"
-                    size="large"
-                    loading={isSubmitting}
-                  >
-                    Upload
-                  </LoadingButton>
-                )}
-              {!isEmpty(currentMeetingMinutes) && (
-                <LoadingButton
-                  type="button"
-                  onClick={() => onSubmit('update')}
-                  variant="contained"
-                  size="large"
-                  loading={isSubmitting}
+                <RHFTextField
+                  name={`distributionList[${index}].email`}
+                  label="Email"
+                  InputLabelProps={{ shrink: true }}
+                  onBlur={() => trigger(`distributionList[${index}].email`)}
+                  sx={{ marginRight: 2 }}
+                />
+                <StyledIconButton
+                  color="inherit"
+                  onClick={() => removeDistribution(index)}
+                  sx={{ marginRight: 2 }}
                 >
-                  Save Changes
-                </LoadingButton>
-              )}
-            </Stack>
+                  <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                </StyledIconButton>
+              </Box>
+            ))}
+            <Button
+              component="button"
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="secondary"
+              onClick={() => appendDistribution({ name: '', email: '' })}
+              sx={{ margin: 1, marginRight: 2 }}
+            >
+              Add Another
+            </Button>
           </Card>
-        </Grid>
-      </Grid>
-    </FormProvider>
+
+          <Card sx={{ padding: 2, borderWidth: '2px', margin: 2 }}>
+            <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
+              Subcontractor Attendance
+            </Typography>
+            <Divider sx={{ marginY: 2 }} />
+
+            {subcontractorFields?.map((field, index) => (
+              <Box
+                key={index}
+                sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, marginLeft: 1 }}
+              >
+                <RHFTextField
+                  name={`subcontractorAttendance[${index}].companyName`}
+                  label="Company Name"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ marginRight: 2 }}
+                />
+                <RHFTextField
+                  name={`subcontractorAttendance[${index}].headCount`}
+                  label="Head Count"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ marginRight: 2 }}
+                  type="number"
+                />
+
+                <StyledIconButton
+                  color="inherit"
+                  onClick={() => removeSubcontractor(index)}
+                  sx={{ marginRight: 1 }}
+                >
+                  <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                </StyledIconButton>
+              </Box>
+            ))}
+
+            <Button
+              component="button"
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="secondary"
+              onClick={() => appendSubcontractor({ companyName: '', headCount: null })}
+              sx={{ marginRight: 2, margin: 1 }}
+            >
+              Add Another
+            </Button>
+          </Card>
+          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
+            <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
+              Attachments
+            </Typography>
+            <DailyLogsAttachments
+              files={files}
+              setFiles={setFiles}
+              sx={{ margin: 1, paddingRight: 3 }}
+            />
+          </Card>
+
+          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', margin: 2 }}>
+            <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
+              Summary
+            </Typography>
+
+            <RHFEditor
+              simple
+              name="summary"
+              sx={{ marginRight: 2, margin: 1 }}
+              label="Summary"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Card>
+          <Divider sx={{ margin: 2 }} />
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              sx={{ marginRight: 2 }}
+              loading={loading} // Pass loading state to show spinner in button
+            >
+              {isEdit ? 'Update' : 'Save'}
+            </LoadingButton>
+          </div>
+        </Box>
+      </FormProvider>
+    </Box>
   );
-}
+};
+export default DailyLogsNewEditForm;
 
 DailyLogsNewEditForm.propTypes = {
-  currentMeetingMinutes: PropTypes.object,
-  id: PropTypes.string,
+  currentLog: PropTypes.object,
+  isEdit: PropTypes.bool,
 };

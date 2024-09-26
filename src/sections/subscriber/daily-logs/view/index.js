@@ -1,4 +1,4 @@
-export { default as MeetingMinutesListView } from './daily-logs-list-view';
-export { default as MeetingMinutesCreateView } from '../daily-logs-create-view';
-export { default as MeetingMinutesEditView } from './daily-logs-edit-view';
-export { default as MeetingMinutesDetailsView } from './daily-logs-details-view';
+export { default as DailyLogsListView } from './daily-logs-list-view';
+export { default as DailyLogsDetailsView } from './daily-logs-details-view';
+export { default as DailyLogsCreateView } from './daily-logs-create-view';
+export { default as DailyLogsEditView } from './daily-logs-edit-view';

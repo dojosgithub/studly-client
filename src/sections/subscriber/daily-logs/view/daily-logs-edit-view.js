@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 //
-import { useSelector } from 'react-redux';
 // @mui
 import Container from '@mui/material/Container';
 // routes
@@ -8,19 +7,13 @@ import { paths } from 'src/routes/paths';
 // components
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { setCurrentDailyLogs } from 'src/redux/slices/dailyLogsSlice';
-import DailyLogsStepperForm from '../daily-logs-stepper-form';
 import DailyLogsStepperView from './daily-logs-stepper-view';
 //
-import DailyLogsNewEditForm from '../daily-logs-new-edit-form';
 
 // ----------------------------------------------------------------------
 
 export default function DailyLogsEditView({ id }) {
   const settings = useSettingsContext();
-  // const currentMeetingMinutes = useSelector((state) => state.plan.current);
-
-  // console.log("currentMeetingMinutesEdit", currentMeetingMinutes)
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -29,7 +22,6 @@ export default function DailyLogsEditView({ id }) {
         links={[
           {
             name: 'Dashboard',
-            // href: paths.subscriber.root,
           },
           {
             name: 'Daily Logs',
@@ -41,9 +33,7 @@ export default function DailyLogsEditView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      {/* 
-      <DailyLogsNewEditForm currentMeetingMinutes={setCurrentDailyLogs} id={id} />
-      <DailyLogsStepperForm /> */}
+
       <DailyLogsStepperView isEdit />
     </Container>
   );

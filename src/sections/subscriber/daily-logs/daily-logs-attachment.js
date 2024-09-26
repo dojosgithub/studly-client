@@ -1,41 +1,28 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 // @mui
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 //
-import { useFormContext } from 'react-hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 // components
-import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function SubmittalAttachments({
+export default function DailyLogsAttachments({
   //
   onCreate,
   onUpdate,
   files,
   setFiles,
-  // preview=true,
   //
   ...other
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
-  // useEffect(() => {
-  //     setFiles([]);
-  // }, [setFiles]);
-
   const handleDrop = useCallback(
     (acceptedFiles) => {
-      // const newFiles = acceptedFiles.map((file) =>
-      //   Object.assign(file, {
-      //     preview: URL.createObjectURL(file),
-      //   })
-      // );
       const totalFiles = acceptedFiles.length + files.length;
       if (totalFiles > 10) {
         enqueueSnackbar('You can upload maximum of 10 files', { variant: 'error' });
@@ -93,7 +80,7 @@ export default function SubmittalAttachments({
   );
 }
 
-SubmittalAttachments.propTypes = {
+DailyLogsAttachments.propTypes = {
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
   files: PropTypes.array,

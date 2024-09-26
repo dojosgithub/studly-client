@@ -1,26 +1,13 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 // @mui
 import Stack from '@mui/material/Stack';
-import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import Select from '@mui/material/Select';
-import { Button, Menu } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 
 // components
 import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { getSubmittalLogPDF } from 'src/redux/slices/submittalSlice';
-import { getRFILogPDF } from 'src/redux/slices/rfiSlice';
 
 // ----------------------------------------------------------------------
 
@@ -30,36 +17,6 @@ export default function DailyLogsTableToolbar({
   //
   roleOptions,
 }) {
-  const popover = usePopover();
-  const dispatch = useDispatch();
-  const userRole = useSelector((state) => state.user.user.role.shortName);
-  const [isLoading, setIsLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  // const handleFilterName = useCallback(
-  //   (event) => {
-  //     onFilters('name', event.target.value);
-  //   },
-  //   [onFilters]
-  // );
-
-  const handleFilterStatus = useCallback(
-    (event) => {
-      onFilters(
-        'status',
-        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
-      );
-    },
-    [onFilters]
-  );
-
   const [inputValue, setInputValue] = useState('');
 
   // Debounce the call to onFilters
@@ -80,13 +37,6 @@ export default function DailyLogsTableToolbar({
     setInputValue(event.target.value);
   };
 
-  const handleDownloadReport = async (e) => {
-    handleClose();
-    setIsLoading(true);
-    await dispatch(getRFILogPDF(e));
-    setIsLoading(false);
-  };
-
   return (
     <Stack
       spacing={2}
@@ -105,8 +55,6 @@ export default function DailyLogsTableToolbar({
           fullWidth
           value={inputValue}
           onChange={handleInputChange}
-          // value={filters.name}
-          // onChange={handleFilterName}
           placeholder="Search..."
           InputProps={{
             endAdornment: (
@@ -116,40 +64,7 @@ export default function DailyLogsTableToolbar({
             ),
           }}
         />
-
-        {/* <IconButton onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton> */}
       </Stack>
-
-      {/* <FormControl
-        sx={{
-          flexShrink: 0,
-          width: { xs: 1, md: 400 },
-        }}
-      >
-        <InputLabel>Status</InputLabel>
-
-        <Select
-          multiple
-          value={filters.status}
-          onChange={handleFilterStatus}
-          input={<OutlinedInput label="Status" />}
-          renderValue={(selected) => selected.map((value) => value).join(', ')}
-          MenuProps={{
-            PaperProps: {
-              sx: { maxHeight: 240 },
-            },
-          }}
-        >
-          {roleOptions.map((option) => (
-            <MenuItem key={option} value={option}>
-              <Checkbox disableRipple size="small" checked={filters.status.includes(option)} />
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
     </Stack>
   );
 }

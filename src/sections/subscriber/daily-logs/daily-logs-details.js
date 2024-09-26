@@ -1,55 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Chip,
-  Divider,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  alpha,
-  styled,
-  tabsClasses,
-} from '@mui/material';
+import { Box, Button, Card, Chip, Menu, MenuItem, Typography, alpha, styled } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
 
-import { addDays, isAfter, isBefore, isTomorrow, parseISO } from 'date-fns';
-import { bgcolor } from '@mui/system';
 //
-import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
-import { fDateISO } from 'src/utils/format-time';
-import {
-  changeSubmittalStatus,
-  getSubmittalDetails,
-  resendToSubcontractor,
-  submitSubmittalToArchitect,
-} from 'src/redux/slices/submittalSlice';
-import { getRfiDetails, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
 //
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 
-import { getStatusColor } from 'src/utils/constants';
-import Label from 'src/components/label';
-import FileThumbnail from 'src/components/file-thumbnail/file-thumbnail';
 import { MultiFilePreview } from 'src/components/upload';
-import { isIncluded } from 'src/utils/functions';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 
 import {
   changeToMinutes,
@@ -57,14 +21,6 @@ import {
   getDailyLogsPDF,
   sendToAttendees,
 } from 'src/redux/slices/dailyLogsSlice';
-import { useBoolean } from 'src/hooks/use-boolean';
-import Editor from 'src/components/editor/editor';
-import Logs from './daily-logs-details-logs';
-// import Description from './meeting-minutes-details-description';
-// import InviteAttendee from './meeting-minutes-details-inviteAttendee';
-// import Notes from './meeting-minutes-details-notes';
-// import Permit from './meeting-minutes-details-permit';
-// import Plan from './meeting-minutes-details-plan';
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'isSubcontractor',
@@ -85,45 +41,15 @@ const StyledCard = styled(Card, {
   }),
 }));
 
-const TABS = [
-  {
-    value: 'description',
-    label: 'Description',
-  },
-  {
-    value: 'attendees',
-    label: 'Attendees',
-  },
-  {
-    value: 'agenda',
-    label: 'Agenda',
-  },
-  {
-    value: 'permit',
-    label: 'Permit',
-  },
-  {
-    value: 'plan',
-    label: 'Plan',
-  },
-];
-
 const DailyLogsDetails = ({ id }) => {
   const currentLog = useSelector((state) => state.dailyLogs?.current);
-  // console.log('raahim', currentLog);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const params = useParams();
-  const confirm = useBoolean();
-  const [currentTab, setCurrentTab] = useState('description');
-
-  const { id: parentSubmittalId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentMeeting = useSelector((state) => state.meetingMinutes?.current);
 
-  // const  = useBoolean();
   const [menuItems, setMenuItems] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -134,33 +60,7 @@ const DailyLogsDetails = ({ id }) => {
     setAnchorEl(null);
   };
 
-  const handleChangeTab = useCallback((event, newValue) => {
-    setCurrentTab(newValue);
-  }, []);
-
-  const {
-    name,
-    description,
-    drawingSheet,
-    createdDate,
-    dueDate,
-    costImpact,
-    scheduleDelay,
-    attachments,
-    status,
-    creator,
-    owner,
-    ccList,
-    isResponseSubmitted,
-    response,
-    docStatus,
-  } = currentLog;
-
-  // console.log('isSubmitting', isSubmitting);
-  // useEffect(() => {
-  //   getMenus();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [currentMeeting]);
+  const { attachments, status } = currentLog;
 
   const getMenus = useCallback(() => {
     const optionsArray = [];
@@ -184,7 +84,6 @@ const DailyLogsDetails = ({ id }) => {
           </MenuItem>
         );
       }
-      // if (status === 'Draft') {
       optionsArray.push(
         <MenuItem onClick={() => handleSendToAttendees()}>
           <LoadingButton type="submit" variant="outlined" fullWidth loading={isSubmitting}>
@@ -192,7 +91,6 @@ const DailyLogsDetails = ({ id }) => {
           </LoadingButton>
         </MenuItem>
       );
-      // }
 
       if (status === 'Draft') {
         optionsArray.push(
@@ -203,8 +101,6 @@ const DailyLogsDetails = ({ id }) => {
           </MenuItem>
         );
       }
-
-      // setMenuItems(optionsArray);
     }
     return optionsArray;
 
@@ -229,7 +125,6 @@ const DailyLogsDetails = ({ id }) => {
     setIsSubmitting(true);
     await dispatch(createFollowup(currentMeeting?._id));
     setIsSubmitting(false);
-    // handleClose();
     enqueueSnackbar('Follow up created successfully', { variant: 'success' });
     navigate(paths.subscriber.meetingMinutes.list);
   };
@@ -389,45 +284,6 @@ const DailyLogsDetails = ({ id }) => {
           />
         </StyledCard>
       </Grid>
-
-      {/* <Tabs
-        value={currentTab}
-        onChange={handleChangeTab}
-        sx={{
-          width: 1,
-          bottom: 0,
-          zIndex: 9,
-          bgcolor: '#F4F6F8',
-          marginBottom: '35px',
-          borderBottom: '2px solid #FFCC3F',
-          mt: 1,
-          '& .MuiTabs-indicator': {
-            display: 'none',
-          },
-        }}
-      >
-        {TABS.map((tab) => (
-          <Tab
-            key={tab.value}
-            value={tab.value}
-            label={tab.label}
-            sx={{
-              fontFamily: 'Public Sans',
-              fontSize: '14px',
-              fontWeight: 400,
-              lineHeight: '22px',
-              textAlign: 'left',
-              width: 197,
-              color: 'inherit',
-
-              '&.Mui-selected': {
-                color: 'white',
-                bgcolor: '#FFCC3F',
-              },
-            }}
-          />
-        ))}
-      </Tabs> */}
     </>
   );
 };

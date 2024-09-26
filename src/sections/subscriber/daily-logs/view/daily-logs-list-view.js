@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
-import { Container, Card, Button, Divider } from '@mui/material';
+import { Container, Card, Button } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -27,7 +27,7 @@ import {
 } from 'src/components/table';
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { STUDLY_ROLES_ACTION } from 'src/_mock';
-import PlanRoomTableRow from '../daily-logs-table-row';
+import DailyLogsTableRow from '../daily-logs-table-row';
 import DailyLogsTableToolbar from '../daily-logs-table-toolbar';
 
 // ----------------------------------------------------------------------
@@ -56,12 +56,10 @@ export default function DailyLogsListView() {
   const table = useTable();
   const settings = useSettingsContext();
   const dispatch = useDispatch();
-  const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
   const listData = useSelector((state) => state?.dailyLogs?.list);
-  const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
@@ -91,11 +89,9 @@ export default function DailyLogsListView() {
     setFilters((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  // const handleEditRow = useCallback((id) => navigate(paths.subscriber.logs.edit(id)), [navigate]);
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.subscriber.logs.details(id));
-      // confirm.onTrue()
     },
     [router]
   );
@@ -148,7 +144,7 @@ export default function DailyLogsListView() {
                 {listData?.docs?.length > 0 ? (
                   <>
                     {listData?.docs?.map((row) => (
-                      <PlanRoomTableRow
+                      <DailyLogsTableRow
                         key={row._id}
                         row={row}
                         onEditRow={() => handleEditRow(row?._id)}
@@ -182,60 +178,6 @@ export default function DailyLogsListView() {
 }
 
 // ----------------------------------------------------------------------
-function applyFilter({ inputData, comparator, filters }) {
-  // const { name, status, role } = filters;
-
-  const stabilizedThis = inputData?.map((el, index) => [el, index]);
-
-  stabilizedThis?.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis?.map((el) => el[0]);
-
-  // if (name) {
-  //   inputData = inputData?.filter(
-  //     (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-  //   );
-  // }
-
-  // if (status !== 'all') {
-  //   inputData = inputData?.filter((user) => user.status === status);
-  // }
-
-  // if (role.length) {
-  //   inputData = inputData?.filter((user) => role.includes(user.role));
-  // }
-
-  return inputData;
-}
-
-// function applyFilter({ inputData, comparator, filters }) {
-//   const { name, status } = filters;
-//   let filteredData = inputData;
-
-//   if (name) {
-//     filteredData = filteredData.filter((item) =>
-//       item.name.toLowerCase().includes(name.toLowerCase())
-//     );
-//   }
-
-//   if (status.length) {
-//     filteredData = filteredData.filter((item) => status.includes(item.status));
-//   }
-
-//   return filteredData?.sort(comparator);
-// }
-
-// function getComparator(orderBy, orderDir) {
-//   return (a, b) => {
-//     if (a[orderBy] < b[orderBy]) return orderDir === 'asc' ? -1 : 1;
-//     if (a[orderBy] > b[orderBy]) return orderDir === 'asc' ? 1 : -1;
-//     return 0;
-//   };
-// }
 
 export function emptyRows(page, rowsPerPage, arrayLength) {
   return page ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;

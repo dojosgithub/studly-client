@@ -1,8 +1,6 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { TableRow, TableCell, IconButton, Box, MenuItem, Chip, Button } from '@mui/material';
-import { isValid, parseISO, format } from 'date-fns';
+import { TableRow, TableCell, IconButton, MenuItem, Chip, Button } from '@mui/material';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -12,10 +10,8 @@ import { STUDLY_ROLES_ACTION } from 'src/_mock';
 
 const DailyLogsTableRow = memo(
   ({ row, selected, onSelectRow, onDeleteRow, onEditRow, onViewRow }) => {
-    const role = useSelector((state) => state?.user?.user?.role?.shortName);
     const confirm = useBoolean();
     const popover = usePopover();
-    // console.log(row);
     const truncatedText =
       row.accidentSafetyIssues.length > 20
         ? `${row.accidentSafetyIssues.substring(0, 20)}...`
@@ -32,9 +28,6 @@ const DailyLogsTableRow = memo(
               display: 'flex',
               alignItems: 'center',
               gap: '.25rem',
-              // '&:hover': {
-              //   textDecoration: 'underline',
-              // },
             }}
             onClick={() => {
               onViewRow(row._id);
