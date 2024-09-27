@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -10,8 +9,6 @@ import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import { tableCellClasses } from '@mui/material/TableCell';
-import { tablePaginationClasses } from '@mui/material/TablePagination';
-import { getDocumentsList, deleteDocument } from 'src/redux/slices/documentsSlice';
 // components
 import Iconify from 'src/components/iconify';
 import {
@@ -22,14 +19,12 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import FileManagerTableRow from './file-manager-table-row';
+import DocumentsTableRow from './documents-table-row';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', width: '70%' },
-  // { id: 'size', label: 'Size', width: 120 },
-  // { id: 'type', label: 'Type', width: 120 },
   { id: 'modifiedAt', label: 'Modified', width: '15%' },
   { id: 'createdBy', label: 'Created By', align: 'left', width: '30%' },
 
@@ -37,58 +32,32 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-const defaultFilters = {
-  name: '',
-  type: [],
-  startDate: null,
-  endDate: null,
-};
 
-export default function FileManagerTable({
+export default function DocumentsTable({
   table,
   tableData,
   onDownloadRow,
-  onRenameRow,
   onDeleteRow,
   fetchData,
   onOpenConfirm,
-  filters,
-  onFilters,
   handlePageChange,
   page,
 }) {
-  console.log('page', page)
   const theme = useTheme();
 
   const {
     dense,
     order,
     orderBy,
-    rowsPerPage,
     //
     selected,
     onSelectRow,
     onSelectAllRows,
     //
     onSort,
-    onChangeDense,
-    onChangePage,
-    onChangeRowsPerPage,
   } = table;
-  const dispatch = useDispatch();
-  // const [filters, setFilters] = useState(defaultFilters);
-  // const [page, setPage] = useState(1);
-
-  // useEffect(() => {
-  //   dispatch(getDocumentsList({ search: filters.query, page }));
-  // }, [dispatch, filters.query, page]);
-
-  // const handlePageChange = (e, newPage) => setPage(newPage + 1);
   const denseHeight = dense ? 58 : 78;
   const dataFiltered = useSelector((state) => state?.documents?.list);
-  // const handleFilters = useCallback((name, value) => {
-  //   setFilters((prev) => ({ ...prev, [name]: value }));
-  // }, []);
   const notFound = dataFiltered?.docs?.length === 0;
   return (
     <>
@@ -178,7 +147,7 @@ export default function FileManagerTable({
               {dataFiltered?.docs?.length > 0 ? (
                 <>
                   {dataFiltered?.docs?.map((row) => (
-                    <FileManagerTableRow
+                    <DocumentsTableRow
                       key={row._id}
                       row={row}
                       selected={selected.includes(row._id)}
@@ -213,16 +182,13 @@ export default function FileManagerTable({
     </>
   );
 }
-FileManagerTable.propTypes = {
+DocumentsTable.propTypes = {
   onDeleteRow: PropTypes.func,
   onDownloadRow: PropTypes.func,
-  onRenameRow: PropTypes.func,
   onOpenConfirm: PropTypes.func,
   table: PropTypes.object,
   tableData: PropTypes.array,
   fetchData: PropTypes.func,
-  filters: PropTypes.object,
-  onFilters: PropTypes.func,
   handlePageChange: PropTypes.func,
   page: PropTypes.number,
 };

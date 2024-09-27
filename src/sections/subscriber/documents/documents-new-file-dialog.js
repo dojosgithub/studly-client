@@ -1,28 +1,22 @@
 import PropTypes from 'prop-types';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { cloneDeep, isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useEffect, useState, useCallback } from 'react';
 // @mui
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { LoadingButton } from '@mui/lab';
 import DialogContent from '@mui/material/DialogContent';
-import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
 import { uploadDocument } from 'src/redux/slices/documentsSlice';
-import axiosInstance, { endpoints } from 'src/utils/axios';
 // components
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerNewFileDialog({
+export default function DocumentsNewFileDialog({
   title = 'Upload Files',
   open,
   onClose,
@@ -54,7 +48,6 @@ export default function FileManagerNewFileDialog({
 
       const body = {
         type: 'file',
-        // parentId: null,
         parentId:
           listData.links.length > 2
             ? listData.links[listData.links.length - 1].href.replace('/', '')
@@ -105,14 +98,6 @@ export default function FileManagerNewFileDialog({
       </DialogContent>
 
       <DialogActions>
-        {/* <Button
-          variant="contained"
-          startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-          onClick={handleUpload}
-          disabled={!files.length}
-        >
-          Upload
-        </Button> */}
         <LoadingButton
           variant="contained"
           startIcon={<Iconify icon="eva:cloud-upload-fill" />}
@@ -133,7 +118,7 @@ export default function FileManagerNewFileDialog({
   );
 }
 
-FileManagerNewFileDialog.propTypes = {
+DocumentsNewFileDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,

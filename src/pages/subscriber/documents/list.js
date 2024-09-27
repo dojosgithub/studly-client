@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 // sections
-import { FileManagerView } from 'src/sections/subscriber/documents/view';
+import { DocumentsListView } from 'src/sections/subscriber/documents/view';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerPage() {
+export default function DocumentsListPage() {
   return (
     <>
       <Helmet>
         <title> Documents List</title>
       </Helmet>
 
-      <FileManagerView />
+      <DocumentsListView />
     </>
   );
 }

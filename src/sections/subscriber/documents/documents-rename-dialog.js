@@ -9,7 +9,7 @@ import {
   Button,
 } from '@mui/material';
 
-function RenameDialog({ open, onClose, initialName, onConfirm }) {
+function DocumentsRenameDialog({ open, onClose, initialName, onConfirm }) {
   const [newName, setNewName] = useState(initialName);
 
   const handleConfirm = () => {
@@ -43,11 +43,11 @@ function RenameDialog({ open, onClose, initialName, onConfirm }) {
   );
 }
 
-RenameDialog.propTypes = {
+DocumentsRenameDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   initialName: PropTypes.string,
   onConfirm: PropTypes.func.isRequired,
 };
 
-export default RenameDialog;
+export default DocumentsRenameDialog;

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
 
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-
 import {
   Dialog,
   DialogActions,
@@ -12,7 +10,6 @@ import {
   DialogTitle,
   Button,
   Table,
-  Checkbox,
   TableBody,
   Box,
   TableCell,
@@ -20,22 +17,18 @@ import {
   TableRow,
   TableContainer,
   Paper,
-  IconButton,
 } from '@mui/material';
-import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { useDoubleClick } from 'src/hooks/use-double-click';
-import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { getDocumentsMoveList, moveDocument } from 'src/redux/slices/documentsSlice';
 import FileThumbnail from 'src/components/file-thumbnail';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/custom_breadcrumbs-move';
 
-export default function FileManagerMoveDialog({ open, onClose, row }) {
+export default function DocumentsMoveDialog({ open, onClose, row }) {
   const dispatch = useDispatch();
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [isOnRoot, setIsOnRoot] = useState(false);
   const folders = useSelector((state) => state.documents.moveList);
   const { enqueueSnackbar } = useSnackbar();
-  // console.log(row);
   const handleClick = useDoubleClick({
     click: (e, folder) => {
       if (folder._type === 'folder') {
@@ -75,14 +68,12 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
       console.log('Moving item to folder:', selectedFolder);
       await dispatch(moveDocument({ id: row._id, to: selectedFolder }));
       enqueueSnackbar('Moved Successfully', { variant: 'success' });
-      // await fetchData();
       handleClose();
       return;
     }
     if (isOnRoot) {
       await dispatch(moveDocument({ id: row._id, to: null }));
       enqueueSnackbar('Moved Successfully', { variant: 'success' });
-      // await fetchData();
       handleClose();
     }
   };
@@ -96,7 +87,6 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
             <TableHead>
               <TableRow>
                 <TableCell>Documents Name</TableCell>
-                {/* <TableCell>Action</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -105,9 +95,8 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                   const isFolder = folder._type === 'folder';
                   const isSelected = selectedFolder === folder._id;
                   const isBeingMoved = folder._id === row._id;
-                  // const isParentOfMove = folder.parentId === row.parentId;
 
-                  console.log('isParentOfMove', folder, row)
+                  console.log('isParentOfMove', folder, row);
                   const rowBackgroundColor = isSelected ? '#D2E3FC' : 'inherit';
                   let hoverBackgroundColor;
 
@@ -119,9 +108,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                     hoverBackgroundColor = 'inherit';
                   }
 
-                  // const isDisabled = !isFolder || isBeingMoved || isParentOfMove;
                   const isDisabled = !isFolder || isBeingMoved;
-
 
                   return (
                     <TableRow
@@ -139,10 +126,6 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
                       }}
                     >
                       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-                        {/* <Checkbox
-                        checked={isSelected} // Checkbox is checked if the folder is selected
-                        sx={{ marginRight: 2 }}
-                      /> */}
                         <FileThumbnail
                           file={isFolder ? 'folder' : 'file'}
                           sx={{ width: 36, height: 36, marginRight: 2 }}
@@ -163,28 +146,6 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
           </Table>
         </TableContainer>
       </DialogContent>
-
-      {/* <CustomBreadcrumbs
-        notLink
-        // heading="Documents"
-        links={folders?.links?.map((item) => ({
-          name: item.name,
-          href: item.href,
-        }))}
-        // onClick={clicked}
-        // action={
-        <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.create}>
-        // <Button
-        //   variant="contained"
-        //   startIcon={<AddIcon />}
-        //   onClick={handleClick}
-        //   style={{ paddingRight: 46 }}
-        // >
-        //   Upload
-        // </Button>
-        // </RoleAccessWrapper>
-        // }
-      /> */}
 
       <DialogActions sx={{ marginTop: '30px', marginBottom: '30px' }}>
         <Box sx={{ width: '100%' }}>
@@ -209,7 +170,7 @@ export default function FileManagerMoveDialog({ open, onClose, row }) {
   );
 }
 
-FileManagerMoveDialog.propTypes = {
+DocumentsMoveDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   row: PropTypes.shape({

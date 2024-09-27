@@ -9,11 +9,6 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-
-import ToggleButton from '@mui/material/ToggleButton';
-
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 // utils
 import { fTimestamp } from 'src/utils/format-time';
@@ -23,13 +18,8 @@ import { _allFiles, FILE_TYPE_OPTIONS, STUDLY_ROLES_ACTION } from 'src/_mock';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 
-// routes
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 // components
-import Iconify from 'src/components/iconify';
-import { getDocumentsList, deleteDocument, setdocuments } from 'src/redux/slices/documentsSlice';
+import { getDocumentsList, deleteDocument } from 'src/redux/slices/documentsSlice';
 import EmptyContent from 'src/components/empty-content';
 import { fileFormat } from 'src/components/file-thumbnail';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -37,14 +27,11 @@ import { useSettingsContext } from 'src/components/settings';
 import { useTable, getComparator } from 'src/components/table';
 //
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
-import FileManagerTable from '../file-manager-table';
-import FileManagerFilters from '../file-manager-filters';
+import DocumentsTable from '../documents-table';
+import DocumentsFilters from '../documents-filters';
 
-import FileManagerGridView from '../file-manager-grid-view';
-
-import FileManagerFiltersResult from '../file-manager-filters-result';
-import FileManagerNewFolderDialog from '../file-manager-new-folder-dialog';
-import FileManagerNewFileDialog from '../file-manager-new-file';
+import DocumentsNewFolderDialog from '../documents-new-folder-dialog';
+import DocumentsNewFileDialog from '../documents-new-file-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -57,22 +44,19 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerView() {
+export default function DocumentsListView() {
   const table = useTable({ defaultRowsPerPage: 10 });
   const dispatch = useDispatch();
   const settings = useSettingsContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const openDateRange = useBoolean();
   const listData = useSelector((state) => state?.documents?.list);
-  const [files, setFiles] = useState([]);
   const confirm = useBoolean();
   const [folderName, setFolderName] = useState('');
   const { enqueueSnackbar } = useSnackbar();
   const upload = useBoolean();
   const newFolder = useBoolean();
   const [page, setPage] = useState(1);
-
-  const [view, setView] = useState('list');
 
   const [tableData, setTableData] = useState(_allFiles);
 
@@ -92,46 +76,21 @@ export default function FileManagerView() {
 
   useEffect(() => {
     dispatch(getDocumentsList({ search: filters.query, page }));
-    // return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
   }, [dispatch, filters.query, page]);
 
   useEffect(() => {
     console.log('Dont remove this');
     return () => dispatch(getDocumentsList({ search: '', page: 1, parentId: null }));
   }, [dispatch]);
-  // useEffect(() => {
-  //   dispatch(getDocumentsList({ search: filters.query, page }));
-  // }, [dispatch, filters.query,  page]);
-
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
 
   const canReset =
     !!filters.name || !!filters.type.length || (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
-  const handleChangeView = useCallback((event, newView) => {
-    if (newView !== null) {
-      setView(newView);
-    }
-  }, []);
   const handleChangeFolderName = useCallback((value) => {
     setFolderName(value);
   }, []);
-
-  // const handleFilters = useCallback(
-  //   (name, value) => {
-  //     table.onResetPage();
-  //     setFilters((prevState) => ({
-  //       ...prevState,
-  //       [name]: value,
-  //     }));
-  //   },
-  //   [table]
-  // );
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -151,26 +110,6 @@ export default function FileManagerView() {
   };
   const handlePageChange = (e, newPage) => setPage(newPage + 1);
 
-  // const handleDeleteItem = useCallback(
-  //   (id) => {
-  //     const deleteRow = tableData.filter((row) => row._id !== id);
-  //     setTableData(deleteRow);
-
-  //     table.onUpdatePageDeleteRow(dataInPage.length);
-  //   },
-  //   [dataInPage.length, table, tableData]
-  // );
-
-  // const handleDeleteItems = useCallback(async(row) => {
-  //   const deleteRows = tableData.filter((row) => !table.selected.includes(row._id));
-  //   setTableData(deleteRows);
-
-  //   table.onUpdatePageDeleteRows({
-  //     totalRows: tableData.length,
-  //     totalRowsInPage: dataInPage.length,
-  //     totalRowsFiltered: dataFiltered.length,
-  //   });
-  // }, [dataFiltered.length, dataInPage.length, table, tableData]);
   const handleDeleteItems = useCallback(
     async (row) => {
       await dispatch(deleteDocument(row));
@@ -182,9 +121,6 @@ export default function FileManagerView() {
     [dispatch, enqueueSnackbar, filters.status, filters.query]
   );
 
-  const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
-  }, []);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -200,7 +136,7 @@ export default function FileManagerView() {
       direction={{ xs: 'column', md: 'row' }}
       alignItems={{ xs: 'flex-end', md: 'center' }}
     >
-      <FileManagerFilters
+      <DocumentsFilters
         openDateRange={openDateRange.value}
         onCloseDateRange={openDateRange.onFalse}
         onOpenDateRange={openDateRange.onTrue}
@@ -211,29 +147,7 @@ export default function FileManagerView() {
         dateError={dateError}
         typeOptions={FILE_TYPE_OPTIONS}
       />
-
-      {/* <ToggleButtonGroup size="small" value={view} exclusive onChange={handleChangeView}>
-        <ToggleButton value="list">
-          <Iconify icon="solar:list-bold" />
-        </ToggleButton>
-
-        <ToggleButton value="grid">
-          <Iconify icon="mingcute:dot-grid-fill" />
-        </ToggleButton>
-      </ToggleButtonGroup> */}
     </Stack>
-  );
-
-  const renderResults = (
-    <FileManagerFiltersResult
-      filters={filters}
-      onResetFilters={handleResetFilters}
-      //
-      canReset={canReset}
-      onFilters={handleFilters}
-      //
-      results={dataFiltered.length}
-    />
   );
 
   const fetchData = async (props, setPages) => {
@@ -257,11 +171,6 @@ export default function FileManagerView() {
           <CustomBreadcrumbs
             notLink
             heading="Documents"
-            // links={[
-            //   { name: 'Dashboard' },
-            //   { name: 'Documents', href: paths.subscriber.documents.list, onClick: clicked },
-            //   { name: 'Documentss', href: paths.subscriber.documents.list, onClick: clicked },
-            // ]}
             links={listData?.links?.map((item) => ({
               name: item.name,
               href: item.href,
@@ -294,59 +203,32 @@ export default function FileManagerView() {
         </Menu>
         <Stack spacing={2.5} sx={{ my: { xs: 3, md: 5 } }}>
           {renderFilters}
-          {/* {canReset && renderResults} */}
         </Stack>
 
         {notFound ? (
           <EmptyContent filled title="No Data" sx={{ py: 10 }} />
         ) : (
-          <>
-            {/* {view === 'list' ? (
-              <FileManagerTable
-                table={table}
-                tableData={tableData}
-                dataFiltered={listData}
-                onDeleteRow={handleDeleteItems}
-                notFound={notFound}
-                onOpenConfirm={confirm.onTrue}
-              />
-            ) : (
-              <FileManagerGridView
-                table={table}
-                data={tableData}
-                dataFiltered={listData}
-                onDeleteItem={handleDeleteItems}
-                onOpenConfirm={confirm.onTrue}
-              />
-            )} */}
-            <FileManagerTable
-              table={table}
-              tableData={tableData}
-              // onDeleteRow={(id) => handleDeleteItems(id)}
-              onDeleteRow={() => fetchData()}
-              notFound={notFound}
-              onOpenConfirm={confirm.onTrue}
-              fetchData={fetchData}
-              page={page}
-              handlePageChange={handlePageChange}
-            />
-          </>
+          <DocumentsTable
+            table={table}
+            tableData={tableData}
+            onDeleteRow={() => fetchData()}
+            notFound={notFound}
+            onOpenConfirm={confirm.onTrue}
+            fetchData={fetchData}
+            page={page}
+            handlePageChange={handlePageChange}
+          />
         )}
       </Container>
 
-      <FileManagerNewFileDialog
-        open={upload.value}
-        onClose={upload.onFalse}
-        fetchData={fetchData}
-      />
+      <DocumentsNewFileDialog open={upload.value} onClose={upload.onFalse} fetchData={fetchData} />
 
-      <FileManagerNewFolderDialog
+      <DocumentsNewFolderDialog
         open={newFolder.value}
         onClose={newFolder.onFalse}
         title="New Folder"
         onCreate={() => {
           setFolderName('');
-          console.info('CREATE NEW FOLDER', folderName);
         }}
         folderName={folderName}
         onChangeFolderName={handleChangeFolderName}

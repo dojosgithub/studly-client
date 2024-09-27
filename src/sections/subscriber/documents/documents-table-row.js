@@ -2,38 +2,26 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
 import { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 // @mui
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import DownloadIcon from '@mui/icons-material/Download';
-import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
 import { alpha, useTheme } from '@mui/material/styles';
 import TableRow, { tableRowClasses } from '@mui/material/TableRow';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useDoubleClick } from 'src/hooks/use-double-click';
 
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
-// utils
-import { fData } from 'src/utils/format-number';
 // components
-import {
-  getDocumentsList,
-  deleteDocument,
-  downloadDocument,
-  renameDocument,
-} from 'src/redux/slices/documentsSlice';
+import { deleteDocument, downloadDocument, renameDocument } from 'src/redux/slices/documentsSlice';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
@@ -42,36 +30,27 @@ import FileThumbnail from 'src/components/file-thumbnail';
 //
 import { STUDLY_ROLES_ACTION } from 'src/_mock';
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
-import FileManagerShareDialog from './file-manager-share-dialog';
-import RenameDialog from './file-manager-rename-dialogue';
-import FileManagerFileDetails from './file-manager-file-details';
-import FileManagerMoveDialog from './file-manager-move-dialogue';
+//
+import DocumentsFileDetails from './documents-file-details';
+import DocumentsShareDialog from './documents-share-dialog';
+import DocumentsRenameDialog from './documents-rename-dialog';
+import DocumentsMoveDialog from './documents-move-dialog';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerTableRow({
-  row,
-  selected,
-  onSelectRow,
-  onDeleteRow,
-  onRenameRow,
-  onDownloadRow,
-  fetchData,
-}) {
+export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchData }) {
   const theme = useTheme();
 
-  const { name, size, _type, updatedAt, createdBy, shared, isFavorited, fileType, preview, _id } =
-    row;
+  const { name, _type, updatedAt, createdBy, shared, isFavorited, preview, _id } = row;
 
   const { enqueueSnackbar } = useSnackbar();
 
   const { copy } = useCopyToClipboard();
-  const currentdocument = useSelector((state) => state.documents?.current);
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
-  const [currentName, setCurrentName] = useState(name);
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [currentName, setCurrentName] = useState(name);
 
   const favorite = useBoolean(isFavorited);
   const handleRenameClick = () => {
@@ -97,7 +76,6 @@ export default function FileManagerTableRow({
     },
     doubleClick: () => {
       if (_type === 'folder') {
-        console.info('DOUBLE CLICK', _type);
         fetchData({ parentId: _id });
       }
     },
@@ -130,15 +108,11 @@ export default function FileManagerTableRow({
     confirm.onFalse();
     onDeleteRow();
   }, [dispatch, enqueueSnackbar, confirm, row, onDeleteRow]);
-  // const handleRenameRow = (id) => {
-  //   dispatch(downloadDocument(row, id));
-  // };
   const handleRenameRow = async (newName) => {
     try {
       // Dispatch the rename action with the new name
 
       await dispatch(renameDocument({ newName, _id }));
-      // dispatch(getDocumentsList());
 
       // Provide feedback to the user
       enqueueSnackbar('Renamed Successfully', { variant: 'success' });
@@ -154,10 +128,6 @@ export default function FileManagerTableRow({
   // Function to handle downloading a row
   const handleDownloadRow = () => {
     if (_type === 'file') {
-      // const a = document.createElement('a');
-      // a.href = preview;
-      // a.download = name;
-      // a.click();
       let downloadUrl = preview;
       const uploadIndex = downloadUrl.indexOf('/upload/');
       if (uploadIndex !== -1) {
@@ -186,7 +156,6 @@ export default function FileManagerTableRow({
       document.body.removeChild(a);
     } else if (_type === 'folder') {
       dispatch(downloadDocument(_id));
-      // dispatch(getDocumentsList());
     }
     popover.onClose();
   };
@@ -221,9 +190,7 @@ export default function FileManagerTableRow({
         <TableCell onClick={handleClick}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <FileThumbnail
-              // file={_type === 'file' ? fileType : _type}
               file={_type === 'file' ? preview : _type}
-              // file={preview}
               sx={{ width: 36, height: 36 }}
             />
 
@@ -259,33 +226,6 @@ export default function FileManagerTableRow({
             primaryTypographyProps={{ typography: 'body2' }}
           />
         </TableCell>
-        {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
-          {fData(size)}
-        </TableCell> */}
-
-        {/* <TableCell onClick={handleClick} sx={{ whiteSpace: 'nowrap' }}>
-          {type}
-        </TableCell> */}
-        {/* <TableCell align="right" onClick={handleClick}>
-          <AvatarGroup
-            max={4}
-            sx={{
-              display: 'inline-flex',
-              [`& .${avatarGroupClasses.avatar}`]: {
-                width: 24,
-                height: 24,
-                '&:first-of-type': {
-                  fontSize: 12,
-                },
-              },
-            }}
-          >
-            {shared &&
-              shared.map((person) => (
-                <Avatar key={person._id} alt={person.name} src={person.avatarUrl} />
-              ))}
-          </AvatarGroup>
-        </TableCell> */}
 
         <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.delete}>
           <TableCell
@@ -349,7 +289,7 @@ export default function FileManagerTableRow({
         </MenuItem>
       </CustomPopover>
 
-      <FileManagerFileDetails
+      <DocumentsFileDetails
         item={row}
         favorited={favorite.value}
         onFavorite={favorite.onToggle}
@@ -360,7 +300,7 @@ export default function FileManagerTableRow({
         fetchData={fetchData}
       />
 
-      <FileManagerShareDialog
+      <DocumentsShareDialog
         open={share.value}
         shared={shared}
         inviteEmail={inviteEmail}
@@ -382,7 +322,6 @@ export default function FileManagerTableRow({
             variant="contained"
             color="error"
             onClick={() => {
-              // onDeleteRow(confirm);
               handleDeleteItems();
             }}
           >
@@ -390,7 +329,7 @@ export default function FileManagerTableRow({
           </Button>
         }
       />
-      <RenameDialog
+      <DocumentsRenameDialog
         open={renameDialogOpen}
         onClose={() => setRenameDialogOpen(false)}
         initialName={name}
@@ -398,7 +337,7 @@ export default function FileManagerTableRow({
       />
 
       {moveDialogOpen && (
-        <FileManagerMoveDialog
+        <DocumentsMoveDialog
           open={moveDialogOpen}
           onClose={() => {
             setMoveDialogOpen(false);
@@ -411,11 +350,8 @@ export default function FileManagerTableRow({
   );
 }
 
-FileManagerTableRow.propTypes = {
+DocumentsTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
-  onRenameRow: PropTypes.func,
-  onDownloadRow: PropTypes.func,
-  onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
   fetchData: PropTypes.func,

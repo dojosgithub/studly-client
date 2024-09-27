@@ -1,6 +1,4 @@
 import PropTypes from 'prop-types';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { cloneDeep, isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -12,17 +10,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { LoadingButton } from '@mui/lab';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { useFieldArray, useFormContext, useForm, Controller } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
 import { uploadDocument } from 'src/redux/slices/documentsSlice';
-import axiosInstance, { endpoints } from 'src/utils/axios';
 // components
-import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerNewFolderDialog({
+export default function DocumentsNewFolderDialog({
   title = 'Upload Files',
   open,
   onClose,
@@ -121,15 +116,6 @@ export default function FileManagerNewFolderDialog({
       </DialogContent>
 
       <DialogActions>
-        {/* <Button
-          variant="contained"
-          startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-          onClick={handleUpload}
-          disabled={!files.length}
-        >
-          Upload
-        </Button> */}
-
         {!!files.length && (
           <Button variant="outlined" color="inherit" onClick={handleRemoveAllFiles}>
             Remove all
@@ -137,9 +123,6 @@ export default function FileManagerNewFolderDialog({
         )}
 
         <Stack direction="row" justifyContent="flex-end" flexGrow={1}>
-          {/* <Button variant="contained" onClick={handleUpload}>
-            Create
-          </Button> */}
           <LoadingButton
             variant="contained"
             disabled={!folderName}
@@ -154,7 +137,7 @@ export default function FileManagerNewFolderDialog({
   );
 }
 
-FileManagerNewFolderDialog.propTypes = {
+DocumentsNewFolderDialog.propTypes = {
   folderName: PropTypes.string,
   onChangeFolderName: PropTypes.func,
   onClose: PropTypes.func,

@@ -12,11 +12,11 @@ import Dialog from '@mui/material/Dialog';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 //
-import FileManagerInvitedItem from './file-manager-invited-item';
+import DocumentsInvitedItem from './documents-invited-item';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerShareDialog({
+export default function DocumentsShareDialog({
   shared,
   inviteEmail,
   onCopyLink,
@@ -61,7 +61,7 @@ export default function FileManagerShareDialog({
           <Scrollbar sx={{ maxHeight: 60 * 6 }}>
             <List disablePadding>
               {shared.map((person) => (
-                <FileManagerInvitedItem key={person._id} person={person} />
+                <DocumentsInvitedItem key={person._id} person={person} />
               ))}
             </List>
           </Scrollbar>
@@ -85,7 +85,7 @@ export default function FileManagerShareDialog({
   );
 }
 
-FileManagerShareDialog.propTypes = {
+DocumentsShareDialog.propTypes = {
   inviteEmail: PropTypes.string,
   onChangeInvite: PropTypes.func,
   onClose: PropTypes.func,

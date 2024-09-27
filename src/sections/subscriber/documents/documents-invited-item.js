@@ -14,7 +14,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function FileManagerInvitedItem({ person }) {
+export default function DocumentsInvitedItem({ person }) {
   const [permission, setPermission] = useState(person.permission);
 
   const popover = usePopover();
@@ -108,6 +108,6 @@ export default function FileManagerInvitedItem({ person }) {
   );
 }
 
-FileManagerInvitedItem.propTypes = {
+DocumentsInvitedItem.propTypes = {
   person: PropTypes.object,
 };
