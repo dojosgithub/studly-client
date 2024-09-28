@@ -8,7 +8,6 @@ const ProjectName = () => {
   const { trigger } = useFormContext();
   return (
     <>
-      {/* <Typography sx={{ my: 2 }} fontSize='1.5rem' fontWeight='bold'>Let’s give your new project a name!</Typography> */}
       <Typography sx={{ my: 2 }} fontSize="1.5rem" fontWeight="bold">
         Your new project information
       </Typography>

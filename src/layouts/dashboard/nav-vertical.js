@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // @mui
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // hooks
@@ -15,7 +14,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
-import { useAuthContext } from 'src/auth/hooks';
 import { ProjectView } from 'src/sections/project/view';
 //
 import { NavSectionVertical } from 'src/components/nav-section';
@@ -27,23 +25,19 @@ import { resetWorkflow } from 'src/redux/slices/workflowSlice';
 import { resetTemplate } from 'src/redux/slices/templateSlice';
 //
 import { NAV } from '../config-layout';
-import { useNavData, useNavDataSubscriber } from './config-navigation';
-import { NavToggleButton, NavUpgrade } from '../_common';
+import { useNavData } from './config-navigation';
+import { NavToggleButton } from '../_common';
 
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const [openDrawer, setOpenDrawer] = useState(false);
-  // const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
   const user = useSelector((state) => state.user.user);
-  const projects = useSelector((state) => state.project.list);
   const isProjectDrawerOpen = useSelector((state) => state.project.isProjectDrawerOpen);
 
   const navData = useNavData();
-  const navDataSubscriber = useNavDataSubscriber();
 
   useEffect(() => {
     if (openNav) {
@@ -53,7 +47,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
   }, [pathname]);
 
   useEffect(() => {
-    // console.log('navDataSubscriber', user?.role?.shortName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -69,13 +62,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      {/* {user?.userType !== "Subscriber" && <Logo sx={{ my: 3, mx: "auto" }} />} */}
       <Logo sx={{ my: 3, mx: 'auto' }} />
       {user?.userType === 'Subscriber' && (
-        // && user?.role?.shortName === "CAD"
         <CustomNavCollapseList
           onOpen={() => {
-            // setOpenDrawer(true)
             dispatch(setProjectDrawerState(true));
           }}
         />
@@ -85,13 +75,11 @@ export default function NavVertical({ openNav, onCloseNav }) {
           <CustomDrawer
             onClose={() => {
               dispatch(setProjectDrawerState(false));
-              // setOpenDrawer(false)
               dispatch(resetCreateProject());
               dispatch(resetWorkflow());
               dispatch(resetTemplate());
             }}
             open={isProjectDrawerOpen}
-            // open={openDrawer}
             Component={ProjectView}
           />
         )}
@@ -99,13 +87,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
         data={navData}
         config={{
           currentRole: user?.role?.shortName, // if current role is not allowed
-          // // currentUserType: user?.userType, // if current userType is not allowed
         }}
       />
 
       <Box sx={{ flexGrow: 1 }} />
-
-      {/* <NavUpgrade /> */}
     </Scrollbar>
   );
 

@@ -7,15 +7,11 @@ import ProjectStepperForm from '../project-stepper-form';
 // ----------------------------------------------------------------------
 
 export default function ProjectView() {
-    return (
-        <>
-            <Container sx={{ my: 0, flex: 1 }}>
-                <Stack spacing={7} direction='row' height='100%'>
-
-                    <ProjectStepperForm />
-
-                </Stack>
-            </Container>
-        </>
-    );
+  return (
+    <Container sx={{ my: 0, flex: 1 }}>
+      <Stack spacing={7} direction="row" height="100%">
+        <ProjectStepperForm />
+      </Stack>
+    </Container>
+  );
 }

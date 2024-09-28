@@ -1,23 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { cloneDeep, isEmpty } from 'lodash';
+import { cloneDeep } from 'lodash';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
-export const uploadDocument = createAsyncThunk(
-  'documents/upload',
-  async (documentsData, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.documents.upload, documentsData);
-      // console.log('API Response:', response.data);
-      return response.data.data;
-    } catch (err) {
-      console.error('API Error:', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+export const uploadDocument = createAsyncThunk('documents/upload', async (documentsData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.documents.upload, documentsData);
+    return response.data.data;
+  } catch (err) {
+    console.error('API Error:', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 export const moveDocument = createAsyncThunk(
   'folders/move',
   async ({ id, to }, { rejectWithValue }) => {
@@ -29,32 +25,15 @@ export const moveDocument = createAsyncThunk(
     }
   }
 );
-// export const renameDocument = createAsyncThunk(
-//   'documents/rename',
-//   async (id, documentsData, { getState, rejectWithValue }) => {
-//     try {
-//       // Assuming you have an API endpoint for renaming
-//       console.log('data 22k-4289', documentsData);
-//       const response = await axiosInstance.put(endpoints.documents.rename(id), documentsData);
-//       return response.data;
-//     } catch (err) {
-//       return rejectWithValue(err.response.data);
-//     }
-//   }
-// );
+
 export const renameDocument = createAsyncThunk(
   'documents/rename',
   async ({ newName, _id }, { rejectWithValue }) => {
     try {
-      // console.log('Renaming document with ID:', _id, 'Data:', newName);
-
       const response = await axiosInstance.put(endpoints.documents.rename(_id), { name: newName });
 
-      // console.log('Rename document response:', response.data);
       return response.data;
     } catch (err) {
-      // console.error('Rename document error:', err);
-
       const errorMessage =
         err.response?.data?.message || 'An error occurred while renaming the document.';
       return rejectWithValue(errorMessage);
@@ -62,24 +41,19 @@ export const renameDocument = createAsyncThunk(
   }
 );
 
-export const updateDailyLogs = createAsyncThunk(
-  'dailyLogs/update',
-  async ({ data, id }, { getState, rejectWithValue }) => {
-    // console.log(data, id);
+export const updateDailyLogs = createAsyncThunk('dailyLogs/update', async ({ data, id }) => {
+  try {
+    const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
 
-    try {
-      const response = await axiosInstance.put(endpoints.dailyLogs.update(id), data);
-
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
 export const downloadDocument = createAsyncThunk(
   'documents/download',
@@ -117,7 +91,7 @@ export const downloadDocument = createAsyncThunk(
 export const getDocumentsList = createAsyncThunk(
   'documents/list',
 
-  async (listOptions, { getState, rejectWithValue }) => {
+  async (listOptions, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
       let parentId;
@@ -154,7 +128,7 @@ export const getDocumentsList = createAsyncThunk(
 export const getDocumentsMoveList = createAsyncThunk(
   'documents/moveList',
 
-  async (listOptions, { getState, rejectWithValue }) => {
+  async (listOptions, { getState }) => {
     try {
       const projectId = getState().project?.current?._id;
       let parentId;
@@ -188,38 +162,31 @@ export const getDocumentsMoveList = createAsyncThunk(
   }
 );
 
-export const deleteDocument = createAsyncThunk(
-  'documents/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(endpoints.documents.delete(id));
+export const deleteDocument = createAsyncThunk('documents/delete', async (id) => {
+  try {
+    const response = await axiosInstance.delete(endpoints.documents.delete(id));
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
-export const updateDocument = createAsyncThunk(
-  'documents/update',
-  async (id, documentsData, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
-      // console.log('API Response:', response.data);
-      return response.data.data;
-    } catch (err) {
-      console.error('API Error:', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the plan.');
+});
+export const updateDocument = createAsyncThunk('documents/update', async (id, documentsData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.documents.update(id), documentsData);
+    return response.data.data;
+  } catch (err) {
+    console.error('API Error:', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the plan.');
   }
-);
+});
 
 const documentsInitialState = {};
 
@@ -237,7 +204,6 @@ const documents = createSlice({
   initialState,
   reducers: {
     setdocuments: (state, action) => {
-      // state.list = action.payload;
       state.list = action.payload;
     },
     setCurrentdocuments: (state, action) => {
@@ -284,23 +250,7 @@ const documents = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-    // builder.addCase(renameDocument.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(renameDocument.fulfilled, (state, action) => {
-    //   // Update the document with the new name in the state if necessary
-    //   const updatedDocument = action.payload;
-    //   state.list = state.list.map((doc) =>
-    //     doc.id === updatedDocument.id ? { ...doc, ...updatedDocument } : doc
-    //   );
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
-    // builder.addCase(renameDocument.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message;
-    // });
+
     builder.addCase(downloadDocument.pending, (state) => {
       state.isLoading = true;
       state.error = null;

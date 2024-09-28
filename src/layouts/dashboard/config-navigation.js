@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 // routes
 import { paths } from 'src/routes/paths';
-// locales
 
-// // components
-// import Label from 'src/components/label';
-// import Iconify from 'src/components/iconify';
 import { STUDLY_ROLES } from 'src/_mock';
 import SvgColor from 'src/components/svg-color';
 
@@ -42,7 +38,6 @@ const ICONS = {
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
   settings: icon('ic_settings'),
-  // settings: icon('solar:settings-bold-duotone'),
 };
 
 // ----------------------------------------------------------------------
@@ -50,31 +45,15 @@ const ICONS = {
 export function useNavData() {
   const data = useMemo(
     () => [
-      // // OVERVIEW
-      // // ----------------------------------------------------------------------
-      // // {
-      // //   items: [
-      // //     {
-      // //       title: 'app',
-      // //       path: paths.dashboard.root,
-      // //       icon: ICONS.dashboard,
-      // //       roles: ['admin'],
-      // //     },
-      // //   ],
-      // // },
-
       // COMPANY
       // ----------------------------------------------------------------------
       {
-        // subheader: 'company',
         items: [
-          // Company
           {
             title: 'company',
             path: paths.admin.company.list,
             icon: ICONS.dashboard,
             roles: STUDLY_ROLES.company,
-            // roles: ['System Admin'],
           },
         ],
       },
@@ -83,7 +62,6 @@ export function useNavData() {
 
       {
         items: [
-          //
           {
             title: 'Submittals',
             path: paths.subscriber.submittals.list,
@@ -120,52 +98,12 @@ export function useNavData() {
             icon: ICONS.file,
             roles: STUDLY_ROLES.documents,
           },
-          // {
-          //   title: `COI's`,
-          //   path: paths.subscriber.coi.list,
-          //   icon: ICONS.lock,
-          //   roles: STUDLY_ROLES.documents,
 
-          // },
           {
             title: 'Project Settings',
             path: paths.subscriber.settings.root,
             icon: ICONS.settings,
             roles: STUDLY_ROLES.projectSetting,
-          },
-        ],
-      },
-    ],
-    []
-  );
-
-  return data;
-}
-
-export function useNavDataSubscriber() {
-  const data = useMemo(
-    () => [
-      // // ----------------------------------------------------------------------
-      // {
-      //   items: [
-      //     {
-      //       title: 'Subscriber',
-      //       path: paths.subscriber.root,
-      //       icon: ICONS.dashboard,
-      //     },
-      //   ],
-      // },
-
-      // Submittals
-      // ----------------------------------------------------------------------
-      {
-        items: [
-          //
-          {
-            title: 'Submittals',
-            path: paths.subscriber.submittals.list,
-            icon: ICONS.dashboard,
-            roles: ['subscriber'], // hides on admin role
           },
         ],
       },

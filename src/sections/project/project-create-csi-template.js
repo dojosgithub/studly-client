@@ -1,22 +1,13 @@
 import { SimpleTreeView, TreeItem, treeItemClasses } from '@mui/x-tree-view';
-import { useSelector } from 'react-redux';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import IndeterminateCheckBoxRoundedIcon from '@mui/icons-material/IndeterminateCheckBoxRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import { styled } from '@mui/material/styles';
-import debounce from 'lodash/debounce';
 // @mui
-import { IconButton, alpha, Box, Button, Stack, Typography, Checkbox } from '@mui/material';
+import { alpha, Box, Checkbox } from '@mui/material';
 import { CSI_CODE_TEMPLATE } from 'src/_mock';
-// hook-form
-import { RHFTextField } from 'src/components/hook-form';
-// utils
-import uuidv4 from 'src/utils/uuidv4';
-//
-import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 const CustomTreeItem = styled(TreeItem)(({ theme }) => ({
@@ -36,18 +27,6 @@ const CustomTreeItem = styled(TreeItem)(({ theme }) => ({
   },
 }));
 
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  width: 50,
-  height: 50,
-  opacity: 1,
-  borderRadius: '10px',
-  outline: `1px solid ${alpha(theme.palette.grey[700], 0.2)} `,
-  '&:hover': {
-    opacity: 1,
-    outline: `1px solid ${alpha(theme.palette.grey[700], 1)} `,
-  },
-}));
-
 function ExpandIcon(props) {
   return <AddBoxRoundedIcon {...props} sx={{ opacity: 0.8 }} />;
 }
@@ -56,27 +35,17 @@ function CollapseIcon(props) {
   return <IndeterminateCheckBoxRoundedIcon {...props} sx={{ opacity: 0.8 }} />;
 }
 
-function EndIcon(props) {
-  return <DisabledByDefaultRoundedIcon {...props} sx={{ opacity: 0.3 }} />;
-}
-
 const ProjectCreateCsiTrade = () => {
-  const { control, setValue, getValues, watch, resetField } = useFormContext();
+  const { setValue, getValues } = useFormContext();
   const [checkedItems, setCheckedItems] = useState([]);
-  const [template, setTemplate] = useState(CSI_CODE_TEMPLATE);
+  const [template] = useState(CSI_CODE_TEMPLATE);
   const MemoizedTreeItem = React.memo(CustomTreeItem);
   const { trades } = getValues();
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'trades',
-  });
   useEffect(() => {
     setCheckedItems(trades || []);
   }, [trades]);
   useEffect(() => {
-    // console.log('Checked items array:', checkedItems);
-    // console.log('trades:', trades);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedItems]);
 
@@ -165,36 +134,23 @@ const ProjectCreateCsiTrade = () => {
   );
 
   return (
-    <>
-      <Box sx={{ marginBottom: '2rem', width: '100%' }}>
-        <SimpleTreeView
-          aria-label="customized"
-          defaultExpandedItems={['1', '3']}
-          slots={{
-            expandIcon: ExpandIcon,
-            collapseIcon: CollapseIcon,
-            // endIcon: EndIcon,
-          }}
-          sx={{
-            minHeight: 270,
-            flexGrow: 1,
-            width: '100%',
-          }}
-        >
-          {renderTree(template)}
-        </SimpleTreeView>
-      </Box>
-
-      {/* <Button
-        component="button"
-        variant="outlined"
-        startIcon={<Iconify icon="mingcute:add-line" />}
-        color="secondary"
-        onClick={handleAdd}
+    <Box sx={{ marginBottom: '2rem', width: '100%' }}>
+      <SimpleTreeView
+        aria-label="customized"
+        defaultExpandedItems={['1', '3']}
+        slots={{
+          expandIcon: ExpandIcon,
+          collapseIcon: CollapseIcon,
+        }}
+        sx={{
+          minHeight: 270,
+          flexGrow: 1,
+          width: '100%',
+        }}
       >
-        Add Another Trade
-      </Button> */}
-    </>
+        {renderTree(template)}
+      </SimpleTreeView>
+    </Box>
   );
 };
 

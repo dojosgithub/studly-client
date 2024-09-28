@@ -1,6 +1,3 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha, styled } from '@mui/system';
@@ -19,16 +16,14 @@ import {
   setSelectedTradeTemplate,
 } from 'src/redux/slices/projectSlice';
 
-import { PROJECT_TEMPLATES } from 'src/_mock';
 // components
-import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
 import ProjectCreateTrade from './project-create-trade';
 import ProjectCreateCsiTrade from './project-create-csi-template';
 import ProjectExistingTrade from './project-existing-trade';
 import ProjectTradeSelect from './project-trade-select';
 
-export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }) {
+export default function ProjectTrade() {
   const { getValues, setValue } = useFormContext();
   const projectName = getValues('name');
 
@@ -55,11 +50,7 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
       dispatch(setProjectTrades([]));
     }
   };
-  // onClick={(e) => {
-  //   onTabChange(e.target.name)
-  //   dispatch(setActiveTab(e.target.name))
-  //   console.log('activeTab', e.target.name)
-  // }}
+
   return (
     <>
       <Typography sx={{ my: 2 }} fontSize="1.5rem" fontWeight="bold">
@@ -86,24 +77,14 @@ export default function ProjectTrade({ onSelect, selectedTemplate, onTabChange }
           <ProjectCreateTrade />
         </TabPanel>
         <TabPanel value="existing">
-          {/* PROJECT_TEMPLATES */}
           <ProjectTradeSelect />
           {selectedTradeTemplate === 'default' && <ProjectCreateCsiTrade />}
           {selectedTradeTemplate !== 'default' && <ProjectExistingTrade />}
-
-          {/* <CustomSelect selectedOption={selectedTemplate} onSelect={onSelect} type="template" options={[]} />
-          {!!selectedTemplate && <ProjectExistingTrade isTemplateSelected={!!selectedTemplate} />} */}
         </TabPanel>
       </Tabs>
     </>
   );
 }
-
-ProjectTrade.propTypes = {
-  selectedTemplate: PropTypes.string,
-  onSelect: PropTypes.func,
-  onTabChange: PropTypes.func,
-};
 
 const grey = {
   50: '#F3F6F9',

@@ -1,6 +1,3 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { alpha, styled } from '@mui/system';
@@ -19,25 +16,17 @@ import {
   setSelectedTradeTemplate,
 } from 'src/redux/slices/projectSlice';
 
-import { PROJECT_TEMPLATES } from 'src/_mock';
 // components
-import { CustomSelect } from 'src/components/custom-select';
 import uuidv4 from 'src/utils/uuidv4';
 import ProjectSettingsCreateTrade from './project-settings-create-trade';
 import ProjectSettingsCreateCsiTrade from './project-settings-create-csi-template';
-import ProjectSettingsExistingTrade from './project-existing-trade';
-import ProjectSettingsTradeSelect from './project-trade-select';
 
-export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTabChange }) {
+export default function ProjectSettingsTrade() {
   const { getValues, setValue } = useFormContext();
   const projectName = getValues('name');
 
   const dispatch = useDispatch();
-  const activeTab = useSelector((state) => state.project?.update?.activeTab);
   const isCreatedWithCSI = useSelector((state) => state.project?.update?.isCreatedWithCSI);
-  const selectedTradeTemplate = useSelector(
-    (state) => state.project?.create?.selectedTradeTemplate
-  );
   const defaultObj = {
     name: '',
     tradeId: '',
@@ -96,12 +85,6 @@ export default function ProjectSettingsTrade({ onSelect, selectedTemplate, onTab
     </>
   );
 }
-
-ProjectSettingsTrade.propTypes = {
-  selectedTemplate: PropTypes.string,
-  onSelect: PropTypes.func,
-  onTabChange: PropTypes.func,
-};
 
 const grey = {
   50: '#F3F6F9',

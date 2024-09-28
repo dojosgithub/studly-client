@@ -45,19 +45,12 @@ import ProjectSettingsTrade from 'src/sections/project-settings/project-settings
 import ProjectSettingsWorkflow from 'src/sections/project-settings/project-settings-workflow';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
-import { PROJECT_DEFAULT_TEMPLATE, PROJECT_TEMPLATES } from 'src/_mock';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // form
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
-import {
-  getTemplateList,
-  resetTemplate,
-  setIsDefaultTemplate,
-  setIsNewTemplate,
-  setIsTemplateNameAdded,
-} from 'src/redux/slices/templateSlice';
+import { getTemplateList, resetTemplate, setIsNewTemplate } from 'src/redux/slices/templateSlice';
 import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 

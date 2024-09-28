@@ -1,104 +1,79 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-  PROJECTS,
-  PROJECT_INVITE_USERS_EXTERNAL,
-  PROJECT_INVITE_USERS_INTERNAL,
-  PROJECT_SUBCONTRACTORS,
-  PROJECT_TEMPLATES,
-  PROJECT_WORKFLOWS,
-  _userList,
-} from 'src/_mock';
+
 import axiosInstance, { endpoints } from 'src/utils/axios';
-import uuidv4 from 'src/utils/uuidv4';
 
-export const createNewProject = createAsyncThunk(
-  'project/create',
-  async (projectData, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(endpoints.project.create, projectData);
+export const createNewProject = createAsyncThunk('project/create', async (projectData) => {
+  try {
+    const response = await axiosInstance.post(endpoints.project.create, projectData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the project.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the project.');
   }
-);
-export const updateExistingProject = createAsyncThunk(
-  'project/update',
-  async (projectData, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.put(endpoints.project.update, projectData);
+});
+export const updateExistingProject = createAsyncThunk('project/update', async (projectData) => {
+  try {
+    const response = await axiosInstance.put(endpoints.project.update, projectData);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while updating the project.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while updating the project.');
   }
-);
-export const getProjectList = createAsyncThunk(
-  'project/list',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const email = getState()?.user?.user?.email; // Access the current state
-      const response = await axiosInstance.get(endpoints.project.list);
+});
+export const getProjectList = createAsyncThunk('project/list', async () => {
+  try {
+    const response = await axiosInstance.get(endpoints.project.list);
 
-      return response.data.data.project;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching project list.');
+    return response.data.data.project;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching project list.');
   }
-);
-export const getCurrentProjectTradesById = createAsyncThunk(
-  'project/trades',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.project.trades(id));
+});
+export const getCurrentProjectTradesById = createAsyncThunk('project/trades', async (id) => {
+  try {
+    const response = await axiosInstance.get(endpoints.project.trades(id));
 
-      return response.data.data.trades;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while fetching project list.');
+    return response.data.data.trades;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while fetching project list.');
   }
-);
+});
 
 // get users list from
-export const getCompanyUserList = createAsyncThunk(
-  'company/user/list',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.user.userList);
+export const getCompanyUserList = createAsyncThunk('company/user/list', async () => {
+  try {
+    const response = await axiosInstance.get(endpoints.user.userList);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the company.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the company.');
   }
-);
+});
 
 // get subcontractor list in company
 export const getCompanySubcontractorList = createAsyncThunk(
   'subcontractor/companyList',
-  async (_, { rejectWithValue }) => {
+  async () => {
     try {
       const response = await axiosInstance.get(endpoints.user.subcontractorCompanyList);
 
@@ -113,61 +88,20 @@ export const getCompanySubcontractorList = createAsyncThunk(
   }
 );
 // get subcontractor list in db
-export const getAllSubcontractorList = createAsyncThunk(
-  'subcontractor/dbList',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(endpoints.user.subcontractorList);
+export const getAllSubcontractorList = createAsyncThunk('subcontractor/dbList', async () => {
+  try {
+    const response = await axiosInstance.get(endpoints.user.subcontractorList);
 
-      return response.data.data;
-    } catch (err) {
-      console.error('errSlice', err);
-      if (err && err.message) {
-        throw Error(err.message);
-      }
-      throw Error('An error occurred while creating the company.');
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
     }
+    throw Error('An error occurred while creating the company.');
   }
-);
+});
 
-// export const inviteSubcontractor = createAsyncThunk(
-//   'project/inviteSubcontractor',
-//   async (data, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.post(endpoints.project.invite, data);
-
-//       return response.data.data
-//     } catch (err) {
-//       console.error("errSlice", err)
-//       if (err && err.message) {
-//         throw Error(
-//           err.message
-//         );
-//       }
-//       throw Error(
-//         'An error occurred while creating the project.'
-//       );
-//     }
-//   },
-// )
-
-// const initialState = {
-//   list: PROJECTS || [],
-//   current: null,
-//   new: {
-//     name: '',
-//     trades: [],
-//     workflow: {
-//       name: '',
-//       statuses: [],
-//       returnDate: '',
-//     },
-//    },
-// //     submittals: []
-//   }
-// }
-// const assignSubcontractor ={ _id: '',tradeId:'',subcontractorId:'' }
-// const outsideUser ={ name: '', _id: '', email: '', role: '' }
 const projectInitialState = {
   name: '',
   address: '',
@@ -204,10 +138,7 @@ const initialState = {
   // Invite
   subcontractors: { ...subcontractorInitialState },
   users: [], // PROJECT_USERS
-  inviteUsers: {
-    internal: [],
-    external: [],
-  },
+
   isLoading: false,
   error: null,
 };
@@ -217,7 +148,6 @@ const project = createSlice({
   initialState,
   reducers: {
     setProjectName: (state, action) => {
-      // state.create.name = action.payload
       state.create.name = action.payload.name;
       state.create.address = action.payload.address;
       state.create.state = action.payload.state;
@@ -225,7 +155,6 @@ const project = createSlice({
       state.create.zipCode = action.payload.zipCode;
     },
     setProjectSettingsName: (state, action) => {
-      // state.update.name = action.payload
       state.update.name = action.payload.name;
       state.update.address = action.payload.address;
       state.update.state = action.payload.state;
@@ -265,41 +194,7 @@ const project = createSlice({
     setUpdateProjectTrades: (state, action) => {
       state.update = { ...state.update, trades: action.payload };
     },
-    setInternalUsers: (state, action) => {
-      state.inviteUsers.internal = action.payload;
-    },
-    setExternalUsers: (state, action) => {
-      state.inviteUsers.external = action.payload;
-    },
-    setAddInternalUser: (state, action) => {
-      // state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload]
-      // Check if the email already exists in the internal users array
-      const isExistingUser = state.inviteUsers.internal.some(
-        (user) => user.email === action.payload.email
-      );
 
-      // If the user does not already exist, add them to the internal users array
-      if (!isExistingUser) {
-        state.inviteUsers.internal = [...state.inviteUsers.internal, action.payload];
-      }
-    },
-    setAddExternalUser: (state, action) => {
-      // state.inviteUsers.external = [...state.inviteUsers.external, action.payload]
-      // Check if the email already exists in the internal users array
-      const isExistingUser = state.inviteUsers.external.some(
-        (user) => user.email === action.payload.email
-      );
-
-      // If the user does not already exist, add them to the external users array
-      if (!isExistingUser) {
-        state.inviteUsers.external = [...state.inviteUsers.external, action.payload];
-      }
-    },
-    setRemoveInternalUser: (state, action) => {
-      state.inviteUsers.internal = state.inviteUsers.internal.filter(
-        (row) => row.email !== action.payload
-      );
-    },
     setRemoveExternalUser: (state, action) => {
       state.inviteUsers.external = state.inviteUsers.external.filter(
         (row) => row.email !== action.payload
@@ -349,20 +244,15 @@ const project = createSlice({
       );
       state.update.members = filteredMembers;
     },
-    resetMembers: (state, action) => {
+    resetMembers: (state) => {
       state.members = [];
     },
     resetCreateProject: (state) => {
       state.create = projectInitialState;
       state.members = [];
-      // state.subcontractors.invited = [];
       // ? Changed subcontractor to initial state
       state.subcontractors = { ...subcontractorInitialState };
       state.users = [];
-      state.inviteUsers = {
-        internal: [],
-        external: [],
-      };
     },
     resetUpdateProject: (state) => {
       state.update = null;
@@ -380,7 +270,7 @@ const project = createSlice({
     setSelectedTradeTemplate: (state, action) => {
       state.create.selectedTradeTemplate = action.payload;
     },
-    setTemplateCreationType: (state, action) => {
+    setTemplateCreationType: (state) => {
       if (
         state.create.selectedTradeTemplate === 'default' &&
         state.create.activeTab === 'existing'
@@ -492,19 +382,6 @@ const project = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-    // // * Invite Subcontractor
-    // builder.addCase(inviteSubcontractor.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(inviteSubcontractor.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
-    // builder.addCase(inviteSubcontractor.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message;
-    // });
   },
 });
 
@@ -523,13 +400,7 @@ export const {
   setUpdateProject,
   setUpdateProjectRole,
   setUpdateProjectTrades,
-  setInternalUsers,
-  setExternalUsers,
-  setAddInternalUser,
-  setAddExternalUser,
   resetCreateProject,
-  setRemoveInternalUser,
-  setRemoveExternalUser,
   resetProjectState,
   resetUpdateProject,
   resetSubcontractorState,

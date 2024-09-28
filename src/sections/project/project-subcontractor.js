@@ -3,30 +3,20 @@ import {
   Box,
   Container,
   Divider,
-  MenuItem,
   Stack,
   Typography,
-  Select,
   Card,
   Button,
   IconButton,
 } from '@mui/material';
-import { isEmpty } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { PROJECT_SUBCONTRACTORS } from 'src/_mock';
-import {
-  removeInvitedSubcontractor,
-  setMembers,
-  setProjectTrades,
-} from 'src/redux/slices/projectSlice';
+import { removeInvitedSubcontractor, setProjectTrades } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
 import ProjectInviteSubcontractorDialog from './project-invite-subcontractor-dialog';
 
 const ProjectSubcontractor = () => {
-  // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
-  const { getValues, setValue } = useFormContext();
-  // const { trades } = getValues()
+  const { setValue } = useFormContext();
   const [open, setOpen] = useState(false);
   const [ID, setID] = useState('');
   // GET Subcontractor list in Company
@@ -49,80 +39,15 @@ const ProjectSubcontractor = () => {
   }, {});
 
   const [options, setOptions] = useState(initialOptions);
-  const [assignedSubcontractor, setAssignedSubcontractor] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {}, [subcontractors, options, trades]);
 
   const handleSelect = (tradeId, email) => {
-    // console.log('subcontractorId', subcontractorId)
     if (email === 'create') {
       setOpen(true);
       setID(tradeId);
     }
-    // const filteredSubcontractorByEmail = subcontractors.filter(sub => sub.email === email)[0]
-    // console.log("filteredSubcontractorByEmail", filteredSubcontractorByEmail);
-    // const filteredSubcontractorCompany = subcontractorsList.filter(sub => sub.email === email)
-    // console.log("filteredSubcontractorCompany", filteredSubcontractorCompany);
-    // // const { email } = subcontractorObj
-    // const hasEmailAndId = 'email' in filteredSubcontractorByEmail && 'id' in filteredSubcontractorByEmail;
-    // const isEmailExistsInCompanyList = filteredSubcontractorCompany?.length > 0
-    // // TODO ADD EXISTING SUBCONTRACTOR
-
-    // const data = { email }
-    // // if there is an id of subcontractor
-    // if (hasEmailAndId) {
-    //     data.subcontractorId = filteredSubcontractorByEmail._id
-    // }
-
-    // console.log('handleSelect', data);
-
-    // const modifiedTrades = trades.map(trade => {
-    //     if (trade.tradeId === tradeId) {
-    //         // return { ...trade, subcontractorId };
-    //         if (!isEmailExistsInCompanyList && trade.subcontractorId) {
-    //             // Remove subcontractorId from the trade
-    //             const { subcontractorId, ...restOfTrade } = trade;
-    //             return { ...restOfTrade, ...data };
-    //         }
-    //         return { ...trade, ...data };
-
-    //     }
-    //     return trade;
-    // });
-    // console.log('modifiedTrades', modifiedTrades)
-    // setValue('trades', modifiedTrades)
-    // dispatch(setProjectTrades(modifiedTrades))
-
-    // // ? set options
-
-    // setOptions(prevOptions => {
-    //     const tradeIds = Object.keys(prevOptions);
-
-    //     // Check if the options object is empty or if the tradeId is not present in prevOptions
-    //     if (tradeIds.length === 0 || !prevOptions[tradeId]) {
-    //         // If options object is empty or tradeId is not present, add a new entry with provided tradeId and subcontractorId
-    //         // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-    //         return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-    //     }
-
-    //     // Check if there's already an option with the same tradeId
-    //     const existingTradeIndex = tradeIds.findIndex(id => prevOptions[id].tradeId === tradeId);
-
-    //     if (existingTradeIndex !== -1) {
-    //         // If an option with the same tradeId exists, update its subcontractorId
-    //         const updatedOptions = { ...prevOptions };
-    //         if (hasEmailAndId) {
-    //             updatedOptions[tradeId].subcontractorId = filteredSubcontractorByEmail._id;
-    //         }
-    //         updatedOptions[tradeId].email = email;
-    //         return updatedOptions;
-    //     }
-
-    //     // If no option with the same tradeId exists, add a new option with provided tradeId and subcontractorId
-    //     // return { ...prevOptions, [tradeId]: { tradeId, subcontractorId } };
-    //     return { ...prevOptions, [tradeId]: { tradeId, ...data } };
-    // });
   };
 
   const handleRemove = (tradeId, emailId) => {
@@ -200,7 +125,6 @@ const ProjectSubcontractor = () => {
           {trades?.map(({ tradeId, name }) => (
             <Card
               sx={{
-                // maxWidth: '500px',
                 width: '100%',
                 p: '1rem',
                 display: 'flex',
@@ -222,31 +146,6 @@ const ProjectSubcontractor = () => {
                 justifyContent="flex-end"
                 gap=".5rem"
               >
-                {/* <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].email} label="" placeholder="Choose Subcontractor" sx={{
-                                        width: '100%',
-                                        "& .MuiSelect-select": {
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.25rem',
-                                        }
-                                    }}>
-                                        {subcontractors?.length > 0 && subcontractors?.map((sub) => (
-                                            <MenuItem key={sub.email} value={sub.email} sx={{ height: 50, px: 3, borderRadius: 0 }}>
-                                                {sub.firstName}
-                                                {' '}
-                                                {sub.lastName}
-                                            </MenuItem>
-                                        ))}
-                                        
-                                        <Divider sx={{ background: 'grey' }} />
-                                        <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="create" onClick={() => setOpen(true)}>
-                                            <Iconify
-                                                icon='material-symbols:add-circle-outline'
-                                                width={20}
-                                                sx={{ mr: 1 }}
-                                            /> Invite subcontractor
-                                        </MenuItem>
-                                    </Select> */}
                 {!(options[tradeId] && options[tradeId].email) && (
                   <Button variant="contained" onClick={(e) => handleSelect(tradeId, 'create')}>
                     Invite Subcontractor
@@ -278,7 +177,6 @@ const ProjectSubcontractor = () => {
             setOptions={setOptions}
             open={open}
             onClose={() => setOpen(false)}
-            setAssignedSubcontractor={setAssignedSubcontractor}
           />
         )}
       </Container>
