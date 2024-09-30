@@ -31,7 +31,6 @@ import {
   resetCreateProject,
   resetMembers,
   resetUpdateProject,
-  setCreateTemplate,
   setDefaultTemplateModified,
   setProjectDrawerState,
   setProjectSettingsName,
@@ -42,7 +41,6 @@ import {
 } from 'src/redux/slices/projectSlice';
 import ProjectSettingsName from 'src/sections/project-settings/project-settings-name';
 import ProjectSettingsTrade from 'src/sections/project-settings/project-settings-trade';
-import ProjectSettingsWorkflow from 'src/sections/project-settings/project-settings-workflow';
 // utils
 import uuidv4 from 'src/utils/uuidv4';
 //
@@ -54,12 +52,9 @@ import { getTemplateList, resetTemplate, setIsNewTemplate } from 'src/redux/slic
 import { getWorkflowList, resetWorkflow, setIsNewWorkflow } from 'src/redux/slices/workflowSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 
-import ProjectNewTemplateDrawer from './project-new-template-drawer';
-import ProjectTemplateName from './project-template-name-dialog';
 import ProjectSettingsSubcontractor from './project-settings-subcontractor';
 import ProjectSettingsInviteUsers from './project-settings-invite-users';
 import ProjectSettingsFinal from './project-settings-final';
-import ProjectCreateWorkflow from './project-create-workflow';
 
 // ----------------------------------------------------------------------
 
@@ -76,11 +71,7 @@ const steps = [
     description: 'Create trades for your project',
     value: 'trades',
   },
-  // {
-  //   label: 'Workflow',
-  //   description: `Create  your project workflow`,
-  //   value: 'workflow',
-  // },
+
   {
     label: 'Assign Subcontractors',
     description: `Assign subcontractors to your project`,
@@ -146,7 +137,6 @@ export default function ProjectSettingsStepperForm() {
   useEffect(() => {
     dispatch(getTemplateList());
     dispatch(getWorkflowList());
-    // dispatch(getAllSubcontractorList())
     dispatch(getCompanySubcontractorList());
     // reseting update project to current project
     dispatch(setUpdateProject());
@@ -172,13 +162,7 @@ export default function ProjectSettingsStepperForm() {
     trades: Yup.array()
       .of(
         Yup.object().shape({
-          // tradeId: Yup.string().required('Trade ID is required'),
-          tradeId: Yup.string()
-            // .matches(
-            //   /^[0-9.-]+$/,
-            //   'Trade id must contain only numeric characters, dots, and hyphens'
-            // )
-            .required('Trade id is required'),
+          tradeId: Yup.string().required('Trade id is required'),
           name: Yup.string().required('Trade Name is required'),
           _id: Yup.string(),
           subcontractorId: Yup.string(),
@@ -188,15 +172,11 @@ export default function ProjectSettingsStepperForm() {
     workflow: Yup.object().shape({
       name: Yup.string().required('Workflow Name is required'),
       statuses: Yup.array().min(1, 'At least one status is required'),
-      // returnDate: Yup.date().min(addDays(new Date(), 1)),
       returnDate: Yup.string().required('Date is required'),
     }),
   });
 
   const defaultValues = useMemo(() => {
-    // Check if form is being edited or a new entry is being created
-    // For example, check if selectedTemplate is present or not
-    // const isNewEntry = activeStep === 3 || activeStep === 4;
     const isNewEntry = activeStep === 2 || activeStep === 3;
     // TODO: currentSelectedTemplate from redux
     return {
@@ -245,18 +225,9 @@ export default function ProjectSettingsStepperForm() {
         return;
       }
       setIsFormSubmitting(true);
-      console.log('trades UPDATE PROJECT-->', data.trades);
-      // firstName, lastName,
       const updatedTrades = data?.trades?.map(({ _id, ...rest }) => rest);
       const updatedWorkflow = data.workflow;
 
-      // const memberData = {
-      //   user: subcontractorId,
-      //   status: 'joined',
-      //   email: email,
-      //   role: inviteDataTrade.role,
-      //   team: null,
-      // }
       // Get emails from the trades array
       const tradeEmails = updatedTrades
         .filter((trade) => trade.email) // Only include trades with an email field
@@ -272,8 +243,6 @@ export default function ProjectSettingsStepperForm() {
       );
       const filteredMembers = [...filteredUsers, ...filteredSCOUsers];
 
-      console.log('filteredMembers', filteredMembers);
-
       const finalData = {
         ...currentProject,
         ...data,
@@ -281,7 +250,6 @@ export default function ProjectSettingsStepperForm() {
         workflow: updatedWorkflow,
         members: filteredMembers,
       };
-      // console.log('finalData UPDATE PROJECT-->', finalData);
       const { error, payload } = await dispatch(updateExistingProject(finalData));
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
@@ -293,15 +261,8 @@ export default function ProjectSettingsStepperForm() {
       await dispatch(getProjectList());
       dispatch(getSubmittalList({ search: '', page: 1, status: [] }));
 
-      // if(isEmpty(projectList)){
-      //   router.push(paths.subscriber.onboarding);
-      //   return
-      // }
-      // router.push(paths.subscriber.submittals.list);
       navigate(paths.subscriber.submittals.list);
     } catch (error) {
-      // console.error(error);
-      // console.log('error-->', error);
       enqueueSnackbar(`Error Updating Password`, { variant: 'error' });
     }
   });
@@ -332,10 +293,7 @@ export default function ProjectSettingsStepperForm() {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-    // const isValid = await methods.trigger();
-    // if (isValid) {
-    //   setActiveStep((prevStep) => prevStep + 1);
-    // }
+
     const { isFormValid, currentStepValue } = await getFormValidation();
     if (!isFormValid && currentStepValue === 'trades') {
       enqueueSnackbar('Please add a trade', { variant: 'warning' });
@@ -351,21 +309,12 @@ export default function ProjectSettingsStepperForm() {
         case 'trades':
           dispatch(setProjectSettingsTrades(cloneDeep(formValues?.trades)));
           break;
-        // case 'workflow':
-        //   dispatch(setProjectSettingsWorkflow(formValues?.workflow));
-        //   break;
+
         default:
           break;
       }
     }
 
-    // TODO: change defaultTemplate logic
-
-    // const isModified = JSON.stringify(formValues.trades) !== JSON.stringify(defaultTemplateTrades);
-    // if (isModified && selectedTradeTemplate === "default" && activeStep === 1) {
-    //   setOpen(true);
-    //   dispatch(setDefaultTemplateModified(true))
-    // }
     if (isFormValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
@@ -411,39 +360,11 @@ export default function ProjectSettingsStepperForm() {
     methods.handleSubmit(onSubmit)();
   };
 
-  const handleSelect = (val) => {
-    // if (val === "create") {
-    //   setOpenNewTemplateDrawer(true)
-    //   // return
-    // }
-    // setSelectedTemplate(val)
-    // const filteredTrades = getTemplateTrades(val)
-    // // TODO: multiple templates
-    // setValue('trades', filteredTrades)
-  };
-  const handleTab = (tab) => {
-    // const newField = {
-    //   name: '',
-    //   tradeId: '',
-    //   _id: uuidv4(),
-    // }
-    // const defaultTemplate = selectedTemplate ? getTemplateTrades(selectedTemplate) : []
-    // const trades = tab === "create" ? [newField] : defaultTemplate;
-    // setValue('trades', trades)
-    // if (tab === "create" && !!selectedTemplate) {
-    //   setSelectedTemplate('')
-    // }
-    // setActiveTab(tab)
-  };
+  const handleSelect = (val) => {};
+  const handleTab = (tab) => {};
 
   const handleTemplateCreation = (val) => {
-    // setValue("templateName", val)
-
     setOpen(false);
-    // if (newTemplate?.create) {
-    //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    // }
-    // setSelectedTemplate('')
   };
 
   function getComponent() {
@@ -461,9 +382,7 @@ export default function ProjectSettingsStepperForm() {
           />
         );
         break;
-      // case 2:
-      //   component = <ProjectSettingsWorkflow />;
-      //   break;
+
       case 2:
         component = <ProjectSettingsSubcontractor />;
         break;
@@ -500,7 +419,6 @@ export default function ProjectSettingsStepperForm() {
           return (
             <Step key={step.label} {...stepProps}>
               <StepLabel
-                // onClick={() => handleBack(index)}
                 {...labelProps}
                 optional={
                   <Typography variant="caption">
@@ -551,7 +469,6 @@ export default function ProjectSettingsStepperForm() {
               </Box>
             </>
           ) : (
-            // <FormProvider methods={methods} onSubmit={onSubmit}>
             <>
               <Paper
                 sx={{
@@ -559,7 +476,6 @@ export default function ProjectSettingsStepperForm() {
                   my: 3,
                   minHeight: 120,
                   background: 'transparent',
-                  // // bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
                 }}
               >
                 {getComponent()}
@@ -592,7 +508,6 @@ export default function ProjectSettingsStepperForm() {
                     Skip
                   </Button>
                 )}
-                {/* steps.length - 1 new change */}
 
                 {activeStep !== steps.length && (
                   <Button onClick={handleNext} variant="contained">
@@ -601,39 +516,9 @@ export default function ProjectSettingsStepperForm() {
                 )}
               </Box>
             </>
-            // </FormProvider>
           )}
         </FormProvider>
       </Stack>
-
-      {open && (
-        <ProjectTemplateName
-          open={open}
-          onClose={() => setOpen(!open)}
-          setSelectedTemplate={setSelectedTemplate}
-          onTemplateCreation={handleTemplateCreation}
-          trades={formValues?.trades}
-        />
-      )}
-      <CustomDrawer
-        open={isNewTemplate}
-        onClose={() => dispatch(setIsNewTemplate(false))}
-        Component={ProjectNewTemplateDrawer}
-        setTrades={setValue}
-        type="template"
-      />
-      <CustomDrawer
-        open={isNewWorkflow}
-        onClose={() => dispatch(setIsNewWorkflow(false))}
-        Component={ProjectCreateWorkflow}
-        type="workflow"
-      />
-
-      {/* {selectedTemplate === "default" && <ProjectTemplateName open={open} onClose={() => setOpen(false)} setSelectedTemplate={setSelectedTemplate} onTemplateCreation={handleTemplateCreation} trades={formValues?.trades} />}
-      <CustomDrawer open={openNewTemplateDrawer} onClose={() => {
-        setOpenNewTemplateDrawer(false);
-        handleSelect('')
-      }} Component={ProjectNewTemplateDrawer} type='template' /> */}
     </>
   );
 }

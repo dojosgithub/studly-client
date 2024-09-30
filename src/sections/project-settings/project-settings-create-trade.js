@@ -1,5 +1,4 @@
-import { useSelector } from 'react-redux';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 // @mui
@@ -25,22 +24,12 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const ProjectSettingsCreateTrade = () => {
-  const { control, setValue, getValues, watch, resetField } = useFormContext();
+  const { control } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'trades',
   });
-  console.log('fields', fields);
-  // const [rows, setRows] = useState(trades)
-  // const currentTrades = useSelector(state => state.project?.create?.trades);
-  // useEffect(() => {
-  //     console.log("currentTrades->", currentTrades)
-  //     // if (currentTrades && currentTrades?.length > 1) {
-  //         console.log("template changed->", currentTrades)
-  //         setValue('trades', currentTrades)
-  //     // }
-  // }, [currentTrades, setValue])
 
   const handleAdd = useCallback(() => {
     append({
@@ -64,49 +53,9 @@ const ProjectSettingsCreateTrade = () => {
     };
   }, [handleAdd]);
 
-  //   const handleAdd = () => {
-  //     append({
-  //         name: '',
-  //         tradeId: '',
-  //         _id: uuidv4(),
-  //     });
-  // };
-  const values = watch();
-
   const handleRemove = (index) => {
     remove(index);
   };
-
-  const handleClearService = useCallback(
-    (index) => {
-      resetField(`trades[${index}].name`);
-      resetField(`trades[${index}].tradeId`);
-    },
-    [resetField]
-  );
-
-  // const currentDefaultValues = {
-  //     name: '',
-  //     tradeId: '',
-  //     _id: uuidv4(),
-  // }
-
-  // const handleDelete = (id) => {
-  //     console.log('id', id)
-  //     const filteredTrades = trades?.filter(row => row._id !== id);
-  //     console.log('filteredTrades', filteredTrades)
-  //     setRows(filteredTrades )
-
-  //     setValue("trades", filteredTrades)
-  // }
-
-  // const handleAddField = () => {
-  //     const updatedTrades = [...trades, { ...currentDefaultValues, _id: uuidv4() }]
-  //     console.log('addfield updatedTrades', updatedTrades)
-  //     setRows(updatedTrades)
-  //     setValue("trades", updatedTrades)
-
-  // }
 
   return (
     <>
@@ -125,7 +74,7 @@ const ProjectSettingsCreateTrade = () => {
         </Box>
         <Stack gap="1.5rem">
           {fields &&
-            fields?.map(({ _id, name, tradeId }, index) => (
+            fields?.map(({ _id }, index) => (
               <Box
                 key={_id}
                 sx={{

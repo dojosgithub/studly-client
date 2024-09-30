@@ -22,9 +22,7 @@ import {
 //
 import { removeUpdateProjectMember } from 'src/redux/slices/projectSlice';
 //
-import ProjectTableRow from './project-table-row';
-import ProjectTableToolbar from './project-table-toolbar';
-import ProjectTableFiltersResult from './project-table-filters-result';
+import ProjectTableRow from './project-settings-table-row';
 import ProjectSettingsInviteNewUser from './project-settings-invite-new-user';
 
 // ----------------------------------------------------------------------
@@ -59,7 +57,7 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
 
   const [tableData, setTableData] = useState([]);
 
-  const [filters, setFilters] = useState(defaultFilters);
+  const [filters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -77,17 +75,6 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
   const canReset = !isEqual(defaultFilters, filters);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-
-  const handleFilters = useCallback(
-    (name, value) => {
-      table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    [table]
-  );
 
   const handleDeleteRow = useCallback(
     (email) => {

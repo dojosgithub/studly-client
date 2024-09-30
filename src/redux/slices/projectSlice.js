@@ -388,7 +388,6 @@ const project = createSlice({
 export const {
   setProjectName,
   setProjectTrades,
-  setCreateTemplate,
   setProjectWorkflow,
   setCurrentProject,
   setCreateProject,

@@ -1,55 +1,23 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // @mui
 import { alpha, styled } from '@mui/system';
 import { Tabs } from '@mui/base/Tabs';
-import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
-import { buttonClasses } from '@mui/base/Button';
-import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import { Divider, Typography } from '@mui/material';
 
 //
 import { useFormContext } from 'react-hook-form';
-import {
-  setActiveTab,
-  setProjectTrades,
-  setSelectedTradeTemplate,
-} from 'src/redux/slices/projectSlice';
 
 // components
-import uuidv4 from 'src/utils/uuidv4';
 import ProjectSettingsCreateTrade from './project-settings-create-trade';
 import ProjectSettingsCreateCsiTrade from './project-settings-create-csi-template';
 
 export default function ProjectSettingsTrade() {
-  const { getValues, setValue } = useFormContext();
+  const { getValues } = useFormContext();
   const projectName = getValues('name');
 
-  const dispatch = useDispatch();
   const isCreatedWithCSI = useSelector((state) => state.project?.update?.isCreatedWithCSI);
-  const defaultObj = {
-    name: '',
-    tradeId: '',
-    _id: uuidv4(),
-  };
 
-  // ? Reset trades and selected trade template on tab change
-  const handleTabChange = (e, value) => {
-    dispatch(setActiveTab(value));
-    if (value === 'create') {
-      dispatch(setSelectedTradeTemplate(''));
-      dispatch(setProjectTrades([defaultObj]));
-      setValue('trades', [defaultObj]);
-    } else {
-      setValue('trades', []);
-      dispatch(setProjectTrades([]));
-    }
-  };
-  // onClick={(e) => {
-  //   onTabChange(e.target.name)
-  //   dispatch(setActiveTab(e.target.name))
-  //   console.log('activeTab', e.target.name)
-  // }}
   return (
     <>
       <Typography sx={{ my: 2 }} fontSize="1.5rem" fontWeight="bold">
@@ -63,24 +31,10 @@ export default function ProjectSettingsTrade() {
         }}
       />
 
-      <Tabs value="create" onChange={handleTabChange}>
-        {/* <TabsList>
-          <Tab value="create" name="create">
-            Create Trade
-          </Tab>
-          <Tab value="existing" name="existing">
-            Use Exisiting Template
-          </Tab>
-        </TabsList> */}
+      <Tabs value="create">
         <TabPanel value="create">
           {isCreatedWithCSI ? <ProjectSettingsCreateCsiTrade /> : <ProjectSettingsCreateTrade />}
         </TabPanel>
-        {/* <TabPanel value="existing">
-          <ProjectSettingsTradeSelect />
-          {selectedTradeTemplate === 'default' && <ProjectSettingsCreateCsiTrade />}
-          {selectedTradeTemplate !== 'default' && <ProjectSettingsExistingTrade />}
-
-        </TabPanel> */}
       </Tabs>
     </>
   );
@@ -99,43 +53,6 @@ const grey = {
   900: '#1C2025',
 };
 
-const Tab = styled(BaseTab)`
-  font-family: 'IBM Plex Sans', sans-serif;
-  color: ${grey[900]};
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
-  background-color: transparent;
-  width: 100%;
-  padding: 16px 14px;
-  margin: 0px;
-  border: none;
-  border-radius: 7px;
-  display: flex;
-  justify-content: center;
-  outline: 1px solid ${grey[200]};
-
-  &:hover {
-    background-color: ${grey[50]};
-    transition: 0.2s ease-in;
-  }
-
-  &:focus {
-    color: ${grey[900]};
-  }
-
-  &.${tabClasses.selected} {
-    background-color: ${grey[50]};
-    color: ${grey[900]};
-    outline: 1px solid ${grey[50]};
-  }
-
-  &.${buttonClasses.disabled} {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
 const TabPanel = styled(BaseTabPanel)(
   ({ theme }) => `
   width: 100%;
@@ -146,20 +63,5 @@ const TabPanel = styled(BaseTabPanel)(
   // border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
   border-radius: 12px;
   opacity: 0.6;
-  `
-);
-
-const TabsList = styled(BaseTabsList)(
-  ({ theme }) => `
-  min-width: 400px;
-  background-color: #fff;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-content: space-between;
-  gap:1rem;
-  // box-shadow: 0px 4px 30px ${theme.palette.mode === 'dark' ? grey[900] : grey[200]};
   `
 );

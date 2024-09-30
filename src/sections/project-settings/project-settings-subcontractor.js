@@ -3,30 +3,23 @@ import {
   Box,
   Container,
   Divider,
-  MenuItem,
   Stack,
   Typography,
-  Select,
   Card,
   Button,
   IconButton,
 } from '@mui/material';
-import { isEmpty } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { PROJECT_SUBCONTRACTORS } from 'src/_mock';
 import {
   removeInvitedSubcontractor,
-  setMembers,
   setProjectSettingsTrades,
 } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
 import ProjectSettingsInviteSubcontractorDialog from './project-settings-invite-subcontractor-dialog';
 
 const ProjectSettingsSubcontractor = () => {
-  // const [subcontractors, setSubcontractors] = useState(PROJECT_SUBCONTRACTORS || [])
-  const { getValues, setValue } = useFormContext();
-  const { trades: formTrades } = getValues();
+  const { setValue } = useFormContext();
   const [open, setOpen] = useState(false);
   const [ID, setID] = useState('');
   // GET Subcontractor list in Company
@@ -37,8 +30,6 @@ const ProjectSettingsSubcontractor = () => {
     [subcontractorsList, subcontractorsInvitedList]
   );
   const trades = useSelector((state) => state.project.update.trades);
-  // console.log('trades', trades);
-  // console.log('formTrades', formTrades);
   const initialOptions = trades.reduce((acc, { tradeId, email, firstName, lastName }) => {
     acc[tradeId] = {
       tradeId,
@@ -51,7 +42,6 @@ const ProjectSettingsSubcontractor = () => {
   }, {});
 
   const [options, setOptions] = useState(initialOptions);
-  const [assignedSubcontractor, setAssignedSubcontractor] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {}, [subcontractors, options, trades]);
@@ -138,7 +128,6 @@ const ProjectSettingsSubcontractor = () => {
           {trades?.map(({ tradeId, name }) => (
             <Card
               sx={{
-                // maxWidth: '500px',
                 width: '100%',
                 p: '1rem',
                 display: 'flex',
@@ -160,31 +149,6 @@ const ProjectSettingsSubcontractor = () => {
                 justifyContent="flex-end"
                 gap=".5rem"
               >
-                {/* <Select onChange={(e) => handleSelect(tradeId, e.target.value)} name={tradeId} value={options[tradeId].email} label="" placeholder="Choose Subcontractor" sx={{
-                                        width: '100%',
-                                        "& .MuiSelect-select": {
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.25rem',
-                                        }
-                                    }}>
-                                        {subcontractors?.length > 0 && subcontractors?.map((sub) => (
-                                            <MenuItem key={sub.email} value={sub.email} sx={{ height: 50, px: 3, borderRadius: 0 }}>
-                                                {sub.firstName}
-                                                {' '}
-                                                {sub.lastName}
-                                            </MenuItem>
-                                        ))}
-                                        
-                                        <Divider sx={{ background: 'grey' }} />
-                                        <MenuItem sx={{ height: 50, px: 3, borderRadius: 0 }} value="create" onClick={() => setOpen(true)}>
-                                            <Iconify
-                                                icon='material-symbols:add-circle-outline'
-                                                width={20}
-                                                sx={{ mr: 1 }}
-                                            /> Invite subcontractor
-                                        </MenuItem>
-                                    </Select> */}
                 {!(options[tradeId] && options[tradeId].email) && (
                   <Button variant="contained" onClick={(e) => handleSelect(tradeId, 'create')}>
                     Invite Subcontractor
@@ -222,7 +186,6 @@ const ProjectSettingsSubcontractor = () => {
             setOptions={setOptions}
             open={open}
             onClose={() => setOpen(false)}
-            setAssignedSubcontractor={setAssignedSubcontractor}
           />
         )}
       </Container>

@@ -5,23 +5,19 @@ import {
   Chip,
   Divider,
   ListItemText,
-  Paper,
   Stack,
   Typography,
   alpha,
   styled,
 } from '@mui/material';
-import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { _bankingContacts, _mock } from 'src/_mock';
+import { _mock } from 'src/_mock';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/custom-breadcrumbs';
 import Scrollbar from 'src/components/scrollbar';
 import { paths } from 'src/routes/paths';
 
 const ProjectSettingsFinal = () => {
-  const [first, setfirst] = useState('second');
   const { name, trades, workflow } = useSelector((state) => state.project.update);
-  const { internal, external } = useSelector((state) => state.project.inviteUsers);
   const members = useSelector((state) => state.project?.update?.members);
   const filteredTrades = trades?.filter((item) => 'email' in item);
 
@@ -37,9 +33,6 @@ const ProjectSettingsFinal = () => {
     borderRadius: '10px',
     padding: '1rem',
     gap: '1rem',
-    // ...(isSubcontractor && {
-    //     maxHeight: 300
-    // }),
     maxHeight: 300,
   }));
   return (
@@ -49,7 +42,6 @@ const ProjectSettingsFinal = () => {
         links={[
           {
             name: 'Dashboard',
-            // href: paths.subscriber.root
           },
           { name: 'Projects', href: paths.subscriber.submittals.list },
           { name: 'Project' },
@@ -107,7 +99,6 @@ const ProjectSettingsFinal = () => {
             <Stack spacing={3} sx={{ flex: 0.75 }}>
               <Scrollbar>
                 <Stack spacing={3} maxHeight={300}>
-                  {/* _bankingContacts.slice(-5) */}
                   {filteredTrades.map((trade, index) => (
                     <Stack direction="row" alignItems="center" key={trade?._id}>
                       {trade?.email && (
@@ -163,32 +154,6 @@ const ProjectSettingsFinal = () => {
             </Stack>
           </StyledCard>
         )}
-
-        {/* {((external?.length > 0) || (internal?.length > 0)) &&
-                    (<StyledCard>
-                        <Typography className='projectTitle'>Invited Users</Typography>
-                        <Stack spacing={3} sx={{ flex: .75 }}>
-                            <Scrollbar>
-                                <Stack spacing={3} maxHeight={300}>
-                                    {(internal?.length > 0) && internal.map((user, index) => (
-                                        <Stack direction="row" alignItems="center" key={user._id}>
-                                            <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
-
-                                            <ListItemText primary={user.role} secondary={user.email} />
-                                        </Stack>
-                                    ))}
-                                    {(external?.length > 0) && external.map((user, index) => (
-                                        <Stack direction="row" alignItems="center" key={user._id}>
-                                            <Avatar src={_mock.image.avatar(index)} sx={{ width: 48, height: 48, mr: 2 }} />
-
-                                            <ListItemText primary={user.role} secondary={user.email} />
-                                        </Stack>
-                                    ))}
-                                </Stack>
-                            </Scrollbar>
-                        </Stack>
-                    </StyledCard>)
-                } */}
       </Stack>
     </>
   );
