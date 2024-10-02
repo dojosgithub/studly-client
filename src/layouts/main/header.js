@@ -58,7 +58,9 @@ export default function Header() {
           }),
         }}
       >
-        <Container sx={{ height: 1, display: 'flex', alignItems: 'center' }}>
+        <Container
+          sx={{ height: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        >
           <Badge
             sx={{
               [`& .${badgeClasses.badge}`]: {
@@ -83,7 +85,18 @@ export default function Header() {
             <Logo />
           </Badge>
 
-          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+            <Box
+              component="img"
+              src="/logo/new-logo-1.png"
+              sx={{
+                width: { xs: '50%', sm: '30%', md: '20%' }, // Adjust width responsively
+                height: 'auto', // Maintain aspect ratio
+                maxHeight: 60, // Set a maximum height to control size
+                cursor: 'pointer',
+              }}
+            />
+          </Box>
 
           {mdUp && <NavDesktop offsetTop={offsetTop} data={navConfig} />}
 

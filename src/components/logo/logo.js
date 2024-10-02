@@ -22,10 +22,24 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   // -------------------------------------------------------
   const logo = (
     <Box
-      component="img"
-      src="/logo/new-logo-1.png"
-      sx={{ width: 180, height: 60, cursor: 'pointer', ...sx }}
-    />
+      sx={{
+        display: 'flex', // Flexbox for centering
+        justifyContent: 'center', // Horizontal centering
+        alignItems: 'center', // Vertical centering
+        width: '100%', // Full width of the container
+      }}
+    >
+      <Box
+        component="img"
+        src="/logo/new-logo-1.png"
+        sx={{
+          width: { xs: '50%', sm: '30%', md: '20%' }, // Responsive width
+          height: 'auto', // Maintain aspect ratio
+          maxHeight: 60, // Control maximum height
+          cursor: 'pointer', // Pointer cursor for interaction
+        }}
+      />
+    </Box>
   );
 
   // const logo = (

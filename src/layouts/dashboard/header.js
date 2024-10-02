@@ -103,7 +103,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
             </Button>
           }
         >
-         You are now operating as the Company Admin.
+          You are now operating as the Company Admin.
         </Alert>
       ) : (
         <Stack

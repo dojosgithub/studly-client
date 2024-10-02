@@ -51,47 +51,61 @@ export default function NavVertical({ openNav, onCloseNav }) {
   }, [user]);
 
   const renderContent = (
-    <Scrollbar
-      sx={{
-        height: 1,
-        '& .simplebar-content': {
-          height: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: (theme) => theme.palette.background.brandSecondary,
-        },
-      }}
+    <Box
+      sx={{ backgroundColor: (theme) => theme.palette.background.brandSecondary, height: '100%' }}
     >
-      <Logo sx={{ my: 3, mx: 'auto' }} />
-      {user?.userType === 'Subscriber' && (
-        <CustomNavCollapseList
-          onOpen={() => {
-            dispatch(setProjectDrawerState(true));
+      <Scrollbar
+        sx={{
+          height: 1,
+          '& .simplebar-content': {
+            height: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: (theme) => theme.palette.background.brandSecondary,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            my: 3, // You can keep the vertical margin if needed
           }}
-        />
-      )}
-      {user?.userType === 'Subscriber' &&
-        (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
-          <CustomDrawer
-            onClose={() => {
-              dispatch(setProjectDrawerState(false));
-              dispatch(resetCreateProject());
-              dispatch(resetWorkflow());
-              dispatch(resetTemplate());
+        >
+          <Logo />
+        </Box>
+
+        {user?.userType === 'Subscriber' && (
+          <CustomNavCollapseList
+            onOpen={() => {
+              dispatch(setProjectDrawerState(true));
             }}
-            open={isProjectDrawerOpen}
-            Component={ProjectView}
           />
         )}
-      <NavSectionVertical
-        data={navData}
-        config={{
-          currentRole: user?.role?.shortName, // if current role is not allowed
-        }}
-      />
+        {user?.userType === 'Subscriber' &&
+          (user?.role?.shortName === 'CAD' || user?.role?.shortName === 'PWU') && (
+            <CustomDrawer
+              onClose={() => {
+                dispatch(setProjectDrawerState(false));
+                dispatch(resetCreateProject());
+                dispatch(resetWorkflow());
+                dispatch(resetTemplate());
+              }}
+              open={isProjectDrawerOpen}
+              Component={ProjectView}
+            />
+          )}
+        <NavSectionVertical
+          data={navData}
+          config={{
+            currentRole: user?.role?.shortName, // if current role is not allowed
+          }}
+        />
 
-      <Box sx={{ flexGrow: 1 }} />
-    </Scrollbar>
+        <Box sx={{ flexGrow: 1 }} />
+      </Scrollbar>
+    </Box>
   );
 
   return (

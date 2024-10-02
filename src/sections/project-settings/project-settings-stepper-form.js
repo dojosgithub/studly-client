@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { cloneDeep, isEmpty } from 'lodash';
+
 // hook-form
 import * as Yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -22,6 +23,7 @@ import { LoadingButton } from '@mui/lab';
 import { addDays } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hooks';
+import { useResponsive } from 'src/hooks/use-responsive';
 //
 import {
   createNewProject,
@@ -218,7 +220,7 @@ export default function ProjectSettingsStepperForm() {
 
   const formValues = getValues();
   const { name, address, state, city, zipCode } = formValues;
-
+  const lgUp = useResponsive('up', 'lg');
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!companies) {
@@ -397,45 +399,47 @@ export default function ProjectSettingsStepperForm() {
 
   return (
     <>
-      <Stepper
-        activeStep={activeStep}
-        orientation="vertical"
-        sx={{
-          maxHeight: '360px',
-          marginTop: '2rem',
-          '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
-          '& .MuiStepLabel-root': { gap: '.75rem' },
-        }}
-      >
-        {steps.map((step, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={step.label} {...stepProps}>
-              <StepLabel
-                {...labelProps}
-                optional={
-                  <Typography variant="caption">
-                    {step.description}
-                    <br />
-                    {index === 0 && step.description2}
-                  </Typography>
-                }
-              >
-                {step.label}
-              </StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+      {lgUp && (
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          sx={{
+            maxHeight: '360px',
+            marginTop: '2rem',
+            '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
+            '& .MuiStepLabel-root': { gap: '.75rem' },
+          }}
+        >
+          {steps.map((step, index) => {
+            const stepProps = {};
+            const labelProps = {};
+            if (isStepOptional(index)) {
+              labelProps.optional = <Typography variant="caption">Optional</Typography>;
+            }
+            if (isStepSkipped(index)) {
+              stepProps.completed = false;
+            }
+            return (
+              <Step key={step.label} {...stepProps}>
+                <StepLabel
+                  {...labelProps}
+                  optional={
+                    <Typography variant="caption">
+                      {step.description}
+                      <br />
+                      {index === 0 && step.description2}
+                    </Typography>
+                  }
+                >
+                  {step.label}
+                </StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      )}
 
-      <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
+      {lgUp && <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />}
 
       <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>
