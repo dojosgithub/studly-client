@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 //
+import { useResponsive } from 'src/hooks/use-responsive';
 import Iconify from '../iconify';
 
 // ----------------------------------------------------------------------
@@ -18,6 +19,7 @@ export default function CustomDrawer({
   type = 'project',
   setTrades,
 }) {
+  const smDown = useResponsive('down', 'sm');
   const renderHead = (
     <Stack
       direction="row"
@@ -49,6 +51,9 @@ export default function CustomDrawer({
           width: `calc(100% - ${280}px)`,
           background: 'white',
           ...(isOnboarding && {
+            width: '100%',
+          }),
+          ...(smDown && {
             width: '100%',
           }),
         },

@@ -44,6 +44,7 @@ import { getTemplateList, resetTemplate, setIsNewTemplate } from 'src/redux/slic
 import { getWorkflowList, resetWorkflow } from 'src/redux/slices/workflowSlice';
 import { getSubmittalList } from 'src/redux/slices/submittalSlice';
 
+import { useResponsive } from 'src/hooks/use-responsive';
 import ProjectNewTemplateDrawer from './project-new-template-drawer';
 import ProjectSubcontractor from './project-subcontractor';
 import ProjectInviteUsers from './project-invite-users';
@@ -82,6 +83,7 @@ export default function ProjectStepperForm() {
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const smDown = useResponsive('down', 'sm');
 
   const dispatch = useDispatch();
   const members = useSelector((state) => state.project.members);
@@ -315,45 +317,47 @@ export default function ProjectStepperForm() {
 
   return (
     <>
-      <Stepper
-        activeStep={activeStep}
-        orientation="vertical"
-        sx={{
-          maxHeight: '360px',
-          marginTop: '2rem',
-          '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
-          '& .MuiStepLabel-root': { gap: '.75rem' },
-        }}
-      >
-        {steps.map((step, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={step.label} {...stepProps}>
-              <StepLabel
-                {...labelProps}
-                optional={
-                  <Typography variant="caption">
-                    {step.description}
-                    <br />
-                    {index === 0 && step.description2}
-                  </Typography>
-                }
-              >
-                {step.label}
-              </StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+      {!smDown && (
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          sx={{
+            maxHeight: '360px',
+            marginTop: '2rem',
+            '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
+            '& .MuiStepLabel-root': { gap: '.75rem' },
+          }}
+        >
+          {steps.map((step, index) => {
+            const stepProps = {};
+            const labelProps = {};
+            if (isStepOptional(index)) {
+              labelProps.optional = <Typography variant="caption">Optional</Typography>;
+            }
+            if (isStepSkipped(index)) {
+              stepProps.completed = false;
+            }
+            return (
+              <Step key={step.label} {...stepProps}>
+                <StepLabel
+                  {...labelProps}
+                  optional={
+                    <Typography variant="caption">
+                      {step.description}
+                      <br />
+                      {index === 0 && step.description2}
+                    </Typography>
+                  }
+                >
+                  {step.label}
+                </StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      )}
 
-      <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
+      {!smDown && <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />}
 
       <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>
