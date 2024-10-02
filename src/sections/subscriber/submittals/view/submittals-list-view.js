@@ -33,6 +33,7 @@ import {
 } from 'src/components/table';
 
 //
+import { useResponsive } from 'src/hooks/use-responsive';
 import { deleteSubmittal, getSubmittalList } from 'src/redux/slices/submittalSlice';
 import SubmittalsTableRow from '../submittals-table-row';
 import SubmittalsTableToolbar from '../submittals-table-toolbar';
@@ -70,6 +71,7 @@ export default function SubmittalsListView() {
   const [page, setPage] = useState(1);
   const { enqueueSnackbar } = useSnackbar();
   const [sortDir, setSortDir] = useState('asc');
+  const smDown = useResponsive('down', 'sm');
 
   const handlePageChange = (e, pg) => {
     setPage(pg + 1);
@@ -149,6 +151,7 @@ export default function SubmittalsListView() {
                 href={paths.subscriber.submittals.new}
                 variant="outlined"
                 startIcon={<Iconify icon="mingcute:add-line" />}
+                fullWidth
               >
                 Create New Submittal
               </Button>
@@ -156,6 +159,16 @@ export default function SubmittalsListView() {
           }
           sx={{
             mb: { xs: 3, md: 5 },
+            ...(smDown && {
+              '& .MuiStack-root': {
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '1.5rem',
+                '& .MuiBox-root': {
+                  width: '100%',
+                },
+              },
+            }),
           }}
         />
 

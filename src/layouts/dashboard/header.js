@@ -21,15 +21,8 @@ import SvgColor from 'src/components/svg-color';
 import { exitCompanyAccess } from 'src/redux/slices/companySlice';
 import { useSettingsContext } from 'src/components/settings';
 //
-import { CompanyMenu } from 'src/components/company-menu';
 import { HEADER, NAV } from '../config-layout';
-import {
-  Searchbar,
-  AccountPopover,
-  SettingsButton,
-  ContactsPopover,
-  NotificationsPopover,
-} from '../_common';
+import { AccountPopover } from '../_common';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +49,6 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   useEffect(() => {
     const decodedToken = jwtDecode(accessToken);
-    // console.log(decodedToken);
     if (decodedToken.temp) {
       setIsViewAs(true);
     } else {
@@ -66,17 +58,16 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   const exitAccess = useCallback(async () => {
     try {
-      const data = await dispatch(exitCompanyAccess({ id: 1 }));
+      await dispatch(exitCompanyAccess({ id: 1 }));
       router.push('/');
       router.reload();
     } catch (e) {
-      // console.log(e);
+      console.log(e);
     }
   }, [dispatch, router]);
 
   const renderContent = (
     <>
-      {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} */}
       {lgUp && isOnboarding && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
@@ -88,13 +79,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
         <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: '100%' }} />
       )}
 
-      {/* <Searchbar /> */}
-
-      {/* {lgUp && !isOnboarding && <CompanyMenu />} */}
       {isViewAs ? (
-        // <Button type="button" variant="contained" onClick={exitAccess}>
-        //   Exit Access
-        // </Button>
         <Alert
           severity="info"
           action={
