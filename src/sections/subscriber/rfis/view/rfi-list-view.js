@@ -25,7 +25,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
   useTable,
-  getComparator,
   emptyRows,
   TableNoData,
   TableEmptyRows,
@@ -33,6 +32,7 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
+import { useResponsive } from 'src/hooks/use-responsive';
 import { deleteRfi, getRfiList } from 'src/redux/slices/rfiSlice';
 import RfiTableRow from '../rfi-table-row';
 import RfiTableToolbar from '../rfi-table-toolbar';
@@ -70,6 +70,7 @@ export default function RfiListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
+  const smDown = useResponsive('down', 'sm');
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -148,6 +149,7 @@ export default function RfiListView() {
                 href={paths.subscriber.rfi.new}
                 variant="outlined"
                 startIcon={<Iconify icon="mingcute:add-line" />}
+                fullWidth
               >
                 Create New RFI
               </Button>
@@ -155,6 +157,17 @@ export default function RfiListView() {
           }
           sx={{
             mb: { xs: 3, md: 5 },
+
+            ...(smDown && {
+              '& .MuiStack-root': {
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '1.5rem',
+                '& .MuiBox-root': {
+                  width: '100%',
+                },
+              },
+            }),
           }}
         />
 

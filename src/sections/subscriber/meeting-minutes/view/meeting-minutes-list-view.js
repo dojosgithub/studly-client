@@ -30,6 +30,7 @@ import {
 //
 import { deleteMeeting, getMeetingMinutesList } from 'src/redux/slices/meetingMinutesSlice';
 //
+import { useResponsive } from 'src/hooks/use-responsive';
 import MeetingMinutesTableRow from '../meeting-minutes-table-row';
 import MeetingMinutesTableToolbar from '../meeting-minutes-table-toolbar';
 
@@ -58,6 +59,7 @@ export default function MeetingMinutesListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [sortDir, setSortDir] = useState('asc');
+  const smDown = useResponsive('down', 'sm');
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -136,6 +138,7 @@ export default function MeetingMinutesListView() {
               href={paths.subscriber.meetingMinutes.new}
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
+              fullWidth
             >
               Create New Meeting
             </Button>
@@ -143,6 +146,16 @@ export default function MeetingMinutesListView() {
         }
         sx={{
           mb: { xs: 3, md: 5 },
+          ...(smDown && {
+            '& .MuiStack-root': {
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '1.5rem',
+              '& .MuiBox-root': {
+                width: '100%',
+              },
+            },
+          }),
         }}
       />
 

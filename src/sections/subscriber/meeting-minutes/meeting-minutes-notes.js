@@ -164,7 +164,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
               sx={{
                 display: 'grid',
                 gap: '1rem',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: { md: 'repeat(3, 1fr)' },
                 flexWrap: { xs: 'wrap', md: 'nowrap' },
               }}
             >

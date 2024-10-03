@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import React, { useCallback } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Iconify from 'src/components/iconify';
+import { useResponsive } from 'src/hooks/use-responsive';
 import { RHFTextField } from 'src/components/hook-form';
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
@@ -16,9 +17,16 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
     opacity: 1,
     outline: `1px solid ${theme.palette.grey[700]} 1`,
   },
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: 50,
+    gap: '.5rem',
+  },
 }));
 
 const MeetingMinutesPermitFields = () => {
+  const mdDown = useResponsive('down', 'md');
+
   const { control, trigger } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -50,7 +58,7 @@ const MeetingMinutesPermitFields = () => {
               sx={{
                 display: 'grid',
                 gap: '1rem',
-                gridTemplateColumns: 'repeat(3, 1fr) 50px',
+                gridTemplateColumns: { md: 'repeat(3, 1fr) 50px' },
                 flexWrap: { xs: 'wrap', md: 'nowrap' },
               }}
             >
@@ -67,8 +75,9 @@ const MeetingMinutesPermitFields = () => {
                 InputLabelProps={{ shrink: true }}
                 onBlur={() => trigger(`permit[${index}].permitNumber`)}
               />
-              <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
+              <StyledIconButton color="default" onClick={() => handleRemove(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                {mdDown && <Typography fontWeight={700}>Remove</Typography>}
               </StyledIconButton>
             </Box>
           ))}

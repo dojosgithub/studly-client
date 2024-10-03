@@ -36,6 +36,7 @@ import {
   updateMeetingMinutes,
 } from 'src/redux/slices/meetingMinutesSlice';
 //
+import { useResponsive } from 'src/hooks/use-responsive';
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
 import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog';
@@ -71,7 +72,7 @@ const steps = [
 export default function MeetingMinutesStepperForm({ isEdit }) {
   const params = useParams();
   const { id } = params;
-
+  const mdDown = useResponsive('down', 'md');
   const currentMeeting = useSelector((state) => state?.meetingMinutes?.current);
   const currentProject = useSelector((state) => state?.project?.current);
 
@@ -363,34 +364,38 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   return (
     <>
-      <Stepper
-        activeStep={activeStep}
-        orientation="vertical"
-        sx={{
-          maxHeight: '360px',
-          marginTop: '2rem',
-          '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
-          '& .MuiStepLabel-root': { gap: '.75rem' },
-        }}
-      >
-        {steps.map((step, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={step.label} {...stepProps}>
-              <StepLabel {...labelProps}>{step.label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+      {!mdDown && (
+        <>
+          <Stepper
+            activeStep={activeStep}
+            orientation="vertical"
+            sx={{
+              maxHeight: '360px',
+              marginTop: '2rem',
+              '&.MuiStepper-root .MuiStepConnector-line': { height: '100%' },
+              '& .MuiStepLabel-root': { gap: '.75rem' },
+            }}
+          >
+            {steps.map((step, index) => {
+              const stepProps = {};
+              const labelProps = {};
+              if (isStepOptional(index)) {
+                labelProps.optional = <Typography variant="caption">Optional</Typography>;
+              }
+              if (isStepSkipped(index)) {
+                stepProps.completed = false;
+              }
+              return (
+                <Step key={step.label} {...stepProps}>
+                  <StepLabel {...labelProps}>{step.label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
 
-      <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
+          <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />
+        </>
+      )}
 
       <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>

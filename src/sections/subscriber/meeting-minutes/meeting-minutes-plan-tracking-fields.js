@@ -3,7 +3,7 @@ import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 import { IconButton, alpha, Box, Button, Stack, Typography } from '@mui/material';
 import { RHFTextField } from 'src/components/hook-form';
-import uuidv4 from 'src/utils/uuidv4';
+import { useResponsive } from 'src/hooks/use-responsive';
 import Iconify from 'src/components/iconify';
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
@@ -17,6 +17,11 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
     opacity: 1,
     outline: `1px solid ${alpha(theme.palette.grey[700], 1)}`,
   },
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: 50,
+    gap: '.5rem',
+  },
 }));
 
 const MeetingMinutesPlanTrackingFields = () => {
@@ -25,7 +30,7 @@ const MeetingMinutesPlanTrackingFields = () => {
     control,
     name: 'plan',
   });
-
+  const mdDown = useResponsive('down', 'md');
   const handleAdd = useCallback(() => {
     append({
       planTracking: '',
@@ -66,7 +71,7 @@ const MeetingMinutesPlanTrackingFields = () => {
               sx={{
                 display: 'grid',
                 gap: '1rem',
-                gridTemplateColumns: 'repeat(3, 1fr) 50px',
+                gridTemplateColumns: { md: 'repeat(3, 1fr) 50px' },
                 flexWrap: { xs: 'wrap', md: 'nowrap' },
               }}
             >
@@ -96,6 +101,7 @@ const MeetingMinutesPlanTrackingFields = () => {
               />
               <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
+                {mdDown && <Typography fontWeight={700}>Remove</Typography>}
               </StyledIconButton>
             </Box>
           ))}

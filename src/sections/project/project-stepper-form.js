@@ -83,7 +83,7 @@ export default function ProjectStepperForm() {
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const smDown = useResponsive('down', 'sm');
+  const mdDown = useResponsive('down', 'md');
 
   const dispatch = useDispatch();
   const members = useSelector((state) => state.project.members);
@@ -317,7 +317,7 @@ export default function ProjectStepperForm() {
 
   return (
     <>
-      {!smDown && (
+      {!mdDown && (
         <Stepper
           activeStep={activeStep}
           orientation="vertical"
@@ -357,7 +357,7 @@ export default function ProjectStepperForm() {
         </Stepper>
       )}
 
-      {!smDown && <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />}
+      {!mdDown && <Divider sx={{ width: '1px', background: 'rgb(145 158 171 / 20%)' }} />}
 
       <Stack flex={1} position="relative">
         <FormProvider methods={methods} onSubmit={onSubmit}>

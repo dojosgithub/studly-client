@@ -144,7 +144,7 @@ export default function RfiTableToolbar({
         type="button"
         variant="contained"
         loading={isLoading}
-        sx={{ ml: 'auto' }}
+        sx={{ ml: 'auto', width: { xs: '100%', md: 'auto' } }}
         disabled={
           !(
             userRole?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
