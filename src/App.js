@@ -5,7 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { store, persistor } from 'src/redux/store';
 
-// scrollbar
+// scrollbar 1
 import 'simplebar-react/dist/simplebar.min.css';
 
 // lightbox
