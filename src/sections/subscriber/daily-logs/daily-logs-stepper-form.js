@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Box } from '@mui/material';
@@ -9,9 +10,9 @@ const DailyLogsStepperForm = ({ isEdit }) => {
 
   return (
     <FormProvider {...methods}>
-      <Box sx={{ width: '100%', p: 2 }}>
+
         <DailyLogsNewEditForm isEdit={isEdit} />
-      </Box>
+      
     </FormProvider>
   );
 };

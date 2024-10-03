@@ -27,8 +27,10 @@ import {
 } from 'src/components/table';
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { STUDLY_ROLES_ACTION } from 'src/_mock';
+import { useResponsive } from 'src/hooks/use-responsive';
 import DailyLogsTableRow from '../daily-logs-table-row';
 import DailyLogsTableToolbar from '../daily-logs-table-toolbar';
+
 
 // ----------------------------------------------------------------------
 
@@ -58,6 +60,7 @@ export default function DailyLogsListView() {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const smDown = useResponsive('down', 'sm'); // To handle responsiveness based on screen size
 
   const listData = useSelector((state) => state?.dailyLogs?.list);
   const [filters, setFilters] = useState(defaultFilters);
@@ -120,12 +123,25 @@ export default function DailyLogsListView() {
               href={paths.subscriber.logs.new}
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
+              fullWidth={smDown} // Make the button full width on small screens
             >
               Create New Log
             </Button>
           </RoleAccessWrapper>
         }
-        sx={{ mb: { xs: 3, md: 5 } }}
+        sx={{
+          mb: { xs: 3, md: 5 },
+          ...(smDown && {
+            '& .MuiStack-root': {
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '1.5rem',
+              '& .MuiBox-root': {
+                width: '100%',
+              },
+            },
+          }),
+        }}
       />
 
       <Card>

@@ -34,7 +34,7 @@ export default function DailyLogsCreateView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <Divider sx={{ height: '1px', background: 'rgb(145 158 171 / 20%)' }} />
+      {/* <Divider sx={{ height: '1px', background: 'rgb(145 158 171 / 20%)' }} /> */}
 
       <DailyLogsStepperView />
     </Container>
