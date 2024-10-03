@@ -10,15 +10,18 @@ import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { updatePasswordFirstLogin } from 'src/redux/slices/userSlice';
+import { setUserData, setUserTokens, updatePasswordFirstLogin } from 'src/redux/slices/userSlice';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import axiosInstance, { endpoints } from 'src/utils/axios';
+import { setSession } from 'src/auth/context/jwt/utils';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +33,8 @@ export default function SubscriberUpdatePassword() {
   const router = useRouter();
 
   const ChangePassWordSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
     newPassword: Yup.string()
       .required('New Password is required')
       .min(7, 'Password must be at least 7 characters'),
@@ -37,6 +42,8 @@ export default function SubscriberUpdatePassword() {
   });
 
   const defaultValues = {
+    firstName: '',
+    lastName: '',
     newPassword: '',
     confirmNewPassword: '',
   };
@@ -54,14 +61,16 @@ export default function SubscriberUpdatePassword() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const newData = { password: data.newPassword, email };
+      const { firstName, lastName, newPassword } = data;
+      const newData = { password: newPassword, email, firstName, lastName };
       const { error, payload } = await dispatch(updatePasswordFirstLogin(newData));
       if (!isEmpty(error)) {
         enqueueSnackbar(error.message, { variant: 'error' });
         return;
       }
       reset();
+
+      //
       enqueueSnackbar('Password updated successfully!', { variant: 'success' });
       router.push(paths.subscriber.onboarding);
     } catch (error) {
@@ -78,6 +87,9 @@ export default function SubscriberUpdatePassword() {
         Please set a new password.
       </Typography>
       <Stack component={Card} spacing={3} sx={{ p: 3, minWidth: { xs: '100%', sm: 400 } }}>
+        <RHFTextField name="firstName" label="First Name" />
+        <RHFTextField name="lastName" label="Last Name" />
+
         <RHFTextField
           name="newPassword"
           label="New Password"
