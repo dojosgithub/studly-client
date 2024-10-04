@@ -131,7 +131,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
       }}
       sx={{
         [`& .${drawerClasses.paper}`]: {
-          width: isMobile ? '100%' : `calc(100% - 280px)`, // Full width on mobile
+          width: isMobile ? '100%' : '100%', // Full width on all devices
           background: 'white',
         },
         position: 'relative',

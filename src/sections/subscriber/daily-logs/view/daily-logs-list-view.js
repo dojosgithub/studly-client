@@ -31,7 +31,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import DailyLogsTableRow from '../daily-logs-table-row';
 import DailyLogsTableToolbar from '../daily-logs-table-toolbar';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
