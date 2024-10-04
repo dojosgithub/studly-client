@@ -124,7 +124,7 @@ export default function DocumentsListView() {
 
       dispatch(getDocumentsList({ search: filters.query, status: filters.status }));
     },
-    [dispatch, enqueueSnackbar, filters.status, filters.query,settings.isMobile ]
+    [dispatch, enqueueSnackbar, filters.status, filters.query, settings.isMobile]
   );
 
   const handleClick = (event) => {
@@ -172,7 +172,7 @@ export default function DocumentsListView() {
   };
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'xl'} sx={{ px: { xs: 2, md: 5 } }}>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         {listData?.links && (
           <CustomBreadcrumbs
             notLink
@@ -184,66 +184,48 @@ export default function DocumentsListView() {
             onClick={clicked}
             action={
               <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.create}>
-               <Button
-  variant="contained"
-  startIcon={<AddIcon />}
-  onClick={handleClick}
-  sx={{
-    paddingRight: { xs: 2, md: 6 }, // Adjust the padding based on screen size
-    fontSize: { xs: '12px', md: '16px' }, // Smaller text on small screens
-  }}
->
-  {settings.isMobile ? '' : 'Upload'} {/* Hide the text on smaller screens */}
-</Button>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={handleClick}
+                  sx={{
+                    paddingRight: { xs: 2, md: 6 }, // Adjust the padding based on screen size
+                    fontSize: { xs: '12px', md: '16px' }, // Smaller text on small screens
+                  }}
+                >
+                  {settings.isMobile ? '' : 'Upload'} {/* Hide the text on smaller screens */}
+                </Button>
               </RoleAccessWrapper>
             }
           />
         )}
 
-<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-  <MenuItem onClick={handleUpload}>
-    <NoteAddIcon sx={{ mr: 1, fontSize: { xs: '16px', md: '20px' } }} />
-    {settings.isMobile ? '' : 'Upload File'} {/* Show text on larger screens */}
-  </MenuItem>
-  <MenuItem onClick={handleNewFolder}>
-    <CreateNewFolderIcon sx={{ mr: 1, fontSize: { xs: '16px', md: '20px' } }} />
-    {settings.isMobile ? '' : 'New Folder'} {/* Show text on larger screens */}
-  </MenuItem>
-</Menu>
-<Stack
-  spacing={2}
-  marginTop={5}
-  direction={{ xs: 'column', md: 'row' }} // Column layout on small screens, row on medium and larger
-  alignItems={{ xs: 'flex-start', md: 'center' }} // Align to the left for small screens, center for larger
->
-  <DocumentsFilters
-    openDateRange={openDateRange.value}
-    onCloseDateRange={openDateRange.onFalse}
-    onOpenDateRange={openDateRange.onTrue}
-    filters={filters}
-    onFilters={handleFilters}
-    dateError={dateError}
-    typeOptions={FILE_TYPE_OPTIONS}
-  />
-</Stack>
-
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+          <MenuItem onClick={handleUpload}>
+            <NoteAddIcon style={{ marginRight: 8 }} /> {/* Add some margin for spacing */}
+            Upload File
+          </MenuItem>
+          <MenuItem onClick={handleNewFolder}>
+            <CreateNewFolderIcon style={{ marginRight: 8 }} /> {/* Add some margin for spacing */}
+            New Folder
+          </MenuItem>
+        </Menu>
+        <Stack spacing={2.5} sx={{ my: { xs: 3, md: 5 } }}>
+          {renderFilters}
+        </Stack>
         {notFound ? (
           <EmptyContent filled title="No Data" sx={{ py: 10 }} />
         ) : (
           <DocumentsTable
-  sx={{
-    overflowX: 'auto', // Enable horizontal scrolling on small screens
-    display: { xs: 'block', md: 'table' }, // Block layout on small screens, table layout on larger screens
-  }}
-  table={table}
-  tableData={tableData}
-  onDeleteRow={() => fetchData()}
-  notFound={notFound}
-  onOpenConfirm={confirm.onTrue}
-  fetchData={fetchData}
-  page={page}
-  handlePageChange={handlePageChange}
-/>
+            table={table}
+            tableData={tableData}
+            onDeleteRow={() => fetchData()}
+            notFound={notFound}
+            onOpenConfirm={confirm.onTrue}
+            fetchData={fetchData}
+            page={page}
+            handlePageChange={handlePageChange}
+          />
         )}
       </Container>
 

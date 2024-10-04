@@ -4,35 +4,27 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 // @mui
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { AppBar, Typography, Toolbar, IconButton, Divider } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
 // components
 import { enqueueSnackbar } from 'notistack';
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import FormProvider from 'src/components/hook-form';
-
+import { useResponsive } from 'src/hooks/use-responsive';
 // mock
 import PlanRoomPdfConverter from './plan-room-pdf-converter';
-// components
+// hooks
 
 // ----------------------------------------------------------------------
 
-export default function PlanRoomPDFSheetsDrawer({
-  //
-  open,
-  onClose,
-  files,
-  onFormSubmit,
-  ...other
-}) {
+export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSubmit, ...other }) {
   const confirmIsFormDisabled = useBoolean(false);
+
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
       .of(
@@ -48,7 +40,6 @@ export default function PlanRoomPDFSheetsDrawer({
 
   const defaultValues = useMemo(() => {
     const data = { title: '', src: '' };
-
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
       attachments: [],
@@ -85,13 +76,41 @@ export default function PlanRoomPDFSheetsDrawer({
       console.error(e);
     }
   });
+
+  // Responsive hook for handling mobile views
+  const isMobile = useResponsive('down', 'md');
+
   const renderHead = (
-    <AppBar position="sticky" top="0" color="primary">
+    <AppBar
+      position="sticky"
+      top="0"
+      color="primary"
+      sx={{
+        height: isMobile ? 56 : 64, // Smaller height for mobile
+        px: isMobile ? 1 : 3, // Smaller padding for mobile
+      }}
+    >
       <Toolbar>
-        <Typography variant="h6" sx={{ flex: 1, ml: 2, color: 'black' }}>
+        <Typography
+          variant="h6"
+          sx={{
+            flex: 1,
+            ml: isMobile ? 1 : 2,
+            fontSize: isMobile ? '1rem' : '1.25rem', // Adjust font size for mobile
+            color: 'black',
+          }}
+        >
           Sheet Thumbnail
         </Typography>
-        <Typography variant="h6" sx={{ flex: 1, ml: 2, color: 'black' }}>
+        <Typography
+          variant="h6"
+          sx={{
+            flex: 1,
+            ml: isMobile ? 1 : 2,
+            fontSize: isMobile ? '1rem' : '1.25rem',
+            color: 'black',
+          }}
+        >
           Sheet Title
         </Typography>
 
@@ -101,6 +120,7 @@ export default function PlanRoomPDFSheetsDrawer({
       </Toolbar>
     </AppBar>
   );
+
   return (
     <Drawer
       anchor="right"
@@ -111,7 +131,7 @@ export default function PlanRoomPDFSheetsDrawer({
       }}
       sx={{
         [`& .${drawerClasses.paper}`]: {
-          width: `calc(100% - ${280}px)`,
+          width: isMobile ? '100%' : `calc(100% - 280px)`, // Full width on mobile
           background: 'white',
         },
         position: 'relative',
@@ -122,7 +142,11 @@ export default function PlanRoomPDFSheetsDrawer({
 
       <Divider sx={{ borderStyle: 'dashed' }} />
 
-      <Box flex={1} width="100%" paddingX="2rem">
+      <Box
+        flex={1}
+        width="100%"
+        paddingX={isMobile ? '1rem' : '2rem'} // Smaller padding on mobile
+      >
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <PlanRoomPdfConverter files={files} />
         </FormProvider>
@@ -134,9 +158,9 @@ export default function PlanRoomPDFSheetsDrawer({
           bottom: 0,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'right',
-          gap: '1.5rem',
-          padding: '2rem',
+          justifyContent: isMobile ? 'center' : 'right', // Center align buttons for mobile
+          gap: isMobile ? '0.5rem' : '1.5rem', // Smaller gap on mobile
+          padding: isMobile ? '1rem' : '2rem', // Adjust padding for mobile
           backgroundColor: 'white',
           zIndex: 10,
         }}
@@ -147,6 +171,7 @@ export default function PlanRoomPDFSheetsDrawer({
             disabled={confirmIsFormDisabled.value}
             color="inherit"
             onClick={onClose}
+            sx={{ fontSize: isMobile ? '0.875rem' : '1rem' }} // Smaller font for mobile
           >
             Cancel
           </Button>
@@ -157,6 +182,7 @@ export default function PlanRoomPDFSheetsDrawer({
           color="inherit"
           onClick={handleSubmit(onSubmit)}
           variant="contained"
+          sx={{ fontSize: isMobile ? '0.875rem' : '1rem' }} // Smaller font for mobile
         >
           Publish
         </LoadingButton>

@@ -3,31 +3,31 @@ import { forwardRef } from 'react';
 // @mui
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
+import { useResponsive } from 'src/hooks/use-responsive';
 // routes
 import { RouterLink } from 'src/routes/components';
 
 // ----------------------------------------------------------------------
 
 const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
-  // OR using local (public folder)
-  // -------------------------------------------------------
+  // Logo component
   const logo = (
     <Box
       sx={{
-        display: 'flex', // Flexbox for centering
-        justifyContent: 'center', // Horizontal centering
-        alignItems: 'center', // Vertical centering
-        width: '100%', // Full width of the container
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
       }}
     >
       <Box
         component="img"
         src="/logo/new-logo-1.png"
         sx={{
-          width: { xs: '50%', sm: '30%', md: '20%' }, // Responsive width
-          height: 'auto', // Maintain aspect ratio
-          maxHeight: 60, // Control maximum height
-          cursor: 'pointer', // Pointer cursor for interaction
+          width: { xs: '50%', sm: '30%', md: '20%', lg: '60%' },
+          height: 'auto',
+          maxHeight: { xs: 60, md: 80, lg: 100 },
+          cursor: 'pointer',
         }}
       />
     </Box>

@@ -33,7 +33,7 @@ import {
 //
 import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
 import { CustomDrawerPlanRoom } from 'src/components/custom-drawer-planroom';
-
+import { useResponsive } from 'src/hooks/use-responsive';
 //
 import PlanRoomTableRow from '../plan-room-table-row';
 import PlanRoomTableToolbar from '../plan-room-table-toolbar';
@@ -73,11 +73,7 @@ export default function PlanRoomListView() {
     setPage(pg + 1);
   };
   const handleSortChange = () => {
-    if (sortDir === 'asc') {
-      setSortDir('desc');
-    } else {
-      setSortDir('asc');
-    }
+    setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
   };
   const settings = useSettingsContext();
 
@@ -93,7 +89,7 @@ export default function PlanRoomListView() {
   const denseHeight = table.dense ? 52 : 72;
 
   const notFound = listData?.totalDocs === 0;
-
+  const smDown = useResponsive('down', 'sm');
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
       ...prevState,
@@ -153,6 +149,7 @@ export default function PlanRoomListView() {
                 href={paths.subscriber.planRoom.new}
                 variant="outlined"
                 startIcon={<Iconify icon="mingcute:add-line" />}
+                fullWidth={smDown} // responsive behavior added here
               >
                 Upload Plans
               </Button>
@@ -160,6 +157,16 @@ export default function PlanRoomListView() {
           }
           sx={{
             mb: { xs: 3, md: 5 },
+            ...(smDown && {
+              '& .MuiStack-root': {
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '1.5rem',
+                '& .MuiBox-root': {
+                  width: '100%',
+                },
+              },
+            }),
           }}
         />
 
@@ -167,7 +174,6 @@ export default function PlanRoomListView() {
           <PlanRoomTableToolbar
             filters={filters}
             onFilters={handleFilters}
-            //
             roleOptions={FILTER_CATEGORIES_PLANROOM}
           />
 
@@ -228,5 +234,3 @@ export default function PlanRoomListView() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
