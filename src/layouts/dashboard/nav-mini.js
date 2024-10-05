@@ -58,7 +58,7 @@ export default function NavMini() {
           ...hideScroll.x,
         }}
       >
-        <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: '100%' }} />
+        <Logo sx={{ p: '1rem .5rem' }} />
 
         {user?.userType === 'Subscriber' && (
           <CustomNavCollapseList

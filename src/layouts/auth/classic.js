@@ -57,7 +57,12 @@ export default function AuthClassicLayout({ children, image, title }) {
         }),
       }}
     >
-      <Box component="img" alt="auth" src="/logo/new-logo-1-t.png" sx={{ maxWidth: 720 }} />
+      <Box
+        component="img"
+        alt="auth"
+        src="/logo/new-logo-1-t.png"
+        sx={{ maxWidth: { md: 400, lg: 720 }, p: '1rem' }}
+      />
     </Stack>
   );
 

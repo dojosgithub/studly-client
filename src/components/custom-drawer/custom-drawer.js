@@ -19,7 +19,7 @@ export default function CustomDrawer({
   type = 'project',
   setTrades,
 }) {
-  const smDown = useResponsive('down', 'sm');
+  const mdDown = useResponsive('down', 'md');
   const renderHead = (
     <Stack
       direction="row"
@@ -53,7 +53,7 @@ export default function CustomDrawer({
           ...(isOnboarding && {
             width: '100%',
           }),
-          ...(smDown && {
+          ...(mdDown && {
             width: '100%',
           }),
         },
