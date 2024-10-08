@@ -35,7 +35,7 @@ const PlanRoomTableRow = memo(
     return (
       <>
         <TableRow selected={selected}>
-          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 350 }}>
+          <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 250 }}>
             <Box
               onClick={onViewRow}
               sx={{
@@ -51,19 +51,6 @@ const PlanRoomTableRow = memo(
               </Box>
 
               {/* Add a fixed margin for consistent spacing after the title */}
-              <img
-                src={row.src.thumbnail}
-                alt={`Thumbnail of ${title}`}
-                style={{
-                  width: '50px',
-                  height: '50px',
-                  objectFit: 'cover',
-                  borderRadius: '4px',
-                  marginLeft: '10px',
-                  marginRight: '40px', // Fixed margin for consistent spacing
-                }}
-              />
-
               <CustomImage
                 style={{
                   width: '50px',
@@ -76,6 +63,8 @@ const PlanRoomTableRow = memo(
                 alt={`Corner of page ${row.src.croppedThumbnail + 1}`}
                 src={row.src.croppedThumbnail}
               />
+
+              
             </Box>
           </TableCell>
 
