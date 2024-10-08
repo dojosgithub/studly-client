@@ -18,7 +18,7 @@ export default function DailyLogsCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create a New Daily Log"
+        heading="Create a new Log"
         links={[
           {
             name: 'Dashboard',

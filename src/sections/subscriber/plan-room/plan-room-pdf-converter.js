@@ -76,6 +76,9 @@ function PlanRoomPdfConverter({ files }) {
           key={index}
           my={5}
         >
+           
+            <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
+      
           <Box p={4}>
             <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
           </Box>

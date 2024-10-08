@@ -347,8 +347,9 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               <Divider sx={{ marginY: 2 }} />
 
               {visitorFields?.map((visit, index) => (
+                
                 <Box
-                  key={index}
+                key={visit.id}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -363,23 +364,26 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
                     InputLabelProps={{ shrink: true }}
                     sx={{ margin: 2, marginLeft: 0, width: '50%' }}
                     onBlur={() => trigger(`visitors[${index}].visitors`)}
+                    
                   />
 
+
                   <StyledIconButton color="inherit" onClick={() => removeVisitor(index)}>
+                    {console.log("hehe",index)}
                     <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
                   </StyledIconButton>
                 </Box>
               ))}
               {visitorFields.length > 1}
               <ResponsiveButton
-              component="button"
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              color="secondary"
-              onClick={() => appendVisitor({ visitors: '' })}
-              sx={{ marginRight: 2, margin: 1 }}
-            >
-              Add Another
+                component="button"
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                color="secondary"
+                onClick={() => appendVisitor({ visitors: '' })}
+                sx={{ marginRight: 2, margin: 1, width: '20%' }}
+              >
+                Add Another
             </ResponsiveButton>
 
               <Typography variant="h6" margin={1}>
@@ -387,7 +391,8 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               </Typography>
               <Divider sx={{ marginY: 2 }} />
               {inspectionFields?.map((inspection, index) => (
-                <Stack direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
+                <Stack  key={inspection.id}
+                direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
                   <FormControl>
                     <Controller
                       name={`inspection[${index}].value`}
@@ -443,14 +448,14 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               ))}
               {inspectionFields.length > 1}
               <ResponsiveButton
-              component="button"
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              color="secondary"
-              onClick={() => appendVisitor({ visitors: '' })}
-              sx={{ marginRight: 2, margin: 1 }}
-            >
-              Add Another
+                component="button"
+                variant="outlined"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                color="secondary"
+                onClick={() => appendInspection({ value: '', status: true, reason: '' })}
+                sx={{ marginRight: 2, margin: 1, width: '20%' }}
+              >
+                Add Another
             </ResponsiveButton>
             </Box>
           </Card>
@@ -482,6 +487,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
 
             {distributionFields?.map((person, index) => (
               <Box
+              key={person.id}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -518,7 +524,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="secondary"
-              onClick={() => appendVisitor({ visitors: '' })}
+              onClick={() => appendDistribution({ name: '', email: '' })}
               sx={{ marginRight: 2, margin: 1 }}
             >
               Add Another
@@ -533,7 +539,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
 
             {subcontractorFields?.map((field, index) => (
               <Box
-                key={index}
+                key={field.id}
                 sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, marginLeft: 1 }}
               >
                 <RHFTextField
@@ -564,8 +570,8 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               component="button"
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
-              // color="secondary"
-              onClick={() => appendVisitor({ visitors: '' })}
+              color="secondary"
+              onClick={() => appendSubcontractor({ companyName: '', headCount: null })}
               sx={{ marginRight: 2, margin: 1 }}
             >
               Add Another
