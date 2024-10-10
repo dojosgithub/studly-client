@@ -45,11 +45,6 @@ const PlanRoomTableRow = memo(
                 flexWrap: 'nowrap',
               }}
             >
-              <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
-              <Box sx={{ flexGrow: 1 }}>
-                <span>{sheetTitle}</span>
-              </Box>
-
               {/* Add a fixed margin for consistent spacing after the title */}
               <CustomImage
                 style={{
@@ -63,6 +58,14 @@ const PlanRoomTableRow = memo(
                 alt={`Corner of page ${row.src.croppedThumbnail + 1}`}
                 src={row.src.croppedThumbnail}
               />
+              <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
+              <Box sx={{ flexGrow: 1 }}>
+                <span>{sheetTitle}</span>
+              </Box>
+
+              <Box sx={{ flexGrow: 1 }}>
+                <span>{45}</span>
+              </Box>
             </Box>
           </TableCell>
 

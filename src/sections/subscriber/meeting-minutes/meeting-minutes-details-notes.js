@@ -6,12 +6,12 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
-import { Chip, Stack } from '@mui/material';
+import { Chip, Stack, Grid } from '@mui/material';
 
 // Styled Components
 const TopicContainer = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  padding: theme.spacing(3), // Increased padding
+  padding: theme.spacing(3),
   border: '1px solid #ddd',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: '#F2F3F5',
@@ -23,6 +23,7 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
   return (
     <div>
       {data.map((note, noteIndex) => (
@@ -48,14 +49,11 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
                     size="small"
                     sx={{
                       height: '40px',
-
-                      backgroundColor: '##FFAB00',
+                      backgroundColor: '#FFAB00',
                       minWidth: '80px',
-
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-
                       fontSize: '20px',
                       marginRight: '10px',
                     }}
@@ -67,68 +65,51 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
           <AccordionDetails>
             {note.topics.map((topic, topicIndex) => (
               <TopicContainer key={topicIndex}>
-                <div>
-                  <Typography sx={{ fontSize: '1.4rem' }} fontWeight="bold" marginBottom={3}>
-                    {topic.topic}
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
-                    Description:
-                  </Typography>
-
-                  <div>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography sx={{ fontSize: '1.4rem' }} fontWeight="bold" marginBottom={3}>
+                      {topic.topic}
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      Description:
+                    </Typography>
                     <Typography
                       sx={{ fontSize: '1.2rem' }}
                       marginBottom={2}
                       dangerouslySetInnerHTML={{ __html: topic.description }}
                     />
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '60%',
-                  }}
-                >
-                  <div>
-                    <div>
+                  </Grid>
+                  <Grid container item xs={12} spacing={2}>
+                    <Grid item xs={12} sm={6}>
                       <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
                         Due Date:
                       </Typography>
                       <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
                         {new Date(topic.date).toLocaleDateString()}
                       </Typography>
-                    </div>
-                    <div>
                       <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
                         Status:
                       </Typography>
                       <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
                         {topic?.status}
                       </Typography>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
                       <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
                         Assignee:
                       </Typography>
                       <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
                         {topic?.assignee?.name}
                       </Typography>
-                    </div>
-                    <div>
                       <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
                         Priority:
                       </Typography>
                       <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
                         {topic?.priority}
                       </Typography>
-                    </div>
-                  </div>
-                </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </TopicContainer>
             ))}
           </AccordionDetails>

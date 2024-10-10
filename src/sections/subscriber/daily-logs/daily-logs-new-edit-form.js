@@ -39,19 +39,10 @@ import Iconify from 'src/components/iconify';
 import DailyLogsAttachments from './daily-logs-attachment';
 
 const StyledButton = styled(Button)(({ theme, selected }) => ({
-  backgroundColor: selected ? '#FFAB00' : theme.palette.background.paper,
+  backgroundColor: selected ? '#FFAB00' : 'rgba(145, 158, 171, 0.2)', // #919EAB with 20% opacity
   color: theme.palette.text.primary,
   '&:hover': {
     backgroundColor: selected ? '#FFAB00' : theme.palette.action.hover,
-  },
-  margin: theme.spacing(0.5),
-  [theme.breakpoints.down('sm')]: {
-    width: '100%', // Responsive for mobile
-    padding: theme.spacing(1),
-  },
-  [theme.breakpoints.up('md')]: {
-    width: 'auto', // Normal for tablet and desktop
-    padding: theme.spacing(1.5),
   },
 }));
 
@@ -61,7 +52,7 @@ const ResponsiveButton = styled(Button)(({ theme }) => ({
     padding: theme.spacing(1),
   },
   [theme.breakpoints.up('md')]: {
-    width: 'auto',
+    width: '15%',
     padding: theme.spacing(1.5),
   },
 }));
@@ -72,7 +63,7 @@ const ResponsiveLoadingButton = styled(LoadingButton)(({ theme }) => ({
     padding: theme.spacing(1),
   },
   [theme.breakpoints.up('md')]: {
-    width: 'auto',
+    width: '15%',
     padding: theme.spacing(1.5),
   },
 }));
@@ -328,7 +319,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
     <Box sx={{ padding: 3, width: '100%', paddingLeft: 0 }}>
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Box sx={{ marginTop: 2, borderWidth: '2px' }}>
-          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2 ,marginBottom :2 }}>
+          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 2 }}>
               <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
                 Accident and Safety Issues
@@ -347,9 +338,8 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               <Divider sx={{ marginY: 2 }} />
 
               {visitorFields?.map((visit, index) => (
-                
                 <Box
-                key={visit.id}
+                  key={visit.id}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -364,12 +354,10 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
                     InputLabelProps={{ shrink: true }}
                     sx={{ margin: 2, marginLeft: 0, width: '50%' }}
                     onBlur={() => trigger(`visitors[${index}].visitors`)}
-                    
                   />
 
-
                   <StyledIconButton color="inherit" onClick={() => removeVisitor(index)}>
-                    {console.log("hehe",index)}
+                    {console.log('hehe', index)}
                     <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
                   </StyledIconButton>
                 </Box>
@@ -384,15 +372,20 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
                 sx={{ marginRight: 2, margin: 1, width: '20%' }}
               >
                 Add Another
-            </ResponsiveButton>
+              </ResponsiveButton>
 
               <Typography variant="h6" margin={1}>
                 Inspection
               </Typography>
               <Divider sx={{ marginY: 2 }} />
               {inspectionFields?.map((inspection, index) => (
-                <Stack  key={inspection.id}
-                direction="row" spacing={2} alignItems="center" sx={{ margin: 1 }}>
+                <Stack
+                  key={inspection.id}
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ margin: 1 }}
+                >
                   <FormControl>
                     <Controller
                       name={`inspection[${index}].value`}
@@ -456,11 +449,11 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
                 sx={{ marginRight: 2, margin: 1, width: '20%' }}
               >
                 Add Another
-            </ResponsiveButton>
+              </ResponsiveButton>
             </Box>
           </Card>
 
-          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2 ,marginBottom :2  }}>
+          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               Weather
             </Typography>
@@ -479,7 +472,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
             </Grid>
           </Card>
 
-          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2 ,marginBottom :2 }}>
+          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}>
             <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
               Distribution List
             </Typography>
@@ -487,7 +480,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
 
             {distributionFields?.map((person, index) => (
               <Box
-              key={person.id}
+                key={person.id}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -519,7 +512,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
                 </StyledIconButton>
               </Box>
             ))}
-           <ResponsiveButton
+            <ResponsiveButton
               component="button"
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
@@ -531,7 +524,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
             </ResponsiveButton>
           </Card>
 
-          <Card sx={{ padding: 2, borderWidth: '2px',marginTop: 2 ,marginBottom :2  }}>
+          <Card sx={{ padding: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}>
             <Typography variant="h6" sx={{ marginRight: 2, margin: 1 }}>
               Subcontractor Attendance
             </Typography>
@@ -566,7 +559,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               </Box>
             ))}
 
-<ResponsiveButton
+            <ResponsiveButton
               component="button"
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
@@ -577,7 +570,9 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               Add Another
             </ResponsiveButton>
           </Card>
-          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', marginTop: 2 ,marginBottom :2  }}>
+          <Card
+            sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}
+          >
             <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
               Attachments
             </Typography>
@@ -588,7 +583,9 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
             />
           </Card>
 
-          <Card sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', marginTop: 2 ,marginBottom :2 }}>
+          <Card
+            sx={{ padding: 2, paddingBottom: 2, borderWidth: '2px', marginTop: 2, marginBottom: 2 }}
+          >
             <Typography variant="h6" sx={{ margin: 2, marginLeft: 1 }}>
               Summary
             </Typography>
@@ -601,9 +598,9 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Card>
-          <Divider sx={{ marginTop: 2 ,marginBottom :2 }} />
+          <Divider sx={{ marginTop: 2, marginBottom: 2 }} />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <ResponsiveLoadingButton
+            <ResponsiveLoadingButton
               type="submit"
               variant="contained"
               // color="primary"
