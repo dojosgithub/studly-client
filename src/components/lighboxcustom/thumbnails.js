@@ -55,7 +55,7 @@ const ThumbnailsViewer = ({ currentSheetIndex, setCurrentSheetIndex }) => {
                 >
                   <img src={sheet.src.thumbnail} alt={`Thumbnail ${index}`} width={100} />
                 </ThumbnailPaper>
-                <Typography>{truncateTitle(sheet.title)}</Typography>
+                <Typography>{truncateTitle(sheet?.sheetTitle || '')}</Typography>
               </Stack>
             </Grid>
           ))}

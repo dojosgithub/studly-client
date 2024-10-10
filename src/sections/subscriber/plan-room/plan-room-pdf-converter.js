@@ -13,12 +13,13 @@ import {
   Chip,
   CircularProgress,
   TextField,
+  Typography,
   createFilterOptions,
 } from '@mui/material';
 // components
 import CustomImage from 'src/components/image';
 import { RHFTextField } from 'src/components/hook-form';
-import { getPlanRoomPDFSThumbnails } from 'src/redux/slices/planRoomSlice';
+import { getExtractedSheetsText, getPlanRoomPDFSThumbnails } from 'src/redux/slices/planRoomSlice';
 
 function PlanRoomPdfConverter({ files }) {
   const [images, setImages] = useState([]);
@@ -27,7 +28,8 @@ function PlanRoomPdfConverter({ files }) {
   const isLoadingRef = useRef(null);
   const dispatch = useDispatch();
 
-  const { setValue, control } = useFormContext();
+  const { setValue, control, getValues } = useFormContext();
+  console.log('sheets', getValues('sheets'));
 
   const filter = createFilterOptions();
   const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
@@ -42,8 +44,19 @@ function PlanRoomPdfConverter({ files }) {
     }
     const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
     if (data.payload) {
-      setImages(data.payload.thumbails);
+      const { payload } = await dispatch(
+        getExtractedSheetsText({ imageUrls: data.payload.thumbails })
+      );
+      console.log('extractedData', payload);
+      const sheetData = [...payload].map(({ id, ...rest }) => ({
+        ...rest,
+        src: '',
+        category: [],
+      }));
+      console.log('sheetData', sheetData);
+      setValue('sheets', sheetData);
       setValue('attachments', data.payload.files);
+      setImages(data.payload.thumbails);
       setSheets(data.payload.sheets);
     }
 
@@ -70,22 +83,32 @@ function PlanRoomPdfConverter({ files }) {
           display="grid"
           gridTemplateColumns={{
             xs: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
+            md: 'repeat(4, 1fr)',
           }}
           alignItems="center"
           key={index}
           my={5}
         >
-           
-            <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
-      
+          <Typography>{sheets[index].name}</Typography>
+          <CustomImage
+            sx={{ width: 300 }}
+            alt={`Corner of page ${index + 1}`}
+            src={sheets[index].thumbnail}
+          />
+
           <Box p={4}>
             <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
           </Box>
-          <span>
+          <Box>
             <RHFTextField
-              name={`sheets[${index}].title`}
+              name={`sheets[${index}].sheetTitle`}
               label="Sheet Title"
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+            <RHFTextField
+              name={`sheets[${index}].sheetNumber`}
+              label="Sheet Number"
               InputLabelProps={{ shrink: true }}
               sx={{ mb: 2 }}
             />
@@ -158,7 +181,7 @@ function PlanRoomPdfConverter({ files }) {
                 />
               )}
             />
-          </span>
+          </Box>
           {setValue(`sheets[${index}].src`, sheets[index])}
         </Box>
       ))}

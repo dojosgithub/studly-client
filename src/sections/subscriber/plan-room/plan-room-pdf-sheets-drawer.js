@@ -29,7 +29,8 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
     sheets: Yup.array()
       .of(
         Yup.object().shape({
-          title: Yup.string().required('Sheet title is required'),
+          sheetNumber: Yup.string().required('Sheet Number is required'),
+          sheetTitle: Yup.string().required('Sheet title is required'),
           src: Yup.object().required('Image src is required'),
           category: Yup.array(),
         })
@@ -39,7 +40,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
   });
 
   const defaultValues = useMemo(() => {
-    const data = { title: '', src: '' };
+    const data = { sheetNumber: '', sheetTitle: '', src: '' };
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
       attachments: [],
@@ -53,21 +54,21 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
 
   const { handleSubmit } = methods;
 
-  const hasDuplicateTitles = (items) => {
+  const hasDuplicateSheetNumbers = (items) => {
     const titles = new Set();
     return items.some((item) => {
-      if (titles.has(item.title)) {
+      if (titles.has(item.sheetNumber)) {
         return true; // Duplicate found
       }
-      titles.add(item.title);
+      titles.add(item.sheetNumber);
       return false; // No duplicate
     });
   };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (hasDuplicateTitles(data?.sheets)) {
-        enqueueSnackbar('Sheet titles should be unique within a plan set', { variant: 'error' });
+      if (hasDuplicateSheetNumbers(data?.sheets)) {
+        enqueueSnackbar('Sheet Numbers should be unique within a plan set', { variant: 'error' });
         return;
       }
       confirmIsFormDisabled.onTrue();
@@ -88,14 +89,26 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
       sx={{
         height: isMobile ? 56 : 64, // Smaller height for mobile
         px: isMobile ? 1 : 3, // Smaller padding for mobile
+        position: 'relative',
       }}
     >
-      <Toolbar>
+      <Toolbar sx={{ gap: '1.25rem' }}>
         <Typography
           variant="h6"
           sx={{
-            flex: 1,
-            ml: isMobile ? 1 : 2,
+            flex: 0.5,
+            // ml: isMobile ? 1 : 2,
+            fontSize: isMobile ? '1rem' : '1.25rem', // Adjust font size for mobile
+            color: 'black',
+          }}
+        >
+          File Name
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            flex: 1.1,
+            // ml: isMobile ? 1 : 2,
             fontSize: isMobile ? '1rem' : '1.25rem', // Adjust font size for mobile
             color: 'black',
           }}
@@ -105,17 +118,22 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
         <Typography
           variant="h6"
           sx={{
-            flex: 1,
-            ml: isMobile ? 1 : 2,
+            flex: 0.5,
+            // ml: isMobile ? 1 : 2,
             fontSize: isMobile ? '1rem' : '1.25rem',
             color: 'black',
           }}
         >
-          Sheet Title
+          Sheet Info
         </Typography>
 
-        <IconButton color="inherit" edge="start" onClick={onClose}>
-          <Iconify icon="mingcute:close-line" />
+        <IconButton
+          color="inherit"
+          edge="start"
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 0, top: 10 }}
+        >
+          <Iconify icon="gg:close-o" style={{ color: 'black', height: '1.2em', width: '1.2em' }} />
         </IconButton>
       </Toolbar>
     </AppBar>

@@ -27,7 +27,7 @@ import CustomImage from 'src/components/image';
 
 const PlanRoomTableRow = memo(
   ({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) => {
-    const { title, thumbnail, planName, issueDate, creator, category } = row;
+    const { sheetTitle, thumbnail, planName, issueDate, creator, category } = row;
     const role = useSelector((state) => state?.user?.user?.role?.shortName);
     const confirm = useBoolean();
     const popover = usePopover();
@@ -47,7 +47,7 @@ const PlanRoomTableRow = memo(
             >
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
               <Box sx={{ flexGrow: 1 }}>
-                <span>{title}</span>
+                <span>{sheetTitle}</span>
               </Box>
 
               {/* Add a fixed margin for consistent spacing after the title */}
@@ -63,8 +63,6 @@ const PlanRoomTableRow = memo(
                 alt={`Corner of page ${row.src.croppedThumbnail + 1}`}
                 src={row.src.croppedThumbnail}
               />
-
-              
             </Box>
           </TableCell>
 

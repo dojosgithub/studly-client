@@ -62,6 +62,20 @@ export const getPlanRoomPDFSThumbnails = createAsyncThunk(
   }
 );
 
+export const getExtractedSheetsText = createAsyncThunk('extractSheet', async (data) => {
+  try {
+    const response = await axiosInstance.post(endpoints.planRoom.extractSheet, data);
+
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
+    }
+    throw Error('An error occurred while fetching extracted sheet text.');
+  }
+});
+
 export const getExistingPlanRoomList = createAsyncThunk(
   'existingPlanRoom/list',
   async (listOptions, { getState }) => {
@@ -119,6 +133,7 @@ const initialState = {
   existingList: [],
   create: {},
   current: {},
+  sheets: [],
   isLoading: false,
   error: null,
 };
@@ -187,7 +202,7 @@ const planRoom = createSlice({
       state.error = action.error.message;
     });
 
-    // // Get PlanRoom Details
+    // Get PlanRoom Details
     builder.addCase(getPlanRoomDetails.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -198,6 +213,20 @@ const planRoom = createSlice({
       state.error = null;
     });
     builder.addCase(getPlanRoomDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    // Get PlanRoom Details
+    builder.addCase(getExtractedSheetsText.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getExtractedSheetsText.fulfilled, (state, action) => {
+      state.sheets = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getExtractedSheetsText.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });
