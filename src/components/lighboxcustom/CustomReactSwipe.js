@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
 import PdfViewer from './PdfViewer';
+
 // ----------------------------------------------------------------------
 
 const SimpleSlider = ({ currentSheetIndex, setCurrentSheetIndex }) => {

@@ -8,6 +8,8 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
 import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 import Iconify from '../iconify';
 import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
@@ -87,22 +89,12 @@ const CustomDrawerPlanRoom = React.memo(
               }}
             />
           </Grid>
-          {/* Main content area for displaying images */}
-          <Grid item xs={8} sm={10}>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <SimpleSlider
-                currentSheetIndex={currentSheetIndex}
-                setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
-              />
-            </div>
+          {/* Main content area for zoomable images */}
+          <Grid item xs={10}>
+            <SimpleSlider
+              currentSheetIndex={currentSheetIndex}
+              setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
+            />
           </Grid>
         </Grid>
       </Drawer>
