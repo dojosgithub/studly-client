@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Button } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
@@ -92,15 +92,29 @@ const CustomDrawerPlanRoom = React.memo(
           {/* Main content area for zoomable images */}
           <Grid item xs={8} sm={10}>
             <ReactPinchZoomPan
+              style={{
+                touchAction: 'none', // Prevent default touch actions to allow custom touch interactions
+                width: '100%', // Ensure full width
+                height: '100%', // Ensure full height
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               render={({ x, y, scale }) => (
-                <SimpleSlider
-                  currentSheetIndex={currentSheetIndex}
-                  setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
+                <div
                   style={{
                     transform: `translate(${x}px, ${y}px) scale(${scale})`,
                     transition: 'transform 0.2s ease-out',
+                    width: '100%', // Ensure full width
+                    height: 'auto', // Maintain aspect ratio
+                    maxHeight: '80vh', // Max height for the zoomable area
                   }}
-                />
+                >
+                  <SimpleSlider
+                    currentSheetIndex={currentSheetIndex}
+                    setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
+                  />
+                </div>
               )}
             />
           </Grid>
