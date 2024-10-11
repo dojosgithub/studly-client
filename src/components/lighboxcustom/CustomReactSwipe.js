@@ -1,52 +1,53 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
-import Slider from 'react-slick';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
 import PdfViewer from './PdfViewer';
+// ----------------------------------------------------------------------
 
 const SimpleSlider = ({ currentSheetIndex, setCurrentSheetIndex }) => {
   const sliderRef = useRef(null);
-  const settings = {
-    speed: 500,
-    slidesToScroll: 1,
-    swipe: false, // Disable swipe gestures
-    arrows: false,
-    key: currentSheetIndex, // Ensure slider re-mounts when currentSheetIndex changes
-  };
   const planroom = useSelector((state) => state?.planRoom?.current);
 
-
-  // useEffect(() => {
-  //   if (sliderRef.current && typeof currentSheetIndex === 'number') {
-  //     console.log('Going to slide:', currentSheetIndex);
-  //     sliderRef.current.slickGoTo(currentSheetIndex);
-  //   }
-  // }, [currentSheetIndex]);
-
+  // Use ReactPinchZoomPan to wrap the PdfViewer
   if (isEmpty(planroom)) return null;
 
   return (
     <div className="slider-container" key={currentSheetIndex} style={{ maxHeight: '85vh' }}>
-      {/* <Slider {...settings} ref={sliderRef}>
-        {planroom?.sheets?.map((sheet) => (
-          <PdfViewer
-            sheet={sheet}
-            currentSheetIndex={currentSheetIndex}
-            setCurrentSheetIndex={setCurrentSheetIndex}
-          />
-        ))}
-      </Slider> */}
-      <PdfViewer
-        sheet={planroom?.sheets[currentSheetIndex]}
-        currentSheetIndex={currentSheetIndex}
-        setCurrentSheetIndex={setCurrentSheetIndex}
+      <ReactPinchZoomPan
+        style={{
+          touchAction: 'none', // Prevent default touch actions
+          width: '100%', // Ensure full width
+          height: '100%', // Ensure full height
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        render={({ x, y, scale }) => (
+          <div
+            style={{
+              transform: `translate(${x}px, ${y}px) scale(${scale})`,
+              transition: 'transform 0.2s ease-out',
+              width: '100%', // Ensure full width
+              height: 'auto', // Maintain aspect ratio
+              maxHeight: '85vh', // Max height for the zoomable area
+            }}
+          >
+            <PdfViewer
+              sheet={planroom?.sheets[currentSheetIndex]}
+              currentSheetIndex={currentSheetIndex}
+              setCurrentSheetIndex={setCurrentSheetIndex}
+            />
+          </div>
+        )}
       />
     </div>
   );
 };
 
-// export default SimpleSlider;
 export default React.memo(SimpleSlider);
 
 SimpleSlider.propTypes = {

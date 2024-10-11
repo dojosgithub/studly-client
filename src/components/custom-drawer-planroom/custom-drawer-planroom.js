@@ -8,8 +8,6 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
 import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 import Iconify from '../iconify';
 import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
@@ -89,34 +87,22 @@ const CustomDrawerPlanRoom = React.memo(
               }}
             />
           </Grid>
-          {/* Main content area for zoomable images */}
+          {/* Main content area for displaying images */}
           <Grid item xs={8} sm={10}>
-            <ReactPinchZoomPan
+            <div
               style={{
-                touchAction: 'none', // Prevent default touch actions to allow custom touch interactions
-                width: '100%', // Ensure full width
-                height: '100%', // Ensure full height
+                width: '100%',
+                height: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              render={({ x, y, scale }) => (
-                <div
-                  style={{
-                    transform: `translate(${x}px, ${y}px) scale(${scale})`,
-                    transition: 'transform 0.2s ease-out',
-                    width: '100%', // Ensure full width
-                    height: 'auto', // Maintain aspect ratio
-                    maxHeight: '80vh', // Max height for the zoomable area
-                  }}
-                >
-                  <SimpleSlider
-                    currentSheetIndex={currentSheetIndex}
-                    setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
-                  />
-                </div>
-              )}
-            />
+            >
+              <SimpleSlider
+                currentSheetIndex={currentSheetIndex}
+                setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
+              />
+            </div>
           </Grid>
         </Grid>
       </Drawer>
