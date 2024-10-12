@@ -10,6 +10,7 @@ import 'pdfjs-dist/build/pdf.worker.entry';
 import Box from '@mui/material/Box';
 import {
   Autocomplete,
+  Button,
   Chip,
   CircularProgress,
   TextField,
@@ -21,9 +22,10 @@ import CustomImage from 'src/components/image';
 import { RHFTextField } from 'src/components/hook-form';
 import { getExtractedSheetsText, getPlanRoomPDFSThumbnails } from 'src/redux/slices/planRoomSlice';
 
-function PlanRoomPdfConverter({ files }) {
+function PlanRoomPdfConverter({ files, isDisabled }) {
   const [images, setImages] = useState([]);
   const [sheets, setSheets] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isLoadingRef = useRef(null);
   const dispatch = useDispatch();
@@ -35,6 +37,7 @@ function PlanRoomPdfConverter({ files }) {
   const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
 
   const handleUpload = useCallback(async () => {
+    isDisabled.onTrue();
     const formData = new FormData();
     for (let index = 0; index < files.length; index += 1) {
       const file = files[index];
@@ -44,10 +47,40 @@ function PlanRoomPdfConverter({ files }) {
     }
     const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
     if (data.payload) {
-      const { payload } = await dispatch(
-        getExtractedSheetsText({ imageUrls: data.payload.thumbails })
-      );
-      console.log('extractedData', payload);
+      // const { payload } = await dispatch(
+      //   getExtractedSheetsText({ imageUrls: data.payload.thumbails })
+      // );
+      // console.log('extractedData', payload);
+      // const sheetData = [...payload].map(({ id, ...rest }) => ({
+      //   ...rest,
+      //   src: '',
+      //   category: [],
+      // }));
+      // console.log('sheetData', sheetData);
+      // setValue('sheets', sheetData);
+      setValue('attachments', data.payload.files);
+      setImages(data.payload.thumbails);
+      setSheets(data.payload.sheets);
+    }
+
+    isLoadingRef.current = false;
+    isDisabled.onFalse();
+  }, [dispatch, files, setValue, isDisabled]);
+
+  useEffect(() => {
+    isLoadingRef.current = true;
+    if (isLoadingRef.current) {
+      handleUpload();
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const handleAutofill = async () => {
+    setIsLoading(true);
+    isDisabled.onTrue();
+    const { payload } = await dispatch(getExtractedSheetsText({ imageUrls: images }));
+    console.log('extractedData', payload);
+    if (payload) {
       const sheetData = [...payload].map(({ id, ...rest }) => ({
         ...rest,
         src: '',
@@ -55,18 +88,10 @@ function PlanRoomPdfConverter({ files }) {
       }));
       console.log('sheetData', sheetData);
       setValue('sheets', sheetData);
-      setValue('attachments', data.payload.files);
-      setImages(data.payload.thumbails);
-      setSheets(data.payload.sheets);
     }
-
-    isLoadingRef.current = false;
-  }, [dispatch, files, setValue]);
-
-  useEffect(() => {
-    isLoadingRef.current = true;
-    handleUpload();
-  }, [handleUpload]);
+    setIsLoading(false);
+    isDisabled.onFalse();
+  };
 
   if (sheets?.length <= 0 || images?.length <= 0 || isLoadingRef?.current) {
     return (
@@ -77,6 +102,11 @@ function PlanRoomPdfConverter({ files }) {
   }
   return (
     <>
+      <Box sx={{ display: 'grid', placeContent: 'end', width: '100%', height: '100%', mt: 2 }}>
+        <Button variant="contained" onClick={handleAutofill} disabled={isLoading}>
+          Autofill Fields
+        </Button>
+      </Box>
       {images.map((image, index) => (
         <Box
           gap={3}
@@ -99,89 +129,96 @@ function PlanRoomPdfConverter({ files }) {
           <Box p={4}>
             <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
           </Box>
-          <Box>
-            <RHFTextField
-              name={`sheets[${index}].sheetTitle`}
-              label="Sheet Title"
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2 }}
-            />
-            <RHFTextField
-              name={`sheets[${index}].sheetNumber`}
-              label="Sheet Number"
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2 }}
-            />
-            <Controller
-              name={`sheets[${index}].category`}
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  {...field}
-                  fullWidth
-                  multiple
-                  freeSolo
-                  selectOnFocus
-                  clearOnBlur
-                  handleHomeEndKeys
-                  onChange={(event, newValue) => {
-                    if (typeof newValue[newValue.length - 1] === 'string') {
-                      const newValueObj = {
-                        id: nanoid(),
-                        name: capitalCase(newValue[newValue.length - 1]),
-                      };
-                      newValue[newValue.length - 1] = newValueObj;
-                      field.onChange(newValue);
-                    } else {
-                      field.onChange(newValue);
-                    }
-                  }}
-                  filterOptions={(options, params) => {
-                    const filtered = filter(options, params);
+          {isLoading && (
+            <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
+              <CircularProgress color="primary" />
+            </Box>
+          )}
+          {!isLoading && (
+            <Box>
+              <RHFTextField
+                name={`sheets[${index}].sheetTitle`}
+                label="Sheet Title"
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+              <RHFTextField
+                name={`sheets[${index}].sheetNumber`}
+                label="Sheet Number"
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+              <Controller
+                name={`sheets[${index}].category`}
+                control={control}
+                render={({ field }) => (
+                  <Autocomplete
+                    {...field}
+                    fullWidth
+                    multiple
+                    freeSolo
+                    selectOnFocus
+                    clearOnBlur
+                    handleHomeEndKeys
+                    onChange={(event, newValue) => {
+                      if (typeof newValue[newValue.length - 1] === 'string') {
+                        const newValueObj = {
+                          id: nanoid(),
+                          name: capitalCase(newValue[newValue.length - 1]),
+                        };
+                        newValue[newValue.length - 1] = newValueObj;
+                        field.onChange(newValue);
+                      } else {
+                        field.onChange(newValue);
+                      }
+                    }}
+                    filterOptions={(options, params) => {
+                      const filtered = filter(options, params);
 
-                    const { inputValue } = params;
-                    // Suggest the creation of a new value
-                    const isExisting = options.some((option) =>
-                      option.name.toLowerCase().includes(inputValue.toLowerCase())
-                    );
-                    if (inputValue !== '' && !isExisting) {
-                      filtered.push({
-                        name: inputValue,
-                        id: nanoid(),
-                        inputValue: `Add "${inputValue}"`,
-                      });
-                    }
+                      const { inputValue } = params;
+                      // Suggest the creation of a new value
+                      const isExisting = options.some((option) =>
+                        option.name.toLowerCase().includes(inputValue.toLowerCase())
+                      );
+                      if (inputValue !== '' && !isExisting) {
+                        filtered.push({
+                          name: inputValue,
+                          id: nanoid(),
+                          inputValue: `Add "${inputValue}"`,
+                        });
+                      }
 
-                    return filtered;
-                  }}
-                  options={planRoomCategories}
-                  getOptionLabel={(option) => {
-                    // Value selected with enter, right from the input
-                    if (typeof option === 'string') {
-                      return option;
+                      return filtered;
+                    }}
+                    options={planRoomCategories}
+                    getOptionLabel={(option) => {
+                      // Value selected with enter, right from the input
+                      if (typeof option === 'string') {
+                        return option;
+                      }
+                      // Add "xxx" option created dynamically
+                      if (option.inputValue) {
+                        return option.inputValue;
+                      }
+                      // Regular option
+                      return option.name;
+                    }}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, i) => (
+                        <Chip
+                          {...getTagProps({ i })}
+                          key={option._id}
+                          size="small"
+                          label={option.name}
+                        />
+                      ))
                     }
-                    // Add "xxx" option created dynamically
-                    if (option.inputValue) {
-                      return option.inputValue;
-                    }
-                    // Regular option
-                    return option.name;
-                  }}
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, i) => (
-                      <Chip
-                        {...getTagProps({ i })}
-                        key={option._id}
-                        size="small"
-                        label={option.name}
-                      />
-                    ))
-                  }
-                  renderInput={(params) => <TextField label="Tags" {...params} />}
-                />
-              )}
-            />
-          </Box>
+                    renderInput={(params) => <TextField label="Tags" {...params} />}
+                  />
+                )}
+              />
+            </Box>
+          )}
           {setValue(`sheets[${index}].src`, sheets[index])}
         </Box>
       ))}
@@ -193,4 +230,5 @@ export default PlanRoomPdfConverter;
 
 PlanRoomPdfConverter.propTypes = {
   files: PropTypes.arrayOf(PropTypes.file),
+  isDisabled: PropTypes.object,
 };

@@ -166,7 +166,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
         paddingX={isMobile ? '1rem' : '2rem'} // Smaller padding on mobile
       >
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <PlanRoomPdfConverter files={files} />
+          <PlanRoomPdfConverter files={files} isDisabled={confirmIsFormDisabled} />
         </FormProvider>
       </Box>
 
