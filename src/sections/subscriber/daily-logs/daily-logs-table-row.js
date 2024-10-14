@@ -56,7 +56,7 @@ const DailyLogsTableRow = memo(
                     sx={{
                       margin: '2px',
                       backgroundColor: '#FFAB00',
-                      color: 'white',
+                      color: 'black',
                     }}
                   />
                 ))
