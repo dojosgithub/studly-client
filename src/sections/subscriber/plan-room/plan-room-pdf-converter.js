@@ -79,7 +79,12 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
     setIsLoading(true);
     isDisabled.onTrue();
     const { payload } = await dispatch(getExtractedSheetsText({ imageUrls: images }));
-    console.log('extractedData', payload);
+    if (payload) {
+      const res = await payload;
+      console.log('extractedData', res);
+    } else {
+      console.error('Error: payload is undefined');
+    }
     if (payload) {
       const sheetData = [...payload].map(({ id, ...rest }) => ({
         ...rest,

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance, { endpoints } from 'src/utils/axios';
+import { transformDocumentAIResponseArray } from 'src/utils/transformDocumentAIresponse';
 
 // * PLAN ROOM
 export const createPlanRoom = createAsyncThunk('planRoom/create', async (planRoomData) => {
@@ -62,19 +63,46 @@ export const getPlanRoomPDFSThumbnails = createAsyncThunk(
   }
 );
 
-export const getExtractedSheetsText = createAsyncThunk('extractSheet', async (data) => {
-  try {
-    const response = await axiosInstance.post(endpoints.planRoom.extractSheet, data);
+// export const getExtractedSheetsText = createAsyncThunk('extractSheet', async (data) => {
+//   try {
+//     const response = await axiosInstance.post(endpoints.planRoom.extractSheet, data);
 
-    return response.data.data;
-  } catch (err) {
-    console.error('errSlice', err);
-    if (err && err.message) {
-      throw Error(err.message);
+//     return response.data.data;
+//   } catch (err) {
+//     console.error('errSlice', err);
+//     if (err && err.message) {
+//       throw Error(err.message);
+//     }
+//     throw Error('An error occurred while fetching extracted sheet text.');
+//   }
+// });
+export const getExtractedSheetsText = createAsyncThunk(
+  'extractSheet',
+  async (data, { rejectWithValue }) => {
+    try {
+      // Make the Axios request (no streaming in browser)
+      const response = await axiosInstance.post(endpoints.planRoom.extractSheet, data, {
+        timeout: 120000, // Timeout increased to 120 seconds (client-side)
+      });
+
+      // Since Axios doesn't support streams in the browser, we handle it all at once
+      if (!response.data) {
+        throw new Error('No response data received');
+      }
+
+      console.log('Raw response data:', response.data);
+      console.log('Response headers:', response.headers);
+      const finalData = response?.data;
+
+      // Transform the response if necessary
+      const transformedData = transformDocumentAIResponseArray(finalData);
+      return transformedData;
+    } catch (err) {
+      console.error('Error in getExtractedSheetsText:', err);
+      return rejectWithValue(err.message);
     }
-    throw Error('An error occurred while fetching extracted sheet text.');
   }
-});
+);
 
 export const getExistingPlanRoomList = createAsyncThunk(
   'existingPlanRoom/list',
