@@ -6,15 +6,13 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { ReactPinchZoomPan } from 'react-pinch-zoom-pan';
 import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
+import PlanRoomNav from 'src/sections/subscriber/plan-room/plan-room-nav';
 import Iconify from '../iconify';
 import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
-import ThumbnailsViewer from '../lighboxcustom/thumbnails';
-// import useResponsive from 'src/hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
@@ -75,28 +73,19 @@ const CustomDrawerPlanRoom = React.memo(
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Grid container spacing={2}>
-          {/* ThumbnailsViewer is visible on both mobile and desktop */}
-          <Grid item xs={4} sm={2}>
-            <ThumbnailsViewer
-              currentSheetIndex={currentSheetIndex}
-              setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                overflowY: 'auto', // Allows vertical scrolling if needed
-                height: '80vh', // Sets height for the thumbnails viewer
-              }}
-            />
-          </Grid>
-          {/* Main content area for zoomable images */}
-          <Grid item xs={8} sm={10}>
+        <Box sx={{ display: 'flex' }}>
+          <PlanRoomNav
+            currentSheetIndex={currentSheetIndex}
+            setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
+          />
+
+          <Box width={1} height={1}>
             <SimpleSlider
               currentSheetIndex={currentSheetIndex}
               setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Drawer>
     );
   }
