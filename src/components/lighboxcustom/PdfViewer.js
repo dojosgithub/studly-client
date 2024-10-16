@@ -18,6 +18,7 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
+import { display } from '@mui/system';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
@@ -60,9 +61,9 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     width: '100%', // Full width of the container
     height: '100%', // Full height of the container
     overflow: 'hidden', // Ensure no content overflow
-    display: 'flex', // Flexbox for centering content
-    justifyContent: 'center', // Center horizontally
-    alignItems: 'center', // Center vertically
+    // display: 'flex', // Flexbox for centering content
+    // justifyContent: 'center', // Center horizontally
+    // alignItems: 'center', // Center vertically
   };
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
@@ -118,11 +119,11 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
       style={{
         width: '100%',
         height: '100%',
-        minHeight: '100%',
+        minHeight: '100vh',
         backgroundColor: '#E4E4E4',
         overflowY: 'auto',
-        overflowX: 'hidden',
-        // display: 'flex',
+        overflowX: 'auto',
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
       }}
@@ -130,21 +131,22 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
       {sheet?.src?.preview && (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <TransformWrapper
-            defaultScale={zoomLevel}
+            // defaultScale={zoomLevel}
             minScale={0.2}
             maxScale={5}
             pinch={{ step: 0.05 }}
-            onZoomChange={(newZoom) => {
-              setZoomLevel(newZoom.state.scale);
-              zoomPluginInstance.zoomTo(newZoom.state.scale);
-            }}
+            // onZoomChange={(newZoom) => {
+            //   setZoomLevel(newZoom.state.scale);
+            //   zoomPluginInstance.zoomTo(newZoom.state.scale);
+            // }}
+            wheel={{ wheelDisabled: true }}
             wrapperStyle={{
               flex: 1,
             }}
           >
-            <TransformComponent>
-              {/* <img src={sheet.src.preview} alt="omg" /> */}
+            <TransformComponent contentStyle={{ width: '100%', height: '100%', flex: 1 }}>
               <Viewer
+                defaultScale={zoomLevel}
                 fileUrl={sheet.src.preview}
                 plugins={[
                   defaultLayoutPluginInstance,

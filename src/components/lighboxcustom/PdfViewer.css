@@ -62,9 +62,9 @@
 }
 
 .slider-container>div {
-  display: block !important;
+  /* display: block !important; */
 }
 
-.slider-container>div>div {
-  display: flex;
+.slider-container .react-transform-wrapper {
+  flex: 1
 }
