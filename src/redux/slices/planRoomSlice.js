@@ -82,7 +82,7 @@ export const getExtractedSheetsText = createAsyncThunk(
     try {
       // Make the Axios request (no streaming in browser)
       const response = await axiosInstance.post(endpoints.planRoom.extractSheet, data, {
-        timeout: 120000, // Timeout increased to 120 seconds (client-side)
+        timeout: 60000 * 25, // Timeout increased to 5minutes (client-side)
       });
 
       // Since Axios doesn't support streams in the browser, we handle it all at once
