@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux';
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 // hook-form
@@ -17,6 +18,7 @@ import Iconify from 'src/components/iconify';
 import FormProvider from 'src/components/hook-form';
 import { useResponsive } from 'src/hooks/use-responsive';
 // mock
+import { resetSheets } from 'src/redux/slices/planRoomSlice';
 import PlanRoomPdfConverter from './plan-room-pdf-converter';
 // hooks
 
@@ -24,15 +26,16 @@ import PlanRoomPdfConverter from './plan-room-pdf-converter';
 
 export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSubmit, ...other }) {
   const confirmIsFormDisabled = useBoolean(false);
-
+  const dispatch = useDispatch();
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
       .of(
         Yup.object().shape({
           sheetNumber: Yup.string().required('Sheet Number is required'),
           sheetTitle: Yup.string().required('Sheet title is required'),
-          src: Yup.object().required('Image src is required'),
+          src: Yup.object().nullable().required('Image src is required'),
           category: Yup.array(),
+          isLoading: Yup.boolean(),
         })
       )
       .min(1, 'At least one trade is required'),
@@ -40,7 +43,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
   });
 
   const defaultValues = useMemo(() => {
-    const data = { sheetNumber: '', sheetTitle: '', src: '' };
+    const data = { sheetNumber: '', sheetTitle: '', category: [], src: null, isLoading: false };
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
       attachments: [],
@@ -73,6 +76,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
       }
       confirmIsFormDisabled.onTrue();
       onFormSubmit(data?.sheets, data?.attachments);
+      dispatch(resetSheets());
     } catch (e) {
       console.error(e);
     }

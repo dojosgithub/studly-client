@@ -20,18 +20,32 @@ import {
 // components
 import CustomImage from 'src/components/image';
 import { RHFTextField } from 'src/components/hook-form';
-import { getExtractedSheetsText, getPlanRoomPDFSThumbnails } from 'src/redux/slices/planRoomSlice';
+import {
+  getExtractedSheetsText,
+  getPlanRoomPDFSThumbnails,
+  newSheets,
+} from 'src/redux/slices/planRoomSlice';
 
 function PlanRoomPdfConverter({ files, isDisabled }) {
+  const sheetsData = useSelector((state) => state?.planRoom?.sheets);
+  const [sheets, setSheets] = useState(sheetsData); // Local state for sheets
   const [images, setImages] = useState([]);
-  const [sheets, setSheets] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const { setValue, control, getValues } = useFormContext();
+  const sheetsForm = getValues('sheets');
 
   const isLoadingRef = useRef(null);
-  const dispatch = useDispatch();
+  const isLoadingAutofillRef = useRef(null);
 
-  const { setValue, control, getValues } = useFormContext();
-  console.log('sheets', getValues('sheets'));
+  // Synchronize local sheets state with sheetsData from Redux
+  useEffect(() => {
+    setSheets(sheetsData);
+    setValue('sheets', sheetsData);
+    console.log('sheetsData', sheetsData);
+    console.log('sheetsForm', sheetsForm);
+    // eslint-disable-next-line
+  }, [sheetsData]);
 
   const filter = createFilterOptions();
   const planRoomCategories = useSelector((state) => state.project.current.planRoomCategories);
@@ -47,20 +61,18 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
     }
     const data = await dispatch(getPlanRoomPDFSThumbnails({ data: formData }));
     if (data.payload) {
-      // const { payload } = await dispatch(
-      //   getExtractedSheetsText({ imageUrls: data.payload.thumbails })
-      // );
-      // console.log('extractedData', payload);
-      // const sheetData = [...payload].map(({ id, ...rest }) => ({
-      //   ...rest,
-      //   src: '',
-      //   category: [],
-      // }));
-      // console.log('sheetData', sheetData);
-      // setValue('sheets', sheetData);
+      const sheetData = data.payload.sheets.map((src) => ({
+        src,
+        sheetTitle: '',
+        sheetNumber: '',
+        category: [],
+        isLoading: false,
+      }));
+      console.log('sheetDataUp', sheetData);
       setValue('attachments', data.payload.files);
       setImages(data.payload.thumbails);
-      setSheets(data.payload.sheets);
+      setSheets(sheetData);
+      dispatch(newSheets(sheetData));
     }
 
     isLoadingRef.current = false;
@@ -76,29 +88,32 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
   }, []);
 
   const handleAutofill = async () => {
-    setIsLoading(true);
     isDisabled.onTrue();
+    isLoadingAutofillRef.current = true;
+    const updatedSheets = sheetsData.map((sheet) => ({
+      ...sheet,
+      isLoading: true, // Update isLoading to true
+    }));
+    console.log('updatedSheets', updatedSheets);
+    dispatch(newSheets(updatedSheets));
+    setValue('sheets', updatedSheets);
     const { payload } = await dispatch(getExtractedSheetsText({ imageUrls: images }));
+
     if (payload) {
-      const res = await payload;
-      console.log('extractedData', res);
-    } else {
-      console.error('Error: payload is undefined');
+      const data = await payload;
+      // const sheetData = [...payload].map(({ id, ...rest }) => ({
+      //   ...rest,
+      //   src: '',
+      //   category: [],
+      // }));
+      console.log('sheetData', data);
+      setValue('sheets', data);
     }
-    if (payload) {
-      const sheetData = [...payload].map(({ id, ...rest }) => ({
-        ...rest,
-        src: '',
-        category: [],
-      }));
-      console.log('sheetData', sheetData);
-      setValue('sheets', sheetData);
-    }
-    setIsLoading(false);
     isDisabled.onFalse();
+    isLoadingAutofillRef.current = false;
   };
 
-  if (sheets?.length <= 0 || images?.length <= 0 || isLoadingRef?.current) {
+  if (!sheets || sheets.length === 0 || isLoadingRef.current) {
     return (
       <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
         <CircularProgress color="primary" />
@@ -108,11 +123,15 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
   return (
     <>
       <Box sx={{ display: 'grid', placeContent: 'end', width: '100%', height: '100%', mt: 2 }}>
-        <Button variant="contained" onClick={handleAutofill} disabled={isLoading}>
+        <Button
+          variant="contained"
+          onClick={handleAutofill}
+          disabled={isLoadingAutofillRef.current}
+        >
           Autofill Fields
         </Button>
       </Box>
-      {images.map((image, index) => (
+      {sheets.map((data, index) => (
         <Box
           gap={3}
           display="grid"
@@ -124,22 +143,26 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
           key={index}
           my={5}
         >
-          <Typography>{sheets[index].name}</Typography>
+          <Typography>{data.src?.name}</Typography>
           <CustomImage
             sx={{ width: 300 }}
             alt={`Corner of page ${index + 1}`}
-            src={sheets[index].thumbnail}
+            src={data.src?.thumbnail}
           />
 
           <Box p={4}>
-            <CustomImage sx={{ width: 300 }} alt={`Corner of page ${index + 1}`} src={image} />
+            <CustomImage
+              sx={{ width: 300 }}
+              alt={`Corner of page ${index + 1}`}
+              src={data.src?.croppedThumbnail}
+            />
           </Box>
-          {isLoading && (
+          {data.isLoading && (
             <Box sx={{ display: 'grid', placeContent: 'center', width: '100%', height: '100%' }}>
               <CircularProgress color="primary" />
             </Box>
           )}
-          {!isLoading && (
+          {!data.isLoading && (
             <Box>
               <RHFTextField
                 name={`sheets[${index}].sheetTitle`}
@@ -224,7 +247,7 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
               />
             </Box>
           )}
-          {setValue(`sheets[${index}].src`, sheets[index])}
+          {setValue(`sheets[${index}].src`, data.src)}
         </Box>
       ))}
     </>
