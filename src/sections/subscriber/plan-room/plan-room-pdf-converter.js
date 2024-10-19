@@ -9,8 +9,10 @@ import 'pdfjs-dist/build/pdf.worker.entry';
 // @mui
 import Box from '@mui/material/Box';
 import {
+  Alert,
   Autocomplete,
   Button,
+  Card,
   Chip,
   CircularProgress,
   TextField,
@@ -25,9 +27,11 @@ import {
   getPlanRoomPDFSThumbnails,
   newSheets,
 } from 'src/redux/slices/planRoomSlice';
+import { useBoolean } from 'src/hooks/use-boolean';
 
 function PlanRoomPdfConverter({ files, isDisabled }) {
   const sheetsData = useSelector((state) => state?.planRoom?.sheets);
+  const sheetsLoaded = useSelector((state) => state?.planRoom?.sheetsLoaded);
   const [sheets, setSheets] = useState(sheetsData); // Local state for sheets
   const [images, setImages] = useState([]);
 
@@ -36,7 +40,7 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
   const sheetsForm = getValues('sheets');
 
   const isLoadingRef = useRef(null);
-  const isLoadingAutofillRef = useRef(null);
+  const isLoadingAutofill = useBoolean(false);
 
   // Synchronize local sheets state with sheetsData from Redux
   useEffect(() => {
@@ -89,7 +93,7 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
 
   const handleAutofill = async () => {
     isDisabled.onTrue();
-    isLoadingAutofillRef.current = true;
+    isLoadingAutofill.onTrue();
     const updatedSheets = sheetsData.map((sheet) => ({
       ...sheet,
       isLoading: true, // Update isLoading to true
@@ -110,7 +114,7 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
       setValue('sheets', data);
     }
     isDisabled.onFalse();
-    isLoadingAutofillRef.current = false;
+    isLoadingAutofill.onFalse();
   };
 
   if (!sheets || sheets.length === 0 || isLoadingRef.current) {
@@ -122,37 +126,39 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
   }
   return (
     <>
-      <Box sx={{ display: 'grid', placeContent: 'end', width: '100%', height: '100%', mt: 2 }}>
-        <Button
-          variant="contained"
-          onClick={handleAutofill}
-          disabled={isLoadingAutofillRef.current}
-        >
-          Autofill Fields
+      <Box sx={{ display: 'grid', placeContent: 'end', width: '100%', height: '100%', my: 2 }}>
+        <Button variant="contained" onClick={handleAutofill} disabled={isLoadingAutofill.value}>
+          Extract Title / Number
         </Button>
       </Box>
+      {isLoadingAutofill.value && (
+        <Alert variant="outlined" severity="success" icon={false}>
+          Processing... ({sheetsLoaded} / {sheets?.length})
+        </Alert>
+      )}
       {sheets.map((data, index) => (
-        <Box
-          gap={3}
-          display="grid"
-          gridTemplateColumns={{
-            xs: 'repeat(1, 1fr)',
-            md: 'repeat(4, 1fr)',
-          }}
-          alignItems="center"
+        <Card
           key={index}
-          my={5}
+          sx={{
+            display: { xs: 'flex', md: 'grid' },
+            flexDirection: 'column',
+            gap: '1rem',
+            alignItems: 'center',
+            gridTemplateColumns: { xs: 'repeat(1, 1fr)', md: '.7fr 1.5fr .7fr' },
+            my: 5,
+            p: { xs: '3rem 2rem', md: '0 1rem' },
+          }}
         >
           <Typography>{data.src?.name}</Typography>
-          <CustomImage
-            sx={{ width: 300 }}
-            alt={`Corner of page ${index + 1}`}
-            src={data.src?.thumbnail}
-          />
 
-          <Box p={4}>
+          <Box p={4} display="flex" minWidth="max-content" gap={2}>
             <CustomImage
-              sx={{ width: 300 }}
+              sx={{ width: 120, '& img': { objectFit: 'contain !important' } }}
+              alt={`Corner of page ${index + 1}`}
+              src={data.src?.thumbnail}
+            />
+            <CustomImage
+              sx={{ width: 200 }}
               alt={`Corner of page ${index + 1}`}
               src={data.src?.croppedThumbnail}
             />
@@ -163,16 +169,16 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
             </Box>
           )}
           {!data.isLoading && (
-            <Box>
+            <Box width={1}>
               <RHFTextField
                 name={`sheets[${index}].sheetTitle`}
-                label="Sheet Title"
+                label="Title"
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
               />
               <RHFTextField
                 name={`sheets[${index}].sheetNumber`}
-                label="Sheet Number"
+                label="Number"
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
               />
@@ -248,7 +254,7 @@ function PlanRoomPdfConverter({ files, isDisabled }) {
             </Box>
           )}
           {setValue(`sheets[${index}].src`, data.src)}
-        </Box>
+        </Card>
       ))}
     </>
   );

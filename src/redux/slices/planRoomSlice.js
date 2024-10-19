@@ -128,7 +128,7 @@ export const getExtractedSheetsText = createAsyncThunk(
       const sheets = [];
       let index = 0;
       // let result = '';
-
+      dispatch(resetSheetsLoaded());
       // Wrap the streaming process inside a Promise and return it
       return new Promise((resolve, reject) => {
         // Recursive function to read the stream chunks
@@ -241,6 +241,7 @@ const initialState = {
   create: {},
   current: {},
   sheets: [],
+  sheetsLoaded: 0,
   isLoading: false,
   error: null,
 };
@@ -252,6 +253,10 @@ const planRoom = createSlice({
     resetPlanRoomState: () => initialState,
     resetSheets: (state) => {
       state.sheets = [];
+      state.sheetsLoaded = 0;
+    },
+    resetSheetsLoaded: (state) => {
+      state.sheetsLoaded = 0; // Append new data
     },
     newSheets: (state, action) => {
       state.sheets = [...action.payload]; // Append new data
@@ -270,6 +275,7 @@ const planRoom = createSlice({
       state.sheets = state.sheets.map((sheet, i) =>
         i === index ? { ...sheet, ...mergedData, isLoading: false } : sheet
       );
+      state.sheetsLoaded += 1;
     },
   },
   extraReducers: (builder) => {
@@ -280,12 +286,14 @@ const planRoom = createSlice({
     });
     builder.addCase(createPlanRoom.fulfilled, (state, action) => {
       state.create = action.payload;
+      state.sheetsLoaded = 0;
       state.isLoading = false;
       state.error = null;
     });
     builder.addCase(createPlanRoom.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
+      state.sheetsLoaded = 0;
     });
 
     // * Get PlanRoom List
@@ -361,5 +369,6 @@ const planRoom = createSlice({
   },
 });
 
-export const { resetPlanRoomState, resetSheets, newSheets, appendToSheets } = planRoom.actions;
+export const { resetPlanRoomState, resetSheets, resetSheetsLoaded, newSheets, appendToSheets } =
+  planRoom.actions;
 export default planRoom.reducer;

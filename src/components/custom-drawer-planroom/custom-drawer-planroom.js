@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { truncate } from 'lodash';
 import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
+import { useResponsive } from 'src/hooks/use-responsive';
 import PlanRoomNav from 'src/sections/subscriber/plan-room/plan-room-nav';
 import Iconify from '../iconify';
 import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
@@ -21,6 +23,7 @@ const CustomDrawerPlanRoom = React.memo(
     const dispatch = useDispatch();
     const [currentSheetIndex, setCurrentSheetIndex] = useState(null);
     const planroom = useSelector((state) => state?.planRoom?.current);
+    const isMobile = useResponsive('down', 'md');
 
     const renderHead = (
       <Stack
@@ -30,7 +33,10 @@ const CustomDrawerPlanRoom = React.memo(
         sx={{ py: 2, pr: 2.5, pl: 5 }}
       >
         <Typography fontSize="1.5rem" fontWeight="bold">
-          {planroom?.planName}
+          {truncate(planroom?.planName, {
+            length: isMobile ? 16 : 20,
+            omission: '...',
+          })}
         </Typography>
         <IconButton onClick={onClose}>
           <Iconify icon="gg:close-o" color="black" height={32} width={32} />
