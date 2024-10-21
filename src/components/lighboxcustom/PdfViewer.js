@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
@@ -24,6 +24,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
   const [zoomLevel, setZoomLevel] = useState(0.4); // Initial zoom level
+  const zoomLevelRef = useRef(0.4);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
@@ -43,11 +44,14 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         event.preventDefault();
 
         const zoomStep = event.deltaY < 0 ? 0.05 : -0.05;
-        setZoomLevel((prevZoom) => {
-          const newZoom = Math.max(0.1, Math.min(prevZoom + zoomStep, 5));
-          zoomPluginInstance.zoomTo(newZoom);
-          return newZoom;
-        });
+        // setZoomLevel((prevZoom) => {
+        //   const newZoom = Math.max(0.1, Math.min(prevZoom + zoomStep, 5));
+        //   zoomPluginInstance.zoomTo(newZoom);
+        //   return newZoom;
+        // });
+        const newZoom = Math.max(0.1, Math.min(zoomLevelRef.current + zoomStep, 5));
+        zoomPluginInstance.zoomTo(newZoom);
+        zoomLevelRef.current = newZoom;
       }
     };
 
@@ -130,7 +134,8 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             maxScale={5}
             pinch={{ step: 0.05 }}
             onPinching={(e) => {
-              setZoomLevel(e.state.scale);
+              // setZoomLevel(e.state.scale);
+              zoomLevelRef.current = e.state.scale;
               zoomPluginInstance.zoomTo(e.state.scale);
             }}
             // onZoomChange={(newZoom) => {
@@ -146,7 +151,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
           >
             <TransformComponent contentStyle={{ width: '100%', height: '100%' }}>
               <Viewer
-                defaultScale={zoomLevel}
+                defaultScale={zoomLevelRef?.current}
                 fileUrl={sheet.src.preview}
                 plugins={[
                   defaultLayoutPluginInstance,
