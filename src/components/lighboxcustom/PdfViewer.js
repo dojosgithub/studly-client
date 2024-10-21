@@ -18,7 +18,7 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import { display } from '@mui/system';
+import { display, width } from '@mui/system';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
@@ -119,47 +119,47 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
       style={{
         width: '100%',
         height: '100%',
-        minHeight: '100vh',
         backgroundColor: '#E4E4E4',
-        overflowY: 'auto',
-        overflowX: 'auto',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
       }}
     >
       {sheet?.src?.preview && (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          {/* <TransformWrapper
+          <TransformWrapper
             // defaultScale={zoomLevel}
             minScale={0.2}
             maxScale={5}
             pinch={{ step: 0.05 }}
+            onPinching={(e) => {
+              setZoomLevel(e.state.scale);
+              zoomPluginInstance.zoomTo(e.state.scale);
+            }}
             // onZoomChange={(newZoom) => {
             //   setZoomLevel(newZoom.state.scale);
             //   zoomPluginInstance.zoomTo(newZoom.state.scale);
             // }}
             wheel={{ wheelDisabled: true }}
-            wrapperStyle={{
-              flex: 1,
-            }}
+            doubleClick={{ disabled: true }}
+            // onWheel={(e) => {
+            //   setZoomLevel(e.state.scale);
+            //   zoomPluginInstance.zoomTo(e.state.scale);
+            // }}
           >
-            <TransformComponent contentStyle={{ width: '100%', height: '100%', flex: 1 }}> */}
-          <Viewer
-            defaultScale={zoomLevel}
-            fileUrl={sheet.src.preview}
-            plugins={[
-              defaultLayoutPluginInstance,
-              zoomPluginInstance,
-              searchPluginInstance,
-              fullscreenPluginInstance,
-              selectionModePluginInstance,
-            ]}
-            initialPage={1}
-            style={viewerStyle} // Apply viewerStyle here
-          />
-          {/* </TransformComponent>
-          </TransformWrapper> */}
+            <TransformComponent contentStyle={{ width: '100%', height: '100%' }}>
+              <Viewer
+                defaultScale={zoomLevel}
+                fileUrl={sheet.src.preview}
+                plugins={[
+                  defaultLayoutPluginInstance,
+                  zoomPluginInstance,
+                  searchPluginInstance,
+                  fullscreenPluginInstance,
+                  selectionModePluginInstance,
+                ]}
+                initialPage={1}
+                style={viewerStyle} // Apply viewerStyle here
+              />
+            </TransformComponent>
+          </TransformWrapper>
         </Worker>
       )}
     </div>
