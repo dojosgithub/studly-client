@@ -144,6 +144,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             // }}
             wheel={{ wheelDisabled: true }}
             doubleClick={{ disabled: true }}
+            panning={{ disabled: true }}
             // onWheel={(e) => {
             //   setZoomLevel(e.state.scale);
             //   zoomPluginInstance.zoomTo(e.state.scale);
