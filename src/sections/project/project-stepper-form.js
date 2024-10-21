@@ -169,9 +169,6 @@ export default function ProjectStepperForm() {
     trigger,
   } = methods;
 
-  const formValues = getValues();
-  const { name, address, state, city, zipCode } = formValues;
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!companies) {
@@ -226,6 +223,7 @@ export default function ProjectStepperForm() {
     } else {
       isFormValid = await trigger(currentStepValue);
     }
+    console.log('(isFormValid)', isFormValid);
     return { isFormValid, currentStepValue };
   };
 
@@ -246,8 +244,12 @@ export default function ProjectStepperForm() {
     }
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
+      const formValues = getValues();
+      const { name, address, state, city, zipCode } = formValues;
+      console.log('formValues', formValues);
       switch (currentStepValue) {
         case 'name':
+          console.log('formValues (isFormValid)', formValues);
           dispatch(setProjectName({ name, address, state, city, zipCode }));
           dispatch(setProjectWorkflow(formValues?.workflow));
           break;

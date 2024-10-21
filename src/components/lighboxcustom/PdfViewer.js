@@ -130,7 +130,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     >
       {sheet?.src?.preview && (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          <TransformWrapper
+          {/* <TransformWrapper
             // defaultScale={zoomLevel}
             minScale={0.2}
             maxScale={5}
@@ -144,22 +144,22 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
               flex: 1,
             }}
           >
-            <TransformComponent contentStyle={{ width: '100%', height: '100%', flex: 1 }}>
-              <Viewer
-                defaultScale={zoomLevel}
-                fileUrl={sheet.src.preview}
-                plugins={[
-                  defaultLayoutPluginInstance,
-                  zoomPluginInstance,
-                  searchPluginInstance,
-                  fullscreenPluginInstance,
-                  selectionModePluginInstance,
-                ]}
-                initialPage={1}
-                style={viewerStyle} // Apply viewerStyle here
-              />
-            </TransformComponent>
-          </TransformWrapper>
+            <TransformComponent contentStyle={{ width: '100%', height: '100%', flex: 1 }}> */}
+          <Viewer
+            defaultScale={zoomLevel}
+            fileUrl={sheet.src.preview}
+            plugins={[
+              defaultLayoutPluginInstance,
+              zoomPluginInstance,
+              searchPluginInstance,
+              fullscreenPluginInstance,
+              selectionModePluginInstance,
+            ]}
+            initialPage={1}
+            style={viewerStyle} // Apply viewerStyle here
+          />
+          {/* </TransformComponent>
+          </TransformWrapper> */}
         </Worker>
       )}
     </div>
