@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-
+import Grid from '@mui/material/Unstable_Grid2';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -20,6 +20,7 @@ import { LoadingButton } from '@mui/lab';
 import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { isBefore } from 'date-fns';
+import useResponsive from '@mui/material/useMediaQuery'; // Import useResponsive
 
 //
 import { paths } from 'src/routes/paths';
@@ -254,6 +255,7 @@ const SubmittalsDetails = ({ id }) => {
     enqueueSnackbar(payload || 'Submittal status updated successfully', { variant: 'success' });
     navigate(paths.subscriber.submittals.list);
   };
+  const isSmallScreen = useResponsive((theme) => theme.breakpoints.down('sm'));
 
   return (
     <>
@@ -273,7 +275,7 @@ const SubmittalsDetails = ({ id }) => {
           }}
           label={status}
         />
-
+  
         {menuItems.length > 0 && (
           <div>
             <Button
@@ -306,136 +308,261 @@ const SubmittalsDetails = ({ id }) => {
           </div>
         )}
       </Box>
+  
+      <Grid container spacing={2} sx={{ mt: 3, mb: 5 }}>
+  {/* Display alert if submittal is submitted */}
+  {status === 'Submitted' &&
+    (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
+     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+      <Grid item xs={12}>
+        <Alert severity="success">
+          Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.
+        </Alert>
+      </Grid>
+    )}
 
-      <Stack
+  {/* Display alert if user's response to the submittal was submitted */}
+  {isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id) && (
+    <Grid item xs={12}>
+      <Alert severity="success">
+        Your response to the submittal was submitted. Thank You!
+      </Alert>
+    </Grid>
+  )}
+
+  {/* Trade */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Trade</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {trade?.name}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Submittal ID */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Submittal ID</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {submittalId}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Name */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Name</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {name}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Lead Time */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Lead Time</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {leadTime}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Description */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Description</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {description}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Type */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Type</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {type}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Status */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Status</Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+        <Label color={getStatusColor(status)} variant="soft">
+          {status}
+        </Label>
+      </Box>
+    </StyledCard>
+  </Grid>
+
+  {/* Submitted Date */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Submitted Date</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {submittedDate && fDateISO(submittedDate)}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Requested Return Date */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Requested Return Date</Typography>
+      <Typography
         sx={{
-          mt: 3,
-          mb: 5,
-          gap: 2,
+          color: (theme) =>
+            isBefore(new Date(returnDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
+              ? 'red'
+              : theme.palette.secondary,
+          flex: 0.75,
+          px: 2,
         }}
       >
-        {/* // ? If General Contractor has submitted Submittal to the (Architect || Engineer || Sub Contractor) */}
-        {status === 'Submitted' &&
-          (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
-            currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
-            <Alert severity="success">
-              Submittal is submitted to (architect/engineer/subcontractor). Is pending for review.
-            </Alert>
-          )}
+        {returnDate && fDateISO(returnDate)}
+      </Typography>
+    </StyledCard>
+  </Grid>
 
-        {isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id) && (
-          <Alert severity="success">Your response to the submittal was submitted. Thank You!</Alert>
+  {/* Creator */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Creator</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {creator?.firstName} {creator?.lastName}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* Attachments */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Attachments</Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+        <MultiFilePreview files={attachments} thumbnail onDownload />
+      </Box>
+    </StyledCard>
+  </Grid>
+
+  {/* Assignee / Owner */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Assignee / Owner</Typography>
+      <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+        {owner?.length > 0 &&
+          owner.map((item, index) => (
+            <span key={index}>
+              {item?.firstName} {item?.lastName}
+              {index < owner.length - 1 ? ', ' : ''}
+            </span>
+          ))}
+      </Typography>
+    </StyledCard>
+  </Grid>
+
+  {/* CC List */}
+  <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">CC List</Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+        {ccList?.length > 0 &&
+          ccList.slice(0, 4).map((item) => (
+            <Chip key={item} size="small" color="secondary" variant="outlined" label={item} />
+          ))}
+        {ccList?.length > 4 && (
+          <Chip size="small" variant="outlined" color="secondary" label={`${ccList.length - 4} +`} />
         )}
+      </Box>
+    </StyledCard>
+  </Grid>
+</Grid>
 
-        <StyledCard>
-          <Typography className="submittalTitle">Trade</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {trade?.name}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Submittal ID</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {submittalId}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Name</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {name}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Lead Time</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {leadTime}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Description</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {description}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Type</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {type}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Status</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            <Label color={getStatusColor(status)} variant="soft">
-              {status}
-            </Label>
-          </Box>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Submitted Date</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {submittedDate && fDateISO(submittedDate)}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Requested Return Date</Typography>
-          <Typography
-            sx={{
-              color: (theme) =>
-                isBefore(new Date(returnDate).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
-                  ? 'red'
-                  : theme.palette.secondary,
-              flex: 0.75,
-              px: 2,
-            }}
-          >
-            {returnDate && fDateISO(returnDate)}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Creator</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {creator?.firstName} {creator?.lastName}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Attachments</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            <MultiFilePreview files={attachments} thumbnail onDownload />
-          </Box>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Assignee / Owner</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {owner?.length > 0 &&
-              owner.map((item, index) => (
-                <span key={index}>
-                  {item?.firstName} {item?.lastName}
-                  {index < owner.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">CC List</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            {ccList?.length > 0 &&
-              ccList
-                ?.slice(0, 4)
-                .map((item) => (
-                  <Chip key={item} size="small" color="secondary" variant="outlined" label={item} />
-                ))}
-            {ccList?.length > 4 && (
-              <Chip
-                size="small"
-                variant="outlined"
-                color="secondary"
-                label={`${ccList.length - 4} +`}
-              />
-            )}
-          </Box>
-        </StyledCard>
-      </Stack>
+  
       {sentToAllModal?.value && (
         <SubmittalSendAllDialog
           open={sentToAllModal.value}
@@ -444,10 +571,11 @@ const SubmittalsDetails = ({ id }) => {
       )}
     </>
   );
-};
-
-export default SubmittalsDetails;
-
-SubmittalsDetails.propTypes = {
-  id: PropTypes.string,
-};
+  };
+  
+  export default SubmittalsDetails;
+  
+  SubmittalsDetails.propTypes = {
+    id: PropTypes.string,
+  };
+  
