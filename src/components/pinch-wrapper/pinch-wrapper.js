@@ -2,27 +2,31 @@ import React, { useState, useRef } from 'react';
 
 // Higher-Order Component (HOC) that adds pinch-to-zoom functionality
 const PinchWrapper = (WrappedComponent) => {
-  // The HOC returns a new component
   const PinchZoomWrapper = (props) => {
     const [scale, setScale] = useState(1);
     const initialDistance = useRef(0);
-    const containerRef = useRef(null);
+    const isPinching = useRef(false); // Track whether a pinch is in progress
 
     const handleTouchStart = (e) => {
       if (e.touches.length === 2) {
-        e.preventDefault(); // Prevent default touch behavior
+        e.preventDefault(); // Prevent default touch behavior (like scrolling)
         const distance = getDistance(e.touches);
         initialDistance.current = distance;
+        isPinching.current = true; // Set pinching state to true
       }
     };
 
     const handleTouchMove = (e) => {
-      if (e.touches.length === 2) {
-        e.preventDefault(); // Prevent default touch behavior
+      if (isPinching.current && e.touches.length === 2) {
+        e.preventDefault(); // Prevent default touch behavior (like scrolling)
         const newDistance = getDistance(e.touches);
-        const scaleFactor = newDistance / initialDistance.current;
+        const scaleFactor = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit zoom range
         setScale(scaleFactor); // Update the scale state dynamically
       }
+    };
+
+    const handleTouchEnd = () => {
+      isPinching.current = false; // Reset pinching state
     };
 
     const getDistance = (touches) => {
@@ -34,17 +38,17 @@ const PinchWrapper = (WrappedComponent) => {
 
     return (
       <div
-        ref={containerRef}
         style={{
           transform: `scale(${scale})`,
-          transformOrigin: 'center', // Ensure scaling is centered
+          transformOrigin: 'center',
           transition: 'transform 0.1s',
-          touchAction: 'none',
           width: '100%',
           height: '100%',
+          overflow: 'hidden', // Prevent overflow which can lead to scrolling
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <WrappedComponent {...props} />
       </div>
