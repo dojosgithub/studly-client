@@ -23,8 +23,8 @@ import { display, width } from '@mui/system';
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  const [zoomLevel, setZoomLevel] = useState(0.4); // Initial zoom level
-  const zoomLevelRef = useRef(0.4);
+  const [zoomLevel, setZoomLevel] = useState(0.5); // Initial zoom level
+  const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
