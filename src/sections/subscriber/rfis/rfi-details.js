@@ -1,23 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
+import Grid from '@mui/material/Unstable_Grid2';
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Box, Card, Chip, Stack, Typography, alpha, styled } from '@mui/material';
+import { Alert, Box, Card, Chip, Stack, Typography, alpha, styled, useMediaQuery } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { isBefore } from 'date-fns';
 
-//
 import { paths } from 'src/routes/paths';
 import { fDateISO } from 'src/utils/format-time';
-
 import { getRfiDetails, submitRfiToArchitect } from 'src/redux/slices/rfiSlice';
-//
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { getStatusColor } from 'src/utils/constants';
 import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
+
 import { isIncluded } from 'src/utils/functions';
 import { useBoolean } from 'src/hooks/use-boolean';
 import RfiResponseDialog from './rfi-response-dialog';
@@ -32,7 +31,6 @@ const StyledCard = styled(Card, {
     fontWeight: 'bold',
   },
   display: 'flex',
-  alignItems: 'center',
   borderRadius: '10px',
   padding: '1rem',
   gap: '1rem',
@@ -41,15 +39,17 @@ const StyledCard = styled(Card, {
   }),
 }));
 
+
 const RfiDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const confirm = useBoolean();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentRfi = useSelector((state) => state.rfi?.current);
+
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm')); // Responsive check
 
   const {
     name,
@@ -70,9 +70,9 @@ const RfiDetails = ({ id }) => {
   } = currentRfi;
 
   useEffect(() => {
-    // getMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRfi, id, currentUser, isSubmitting]);
+
   const handleSubmitToArchitect = async () => {
     setIsSubmitting(true);
     const { error, payload } = await dispatch(submitRfiToArchitect(id));
@@ -127,34 +127,54 @@ const RfiDetails = ({ id }) => {
             </LoadingButton>
           )}
       </Box>
-      <Stack
-        sx={{
-          mt: 3,
-          mb: 5,
-          gap: 2,
-        }}
-      >
-        {/* // ? If General Contractor has submitted Submittal to the (Architect || Engineer || Sub Contractor) */}
+      <Grid container spacing={2} sx={{ mt: 3, mb: 5 }}>
+ 
         {status === 'Submitted' &&
           (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
             currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
+              <Grid item xs={12}>
             <Alert severity="success">RFI is submitted successfully!.</Alert>
+            </Grid>
           )}
-
-        <StyledCard>
+             
+             <Grid item xs={12}>
+             <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
           <Typography className="submittalTitle">Title</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {name}
           </Typography>
         </StyledCard>
-        <StyledCard>
+
+        </Grid>
+
+
+   <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Description</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {description}
-          </Typography>
+          </Typography
+          >
         </StyledCard>
+        </Grid>
+
+        <Grid item xs={12}>
         {isResponseSubmitted && (
-          <StyledCard>
+          <StyledCard  sx={{
+          width: '100%',
+            marginBottom: '10px',
+          flexDirection: isSmallScreen ? 'column' : 'row', // Responsive layout
+        }}>
             <Typography className="submittalTitle" sx={{ color: 'green', fontWeight: 'bold' }}>
               Official Response
             </Typography>
@@ -172,19 +192,42 @@ const RfiDetails = ({ id }) => {
             </Box>
           </StyledCard>
         )}
-        <StyledCard>
+        </Grid>
+
+<Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Drawing Sheet</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {drawingSheet}
           </Typography>
         </StyledCard>
-        <StyledCard>
+        </Grid>
+        <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Created Date</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {createdDate && fDateISO(createdDate)}
           </Typography>
         </StyledCard>
-        <StyledCard>
+
+
+        </Grid>
+
+        <Grid item xs={12}>
+
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Due Date</Typography>
           <Typography
             sx={{
@@ -199,19 +242,41 @@ const RfiDetails = ({ id }) => {
             {dueDate && fDateISO(dueDate)}
           </Typography>
         </StyledCard>
-        <StyledCard>
+        </Grid>
+
+        <Grid item xs={12}>
+
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Cost Impact</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {costImpact}
           </Typography>
         </StyledCard>
-        <StyledCard>
+        </Grid>
+
+        <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Schedule Delay</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
             {scheduleDelay}
           </Typography>
         </StyledCard>
-        <StyledCard>
+        </Grid>
+
+        <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Status</Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
             <Label color={getStatusColor(status)} variant="soft">
@@ -219,59 +284,82 @@ const RfiDetails = ({ id }) => {
             </Label>
           </Box>
         </StyledCard>
+        </Grid>
 
-        <StyledCard>
+        <Grid item xs={12}>
+    <StyledCard
+      sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}
+    >
+      <Typography className="submittalTitle">Attachments</Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+        <MultiFilePreview files={attachments} thumbnail onDownload />
+      </Box>
+    </StyledCard>
+  </Grid>
+
+        <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
           <Typography className="submittalTitle">Creator</Typography>
           <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {creator?.firstName} {creator?.lastName}
+            {creator?.name}
           </Typography>
         </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Attachments</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            <MultiFilePreview files={attachments} thumbnail onDownload />
-          </Box>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">Assignee / Owner</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {owner?.length > 0 &&
-              owner.map((item, index) => (
-                <span key={index}>
-                  {item?.firstName} {item?.lastName}
-                  {index < owner.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-          </Typography>
-        </StyledCard>
-        <StyledCard>
-          <Typography className="submittalTitle">CC List</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            {ccList?.length > 0 &&
-              ccList
-                ?.slice(0, 4)
-                .map((item) => (
-                  <Chip key={item} size="small" color="secondary" variant="outlined" label={item} />
-                ))}
-            {ccList?.length > 4 && (
-              <Chip
-                size="small"
-                variant="outlined"
-                color="secondary"
-                label={`${ccList.length - 4} +`}
-              />
-            )}
-          </Box>
-        </StyledCard>
-      </Stack>
+        </Grid>
 
-      <RfiResponseDialog open={confirm.value} onClose={() => confirm.onFalse()} />
+        <Grid item xs={12}>
+        <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
+          <Typography className="submittalTitle">Owner</Typography>
+          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+            {owner?.name}
+          </Typography>
+        </StyledCard>
+        </Grid>
+
+        <Grid item xs={12}>
+        {!isEmpty(ccList) && (
+          <StyledCard   sx={{
+        width: '100%',
+        marginBottom: '20px',
+        flexDirection: isSmallScreen ? 'column' : 'row',
+      }}>
+            <Typography className="submittalTitle">CC List</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+              {ccList.map((el) => (
+                <Chip
+                  key={el?._id}
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                  label={el?.name}
+                  sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                />
+              ))}
+            </Box>
+          </StyledCard>
+        )}
+        </Grid>
+      
+        </Grid>
+      
+      <RfiResponseDialog open={confirm.value} onClose={confirm.onFalse} />
     </>
   );
 };
 
-export default RfiDetails;
-
 RfiDetails.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
+
+export default RfiDetails;

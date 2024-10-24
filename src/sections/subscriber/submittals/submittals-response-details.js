@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-
 import { useSelector } from 'react-redux';
-import { Box, Card, Chip, Stack, Typography, alpha, styled } from '@mui/material';
-
-//
+import { Box, Card, Chip, Grid, Stack, Typography, alpha, styled } from '@mui/material';
 import { MultiFilePreview } from 'src/components/upload';
 
 const StyledCard = styled(Card, {
@@ -21,10 +18,15 @@ const StyledCard = styled(Card, {
   borderRadius: '10px',
   padding: '1rem',
   gap: '1rem',
+  flexDirection: 'row', // Default to row layout
+  '@media (max-width:600px)': {
+    flexDirection: 'column', // Column layout for small screens
+  },
   ...(isSubcontractor && {
     maxHeight: 300,
   }),
 }));
+
 const SubmittalsDetails = ({ id }) => {
   const currentUser = useSelector((state) => state.user?.user);
   const currentSubmittal = useSelector((state) => state.submittal.current);
@@ -54,35 +56,35 @@ const SubmittalsDetails = ({ id }) => {
         )}
       </Box>
 
-      <Stack
-        sx={{
-          mt: 3,
-          mb: 5,
-          gap: 2,
-        }}
-      >
-        <StyledCard>
-          <Typography className="submittalTitle" sx={{ flex: '.2 !important' }}>
-            Status
-          </Typography>
-          <Chip size="medium" variant="outlined" label={response?.status} />
-        </StyledCard>
+      <Stack sx={{ mt: 3, mb: 5, gap: 2 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <StyledCard>
+              <Typography className="submittalTitle">Status</Typography>
+              <Chip size="medium" variant="outlined" label={response?.status} />
+            </StyledCard>
+          </Grid>
 
-        <StyledCard>
-          <Typography className="submittalTitle">Comment</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
-            {response?.comment}
-          </Typography>
-        </StyledCard>
+          <Grid item xs={12}>
+            <StyledCard>
+              <Typography className="submittalTitle">Comment</Typography>
+              <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+                {response?.comment}
+              </Typography>
+            </StyledCard>
+          </Grid>
 
-        <StyledCard>
-          <Typography className="submittalTitle">Attachments</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-            {isResponseSubmitted && response?.attachments.length > 0 && (
-              <MultiFilePreview files={response?.attachments} thumbnail onDownload />
-            )}
-          </Box>
-        </StyledCard>
+          <Grid item xs={12}>
+            <StyledCard>
+              <Typography className="submittalTitle">Attachments</Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
+                {isResponseSubmitted && response?.attachments.length > 0 && (
+                  <MultiFilePreview files={response?.attachments} thumbnail onDownload />
+                )}
+              </Box>
+            </StyledCard>
+          </Grid>
+        </Grid>
       </Stack>
     </>
   );

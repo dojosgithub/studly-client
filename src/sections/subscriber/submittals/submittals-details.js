@@ -310,6 +310,7 @@ const SubmittalsDetails = ({ id }) => {
       </Box>
   
       <Grid container spacing={2} sx={{ mt: 3, mb: 5 }}>
+        
   {/* Display alert if submittal is submitted */}
   {status === 'Submitted' &&
     (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
