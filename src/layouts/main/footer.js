@@ -60,12 +60,12 @@ export default function Footer() {
       }}
     >
       <Container>
-        <Logo sx={{ mb: 1, mx: 'auto' }} />
+        <Logo sx={{ p: '1rem .5rem' }} />
 
         <Typography variant="caption" component="div">
           © All rights reserved
           <br /> made by
-          <Typography fontWeight='bold'> STUDLY </Typography>
+          <Typography fontWeight="bold"> STUDLY </Typography>
         </Typography>
       </Container>
     </Box>

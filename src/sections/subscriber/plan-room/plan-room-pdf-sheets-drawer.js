@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 // hook-form
@@ -8,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
-import { AppBar, Typography, Toolbar, IconButton, Divider } from '@mui/material';
+import { AppBar, Typography, Toolbar, IconButton, Divider, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { enqueueSnackbar } from 'notistack';
@@ -17,6 +18,8 @@ import Iconify from 'src/components/iconify';
 import FormProvider from 'src/components/hook-form';
 import { useResponsive } from 'src/hooks/use-responsive';
 // mock
+import { NAV } from 'src/layouts/config-layout';
+import { resetSheets } from 'src/redux/slices/planRoomSlice';
 import PlanRoomPdfConverter from './plan-room-pdf-converter';
 // hooks
 
@@ -24,14 +27,17 @@ import PlanRoomPdfConverter from './plan-room-pdf-converter';
 
 export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSubmit, ...other }) {
   const confirmIsFormDisabled = useBoolean(false);
-
+  const sheetsLoaded = useSelector((state) => state.planRoom?.sheetsLoaded);
+  const dispatch = useDispatch();
   const NewPlanSheetSchema = Yup.object().shape({
     sheets: Yup.array()
       .of(
         Yup.object().shape({
-          title: Yup.string().required('Sheet title is required'),
-          src: Yup.object().required('Image src is required'),
+          sheetNumber: Yup.string().required('Sheet Number is required'),
+          sheetTitle: Yup.string().required('Sheet title is required'),
+          src: Yup.object().nullable().required('Image src is required'),
           category: Yup.array(),
+          isLoading: Yup.boolean(),
         })
       )
       .min(1, 'At least one trade is required'),
@@ -39,7 +45,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
   });
 
   const defaultValues = useMemo(() => {
-    const data = { title: '', src: '' };
+    const data = { sheetNumber: '', sheetTitle: '', category: [], src: null, isLoading: false };
     return {
       sheets: Array.from({ length: files.length }, () => ({ ...data })),
       attachments: [],
@@ -53,25 +59,26 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
 
   const { handleSubmit } = methods;
 
-  const hasDuplicateTitles = (items) => {
+  const hasDuplicateSheetNumbers = (items) => {
     const titles = new Set();
     return items.some((item) => {
-      if (titles.has(item.title)) {
+      if (titles.has(item.sheetNumber)) {
         return true; // Duplicate found
       }
-      titles.add(item.title);
+      titles.add(item.sheetNumber);
       return false; // No duplicate
     });
   };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (hasDuplicateTitles(data?.sheets)) {
-        enqueueSnackbar('Sheet titles should be unique within a plan set', { variant: 'error' });
+      if (hasDuplicateSheetNumbers(data?.sheets)) {
+        enqueueSnackbar('Sheet Numbers should be unique within a plan set', { variant: 'error' });
         return;
       }
       confirmIsFormDisabled.onTrue();
       onFormSubmit(data?.sheets, data?.attachments);
+      dispatch(resetSheets());
     } catch (e) {
       console.error(e);
     }
@@ -88,14 +95,35 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
       sx={{
         height: isMobile ? 56 : 64, // Smaller height for mobile
         px: isMobile ? 1 : 3, // Smaller padding for mobile
+        position: 'relative',
       }}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{
+          display: { xs: 'flex', md: 'grid' },
+          gap: { xs: '1rem', md: '1.25rem' },
+          gridTemplateColumns: { xs: 'repeat(3,1fr)', md: '.8fr 1.5fr .7fr' },
+          padding: 0,
+          justifyContent: 'space-between',
+          marginInline: { xs: '1rem', md: 0 },
+        }}
+      >
         <Typography
           variant="h6"
           sx={{
-            flex: 1,
-            ml: isMobile ? 1 : 2,
+            // flex: 0.5,
+            // ml: isMobile ? 1 : 2,
+            fontSize: isMobile ? '1rem' : '1.25rem', // Adjust font size for mobile
+            color: 'black',
+          }}
+        >
+          File Name
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            // flex: 1.1,
+            // ml: isMobile ? 1 : 2,
             fontSize: isMobile ? '1rem' : '1.25rem', // Adjust font size for mobile
             color: 'black',
           }}
@@ -105,17 +133,22 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
         <Typography
           variant="h6"
           sx={{
-            flex: 1,
-            ml: isMobile ? 1 : 2,
+            // flex: 0.5,
+            mr: { xs: 3, md: 0 },
             fontSize: isMobile ? '1rem' : '1.25rem',
             color: 'black',
           }}
         >
-          Sheet Title
+          Sheet Info
         </Typography>
 
-        <IconButton color="inherit" edge="start" onClick={onClose}>
-          <Iconify icon="mingcute:close-line" />
+        <IconButton
+          color="inherit"
+          edge="start"
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 0, top: 10 }}
+        >
+          <Iconify icon="gg:close-o" style={{ color: 'black', height: '1.2em', width: '1.2em' }} />
         </IconButton>
       </Toolbar>
     </AppBar>
@@ -131,8 +164,11 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
       }}
       sx={{
         [`& .${drawerClasses.paper}`]: {
-          width: isMobile ? '100%' : `calc(100% - 280px)`, // Full width on mobile
+          width: `calc(100% - ${NAV.W_VERTICAL}px)`,
           background: 'white',
+          ...(isMobile && {
+            width: '100%',
+          }),
         },
         position: 'relative',
         height: '100%',
@@ -148,7 +184,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
         paddingX={isMobile ? '1rem' : '2rem'} // Smaller padding on mobile
       >
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <PlanRoomPdfConverter files={files} />
+          <PlanRoomPdfConverter files={files} isDisabled={confirmIsFormDisabled} />
         </FormProvider>
       </Box>
 
@@ -168,7 +204,7 @@ export default function PlanRoomPDFSheetsDrawer({ open, onClose, files, onFormSu
         {onClose && (
           <Button
             variant="outlined"
-            disabled={confirmIsFormDisabled.value}
+            // disabled={confirmIsFormDisabled.value}
             color="inherit"
             onClick={onClose}
             sx={{ fontSize: isMobile ? '0.875rem' : '1rem' }} // Smaller font for mobile

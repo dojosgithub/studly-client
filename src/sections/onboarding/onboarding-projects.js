@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 // theme
 import {
+  resetCreateProject,
   setCurrentProject,
   setCurrentProjectRole,
   setUpdateProject,
@@ -28,6 +29,9 @@ import {
   SUBSCRIBER_USER_ROLE_STUDLY,
   USER_TYPES_STUDLY,
 } from 'src/_mock';
+//
+import { resetWorkflow } from 'src/redux/slices/workflowSlice';
+import { resetTemplate } from 'src/redux/slices/templateSlice';
 import { ProjectView } from '../project/view';
 // components
 
@@ -151,7 +155,12 @@ export default function OnboardingProjects({ projects }) {
           <CustomDrawer
             isOnboarding
             open={openDrawer}
-            onClose={() => setOpenDrawer(false)}
+            onClose={() => {
+              setOpenDrawer(false);
+              dispatch(resetCreateProject());
+              dispatch(resetWorkflow());
+              dispatch(resetTemplate());
+            }}
             Component={ProjectView}
           />
         )}

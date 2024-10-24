@@ -24,10 +24,12 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
         component="img"
         src="/logo/new-logo-1.png"
         sx={{
-          width: { xs: '50%', sm: '30%', md: '20%', lg: '60%' },
-          height: 'auto',
-          maxHeight: { xs: 60, md: 80, lg: 100 },
           cursor: 'pointer',
+          height: 'auto',
+          maxHeight: { xs: 60, lg: 80 },
+          width: 'max-content',
+          mx: 'auto',
+          ...sx,
         }}
       />
     </Box>

@@ -68,39 +68,52 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   const renderContent = (
     <>
-      {lgUp && isOnboarding && <Logo sx={{ mr: 2.5 }} />}
+      {lgUp && isOnboarding && <Logo sx={{ p: '1rem .5rem' }} />}
 
       {!lgUp && (
         <IconButton onClick={onOpenNav}>
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
-      {!lgUp && isOnboarding && (
-        <Logo sx={{ mx: 'auto', my: 2, height: '1.25rem', width: '100%' }} />
-      )}
+      {!lgUp && isOnboarding && <Logo sx={{ p: '.75rem .5rem' }} />}
 
       {isViewAs ? (
-        <Alert
-          severity="info"
-          action={
-            <Button type="button" variant="contained" onClick={exitAccess}>
-              Exit Access
-            </Button>
-          }
-        >
-          You are now operating as the Company Admin.
-        </Alert>
-      ) : (
-        <Stack
-          flexGrow={1}
-          direction="row"
-          alignItems="center"
-          justifyContent="flex-end"
-          spacing={{ xs: 0.5, sm: 1 }}
-        >
-          <AccountPopover />
-        </Stack>
-      )}
+  <Alert
+    severity="info"
+    action={
+      <Button
+        type="button"
+        variant="contained"
+        onClick={exitAccess}
+        sx={{ ml: 1 }} // Add some margin for spacing
+      >
+        Exit Access
+      </Button>
+    }
+    sx={{
+      backgroundColor: '#f0f4ff', // Light background color
+      border: '1px solid #3f51b5', // Border color matching the theme
+      '& .MuiAlert-icon': {
+        color: '#3f51b5', // Icon color matching the theme
+      },
+      '& .MuiAlert-message': {
+        fontWeight: '500', // Slightly bolder text for emphasis
+      },
+    }}
+  >
+    You are now operating as the Company Admin.
+  </Alert>
+) : (
+  <Stack
+    flexGrow={1}
+    direction="row"
+    alignItems="center"
+    justifyContent="flex-end"
+    spacing={{ xs: 0.5, sm: 1 }}
+  >
+    <AccountPopover />
+  </Stack>
+)}
     </>
   );
 

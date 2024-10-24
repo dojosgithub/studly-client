@@ -209,27 +209,31 @@ const MeetingMinutesDetails = ({ id }) => {
       </Box>
 
       <Stack
-        direction="row"
+        direction="row" // Keep direction as row for all screen sizes
         sx={{
           mt: 2,
           mb: 2,
           backgroundColor: '#F4F6F8',
           width: '100%',
           borderBottom: '2px solid rgb(239,170,26)',
+          overflowX: 'auto', // Allow horizontal scrolling if necessary
         }}
-        justifyContent="space-around"
+        justifyContent="flex-start" // Align items to the start
         alignItems="center"
       >
         {TABS.map((tab) => (
           <Paper
+            key={tab.value} // Add a key prop for React list items
             sx={{
               backgroundColor: tab.value === currentTab ? 'rgb(239,170,26)' : '#F4F6F8',
               p: 2,
               fontFamily: 'Public Sans',
               cursor: 'pointer',
-              width: '100%',
+              width: 'auto', // Set width to auto to prevent wrapping
+              minWidth: '120px', // Set a minimum width for each tab
               textAlign: 'center',
               borderRadius: 0,
+              mb: 0, // No bottom margin
             }}
             onClick={() => handleChangeTab(null, tab.value)}
           >
@@ -237,6 +241,7 @@ const MeetingMinutesDetails = ({ id }) => {
           </Paper>
         ))}
       </Stack>
+
       {currentTab === 'description' && (
         <MeetingMinutesDetailsDescription data={currentMeeting?.description} />
       )}

@@ -24,69 +24,51 @@ import { removeMember } from 'src/redux/slices/projectSlice';
 //
 import ProjectTableRow from './project-table-row';
 import ProjectInviteNewUser from './project-invite-new-user';
-
 // ----------------------------------------------------------------------
-
 const TABLE_HEAD = [
   { id: 'email', label: 'Email' },
   { id: 'role', label: 'Role' },
   { id: '' },
   { id: '' },
 ];
-
 const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
 };
-
 // ----------------------------------------------------------------------
-
 export default function ProjectInviteUserListView({ type }) {
   const table = useTable();
   const dispatch = useDispatch();
-
   const members = useSelector((state) => state?.project?.members);
-
   useEffect(() => {
     const userList = members.filter((member) => member.team === type);
     setTableData(userList);
   }, [members, type]);
-
   const settings = useSettingsContext();
-
   const [tableData, setTableData] = useState([]);
-
   const [filters] = useState(defaultFilters);
-
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
-
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
     table.page * table.rowsPerPage + table.rowsPerPage
   );
-
   const denseHeight = table.dense ? 52 : 72;
-
   const canReset = !isEqual(defaultFilters, filters);
-
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-
   const handleDeleteRow = useCallback(
     (email) => {
       const filteredRows = tableData.filter((row) => row.email !== email);
       dispatch(removeMember(email));
-
       setTableData(filteredRows);
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, table, tableData, dispatch]
   );
-
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Card>
@@ -107,7 +89,6 @@ export default function ProjectInviteUserListView({ type }) {
                   );
                 }}
               />
-
               <TableBody>
                 {dataFiltered.map((row) => (
                   <ProjectTableRow
@@ -118,12 +99,10 @@ export default function ProjectInviteUserListView({ type }) {
                   />
                 ))}
                 <ProjectInviteNewUser type={type} />
-
                 <TableEmptyRows
                   height={denseHeight}
                   emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
                 />
-
                 <TableNoData notFound={notFound} />
               </TableBody>
             </Table>
@@ -133,39 +112,29 @@ export default function ProjectInviteUserListView({ type }) {
     </Container>
   );
 }
-
 // ----------------------------------------------------------------------
-
 function applyFilter({ inputData, comparator, filters }) {
   const { name, status, role } = filters;
-
   const stabilizedThis = inputData.map((el, index) => [el, index]);
-
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-
   inputData = stabilizedThis.map((el) => el[0]);
-
   if (name) {
     inputData = inputData.filter(
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
-
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
   }
-
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
   }
-
   return inputData;
 }
-
 ProjectInviteUserListView.propTypes = {
   type: PropTypes.string,
 };

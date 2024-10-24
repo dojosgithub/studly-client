@@ -7,14 +7,9 @@ import { Box, Button, Card, Chip, Menu, MenuItem, Typography, alpha, styled } fr
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
-
-//
 import { paths } from 'src/routes/paths';
-//
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
-
 import { MultiFilePreview } from 'src/components/upload';
-
 import {
   changeToMinutes,
   createFollowup,
@@ -28,17 +23,22 @@ const StyledCard = styled(Card, {
   '& .submittalTitle': {
     flex: 0.25,
     borderRight: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
-
     fontWeight: 'bold',
   },
   display: 'flex',
-
+  flexDirection: 'column', // Stack items for small screens
   borderRadius: '10px',
   padding: '1rem',
   gap: '1rem',
   ...(isSubcontractor && {
     maxHeight: 300,
   }),
+  [theme.breakpoints.down('sm')]: {
+    padding: '0.5rem', // Reduce padding for small screens
+    '& .submittalTitle': {
+      fontSize: '0.9rem', // Adjust font size for small screens
+    },
+  },
 }));
 
 const DailyLogsDetails = ({ id }) => {
@@ -53,9 +53,11 @@ const DailyLogsDetails = ({ id }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -107,7 +109,6 @@ const DailyLogsDetails = ({ id }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser, status, isSubmitting, currentLog]);
 
-  // useMemo to avoid unnecessary state updates
   const memoizedMenuItems = useMemo(() => getMenus(), [getMenus]);
 
   useEffect(() => {
@@ -182,114 +183,89 @@ const DailyLogsDetails = ({ id }) => {
         )}
       </Box>
       <Grid container spacing={3}>
-        <StyledCard sx={{ width: '100%', marginBottom: '20px', marginTop: '30px' }}>
-          <Typography className="submittalTitle">Date</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {new Date(currentLog?.date).toLocaleDateString()}
-          </Typography>
-        </StyledCard>
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle"> Accident and safety issues</Typography>
-          <Typography
-            sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}
-            dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }}
-          />
-        </StyledCard>
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Visitors</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.visitors?.map((item) => item).join(', ') || 'N/A'}
-          </Typography>
-        </StyledCard>
+  {[
+    { title: 'Date', content: new Date(currentLog?.date).toLocaleDateString() },
+    {
+      title: 'Accident and safety issues',
+      content: (
+        <span dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }} />
+      ),
+    },
+    {
+      title: 'Visitors',
+      content: currentLog?.visitors?.join(', ') || 'N/A',
+    },
+    {
+      title: 'Inspection',
+      content:
+        currentLog?.inspection
+          ?.map((item) => (item.status ? `${item.value} - Pass` : `${item.value} - Fail`))
+          ?.join(' | ') || 'N/A',
+    },
+    {
+      title: 'Weather',
+      content:
+        currentLog?.weather?.length > 0
+          ? currentLog.weather.map((condition, index) => (
+              <Chip
+                key={index}
+                label={condition}
+                sx={{ margin: '2px', backgroundColor: '#FFAB00', color: 'black' }}
+              />
+            ))
+          : 'N/A',
+    },
+    {
+      title: 'Subcontractor Attendance',
+      content:
+        currentLog?.subcontractorAttendance
+          ?.map((item) =>
+            item.companyName
+              ? `${item.companyName} - (${item.headCount || 'N/A'}) people`
+              : 'N/A'
+          )
+          ?.join(' | ') || 'N/A',
+    },
+    {
+      title: 'Distribution List',
+      content: currentLog?.distributionList?.map((item) => item.name).join(', '),
+    },
+    {
+      title: 'Attachments',
+      content: (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75 }}>
+          <MultiFilePreview files={attachments} thumbnail onDownload />
+        </Box>
+      ),
+    },
+    {
+      title: 'Summary',
+      content: <span dangerouslySetInnerHTML={{ __html: currentLog?.summary }} />,
+    },
+  ].map((section, index) => (
+    <Grid item xs={12} key={index}>
+      <StyledCard
+        sx={{
+          width: '100%',
+          marginBottom: '20px',
+          flexDirection: { xs: 'column', sm: 'row' }, // Change layout based on screen size
+        }}
+      >
+        <Typography className="submittalTitle">{section.title}</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {section.content}
+        </Typography>
+      </StyledCard>
+    </Grid>
+  ))}
+</Grid>
 
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Inspection</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.inspection
-              ?.map((item) => {
-                if (!item.value) {
-                  return 'N/A';
-                }
-                if (item.status) {
-                  return `${item.value} - Pass`;
-                }
-                if (!item.status && item.reason) {
-                  return `${item.value} - Fail (${item.reason})`;
-                }
-                return `${item.value} - Fail`;
-              })
-
-              .join(' | ') || 'N/A'}
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Weather</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.weather?.length > 0
-              ? currentLog.weather.map((condition, index) => (
-                  <Chip
-                    key={index}
-                    label={condition}
-                    sx={{
-                      margin: '2px',
-                      backgroundColor: '#FFAB00',
-                      color: 'black',
-                    }}
-                  />
-                ))
-              : 'N/A'}
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Subcontractor Attendance</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.subcontractorAttendance
-              ?.map((item) => {
-                if (!item.companyName) {
-                  return 'N/A';
-                }
-                if (item.companyName && item.headCount) {
-                  return `  ${item.companyName} - (${item.headCount}) people`;
-                }
-
-                return `  ${item.companyName} `;
-              })
-              .join(' | ') || 'N/A'}
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Distribution List</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            {currentLog?.distributionList?.map((item) => item.name).join(', ')}
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Attachments</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-              <MultiFilePreview files={attachments} thumbnail onDownload />
-            </Box>
-          </Typography>
-        </StyledCard>
-
-        <StyledCard sx={{ width: '100%', marginBottom: '20px' }}>
-          <Typography className="submittalTitle">Summary</Typography>
-          <Typography
-            sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}
-            dangerouslySetInnerHTML={{ __html: currentLog?.summary }}
-          />
-        </StyledCard>
-      </Grid>
     </>
   );
 };
 
-export default DailyLogsDetails;
-
 DailyLogsDetails.propTypes = {
   id: PropTypes.string,
 };
+
+export default DailyLogsDetails;

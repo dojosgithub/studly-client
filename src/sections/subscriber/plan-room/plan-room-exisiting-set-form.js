@@ -114,12 +114,14 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
     const formValues = getValues();
 
     const modifiedSheets = sheets.map((sheet) => {
-      sheet.category = sheet.category?.map((cat) => ({
-        id: cat._id,
-        name: cat.name,
-      }));
-      const alphaMatch = sheet.title.match(/^[A-Za-z]+/);
-      const numericMatch = sheet.title.match(/\d+/);
+      sheet.category = sheet.category
+        ? sheet.category?.map((cat) => ({
+            id: cat?.id,
+            name: cat?.name,
+          }))
+        : [];
+      const alphaMatch = sheet.sheetTitle.match(/^[A-Za-z]+/);
+      const numericMatch = sheet.sheetTitle.match(/\d+/);
       sheet.titleAlpha = alphaMatch ? alphaMatch[0] : '';
       sheet.titleNumeric = numericMatch ? parseInt(numericMatch[0], 10) : 0;
       return sheet;

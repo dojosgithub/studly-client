@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography, alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { useCallback } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -12,10 +12,10 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   height: 50,
   opacity: 1,
   borderRadius: '10px',
-  outline: `1px solid ${theme.palette.grey[700]} .2`,
+  outline: `1px solid ${alpha(theme.palette.grey[700], 0.2)}`,
   '&:hover': {
     opacity: 1,
-    outline: `1px solid ${theme.palette.grey[700]} 1`,
+    outline: `1px solid ${alpha(theme.palette.grey[700], 1)}`,
   },
   [theme.breakpoints.down('md')]: {
     width: '100%',
@@ -75,7 +75,8 @@ const MeetingMinutesPermitFields = () => {
                 InputLabelProps={{ shrink: true }}
                 onBlur={() => trigger(`permit[${index}].permitNumber`)}
               />
-              <StyledIconButton color="default" onClick={() => handleRemove(index)}>
+
+              <StyledIconButton color="inherit" onClick={() => handleRemove(index)}>
                 <Iconify icon="ic:sharp-remove-circle-outline" width="40px" height="40px" />
                 {mdDown && <Typography fontWeight={700}>Remove</Typography>}
               </StyledIconButton>

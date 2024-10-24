@@ -1,59 +1,9 @@
-// import PropTypes from 'prop-types';
-// import React, { useMemo, useState } from 'react';
-// import { Viewer, Worker } from '@react-pdf-viewer/core';
-// import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-// import '@react-pdf-viewer/core/lib/styles/index.css';
-// import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-
-// const containerStyle = {
-//   width: '100%',
-//   height: '85vh',
-//   backgroundColor: '#e4e4e4',
-//   overflowY: 'auto',
-//   display: 'flex',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   userSelect: 'auto', // Allow text selection
-//   pointerEvents: 'auto', // Allow pointer events
-// };
-
-// export const PDFViewer = ({ sheet }) => {
-//   const defaultLayoutPluginInstance = defaultLayoutPlugin({
-//   });
-
-//   // console.log('sheet', sheet);
-//   const [pdfFile, setPdfFile] = useState('https://pdf-lib.js.org/assets/with_update_sections.pdf');
-//   console.log('Re rENDER');
-//   return (
-//     <div className="container">
-//       <div style={containerStyle}>
-//         {sheet?.src?.preview && (
-//           <>
-//             <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
-//               <Viewer
-//                 fileUrl={sheet.src.preview}
-//                 plugins={[defaultLayoutPluginInstance]}
-//                 initialPage={1}
-//               />
-//             </Worker>
-//           </>
-//         )}
-
-//         {!sheet?.src?.preview && <>No pdf file selected</>}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PDFViewer;
-
-// PDFViewer.propTypes = {
-//   sheet: PropTypes.object,
-// };
-
 import PropTypes from 'prop-types';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
+
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { zoomPlugin } from '@react-pdf-viewer/zoom';
 import { searchPlugin } from '@react-pdf-viewer/search';
@@ -68,24 +18,13 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import { useSelector } from 'react-redux';
-
-// const containerStyle = {
-//   width: '100%',
-//   height: '85vh',
-//   backgroundColor: '#e4e4e4',
-//   overflow: 'hidden', // Hides both horizontal and vertical scroll bars
-//   display: 'flex',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   userSelect: 'auto', // Allow text selection
-//   pointerEvents: 'auto', // Allow pointer events
-// };
+import { display, width } from '@mui/system';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  const [zoomLevel, setZoomLevel] = useState(1); // Initial zoom level
+  const [zoomLevel, setZoomLevel] = useState(0.5); // Initial zoom level
+  const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
@@ -105,26 +44,26 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         event.preventDefault();
 
         const zoomStep = event.deltaY < 0 ? 0.05 : -0.05;
-        setZoomLevel((prevZoom) => {
-          const newZoom = Math.max(0.1, Math.min(prevZoom + zoomStep, 5));
-          zoomPluginInstance.zoomTo(newZoom);
-          return newZoom;
-        });
+
+        const newZoom = Math.max(0.1, Math.min(zoomLevelRef.current + zoomStep, 5));
+        zoomPluginInstance.zoomTo(newZoom);
+        zoomLevelRef.current = newZoom;
       }
     };
-    window.addEventListener('wheel', handleZoom, { passive: false });
 
+    window.addEventListener('wheel', handleZoom, { passive: false });
     return () => {
       window.removeEventListener('wheel', handleZoom);
     };
   }, [zoomPluginInstance]);
 
   const viewerStyle = {
-    width: '100%',
-    maxWidth: '100%', // Ensure viewer does not exceed container width
-    height: '100%',
-    overflow: 'hidden', // Hide any overflow
-    whiteSpace: 'nowrap', // Prevent content from wrapping
+    width: '100%', // Full width of the container
+    height: '100%', // Full height of the container
+    overflow: 'hidden', // Ensure no content overflow
+    // display: 'flex', // Flexbox for centering content
+    // justifyContent: 'center', // Center horizontally
+    // alignItems: 'center', // Center vertically
   };
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
@@ -179,18 +118,29 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     <div
       style={{
         width: '100%',
-        height: '85vh',
+        height: '100%',
         backgroundColor: '#E4E4E4',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
       }}
     >
       {sheet?.src?.preview && (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          {/* <TransformWrapper
+            // defaultScale={zoomLevel}
+            minScale={0.2}
+            maxScale={5}
+            pinch={{ step: 0.05 }}
+            onPinching={(e) => {
+              zoomLevelRef.current = e.state.scale;
+              zoomPluginInstance.zoomTo(e.state.scale);
+            }}
+            wheel={{ wheelDisabled: true }}
+            doubleClick={{ disabled: true }}
+            panning={{ disabled: true }}
+          > */}
+          {/* <TransformComponent contentStyle={{ width: '100%', height: '100%' }}> */}
+
           <Viewer
+            defaultScale={zoomLevelRef?.current}
             fileUrl={sheet.src.preview}
             plugins={[
               defaultLayoutPluginInstance,
@@ -202,6 +152,8 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             initialPage={1}
             style={viewerStyle} // Apply viewerStyle here
           />
+          {/* </TransformComponent>
+          </TransformWrapper> */}
         </Worker>
       )}
     </div>

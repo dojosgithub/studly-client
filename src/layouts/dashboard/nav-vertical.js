@@ -73,7 +73,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
             my: 3, // You can keep the vertical margin if needed
           }}
         >
-          <Logo />
+          <Logo sx={{ p: { xs: '.5rem .5rem', lg: '1rem .5rem' } }} />
         </Box>
 
         {user?.userType === 'Subscriber' && (

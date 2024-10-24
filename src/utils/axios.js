@@ -138,6 +138,7 @@ export const endpoints = {
     //
     pdf: (id, exptype) => `/api/plan-room-report/${id}/${exptype}`,
     pdfThumbnails: (id) => `/api/plan-room/split-pdf/${id}`,
+    extractSheet: `/api/plan-room/extract-sheet-text`,
   },
   meetingMinutes: {
     // submit: (id) => `/api/meeting-minute/${id}/submit`,

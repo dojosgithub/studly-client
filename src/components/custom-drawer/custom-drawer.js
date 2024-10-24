@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 //
 import { useResponsive } from 'src/hooks/use-responsive';
+import { NAV } from 'src/layouts/config-layout';
 import Iconify from '../iconify';
 
 // ----------------------------------------------------------------------
@@ -19,7 +20,7 @@ export default function CustomDrawer({
   type = 'project',
   setTrades,
 }) {
-  const smDown = useResponsive('down', 'sm');
+  const mdDown = useResponsive('down', 'md');
   const renderHead = (
     <Stack
       direction="row"
@@ -48,12 +49,12 @@ export default function CustomDrawer({
       }}
       sx={{
         [`& .${drawerClasses.paper}`]: {
-          width: `calc(100% - ${280}px)`,
+          width: `calc(100% - ${NAV.W_VERTICAL}px)`,
           background: 'white',
           ...(isOnboarding && {
             width: '100%',
           }),
-          ...(smDown && {
+          ...(mdDown && {
             width: '100%',
           }),
         },

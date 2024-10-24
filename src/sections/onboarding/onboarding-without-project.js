@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // @mui
 import Button from '@mui/material/Button';
@@ -8,6 +8,10 @@ import Typography from '@mui/material/Typography';
 //
 import { CustomDrawer } from 'src/components/custom-drawer';
 // theme
+import { resetCreateProject } from 'src/redux/slices/projectSlice';
+import { resetWorkflow } from 'src/redux/slices/workflowSlice';
+import { resetTemplate } from 'src/redux/slices/templateSlice';
+//
 import RoleAccessWrapper from 'src/components/role-access-wrapper';
 import { STUDLY_ROLES_ACTION, SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 import { ProjectView } from '../project/view';
@@ -18,7 +22,7 @@ import { ProjectView } from '../project/view';
 export default function OnboardingWithoutProjects() {
   const user = useSelector((state) => state?.user?.user);
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const dispatch = useDispatch();
   return (
     <>
       <Stack
@@ -57,7 +61,12 @@ export default function OnboardingWithoutProjects() {
           <CustomDrawer
             isOnboarding
             open={openDrawer}
-            onClose={() => setOpenDrawer(false)}
+            onClose={() => {
+              setOpenDrawer(false);
+              dispatch(resetCreateProject());
+              dispatch(resetWorkflow());
+              dispatch(resetTemplate());
+            }}
             Component={ProjectView}
           />
         )}
