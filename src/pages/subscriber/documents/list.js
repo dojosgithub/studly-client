@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
+// import { DocumentsListView } from 'src/sections/subscriber/documents/view';
+import DocumentsListView from 'src/sections/subscriber/documents/view/documents-list-view';
 // sections
-import { DocumentsListView } from 'src/sections/subscriber/documents/view';
 
 // ----------------------------------------------------------------------
 
