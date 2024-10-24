@@ -6,9 +6,11 @@ const PinchWrapper = (WrappedComponent) => {
   const PinchZoomWrapper = (props) => {
     const [scale, setScale] = useState(1);
     const initialDistance = useRef(0);
+    const containerRef = useRef(null);
 
     const handleTouchStart = (e) => {
       if (e.touches.length === 2) {
+        e.preventDefault(); // Prevent default touch behavior
         const distance = getDistance(e.touches);
         initialDistance.current = distance;
       }
@@ -16,6 +18,7 @@ const PinchWrapper = (WrappedComponent) => {
 
     const handleTouchMove = (e) => {
       if (e.touches.length === 2) {
+        e.preventDefault(); // Prevent default touch behavior
         const newDistance = getDistance(e.touches);
         const scaleFactor = newDistance / initialDistance.current;
         setScale(scaleFactor); // Update the scale state dynamically
@@ -31,8 +34,10 @@ const PinchWrapper = (WrappedComponent) => {
 
     return (
       <div
+        ref={containerRef}
         style={{
           transform: `scale(${scale})`,
+          transformOrigin: 'center', // Ensure scaling is centered
           transition: 'transform 0.1s',
           touchAction: 'none',
           width: '100%',
