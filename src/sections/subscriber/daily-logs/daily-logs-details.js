@@ -183,76 +183,83 @@ const DailyLogsDetails = ({ id }) => {
         )}
       </Box>
       <Grid container spacing={3}>
-        {[
-          { title: 'Date', content: new Date(currentLog?.date).toLocaleDateString() },
-          {
-            title: 'Accident and safety issues',
-            content: (
-              <span dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }} />
-            ),
-          },
-          {
-            title: 'Visitors',
-            content: currentLog?.visitors?.join(', ') || 'N/A',
-          },
-          {
-            title: 'Inspection',
-            content:
-              currentLog?.inspection
-                ?.map((item) => (item.status ? `${item.value} - Pass` : `${item.value} - Fail`))
-                ?.join(' | ') || 'N/A',
-          },
-          {
-            title: 'Weather',
-            content:
-              currentLog?.weather?.length > 0
-                ? currentLog.weather.map((condition, index) => (
-                    <Chip
-                      key={index}
-                      label={condition}
-                      sx={{ margin: '2px', backgroundColor: '#FFAB00', color: 'black' }}
-                    />
-                  ))
-                : 'N/A',
-          },
-          {
-            title: 'Subcontractor Attendance',
-            content:
-              currentLog?.subcontractorAttendance
-                ?.map((item) =>
-                  item.companyName
-                    ? `${item.companyName} - (${item.headCount || 'N/A'}) people`
-                    : 'N/A'
-                )
-                ?.join(' | ') || 'N/A',
-          },
-          {
-            title: 'Distribution List',
-            content: currentLog?.distributionList?.map((item) => item.name).join(', '),
-          },
-          {
-            title: 'Attachments',
-            content: (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75 }}>
-                <MultiFilePreview files={attachments} thumbnail onDownload />
-              </Box>
-            ),
-          },
-          {
-            title: 'Summary',
-            content: <span dangerouslySetInnerHTML={{ __html: currentLog?.summary }} />,
-          },
-        ].map((section, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <StyledCard>
-              <Typography className="submittalTitle">{section.title}</Typography>
-              <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
-                {section.content}
-              </Typography>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
+  {[
+    { title: 'Date', content: new Date(currentLog?.date).toLocaleDateString() },
+    {
+      title: 'Accident and safety issues',
+      content: (
+        <span dangerouslySetInnerHTML={{ __html: currentLog?.accidentSafetyIssues }} />
+      ),
+    },
+    {
+      title: 'Visitors',
+      content: currentLog?.visitors?.join(', ') || 'N/A',
+    },
+    {
+      title: 'Inspection',
+      content:
+        currentLog?.inspection
+          ?.map((item) => (item.status ? `${item.value} - Pass` : `${item.value} - Fail`))
+          ?.join(' | ') || 'N/A',
+    },
+    {
+      title: 'Weather',
+      content:
+        currentLog?.weather?.length > 0
+          ? currentLog.weather.map((condition, index) => (
+              <Chip
+                key={index}
+                label={condition}
+                sx={{ margin: '2px', backgroundColor: '#FFAB00', color: 'black' }}
+              />
+            ))
+          : 'N/A',
+    },
+    {
+      title: 'Subcontractor Attendance',
+      content:
+        currentLog?.subcontractorAttendance
+          ?.map((item) =>
+            item.companyName
+              ? `${item.companyName} - (${item.headCount || 'N/A'}) people`
+              : 'N/A'
+          )
+          ?.join(' | ') || 'N/A',
+    },
+    {
+      title: 'Distribution List',
+      content: currentLog?.distributionList?.map((item) => item.name).join(', '),
+    },
+    {
+      title: 'Attachments',
+      content: (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75 }}>
+          <MultiFilePreview files={attachments} thumbnail onDownload />
+        </Box>
+      ),
+    },
+    {
+      title: 'Summary',
+      content: <span dangerouslySetInnerHTML={{ __html: currentLog?.summary }} />,
+    },
+  ].map((section, index) => (
+    <Grid item xs={12} key={index}>
+      <StyledCard
+        sx={{
+          width: '100%',
+          marginBottom: '20px',
+          flexDirection: { xs: 'column', sm: 'row' }, // Change layout based on screen size
+        }}
+      >
+        <Typography className="submittalTitle">{section.title}</Typography>
+        <Typography sx={{ color: (theme) => theme.palette.text.primary, flex: 0.75, px: 2 }}>
+          {section.content}
+        </Typography>
+      </StyledCard>
+    </Grid>
+  ))}
+</Grid>
+
     </>
   );
 };

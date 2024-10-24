@@ -38,7 +38,7 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
             id={`panel${noteIndex}-header`}
           >
             <Stack direction="column">
-              <Typography sx={{ fontSize: '1.6rem', marginBottom: '1rem' }} fontWeight="bold">
+              <Typography sx={{ fontSize: '16px', marginBottom: '0.7rem' }} fontWeight="bold">
                 {note.subject}
               </Typography>
               <Stack direction="row" spacing={1}>
@@ -54,7 +54,7 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '20px',
+                      fontSize: '14px',
                       marginRight: '10px',
                     }}
                   />
@@ -67,44 +67,44 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
               <TopicContainer key={topicIndex}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography sx={{ fontSize: '1.4rem' }} fontWeight="bold" marginBottom={3}>
+                    <Typography sx={{ fontSize: '16px' }} fontWeight="bold" marginBottom={3}>
                       {topic.topic}
                     </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                    <Typography sx={{ fontSize: '16px' }} fontWeight="bold" marginBottom={1}>
                       Description:
                     </Typography>
                     <Typography
-                      sx={{ fontSize: '1.2rem' }}
+                      sx={{ fontSize: '14px' }}
                       marginBottom={2}
                       dangerouslySetInnerHTML={{ __html: topic.description }}
                     />
                   </Grid>
                   <Grid container item xs={12} spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
                         Due Date:
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {new Date(topic.date).toLocaleDateString()}
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
                         Status:
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {topic?.status}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
                         Assignee:
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {topic?.assignee?.name}
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} fontWeight="bold" marginBottom={1}>
+                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
                         Priority:
                       </Typography>
-                      <Typography sx={{ fontSize: '1.2rem' }} marginBottom={2}>
+                      <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {topic?.priority}
                       </Typography>
                     </Grid>
