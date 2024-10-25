@@ -13,7 +13,6 @@ const PinchWrapper = (WrappedComponent) => {
         e.preventDefault(); // Prevent default touch behavior (like scrolling)
         const distance = getDistance(e.touches);
         initialDistance.current = distance;
-        zoomTo(distance);
         isPinching.current = true; // Set pinching state to true
       }
     };
