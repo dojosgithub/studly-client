@@ -176,12 +176,6 @@ export const endpoints = {
     submit: (id) => `/api/document/${id}/submit`,
     delete: (id) => `/api/document/${id}`,
     move: (id, to) => `/api/document/move/${id}/${to}`,
-    // edit: (id) => `/api/user/daily-logs/${id}`,
-    // details: (id) => `/api/user/daily-logs/${id}/details`,
-    // pdf: (id) => `/api/user/daily-logs/export/${id}`,
-    // followup: (id) => `/api/user/daily-logs/followup/${id}`,
-    // sendToAttendees: (id) => `/api/user/daily-logs/send/${id}`,
-    // toMinutes: (id) => `/api/user/daily-logs/to-minutes/${id}`,
   },
 
   template: {

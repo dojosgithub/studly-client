@@ -69,7 +69,7 @@ export default function DocumentsFileDetails({
 
   useEffect(() => {
     console.log('Running');
-    return () => dispatch(updateDocument(tags));
+    return () => dispatch(updateDocument(item._id, tags));
   }, [tags, dispatch, item._id]);
 
   const handleDeleteItems = useCallback(async () => {
