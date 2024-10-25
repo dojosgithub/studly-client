@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 // Higher-Order Component (HOC) that adds pinch-to-zoom functionality
 const PinchWrapper = (WrappedComponent) => {
-  const PinchZoomWrapper = (props) => {
+  const PinchZoomWrapper = ({ zoomTo, ...props }) => {
     const [scale, setScale] = useState(1);
     const initialDistance = useRef(0);
     const isPinching = useRef(false); // Track whether a pinch is in progress
@@ -22,6 +23,9 @@ const PinchWrapper = (WrappedComponent) => {
         const newDistance = getDistance(e.touches);
         const scaleFactor = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit zoom range
         setScale(scaleFactor); // Update the scale state dynamically
+        if (zoomTo) {
+          zoomTo(scaleFactor); // Optionally call zoomTo on pinch gesture
+        }
       }
     };
 
@@ -54,7 +58,10 @@ const PinchWrapper = (WrappedComponent) => {
       </div>
     );
   };
-
+  // Add PropTypes validation for zoomTo
+  PinchZoomWrapper.propTypes = {
+    zoomTo: PropTypes.func.isRequired, // Mark zoomTo as required if it always needs to be present
+  };
   return PinchZoomWrapper;
 };
 
