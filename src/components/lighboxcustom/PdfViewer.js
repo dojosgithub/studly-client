@@ -165,6 +165,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
               fullscreenPluginInstance,
               selectionModePluginInstance,
             ]}
+            zoomTo={zoomPluginInstance.zoomTo}
             style={viewerStyle} // Apply viewerStyle here
           />
         </Worker>
