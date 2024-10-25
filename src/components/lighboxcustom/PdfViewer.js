@@ -121,6 +121,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         width: '100%',
         height: '100%',
         backgroundColor: '#E4E4E4',
+        overflow: 'hidden',
       }}
     >
       {sheet?.src?.preview && (
