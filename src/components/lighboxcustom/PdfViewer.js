@@ -19,6 +19,7 @@ import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
 import { display, width } from '@mui/system';
+import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
@@ -139,7 +140,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
           > */}
           {/* <TransformComponent contentStyle={{ width: '100%', height: '100%' }}> */}
 
-          <Viewer
+          {/* <Viewer
             defaultScale={zoomLevelRef?.current}
             fileUrl={sheet.src.preview}
             plugins={[
@@ -151,9 +152,21 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             ]}
             initialPage={1}
             style={viewerStyle} // Apply viewerStyle here
-          />
+          /> */}
           {/* </TransformComponent>
           </TransformWrapper> */}
+          <WrappedViewer
+            zoomLevelRef={zoomLevelRef}
+            sheet={sheet}
+            plugins={[
+              defaultLayoutPluginInstance,
+              zoomPluginInstance,
+              searchPluginInstance,
+              fullscreenPluginInstance,
+              selectionModePluginInstance,
+            ]}
+            style={viewerStyle} // Apply viewerStyle here
+          />
         </Worker>
       )}
     </div>
