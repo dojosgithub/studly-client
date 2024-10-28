@@ -75,7 +75,6 @@ const RfiDetails = ({ id }) => {
     ccList,
     isResponseSubmitted,
     response,
-    docStatus,
   } = currentRfi;
 
   useEffect(() => {
