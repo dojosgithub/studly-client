@@ -20,9 +20,12 @@ import {
   getRoleKeyByValue,
 } from 'src/_mock';
 import { CustomInviteAutoComplete } from 'src/components/custom-invite-autocomplete';
+import { useResponsive } from 'src/hooks/use-responsive';
 
 const ProjectSettingsInviteNewUser = ({ type = 'internal' }) => {
   const dispatch = useDispatch();
+  const isMobile = useResponsive('down', 'sm');
+
   const userListOptions = useSelector((state) => state?.project?.users);
   const userRoles =
     type === 'external' ? PROJECT_INVITE_EXTERNAL_USER_ROLES : PROJECT_INVITE_INTERNAL_USER_ROLES;
@@ -88,53 +91,57 @@ const ProjectSettingsInviteNewUser = ({ type = 'internal' }) => {
   });
 
   return (
-    <TableRow>
-      <TableCell colSpan="3" variant="footer">
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Box
-            sx={{
-              display: 'grid',
-              gap: '1rem',
-              gridTemplateColumns: 'repeat(2, 1fr) 50px',
-              flexWrap: { xs: 'wrap', md: 'nowrap' },
-            }}
+    // <TableRow>
+    //   <TableCell colSpan={isMobile ? 4 : 3} variant="footer">
+    <Box p={2}>
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Box
+          sx={{
+            // display: 'grid',
+            // gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr) 50px' },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: '1rem',
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+          }}
+        >
+          <Stack flex={1}>
+            <CustomInviteAutoComplete optionsList={userListOptions} />
+            {errors && errors?.user?.message && (
+              <Typography color="red" fontSize=".75rem">
+                {errors?.user?.message}
+              </Typography>
+            )}
+            {errors && errors?.user?.email?.message && (
+              <Typography color="red" fontSize=".75rem">
+                {errors?.user?.email?.message}
+              </Typography>
+            )}
+          </Stack>
+          <RHFSelect name="role" label="Role" InputLabelProps={{ shrink: true }} sx={{ flex: 1 }}>
+            {userRoles.map((role, index) => (
+              <MenuItem
+                key={role.value}
+                value={role.value}
+                onClick={() => handleSelectRole(index, role.value)}
+              >
+                {role.label}
+              </MenuItem>
+            ))}
+          </RHFSelect>
+          <Button
+            disabled={isSubmitting}
+            variant="contained"
+            onClick={handleSubmit(onSubmit)}
+            sx={{ minWidth: 'max-content' }}
           >
-            <Stack>
-              <CustomInviteAutoComplete optionsList={userListOptions} />
-              {errors && errors?.user?.message && (
-                <Typography color="red" fontSize=".75rem">
-                  {errors?.user?.message}
-                </Typography>
-              )}
-              {errors && errors?.user?.email?.message && (
-                <Typography color="red" fontSize=".75rem">
-                  {errors?.user?.email?.message}
-                </Typography>
-              )}
-            </Stack>
-            <RHFSelect name="role" label="Role" InputLabelProps={{ shrink: true }}>
-              {userRoles.map((role, index) => (
-                <MenuItem
-                  key={role.value}
-                  value={role.value}
-                  onClick={() => handleSelectRole(index, role.value)}
-                >
-                  {role.label}
-                </MenuItem>
-              ))}
-            </RHFSelect>
-            <Button
-              disabled={isSubmitting}
-              variant="contained"
-              onClick={handleSubmit(onSubmit)}
-              sx={{ minWidth: 'max-content' }}
-            >
-              Add User
-            </Button>
-          </Box>
-        </FormProvider>
-      </TableCell>
-    </TableRow>
+            Add User
+          </Button>
+        </Box>
+      </FormProvider>
+    </Box>
+    //   </TableCell>
+    // </TableRow>
   );
 };
 

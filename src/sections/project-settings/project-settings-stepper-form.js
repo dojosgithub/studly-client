@@ -447,7 +447,20 @@ export default function ProjectSettingsStepperForm() {
             <>
               <ProjectSettingsFinal />
 
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  position: 'sticky',
+                  bottom: 0,
+
+                  width: '100%',
+                  bgcolor: '#fff',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: { xs: '.25rem', sm: 2 },
+                  mb: { xs: '0', sm: 2 },
+                  p: { xs: 0, sm: '1rem 0' },
+                }}
+              >
                 <Button
                   color="inherit"
                   variant="outlined"
@@ -492,6 +505,8 @@ export default function ProjectSettingsStepperForm() {
                   p: '1rem 0',
                   width: '100%',
                   bgcolor: '#fff',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: { xs: '.25rem', sm: 0 },
                 }}
               >
                 {activeStep !== 0 && (

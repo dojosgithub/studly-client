@@ -122,8 +122,8 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
             position: 'absolute',
             width: '80%',
             right: '5%',
-            maxWidth: '500px',
-            gap: '1rem',
+            maxWidth: '475px',
+            gap: { xs: '.75rem', md: '.25rem' },
             '@media (max-width:560px)': {
               flexWrap: 'wrap',
               marginTop: '3rem',

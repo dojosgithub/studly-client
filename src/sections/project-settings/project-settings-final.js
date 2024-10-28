@@ -27,13 +27,22 @@ const ProjectSettingsFinal = () => {
     '& .projectTitle': {
       color: theme.palette.secondary.main,
       flex: 0.25,
-      borderRight: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
+      minWidth: '25%',
+    },
+    '& .projectDescription': {
+      borderLeft: `2px solid ${alpha(theme.palette.grey[500], 0.12)}`,
+      paddingLeft: '1rem',
     },
     display: 'flex',
     borderRadius: '10px',
     padding: '1rem',
     gap: '1rem',
     maxHeight: 300,
+    flexDirection: 'row',
+    [theme.breakpoints.down('md')]: {
+      maxHeight: '100%',
+      flexDirection: 'column',
+    },
   }));
   return (
     <>
@@ -66,13 +75,20 @@ const ProjectSettingsFinal = () => {
       >
         <StyledCard>
           <Typography className="projectTitle">Project Name</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: 0.75, px: 2 }}>
+
+          <Typography
+            className="projectDescription"
+            sx={{ color: (theme) => theme.palette.primary.main, flex: 0.75, px: 2 }}
+          >
             {name}
           </Typography>
         </StyledCard>
         <StyledCard>
           <Typography className="projectTitle">Project Trades</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: 0.15, px: 2 }}>
+          <Typography
+            className="projectDescription"
+            sx={{ color: (theme) => theme.palette.primary.main, flex: 0.15, px: 2 }}
+          >
             Trades
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.6 }}>
@@ -89,14 +105,17 @@ const ProjectSettingsFinal = () => {
         </StyledCard>
         <StyledCard>
           <Typography className="projectTitle">Project Workflow</Typography>
-          <Typography sx={{ color: (theme) => theme.palette.primary.main, flex: 0.75, px: 2 }}>
+          <Typography
+            className="projectDescription"
+            sx={{ color: (theme) => theme.palette.primary.main, flex: 0.75, px: 2 }}
+          >
             {workflow?.name}
           </Typography>
         </StyledCard>
         {filteredTrades?.length > 0 && (
           <StyledCard isSubcontractor>
             <Typography className="projectTitle">Subcontractors</Typography>
-            <Stack spacing={3} sx={{ flex: 0.75 }}>
+            <Stack className="projectDescription" spacing={3} sx={{ flex: 0.75 }}>
               <Scrollbar>
                 <Stack spacing={3} maxHeight={300}>
                   {filteredTrades.map((trade, index) => (
@@ -122,7 +141,7 @@ const ProjectSettingsFinal = () => {
             <Typography className="projectTitle" sx={{ minWidth: 'max-content' }}>
               Invited Users
             </Typography>
-            <Stack spacing={3} sx={{ flex: 0.75 }}>
+            <Stack className="projectDescription" spacing={3} sx={{ flex: 0.75 }}>
               <Scrollbar>
                 <Stack spacing={3} maxHeight={300}>
                   {members

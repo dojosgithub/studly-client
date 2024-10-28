@@ -101,7 +101,7 @@ export default function CustomInviteAutoComplete({ optionsList }) {
         return option.email;
       }}
       renderOption={(props, option) => <li {...props}>{option.displayLabel || option.email}</li>}
-      sx={{ width: 300 }}
+      sx={{ minWidth: { xs: '100%', md: 300 } }}
       freeSolo
       // clearOnBlur
       renderInput={(params) => (

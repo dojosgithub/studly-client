@@ -96,7 +96,7 @@ const ProjectSettingsSubcontractor = () => {
         <Stack rowGap={5} alignItems="center">
           <Box
             sx={{
-              maxWidth: '500px',
+              // maxWidth: '500px',
               width: '100%',
               pb: '1rem',
               borderBottom: (theme) => `2px solid ${theme.palette.secondary.main}`,
@@ -134,9 +134,18 @@ const ProjectSettingsSubcontractor = () => {
                 alignItems: 'center',
                 gap: 2,
                 justifyContent: 'space-between',
+                flexDirection: { xs: 'column', md: 'row' },
+                textAlign: 'center',
               }}
             >
-              <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'center',
+                  flexDirection: { xs: 'column', md: 'row' },
+                }}
+              >
                 <Typography fontSize="1rem" minWidth="max-content">
                   {tradeId}
                 </Typography>
@@ -144,10 +153,12 @@ const ProjectSettingsSubcontractor = () => {
               </Box>
               <Box
                 width="100%"
-                maxWidth="200px"
                 display="flex"
-                justifyContent="flex-end"
                 gap=".5rem"
+                sx={{
+                  maxWidth: { xs: '100%', md: '200px' },
+                  justifyContent: { xs: 'center', md: 'flex-end' },
+                }}
               >
                 {!(options[tradeId] && options[tradeId].email) && (
                   <Button variant="contained" onClick={(e) => handleSelect(tradeId, 'create')}>

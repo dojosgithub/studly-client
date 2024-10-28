@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }) {
         >
           {lgUp ? renderNavMini : renderNavVertical}
 
-          <Main>{children}</Main>
+          <Main sx={{ pb: '0px !important', alignSelf: 'stretch' }}>{children}</Main>
         </Box>
       </>
     );
@@ -76,8 +76,7 @@ export default function DashboardLayout({ children }) {
         }}
       >
         {renderNavVertical}
-
-        <Main>{children}</Main>
+        <Main sx={{ pb: '0px !important', alignSelf: 'stretch' }}>{children}</Main>
       </Box>
     </>
   );

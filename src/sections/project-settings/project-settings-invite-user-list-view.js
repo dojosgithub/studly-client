@@ -117,7 +117,6 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
                     onDeleteRow={() => handleDeleteRow(row.email)}
                   />
                 ))}
-                <ProjectSettingsInviteNewUser type={type} />
 
                 <TableEmptyRows
                   height={denseHeight}
@@ -129,6 +128,7 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
             </Table>
           </Scrollbar>
         </TableContainer>
+        <ProjectSettingsInviteNewUser type={type} />
       </Card>
     </Container>
   );

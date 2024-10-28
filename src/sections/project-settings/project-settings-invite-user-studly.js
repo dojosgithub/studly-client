@@ -14,7 +14,7 @@ const ProjectSettingsInviteUsers = () => (
           flexWrap: { xs: 'wrap', md: 'nowrap' },
         }}
       >
-        <Box>
+        <Box flex={1}>
           <FormControlLabel
             control={<Radio color="primary" defaultChecked />}
             label="Internal Team"

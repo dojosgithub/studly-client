@@ -9,7 +9,7 @@ import ProjectSettingsStepperForm from '../project-settings-stepper-form';
 export default function ProjectSettingsView() {
   return (
     <Container sx={{ my: 0, flex: 1 }}>
-      <Stack spacing={7} direction="row" height="100%">
+      <Stack spacing={7} sx={{ flexDirection: { xs: 'column', md: 'row' } }} height="100%">
         <ProjectSettingsStepperForm />
       </Stack>
     </Container>
