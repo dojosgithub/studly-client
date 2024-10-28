@@ -84,6 +84,7 @@ export default function ProjectTradeSelect() {
         displayEmpty
         inputProps={{ 'aria-label': 'Select an existing trade template' }}
         sx={{
+          '&.MuiInputBase-root': { minWidth: '300px' },
           '& .MuiSelect-select': {
             display: 'flex',
             alignItems: 'center',

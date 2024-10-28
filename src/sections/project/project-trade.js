@@ -65,7 +65,7 @@ export default function ProjectTrade() {
       />
 
       <Tabs value={activeTab} onChange={handleTabChange}>
-        <TabsList>
+        <TabsList sx={{ flexWrap: { xs: 'wrap', md: 'nowrap' }, minWidth: '300px' }}>
           <Tab value="create" name="create">
             Create Trade
           </Tab>

@@ -98,7 +98,6 @@ export default function ProjectInviteUserListView({ type }) {
                     onDeleteRow={() => handleDeleteRow(row.email)}
                   />
                 ))}
-                <ProjectInviteNewUser type={type} />
                 <TableEmptyRows
                   height={denseHeight}
                   emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
@@ -108,6 +107,7 @@ export default function ProjectInviteUserListView({ type }) {
             </Table>
           </Scrollbar>
         </TableContainer>
+        <ProjectInviteNewUser type={type} />
       </Card>
     </Container>
   );

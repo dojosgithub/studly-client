@@ -455,7 +455,7 @@ export default function ProjectSettingsStepperForm() {
 
                   width: '100%',
                   bgcolor: '#fff',
-                  flexDirection: { xs: 'column', sm: 'row' },
+                  flexDirection: { xs: 'column-reverse', sm: 'row' },
                   gap: { xs: '.25rem', sm: 2 },
                   mb: { xs: '0', sm: 2 },
                   p: { xs: 0, sm: '1rem 0' },

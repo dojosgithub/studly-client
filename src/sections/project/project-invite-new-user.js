@@ -88,54 +88,58 @@ const ProjectInviteNewUser = ({ type = 'internal' }) => {
   });
 
   return (
-    <TableRow>
-      <TableCell colSpan="3" variant="footer">
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Box
-            sx={{
-              display: 'grid',
-              gap: '1rem',
-              gridTemplateColumns: 'repeat(2, 1fr) 50px',
-              flexWrap: { xs: 'wrap', md: 'nowrap' },
-            }}
-          >
-            <Stack>
-              <CustomInviteAutoComplete optionsList={userListOptions} />
-              {errors && errors?.user?.message && (
-                <Typography color="red" fontSize=".75rem">
-                  {errors?.user?.message}
-                </Typography>
-              )}
-              {errors && errors?.user?.email?.message && (
-                <Typography color="red" fontSize=".75rem">
-                  {errors?.user?.email?.message}
-                </Typography>
-              )}
-            </Stack>
-            <RHFSelect name="role" label="Role" InputLabelProps={{ shrink: true }}>
-              {userRoles.map((role, index) => (
-                <MenuItem
-                  key={role.value}
-                  value={role.value}
-                  onClick={() => handleSelectRole(index, role.value)}
-                >
-                  {role.label}
-                </MenuItem>
-              ))}
-            </RHFSelect>
+    // <TableRow>
+    //   <TableCell colSpan="3" variant="footer">
+    <Box p={2}>
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Box
+          sx={{
+            // display: 'grid',
+            // gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr) 50px' },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: '1rem',
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+          }}
+        >
+          <Stack flex={1}>
+            <CustomInviteAutoComplete optionsList={userListOptions} />
+            {errors && errors?.user?.message && (
+              <Typography color="red" fontSize=".75rem">
+                {errors?.user?.message}
+              </Typography>
+            )}
+            {errors && errors?.user?.email?.message && (
+              <Typography color="red" fontSize=".75rem">
+                {errors?.user?.email?.message}
+              </Typography>
+            )}
+          </Stack>
+          <RHFSelect name="role" label="Role" InputLabelProps={{ shrink: true }} sx={{ flex: 1 }}>
+            {userRoles.map((role, index) => (
+              <MenuItem
+                key={role.value}
+                value={role.value}
+                onClick={() => handleSelectRole(index, role.value)}
+              >
+                {role.label}
+              </MenuItem>
+            ))}
+          </RHFSelect>
 
-            <Button
-              disabled={isSubmitting}
-              variant="contained"
-              onClick={handleSubmit(onSubmit)}
-              sx={{ minWidth: 'max-content' }}
-            >
-              Add User
-            </Button>
-          </Box>
-        </FormProvider>
-      </TableCell>
-    </TableRow>
+          <Button
+            disabled={isSubmitting}
+            variant="contained"
+            onClick={handleSubmit(onSubmit)}
+            sx={{ minWidth: 'max-content' }}
+          >
+            Add User
+          </Button>
+        </Box>
+      </FormProvider>
+    </Box>
+    //   </TableCell>
+    // </TableRow>
   );
 };
 
