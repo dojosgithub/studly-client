@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
+import { Box } from '@mui/system';
 
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { zoomPlugin } from '@react-pdf-viewer/zoom';
@@ -18,13 +18,11 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import { display, width } from '@mui/system';
 import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  const [zoomLevel, setZoomLevel] = useState(0.5); // Initial zoom level
   const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
@@ -124,53 +122,27 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         overflow: 'hidden',
       }}
     >
-      {sheet?.src?.preview && (
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          {/* <TransformWrapper
-            // defaultScale={zoomLevel}
-            minScale={0.2}
-            maxScale={5}
-            pinch={{ step: 0.05 }}
-            onPinching={(e) => {
-              zoomLevelRef.current = e.state.scale;
-              zoomPluginInstance.zoomTo(e.state.scale);
-            }}
-            wheel={{ wheelDisabled: true }}
-            doubleClick={{ disabled: true }}
-            panning={{ disabled: true }}
-          > */}
-          {/* <TransformComponent contentStyle={{ width: '100%', height: '100%' }}> */}
-
-          {/* <Viewer
-            defaultScale={zoomLevelRef?.current}
-            fileUrl={sheet.src.preview}
-            plugins={[
-              defaultLayoutPluginInstance,
-              zoomPluginInstance,
-              searchPluginInstance,
-              fullscreenPluginInstance,
-              selectionModePluginInstance,
-            ]}
-            initialPage={1}
-            style={viewerStyle} // Apply viewerStyle here
-          /> */}
-          {/* </TransformComponent>
-          </TransformWrapper> */}
-          <WrappedViewer
-            zoomLevelRef={zoomLevelRef}
-            sheet={sheet}
-            plugins={[
-              defaultLayoutPluginInstance,
-              zoomPluginInstance,
-              searchPluginInstance,
-              fullscreenPluginInstance,
-              selectionModePluginInstance,
-            ]}
-            zoomTo={zoomPluginInstance.zoomTo}
-            style={viewerStyle} // Apply viewerStyle here
-          />
-        </Worker>
-      )}
+      <Box sx={{ position: 'relative', p: 4, overflow: 'hidden' }}>
+        <Box sx={{ overflow: 'hidden' }}>
+          {sheet?.src?.preview && (
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+              <WrappedViewer
+                zoomLevelRef={zoomLevelRef}
+                sheet={sheet}
+                plugins={[
+                  defaultLayoutPluginInstance,
+                  zoomPluginInstance,
+                  searchPluginInstance,
+                  fullscreenPluginInstance,
+                  selectionModePluginInstance,
+                ]}
+                zoomTo={zoomPluginInstance.zoomTo}
+                style={viewerStyle} // Apply viewerStyle here
+              />
+            </Worker>
+          )}
+        </Box>
+      </Box>
     </div>
   );
 };
@@ -182,3 +154,17 @@ PDFViewer.propTypes = {
   currentSheetIndex: PropTypes.number,
   setCurrentSheetIndex: PropTypes.func,
 };
+
+// {/* <Viewer
+//   defaultScale={zoomLevelRef?.current}
+//   fileUrl={sheet.src.preview}
+//   plugins={[
+//     defaultLayoutPluginInstance,
+//     zoomPluginInstance,
+//     searchPluginInstance,
+//     fullscreenPluginInstance,
+//     selectionModePluginInstance,
+//   ]}
+//   initialPage={1}
+//   style={viewerStyle} // Apply viewerStyle here
+// /> */}

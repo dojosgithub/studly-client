@@ -21,8 +21,18 @@ const PinchWrapper = (WrappedComponent) => {
       if (isPinching.current && e.touches.length === 2) {
         e.preventDefault();
         const newDistance = getDistance(e.touches);
-        const newScale = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit scale range
-        scaleTempRef.current = newScale; // Track scale during pinch, without applying
+        // const newScale = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit scale range
+        // scaleTempRef.current = newScale; // Track scale during pinch, without applying
+
+        const scaleFactor = newDistance / initialDistance.current;
+        // Calculate new scale but ensure it stays within desired limits
+        const newScale = Math.min(Math.max(scaleRef.current * scaleFactor, 0.3), 1.5);
+
+        // Update the temporary scale ref
+        scaleTempRef.current = newScale;
+
+        // Update the scale in the component
+        scaleRef.current = newScale; // Update current scale for rendering
       }
     };
 
@@ -48,7 +58,7 @@ const PinchWrapper = (WrappedComponent) => {
         style={{
           transform: `scale(${scaleRef.current})`,
           transformOrigin: 'center',
-          transition: 'transform 0.2s', // Smooth transition when applying scale
+          transition: 'transform 0.1s', // Smooth transition when applying scale
           width: '100%',
           height: '100%',
           overflow: 'hidden',
