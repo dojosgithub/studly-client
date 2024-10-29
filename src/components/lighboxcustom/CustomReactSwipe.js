@@ -13,7 +13,8 @@ const SimpleSlider = ({ currentSheetIndex, setCurrentSheetIndex }) => {
     <div
       className="slider-container"
       key={currentSheetIndex}
-      style={{ maxHeight: '85vh', height: '100%' }}
+      style={{ height: '100%' }}
+      // maxHeight: '85vh',
     >
       <PdfViewer
         sheet={planroom?.sheets[currentSheetIndex]}

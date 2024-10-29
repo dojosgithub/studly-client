@@ -75,14 +75,6 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     };
   }, [zoomPluginInstance]);
 
-  const viewerStyle = {
-    width: '100%', // Full width of the container
-    height: '100%', // Full height of the container
-    overflow: 'hidden', // Ensure no content overflow
-    // display: 'flex', // Flexbox for centering content
-    // justifyContent: 'center', // Center horizontally
-    // alignItems: 'center', // Center vertically
-  };
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
     renderToolbar: useCallback(
@@ -138,83 +130,38 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         width: '100%',
         height: '100%',
         backgroundColor: '#E4E4E4',
-        // overflow: 'auto',
+        overflow: 'hidden',
       }}
     >
       {sheet?.src?.preview && (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          {/* <TransformWrapper
-            // defaultScale={zoomLevel}
-            minScale={0.2}
-            maxScale={5}
-            pinch={{ step: 0.05 }}
-            onPinching={(e) => {
-              zoomLevelRef.current = e.state.scale;
-              zoomPluginInstance.zoomTo(e.state.scale);
-            }}
-            wheel={{ wheelDisabled: true }}
-            doubleClick={{ disabled: true }}
-            panning={{ disabled: true }}
-          > */}
-          {/* <TransformComponent contentStyle={{ width: '100%', height: '100%' }}> */}
-
-          {/* <Viewer
-            defaultScale={zoomLevelRef?.current}
-            fileUrl={sheet.src.preview}
-            plugins={[
-              defaultLayoutPluginInstance,
-              zoomPluginInstance,
-              searchPluginInstance,
-              fullscreenPluginInstance,
-              selectionModePluginInstance,
-            ]}
-            initialPage={1}
-            style={viewerStyle} // Apply viewerStyle here
-          /> */}
-          {/* </TransformComponent>
-          </TransformWrapper> */}
-          <Box sx={{ overflow: 'hidden' }}>
-            <Box>
-              <Viewer
-                defaultScale={zoomLevelRef?.current}
-                fileUrl={sheet.src.preview}
-                plugins={[
-                  defaultLayoutPluginInstance,
-                  zoomPluginInstance,
-                  searchPluginInstance,
-                  fullscreenPluginInstance,
-                  selectionModePluginInstance,
-                ]}
-                initialPage={1}
-                // style={viewerStyle} // Apply viewerStyle here
-                ref={imageRef}
-                style={{
-                  left: crop.x,
-                  top: crop.y,
-                  transform: `scale(${crop.scale})`,
-                  touchAction: 'none',
-                  position: 'relative',
-                  width: 'auto',
-                  height: '100%',
-                  maxWidth: 'none',
-                  maxHeight: 'none',
-                }}
-              />
-            </Box>
+          <Box sx={{ overflow: 'auto' }}>
+            <Viewer
+              defaultScale={zoomLevelRef?.current}
+              fileUrl={sheet.src.preview}
+              plugins={[
+                defaultLayoutPluginInstance,
+                zoomPluginInstance,
+                searchPluginInstance,
+                fullscreenPluginInstance,
+                selectionModePluginInstance,
+              ]}
+              initialPage={1}
+              // style={viewerStyle} // Apply viewerStyle here
+              ref={imageRef}
+              style={{
+                left: crop.x,
+                top: crop.y,
+                transform: `scale(${crop.scale})`,
+                touchAction: 'none',
+                position: 'relative',
+                width: 'auto',
+                height: '100%',
+                maxWidth: 'none',
+                maxHeight: 'none',
+              }}
+            />
           </Box>
-          {/* <WrappedViewer
-            zoomLevelRef={zoomLevelRef}
-            sheet={sheet}
-            plugins={[
-              defaultLayoutPluginInstance,
-              zoomPluginInstance,
-              searchPluginInstance,
-              fullscreenPluginInstance,
-              selectionModePluginInstance,
-            ]}
-            zoomTo={zoomPluginInstance.zoomTo}
-            style={viewerStyle} // Apply viewerStyle here
-          /> */}
         </Worker>
       )}
     </div>
