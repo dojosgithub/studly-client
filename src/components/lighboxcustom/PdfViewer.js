@@ -4,7 +4,6 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
 
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { zoomPlugin } from '@react-pdf-viewer/zoom';
@@ -20,7 +19,6 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import { display, width } from '@mui/system';
 import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
@@ -35,15 +33,17 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const imageRef = useRef();
   useGesture(
     {
-      onDrag: ({ offset: [dx, dy] }) => {
-        setCrop((c) => ({ ...c, x: dx, y: dy }));
-      },
+      // onDrag: ({ offset: [dx, dy] }) => {
+      //   setCrop((c) => ({ ...c, x: dx, y: dy }));
+      // },
       onPinch: ({ offset: [d] }) => {
-        setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
+        // setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
+        setCrop((c) => ({ ...c, scale: Math.max(0.5, Math.min(2, 1 + d / 100)) }));
       },
     },
     {
       target: imageRef,
+      pinch: { scaleBounds: { min: 0.5, max: 2 } },
       eventOptions: { passive: false },
     }
   );
@@ -125,46 +125,53 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   });
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#E4E4E4',
-        overflow: 'hidden',
-      }}
-    >
-      {sheet?.src?.preview && (
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-          <Box sx={{ overflow: 'auto' }}>
-            <Viewer
-              defaultScale={zoomLevelRef?.current}
-              fileUrl={sheet.src.preview}
-              plugins={[
-                defaultLayoutPluginInstance,
-                zoomPluginInstance,
-                searchPluginInstance,
-                fullscreenPluginInstance,
-                selectionModePluginInstance,
-              ]}
-              initialPage={1}
-              // style={viewerStyle} // Apply viewerStyle here
-              ref={imageRef}
-              style={{
-                left: crop.x,
-                top: crop.y,
-                transform: `scale(${crop.scale})`,
-                touchAction: 'none',
-                position: 'relative',
-                width: 'auto',
-                height: '100%',
-                maxWidth: 'none',
-                maxHeight: 'none',
-              }}
-            />
-          </Box>
-        </Worker>
-      )}
-    </div>
+    <Box sx={{ position: 'relative', p: 4, overflow: 'hidden' }}>
+      <Box sx={{ overflow: 'hidden' }}>
+        <div
+          ref={imageRef}
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#E4E4E4',
+            overflow: 'hidden',
+            touchAction: 'none', // Prevents page-wide zoom/pan gestures
+            transform: `scale(${crop.scale}) translate(${crop.x}px, ${crop.y}px)`,
+            transformOrigin: 'center center',
+          }}
+        >
+          {sheet?.src?.preview && (
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+              {/* <Box sx={{ overflow: 'auto' }}> */}
+              <Viewer
+                defaultScale={zoomLevelRef?.current}
+                fileUrl={sheet.src.preview}
+                plugins={[
+                  defaultLayoutPluginInstance,
+                  zoomPluginInstance,
+                  searchPluginInstance,
+                  fullscreenPluginInstance,
+                  selectionModePluginInstance,
+                ]}
+                initialPage={1}
+                // ref={imageRef}
+                // style={{
+                //   left: crop.x,
+                //   top: crop.y,
+                //   transform: `scale(${crop.scale})`,
+                //   touchAction: 'none',
+                //   position: 'relative',
+                //   width: 'auto',
+                //   height: '100%',
+                //   maxWidth: 'none',
+                //   maxHeight: 'none',
+                // }}
+              />
+              {/* </Box> */}
+            </Worker>
+          )}
+        </div>
+      </Box>
+    </Box>
   );
 };
 
