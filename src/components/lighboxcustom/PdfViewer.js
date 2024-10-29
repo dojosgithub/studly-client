@@ -138,7 +138,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         width: '100%',
         height: '100%',
         backgroundColor: '#E4E4E4',
-        // overflow: 'hidden',
+        // overflow: 'auto',
       }}
     >
       {sheet?.src?.preview && (
@@ -173,7 +173,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
           /> */}
           {/* </TransformComponent>
           </TransformWrapper> */}
-          <Box sx={{ overflow: 'auto' }}>
+          <Box sx={{ overflow: 'hidden' }}>
             <Viewer
               defaultScale={zoomLevelRef?.current}
               fileUrl={sheet.src.preview}
