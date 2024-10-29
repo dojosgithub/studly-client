@@ -1,5 +1,7 @@
+import { useGesture } from '@use-gesture/react';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
@@ -24,12 +26,27 @@ import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  const [zoomLevel, setZoomLevel] = useState(0.5); // Initial zoom level
   const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
   const selectionModePluginInstance = selectionModePlugin();
+  const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
+  const imageRef = useRef();
+  useGesture(
+    {
+      onDrag: ({ offset: [dx, dy] }) => {
+        setCrop((c) => ({ ...c, x: dx, y: dy }));
+      },
+      onPinch: ({ offset: [d] }) => {
+        setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
+      },
+    },
+    {
+      target: imageRef,
+      eventOptions: { passive: false },
+    }
+  );
 
   const handlePreviousPage = () => {
     if (currentSheetIndex > 0) setCurrentSheetIndex(currentSheetIndex - 1);
@@ -121,7 +138,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         width: '100%',
         height: '100%',
         backgroundColor: '#E4E4E4',
-        overflow: 'hidden',
+        // overflow: 'hidden',
       }}
     >
       {sheet?.src?.preview && (
@@ -156,7 +173,34 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
           /> */}
           {/* </TransformComponent>
           </TransformWrapper> */}
-          <WrappedViewer
+          <Box sx={{ overflow: 'auto' }}>
+            <Viewer
+              defaultScale={zoomLevelRef?.current}
+              fileUrl={sheet.src.preview}
+              plugins={[
+                defaultLayoutPluginInstance,
+                zoomPluginInstance,
+                searchPluginInstance,
+                fullscreenPluginInstance,
+                selectionModePluginInstance,
+              ]}
+              initialPage={1}
+              // style={viewerStyle} // Apply viewerStyle here
+              ref={imageRef}
+              style={{
+                left: crop.x,
+                top: crop.y,
+                transform: `scale(${crop.scale})`,
+                touchAction: 'none',
+                position: 'relative',
+                width: 'auto',
+                height: '100%',
+                maxWidth: 'none',
+                maxHeight: 'none',
+              }}
+            />
+          </Box>
+          {/* <WrappedViewer
             zoomLevelRef={zoomLevelRef}
             sheet={sheet}
             plugins={[
@@ -168,7 +212,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             ]}
             zoomTo={zoomPluginInstance.zoomTo}
             style={viewerStyle} // Apply viewerStyle here
-          />
+          /> */}
         </Worker>
       )}
     </div>
