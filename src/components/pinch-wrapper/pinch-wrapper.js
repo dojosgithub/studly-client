@@ -1,36 +1,44 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-// Higher-Order Component (HOC) that adds pinch-to-zoom functionality
 const PinchWrapper = (WrappedComponent) => {
   const PinchZoomWrapper = ({ zoomTo, ...props }) => {
     const [scale, setScale] = useState(1);
     const initialDistance = useRef(0);
-    const isPinching = useRef(false); // Track whether a pinch is in progress
+    const isPinching = useRef(false);
 
     const handleTouchStart = (e) => {
       if (e.touches.length === 2) {
-        e.preventDefault(); // Prevent default touch behavior (like scrolling)
+        e.preventDefault();
         const distance = getDistance(e.touches);
         initialDistance.current = distance;
-        isPinching.current = true; // Set pinching state to true
+        isPinching.current = true;
       }
     };
 
-    const handleTouchMove = (e) => {
-      if (isPinching.current && e.touches.length === 2) {
-        e.preventDefault(); // Prevent default touch behavior (like scrolling)
-        const newDistance = getDistance(e.touches);
-        const scaleFactor = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit zoom range
-        setScale(scaleFactor); // Update the scale state dynamically
-        if (zoomTo) {
-          zoomTo(scaleFactor); // Optionally call zoomTo on pinch gesture
+    const handleTouchMove = useCallback(
+      (e) => {
+        if (isPinching.current && e.touches.length === 2) {
+          e.preventDefault();
+          requestAnimationFrame(() => {
+            const newDistance = getDistance(e.touches);
+            const newScale = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3);
+
+            // Update the scale only if there's a significant change to reduce re-renders
+            if (Math.abs(newScale - scale) > 0.05) {
+              setScale(newScale);
+              if (zoomTo) {
+                zoomTo(newScale);
+              }
+            }
+          });
         }
-      }
-    };
+      },
+      [scale, zoomTo]
+    );
 
     const handleTouchEnd = () => {
-      isPinching.current = false; // Reset pinching state
+      isPinching.current = false;
     };
 
     const getDistance = (touches) => {
@@ -48,7 +56,7 @@ const PinchWrapper = (WrappedComponent) => {
           transition: 'transform 0.1s',
           width: '100%',
           height: '100%',
-          overflow: 'hidden', // Prevent overflow which can lead to scrolling
+          overflow: 'hidden',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -58,10 +66,11 @@ const PinchWrapper = (WrappedComponent) => {
       </div>
     );
   };
-  // Add PropTypes validation for zoomTo
+
   PinchZoomWrapper.propTypes = {
-    zoomTo: PropTypes.func.isRequired, // Mark zoomTo as required if it always needs to be present
+    zoomTo: PropTypes.func.isRequired,
   };
+
   return PinchZoomWrapper;
 };
 
