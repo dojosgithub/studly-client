@@ -174,31 +174,33 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
           {/* </TransformComponent>
           </TransformWrapper> */}
           <Box sx={{ overflow: 'hidden' }}>
-            <Viewer
-              defaultScale={zoomLevelRef?.current}
-              fileUrl={sheet.src.preview}
-              plugins={[
-                defaultLayoutPluginInstance,
-                zoomPluginInstance,
-                searchPluginInstance,
-                fullscreenPluginInstance,
-                selectionModePluginInstance,
-              ]}
-              initialPage={1}
-              // style={viewerStyle} // Apply viewerStyle here
-              ref={imageRef}
-              style={{
-                left: crop.x,
-                top: crop.y,
-                transform: `scale(${crop.scale})`,
-                touchAction: 'none',
-                position: 'relative',
-                width: 'auto',
-                height: '100%',
-                maxWidth: 'none',
-                maxHeight: 'none',
-              }}
-            />
+            <Box>
+              <Viewer
+                defaultScale={zoomLevelRef?.current}
+                fileUrl={sheet.src.preview}
+                plugins={[
+                  defaultLayoutPluginInstance,
+                  zoomPluginInstance,
+                  searchPluginInstance,
+                  fullscreenPluginInstance,
+                  selectionModePluginInstance,
+                ]}
+                initialPage={1}
+                // style={viewerStyle} // Apply viewerStyle here
+                ref={imageRef}
+                style={{
+                  left: crop.x,
+                  top: crop.y,
+                  transform: `scale(${crop.scale})`,
+                  touchAction: 'none',
+                  position: 'relative',
+                  width: 'auto',
+                  height: '100%',
+                  maxWidth: 'none',
+                  maxHeight: 'none',
+                }}
+              />
+            </Box>
           </Box>
           {/* <WrappedViewer
             zoomLevelRef={zoomLevelRef}
