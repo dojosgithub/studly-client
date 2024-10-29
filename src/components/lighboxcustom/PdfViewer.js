@@ -118,7 +118,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
             height: '100%',
             backgroundColor: '#E4E4E4',
             overflow: 'hidden',
-            touchAction: 'none', // Prevents page-wide zoom/pan gestures
+            touchAction: 'pinch-zoom', // Prevents page-wide zoom/pan gestures
             transform: `scale(${crop.scale}) translate(${crop.x}px, ${crop.y}px)`,
             transformOrigin: 'center center',
           }}
