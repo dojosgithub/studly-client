@@ -31,6 +31,24 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const selectionModePluginInstance = selectionModePlugin();
   const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
   const imageRef = useRef();
+  useGesture(
+    {
+      // onDrag: ({ offset: [dx, dy] }) => {
+      //   setCrop((c) => ({ ...c, x: dx, y: dy }));
+      // },
+      onPinch: ({ offset: [d] }) => {
+        // setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
+        const value = Math.max(0.5, Math.min(2, 1 + d / 100));
+        setCrop((c) => ({ ...c, scale: value }));
+        zoomLevelRef.current = value;
+      },
+    },
+    {
+      target: imageRef,
+      pinch: { scaleBounds: { min: 0.5, max: 2 } },
+      eventOptions: { passive: false },
+    }
+  );
 
   const handlePreviousPage = () => {
     if (currentSheetIndex > 0) setCurrentSheetIndex(currentSheetIndex - 1);
@@ -109,52 +127,47 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   });
 
   return (
-    <Box sx={{ position: 'relative', p: 4, overflow: 'hidden' }}>
-      <Box sx={{ overflow: 'hidden' }}>
-        <div
-          ref={imageRef}
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundColor: '#E4E4E4',
-            overflow: 'hidden',
-            touchAction: 'pinch-zoom', // Prevents page-wide zoom/pan gestures
-            transform: `scale(${crop.scale}) translate(${crop.x}px, ${crop.y}px)`,
-            transformOrigin: 'center center',
-          }}
-        >
-          {sheet?.src?.preview && (
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-              {/* <Box sx={{ overflow: 'auto' }}> */}
-              <Viewer
-                defaultScale={zoomLevelRef?.current}
-                fileUrl={sheet.src.preview}
-                plugins={[
-                  defaultLayoutPluginInstance,
-                  zoomPluginInstance,
-                  searchPluginInstance,
-                  fullscreenPluginInstance,
-                  selectionModePluginInstance,
-                ]}
-                initialPage={1}
-                // ref={imageRef}
-                // style={{
-                //   left: crop.x,
-                //   top: crop.y,
-                //   transform: `scale(${crop.scale})`,
-                //   touchAction: 'none',
-                //   position: 'relative',
-                //   width: 'auto',
-                //   height: '100%',
-                //   maxWidth: 'none',
-                //   maxHeight: 'none',
-                // }}
-              />
-              {/* </Box> */}
-            </Worker>
-          )}
-        </div>
-      </Box>
+    <Box sx={{ p: 4, overflow: 'hidden' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#E4E4E4',
+          overflow: 'hidden',
+        }}
+      >
+        {sheet?.src?.preview && (
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            {/* <Box sx={{ overflow: 'auto' }}> */}
+            <Viewer
+              defaultScale={zoomLevelRef?.current}
+              fileUrl={sheet.src.preview}
+              plugins={[
+                defaultLayoutPluginInstance,
+                zoomPluginInstance,
+                searchPluginInstance,
+                fullscreenPluginInstance,
+                selectionModePluginInstance,
+              ]}
+              initialPage={1}
+              ref={imageRef}
+              style={{
+                left: crop.x,
+                top: crop.y,
+                transform: `scale(${crop.scale})`,
+                touchAction: 'none',
+                position: 'relative',
+                width: 'auto',
+                height: '100%',
+                maxWidth: 'none',
+                maxHeight: 'none',
+                transformOrigin: 'center center',
+              }}
+            />
+            {/* </Box> */}
+          </Worker>
+        )}
+      </div>
     </Box>
   );
 };
