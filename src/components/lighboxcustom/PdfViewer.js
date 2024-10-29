@@ -33,9 +33,9 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const imageRef = useRef();
   useGesture(
     {
-      // onDrag: ({ offset: [dx, dy] }) => {
-      //   setCrop((c) => ({ ...c, x: dx, y: dy }));
-      // },
+      onDrag: ({ offset: [dx, dy] }) => {
+        setCrop((c) => ({ ...c, x: dx, y: dy }));
+      },
       onPinch: ({ offset: [d] }) => {
         // setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
         const value = Math.max(0.5, Math.min(2, 1 + d / 100));
@@ -45,7 +45,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     },
     {
       target: imageRef,
-      pinch: { scaleBounds: { min: 0.5, max: 2 } },
+      // pinch: { scaleBounds: { min: 0.5, max: 2 } },
       eventOptions: { passive: false },
     }
   );
