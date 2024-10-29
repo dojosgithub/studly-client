@@ -31,22 +31,6 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const selectionModePluginInstance = selectionModePlugin();
   const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
   const imageRef = useRef();
-  useGesture(
-    {
-      // onDrag: ({ offset: [dx, dy] }) => {
-      //   setCrop((c) => ({ ...c, x: dx, y: dy }));
-      // },
-      onPinch: ({ offset: [d] }) => {
-        // setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
-        setCrop((c) => ({ ...c, scale: Math.max(0.5, Math.min(2, 1 + d / 100)) }));
-      },
-    },
-    {
-      target: imageRef,
-      pinch: { scaleBounds: { min: 0.5, max: 2 } },
-      eventOptions: { passive: false },
-    }
-  );
 
   const handlePreviousPage = () => {
     if (currentSheetIndex > 0) setCurrentSheetIndex(currentSheetIndex - 1);
