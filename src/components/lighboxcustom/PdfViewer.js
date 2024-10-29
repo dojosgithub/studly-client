@@ -1,9 +1,8 @@
-import { useGesture } from '@use-gesture/react';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'; // Import the pinch-zoom library
 
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { zoomPlugin } from '@react-pdf-viewer/zoom';
@@ -19,36 +18,18 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
+import { display, width } from '@mui/system';
 import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
+  const [zoomLevel, setZoomLevel] = useState(0.5); // Initial zoom level
   const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
   const selectionModePluginInstance = selectionModePlugin();
-  const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
-  const imageRef = useRef();
-  useGesture(
-    {
-      onDrag: ({ offset: [dx, dy] }) => {
-        setCrop((c) => ({ ...c, x: dx, y: dy }));
-      },
-      onPinch: ({ offset: [d] }) => {
-        // setCrop((c) => ({ ...c, scale: 1 + d / 50 }));
-        const value = Math.max(0.5, Math.min(2, 1 + d / 100));
-        setCrop((c) => ({ ...c, scale: value }));
-        zoomLevelRef.current = value;
-      },
-    },
-    {
-      target: imageRef,
-      // pinch: { scaleBounds: { min: 0.5, max: 2 } },
-      eventOptions: { passive: false },
-    }
-  );
 
   const handlePreviousPage = () => {
     if (currentSheetIndex > 0) setCurrentSheetIndex(currentSheetIndex - 1);
@@ -77,6 +58,14 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     };
   }, [zoomPluginInstance]);
 
+  const viewerStyle = {
+    width: '100%', // Full width of the container
+    height: '100%', // Full height of the container
+    overflow: 'hidden', // Ensure no content overflow
+    // display: 'flex', // Flexbox for centering content
+    // justifyContent: 'center', // Center horizontally
+    // alignItems: 'center', // Center vertically
+  };
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
     renderToolbar: useCallback(
@@ -127,48 +116,62 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   });
 
   return (
-    <Box sx={{ p: 4, overflow: 'hidden' }}>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#E4E4E4',
-          overflow: 'hidden',
-        }}
-      >
-        {sheet?.src?.preview && (
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-            {/* <Box sx={{ overflow: 'auto' }}> */}
-            <Viewer
-              defaultScale={zoomLevelRef?.current}
-              fileUrl={sheet.src.preview}
-              plugins={[
-                defaultLayoutPluginInstance,
-                zoomPluginInstance,
-                searchPluginInstance,
-                fullscreenPluginInstance,
-                selectionModePluginInstance,
-              ]}
-              initialPage={1}
-              ref={imageRef}
-              style={{
-                left: crop.x,
-                top: crop.y,
-                transform: `scale(${crop.scale})`,
-                touchAction: 'none',
-                position: 'relative',
-                width: 'auto',
-                height: '100%',
-                maxWidth: 'none',
-                maxHeight: 'none',
-                transformOrigin: 'center center',
-              }}
-            />
-            {/* </Box> */}
-          </Worker>
-        )}
-      </div>
-    </Box>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#E4E4E4',
+        overflow: 'hidden',
+      }}
+    >
+      {sheet?.src?.preview && (
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          {/* <TransformWrapper
+            // defaultScale={zoomLevel}
+            minScale={0.2}
+            maxScale={5}
+            pinch={{ step: 0.05 }}
+            onPinching={(e) => {
+              zoomLevelRef.current = e.state.scale;
+              zoomPluginInstance.zoomTo(e.state.scale);
+            }}
+            wheel={{ wheelDisabled: true }}
+            doubleClick={{ disabled: true }}
+            panning={{ disabled: true }}
+          > */}
+          {/* <TransformComponent contentStyle={{ width: '100%', height: '100%' }}> */}
+
+          {/* <Viewer
+            defaultScale={zoomLevelRef?.current}
+            fileUrl={sheet.src.preview}
+            plugins={[
+              defaultLayoutPluginInstance,
+              zoomPluginInstance,
+              searchPluginInstance,
+              fullscreenPluginInstance,
+              selectionModePluginInstance,
+            ]}
+            initialPage={1}
+            style={viewerStyle} // Apply viewerStyle here
+          /> */}
+          {/* </TransformComponent>
+          </TransformWrapper> */}
+          <WrappedViewer
+            zoomLevelRef={zoomLevelRef}
+            sheet={sheet}
+            plugins={[
+              defaultLayoutPluginInstance,
+              zoomPluginInstance,
+              searchPluginInstance,
+              fullscreenPluginInstance,
+              selectionModePluginInstance,
+            ]}
+            zoomTo={zoomPluginInstance.zoomTo}
+            style={viewerStyle} // Apply viewerStyle here
+          />
+        </Worker>
+      )}
+    </div>
   );
 };
 
