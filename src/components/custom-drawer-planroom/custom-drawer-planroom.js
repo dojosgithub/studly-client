@@ -9,12 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { truncate } from 'lodash';
+import { isEmpty, truncate } from 'lodash';
 import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 import { useResponsive } from 'src/hooks/use-responsive';
 import PlanRoomNav from 'src/sections/subscriber/plan-room/plan-room-nav';
 import Iconify from '../iconify';
 import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
+import PdfViewer from '../lighboxcustom/PdfViewer';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +25,7 @@ const CustomDrawerPlanRoom = React.memo(
     const [currentSheetIndex, setCurrentSheetIndex] = useState(null);
     const planroom = useSelector((state) => state?.planRoom?.current);
     const isMobile = useResponsive('down', 'md');
-
+    console.log('CustomDrawerPlanRoom');
     const renderHead = (
       <Stack
         direction="row"
@@ -85,12 +86,28 @@ const CustomDrawerPlanRoom = React.memo(
             setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
           />
 
-          <Box width={1} height={1}>
+          {/* <Box width={1} height={1}>
             <SimpleSlider
               currentSheetIndex={currentSheetIndex}
               setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
             />
-          </Box>
+          </Box> */}
+          {!isEmpty(planroom) && (
+            <Box width={1} height={1}>
+              <div
+                className="slider-container"
+                key={currentSheetIndex}
+                style={{ height: '100%' }}
+                // maxHeight: '85vh',
+              >
+                <PdfViewer
+                  sheet={planroom?.sheets[currentSheetIndex]}
+                  currentSheetIndex={currentSheetIndex}
+                  setCurrentSheetIndex={setCurrentSheetIndex}
+                />
+              </div>
+            </Box>
+          )}
         </Box>
       </Drawer>
     );

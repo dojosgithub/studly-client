@@ -23,7 +23,7 @@ import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  const zoomLevelRef = useRef(0.5);
+  // const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
@@ -37,24 +37,24 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     if (planroom.sheets.length - 1 > currentSheetIndex) setCurrentSheetIndex(currentSheetIndex + 1);
   };
 
-  useEffect(() => {
-    const handleZoom = (event) => {
-      if (event.ctrlKey) {
-        event.preventDefault();
+  // useEffect(() => {
+  //   const handleZoom = (event) => {
+  //     if (event.ctrlKey) {
+  //       event.preventDefault();
 
-        const zoomStep = event.deltaY < 0 ? 0.05 : -0.05;
+  //       const zoomStep = event.deltaY < 0 ? 0.05 : -0.05;
 
-        const newZoom = Math.max(0.1, Math.min(zoomLevelRef.current + zoomStep, 5));
-        zoomPluginInstance.zoomTo(newZoom);
-        zoomLevelRef.current = newZoom;
-      }
-    };
+  //       const newZoom = Math.max(0.1, Math.min(zoomLevelRef.current + zoomStep, 5));
+  //       zoomPluginInstance.zoomTo(newZoom);
+  //       zoomLevelRef.current = newZoom;
+  //     }
+  //   };
 
-    window.addEventListener('wheel', handleZoom, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', handleZoom);
-    };
-  }, [zoomPluginInstance]);
+  //   window.addEventListener('wheel', handleZoom, { passive: false });
+  //   return () => {
+  //     window.removeEventListener('wheel', handleZoom);
+  //   };
+  // }, [zoomPluginInstance]);
 
   const viewerStyle = {
     width: '100%', // Full width of the container
@@ -112,22 +112,24 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
       []
     ),
   });
-
+  console.log('pdfviewer');
   return (
     <div
       style={{
         width: '100%',
         height: '100%',
+        minHeight: '90vh',
+        maxHeight: '90vh',
         backgroundColor: '#E4E4E4',
         overflow: 'hidden',
       }}
     >
-      <Box sx={{ position: 'relative', p: 4, overflow: 'hidden' }}>
-        <Box sx={{ overflow: 'hidden' }}>
+      <Box sx={{ position: 'relative', p: 4, overflow: 'hidden', height: '100%' }}>
+        <Box sx={{ overflow: 'hidden', height: '100%' }}>
           {sheet?.src?.preview && (
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
               <WrappedViewer
-                zoomLevelRef={zoomLevelRef}
+                // zoomLevelRef={zoomLevelRef}
                 sheet={sheet}
                 plugins={[
                   defaultLayoutPluginInstance,
