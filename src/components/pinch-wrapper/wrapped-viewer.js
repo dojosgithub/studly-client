@@ -60,33 +60,31 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
       // Calculate the new distance between the two touch points
       const newDistance = getDistance(e.touches);
 
-      // Determine the percentage change as a relative factor
+      // Determine the scale factor from the distance change
       const scaleFactor = newDistance / initialDistance.current;
       const percentageChange = (scaleFactor - 1) * 100; // Convert to percentage
 
       console.log(`scaleFactor: ${scaleFactor}, percentageChange: ${percentageChange}%`);
 
-      // Define thresholds for small and large pinches
-      const smallPinchThreshold = 2; // Small pinch threshold (e.g., ±2%)
-      const largePinchThreshold = 10; // Large pinch threshold (e.g., ±10%)
-
-      // Calculate adjustment based on the pinch size
+      // Set thresholds for fine-tuning sensitivity
+      const adjustmentFactor = 0.005; // Adjust this to control scale increment speed
       let scaleAdjustment;
-      if (Math.abs(percentageChange) > largePinchThreshold) {
-        // Large pinch - apply a larger zoom increment
-        scaleAdjustment = scaleRef.current * (percentageChange / 50); // Exaggerate change for larger movements
-      } else if (Math.abs(percentageChange) > smallPinchThreshold) {
-        // Small pinch - apply a smaller zoom increment
-        scaleAdjustment = scaleRef.current * (percentageChange / 200); // Smaller factor for subtle changes
+
+      if (Math.abs(percentageChange) > 10) {
+        // Larger pinch - larger change
+        scaleAdjustment = percentageChange > 0 ? adjustmentFactor * 2 : -adjustmentFactor * 2;
+      } else if (Math.abs(percentageChange) > 2) {
+        // Small pinch - smaller change
+        scaleAdjustment = percentageChange > 0 ? adjustmentFactor : -adjustmentFactor;
       } else {
         // Ignore very tiny movements
         return;
       }
 
-      // Calculate the new scale and clamp it within range
+      // Gradually adjust the scale, clamping between min and max
       const newScale = Math.min(Math.max(scaleRef.current + scaleAdjustment, 0.3), 2.0);
 
-      // Update the scale
+      // Update the scale references for smooth, gradual scaling
       scaleTempRef.current = newScale;
       scaleRef.current = newScale;
     }
