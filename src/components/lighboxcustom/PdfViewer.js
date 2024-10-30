@@ -124,7 +124,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         overflow: 'hidden',
       }}
     >
-      <Box sx={{ position: 'relative', p: 4, overflow: 'hidden', height: '100%' }}>
+      <Box sx={{ position: 'relative', py: 4, overflow: 'hidden', height: '100%' }}>
         <Box sx={{ overflow: 'hidden', height: '100%' }}>
           {sheet?.src?.preview && (
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">

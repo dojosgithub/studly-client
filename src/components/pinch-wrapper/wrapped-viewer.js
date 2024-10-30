@@ -60,19 +60,33 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
       // Calculate the new distance between the two touch points
       const newDistance = getDistance(e.touches);
 
-      // Calculate the scale factor in percentage terms
+      // Determine the percentage change as a relative factor
       const scaleFactor = newDistance / initialDistance.current;
-      const percentageChange = (scaleFactor - 1) * 100; // Change as percentage
+      const percentageChange = (scaleFactor - 1) * 100; // Convert to percentage
 
       console.log(`scaleFactor: ${scaleFactor}, percentageChange: ${percentageChange}%`);
 
-      // Apply the percentage change to the current scale
-      const newScale = Math.min(
-        Math.max(scaleRef.current + scaleRef.current * (percentageChange / 100), 0.3),
-        1.5
-      );
+      // Define thresholds for small and large pinches
+      const smallPinchThreshold = 2; // Small pinch threshold (e.g., ±2%)
+      const largePinchThreshold = 10; // Large pinch threshold (e.g., ±10%)
 
-      // Update temporary and current scale references
+      // Calculate adjustment based on the pinch size
+      let scaleAdjustment;
+      if (Math.abs(percentageChange) > largePinchThreshold) {
+        // Large pinch - apply a larger zoom increment
+        scaleAdjustment = scaleRef.current * (percentageChange / 50); // Exaggerate change for larger movements
+      } else if (Math.abs(percentageChange) > smallPinchThreshold) {
+        // Small pinch - apply a smaller zoom increment
+        scaleAdjustment = scaleRef.current * (percentageChange / 200); // Smaller factor for subtle changes
+      } else {
+        // Ignore very tiny movements
+        return;
+      }
+
+      // Calculate the new scale and clamp it within range
+      const newScale = Math.min(Math.max(scaleRef.current + scaleAdjustment, 0.3), 2.0);
+
+      // Update the scale
       scaleTempRef.current = newScale;
       scaleRef.current = newScale;
     }
