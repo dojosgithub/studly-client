@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { Worker } from '@react-pdf-viewer/core';
 import { Box } from '@mui/system';
 
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
@@ -18,12 +18,11 @@ import '@react-pdf-viewer/zoom/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import WrappedViewer from '../pinch-wrapper/wrapped-viewer';
+import { PinchWrappedViewer } from '../pinch-wrapped-viewer';
 
 const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
   const planroom = useSelector((state) => state?.planRoom?.current);
   const zoomPluginInstance = zoomPlugin();
-  // const zoomLevelRef = useRef(0.5);
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance;
   const searchPluginInstance = searchPlugin();
   const fullscreenPluginInstance = fullScreenPlugin();
@@ -60,9 +59,6 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
     width: '100%', // Full width of the container
     height: '100%', // Full height of the container
     overflow: 'hidden', // Ensure no content overflow
-    // display: 'flex', // Flexbox for centering content
-    // justifyContent: 'center', // Center horizontally
-    // alignItems: 'center', // Center vertically
   };
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
@@ -128,8 +124,7 @@ const PDFViewer = ({ sheet, currentSheetIndex, setCurrentSheetIndex }) => {
         <Box sx={{ overflow: 'hidden', height: '100%' }}>
           {sheet?.src?.preview && (
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-              <WrappedViewer
-                // zoomLevelRef={zoomLevelRef}
+              <PinchWrappedViewer
                 sheet={sheet}
                 plugins={[
                   defaultLayoutPluginInstance,
@@ -156,17 +151,3 @@ PDFViewer.propTypes = {
   currentSheetIndex: PropTypes.number,
   setCurrentSheetIndex: PropTypes.func,
 };
-
-// {/* <Viewer
-//   defaultScale={zoomLevelRef?.current}
-//   fileUrl={sheet.src.preview}
-//   plugins={[
-//     defaultLayoutPluginInstance,
-//     zoomPluginInstance,
-//     searchPluginInstance,
-//     fullscreenPluginInstance,
-//     selectionModePluginInstance,
-//   ]}
-//   initialPage={1}
-//   style={viewerStyle} // Apply viewerStyle here
-// /> */}

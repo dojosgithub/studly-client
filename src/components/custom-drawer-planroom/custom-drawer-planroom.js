@@ -14,7 +14,6 @@ import { getPlanRoomDetails } from 'src/redux/slices/planRoomSlice';
 import { useResponsive } from 'src/hooks/use-responsive';
 import PlanRoomNav from 'src/sections/subscriber/plan-room/plan-room-nav';
 import Iconify from '../iconify';
-import SimpleSlider from '../lighboxcustom/CustomReactSwipe';
 import PdfViewer from '../lighboxcustom/PdfViewer';
 
 // ----------------------------------------------------------------------
@@ -86,12 +85,6 @@ const CustomDrawerPlanRoom = React.memo(
             setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
           />
 
-          {/* <Box width={1} height={1}>
-            <SimpleSlider
-              currentSheetIndex={currentSheetIndex}
-              setCurrentSheetIndex={(i) => setCurrentSheetIndex(i)}
-            />
-          </Box> */}
           {!isEmpty(planroom) && (
             <Box width={1} height={1}>
               <div

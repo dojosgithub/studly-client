@@ -1,20 +1,9 @@
-// WrappedViewer.js
 import React, { forwardRef, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Viewer } from '@react-pdf-viewer/core';
-import withPinchZoom from './pinch-wrapper'; // Adjust the import based on your file structure
 
-// const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, zoomTo }) => (
-//   <Viewer
-//     defaultScale={zoomLevelRef?.current}
-//     fileUrl={sheet?.src?.preview}
-//     plugins={plugins}
-//     initialPage={1}
-//     style={viewerStyle}
-//   />
-// ));
-const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, zoomTo }) => {
+const PinchWrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, zoomTo }) => {
   const scaleRef = useRef(0.5); // Store the current effective scale
   const scaleTempRef = useRef(0.5); // Track the scale during the pinch
   const initialDistance = useRef(0);
@@ -22,8 +11,6 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
   const viewRef = useRef(null);
 
   const handleTouchStart = (e) => {
-    console.log('handleTouchStart', e);
-
     if (e.touches.length === 2) {
       e.preventDefault();
       const distance = getDistance(e.touches);
@@ -33,26 +20,6 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
     }
   };
 
-  // const handleTouchMove = (e) => {
-  //   if (isPinching.current && e.touches.length === 2) {
-  //     console.log('handleTouchMove', e.touches);
-  //     e.preventDefault();
-  //     const newDistance = getDistance(e.touches);
-  //     // const newScale = Math.min(Math.max(newDistance / initialDistance.current, 0.5), 3); // Limit scale range
-  //     // scaleTempRef.current = newScale; // Track scale during pinch, without applying
-
-  //     const scaleFactor = newDistance / initialDistance.current;
-  //     console.log('scaleFactor', scaleFactor);
-  //     // Calculate new scale but ensure it stays within desired limits
-  //     const newScale = Math.min(Math.max(scaleRef.current * scaleFactor, 0.3), 1.5);
-
-  //     // Update the temporary scale ref
-  //     scaleTempRef.current = newScale;
-
-  //     // Update the scale in the component
-  //     scaleRef.current = newScale; // Update current scale for rendering
-  //   }
-  // };
   const handleTouchMove = (e) => {
     if (isPinching.current && e.touches.length === 2) {
       e.preventDefault();
@@ -91,7 +58,6 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
   };
 
   const handleTouchEnd = (e) => {
-    console.log('handleTouchEnd', e.touches);
     isPinching.current = false;
 
     // Apply the final scale only at the end of the pinch gesture
@@ -110,7 +76,6 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
   };
 
   useEffect(() => {
-    console.log('viewRef', viewRef);
     let viewRefValue;
     if (!isEmpty(viewRef.current)) {
       // Adding event listeners to document
@@ -130,20 +95,13 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
     };
     // eslint-disable-next-line
   }, [viewRef]);
-  console.log('scaleRef.current', scaleRef.current);
   return (
     <div
       style={{
-        // transform: `scale(${scaleRef.current})`,
-        // transformOrigin: 'center',
-        // transition: 'transform 0.1s', // Smooth transition when applying scale
         width: '100%',
         height: '100%',
         overflow: 'hidden',
       }}
-      // onTouchStart={handleTouchStart}
-      // onTouchMove={handleTouchMove}
-      // onTouchEnd={handleTouchEnd}
       ref={viewRef}
     >
       <Viewer
@@ -158,7 +116,7 @@ const WrappedViewer = forwardRef(({ sheet, zoomLevelRef, viewerStyle, plugins, z
 });
 
 // PropTypes validation
-WrappedViewer.propTypes = {
+PinchWrappedViewer.propTypes = {
   sheet: PropTypes.shape({
     src: PropTypes.shape({
       preview: PropTypes.string.isRequired,
@@ -170,5 +128,4 @@ WrappedViewer.propTypes = {
   zoomTo: PropTypes.func, // Array of plugin objects
 };
 
-// export default withPinchZoom(WrappedViewer);
-export default WrappedViewer;
+export default PinchWrappedViewer;
