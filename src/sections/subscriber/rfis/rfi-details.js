@@ -360,16 +360,17 @@ const RfiDetails = ({ id }) => {
             >
               <Typography className="submittalTitle">CC List</Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
-                {ccList.map((el) => (
-                  <Chip
-                    key={el?._id}
-                    size="small"
-                    color="secondary"
-                    variant="outlined"
-                    label={el?.name}
-                    sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  />
-                ))}
+                {ccList.length > 0 &&
+                  ccList.map((el) => (
+                    <Chip
+                      key={el}
+                      size="small"
+                      color="secondary"
+                      variant="outlined"
+                      label={el}
+                      // sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    />
+                  ))}
               </Box>
             </StyledCard>
           )}
