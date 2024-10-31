@@ -11,14 +11,17 @@ import {
 } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { truncate } from 'lodash';
 import {
   removeInvitedSubcontractor,
   setProjectSettingsTrades,
 } from 'src/redux/slices/projectSlice';
 import Iconify from 'src/components/iconify';
+import { useResponsive } from 'src/hooks/use-responsive';
 import ProjectSettingsInviteSubcontractorDialog from './project-settings-invite-subcontractor-dialog';
 
 const ProjectSettingsSubcontractor = () => {
+  const smUp = useResponsive('up', 'sm');
   const { setValue } = useFormContext();
   const [open, setOpen] = useState(false);
   const [ID, setID] = useState('');
@@ -134,22 +137,30 @@ const ProjectSettingsSubcontractor = () => {
                 alignItems: 'center',
                 gap: 2,
                 justifyContent: 'space-between',
-                flexDirection: { xs: 'column', md: 'row' },
-                textAlign: 'center',
+                // flexDirection: { xs: 'column', md: 'row' },
+                // textAlign: 'center',
+                flexDirection: 'row',
+                textAlign: 'left',
               }}
             >
               <Box
                 sx={{
                   display: 'flex',
-                  gap: '1rem',
-                  alignItems: 'center',
+                  gap: { xs: '.5rem', md: '1rem' },
                   flexDirection: { xs: 'column', md: 'row' },
+                  alignItems: { xs: 'flex-start', md: 'center' },
+                  flex: '.6',
                 }}
               >
                 <Typography fontSize="1rem" minWidth="max-content">
                   {tradeId}
                 </Typography>
-                <Typography fontSize="1rem">{name}</Typography>
+                <Typography fontSize="1rem">
+                  {truncate(name, {
+                    length: smUp ? 20 : 16,
+                    omission: '...',
+                  })}
+                </Typography>
               </Box>
               <Box
                 width="100%"
@@ -157,12 +168,17 @@ const ProjectSettingsSubcontractor = () => {
                 gap=".5rem"
                 sx={{
                   maxWidth: { xs: '100%', md: '200px' },
-                  justifyContent: { xs: 'center', md: 'flex-end' },
+                  justifyContent: { xs: 'flex-start', md: 'flex-end' },
+                  flex: '.4',
                 }}
               >
                 {!(options[tradeId] && options[tradeId].email) && (
-                  <Button variant="contained" onClick={(e) => handleSelect(tradeId, 'create')}>
-                    Invite Subcontractor
+                  <Button
+                    variant="contained"
+                    onClick={(e) => handleSelect(tradeId, 'create')}
+                    fullWidth={!smUp}
+                  >
+                    {`Invite ${smUp ? 'Subcontractor' : ''}`}
                   </Button>
                 )}
 

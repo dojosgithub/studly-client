@@ -118,6 +118,21 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
                   />
                 ))}
 
+                {/* <TableEmptyRows
+                  height={denseHeight}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                />
+
+                <TableNoData notFound={notFound} /> */}
+              </TableBody>
+            </Table>
+          </Scrollbar>
+        </TableContainer>
+        <ProjectSettingsInviteNewUser type={type} />
+        {notFound && (
+          <TableContainer>
+            <Table sx={{ minWidth: { xs: '100%', md: 540 } }}>
+              <TableBody>
                 <TableEmptyRows
                   height={denseHeight}
                   emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
@@ -126,9 +141,8 @@ export default function ProjectSetttingsInviteUserListView({ type }) {
                 <TableNoData notFound={notFound} />
               </TableBody>
             </Table>
-          </Scrollbar>
-        </TableContainer>
-        <ProjectSettingsInviteNewUser type={type} />
+          </TableContainer>
+        )}
       </Card>
     </Container>
   );

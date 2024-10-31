@@ -98,16 +98,30 @@ export default function ProjectInviteUserListView({ type }) {
                     onDeleteRow={() => handleDeleteRow(row.email)}
                   />
                 ))}
-                <TableEmptyRows
+                {/* <TableEmptyRows
                   height={denseHeight}
                   emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
                 />
-                <TableNoData notFound={notFound} />
+                <TableNoData notFound={notFound} /> */}
               </TableBody>
             </Table>
           </Scrollbar>
         </TableContainer>
         <ProjectInviteNewUser type={type} />
+        {notFound && (
+          <TableContainer>
+            <Table sx={{ minWidth: { xs: '100%', md: 540 } }}>
+              <TableBody>
+                <TableEmptyRows
+                  height={denseHeight}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                />
+
+                <TableNoData notFound={notFound} />
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Card>
     </Container>
   );

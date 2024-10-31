@@ -378,7 +378,9 @@ export default function ProjectStepperForm() {
                   flexDirection: { xs: 'column-reverse', sm: 'row' },
                   gap: { xs: '.25rem', sm: 2 },
                   mb: { xs: '0', sm: 2 },
-                  p: { xs: 0, sm: '1rem 0' },
+                  p: { xs: '1rem', sm: '1rem 0' },
+                  boxShadow: { xs: '-3px -9px 18px -3px rgba(0, 0, 0, 0.1)', sm: 'none' },
+                  borderRadius: { xs: '1rem 1rem 0 0', sm: 0 },
                 }}
               >
                 <Button
@@ -421,11 +423,13 @@ export default function ProjectStepperForm() {
                   display: 'flex',
                   position: 'sticky',
                   bottom: 0,
-                  p: '1rem 0',
                   width: '100%',
                   bgcolor: '#fff',
                   flexDirection: { xs: 'column', sm: 'row' },
                   gap: { xs: '.25rem', sm: 0 },
+                  p: { xs: '1rem', sm: '1rem 0' },
+                  boxShadow: { xs: '-3px -9px 18px -3px rgba(0, 0, 0, 0.1)', sm: 'none' },
+                  borderRadius: { xs: '1rem 1rem 0 0', sm: 0 },
                 }}
               >
                 {activeStep !== 0 && (
