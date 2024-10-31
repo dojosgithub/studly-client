@@ -87,7 +87,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
               onClick={exitAccess}
               sx={{
                 ml: { xs: 0, md: 1 },
-                flex: { xs: 1, md: 0 },
+
                 minWidth: 'max-content',
               }} // Add some margin for spacing
             >
@@ -101,17 +101,17 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
               margin: { xs: 0 },
               width: { xs: '100%' },
               padding: { xs: 0 },
+              justifyContent: { md: 'flex-end', lg: 'center' },
             },
             '& .MuiAlert-icon': {
               color: '#3f51b5', // Icon color matching the theme
-              display: { xs: 'none', md: 'inline-flex' },
+              display: { xs: 'none', md: 'flex' },
             },
             '& .MuiAlert-message': {
               fontWeight: '500', // Slightly bolder text for emphasis
               minWidth: 'max-content', //
-              '@media (max-width:400px)': {
-                minWidth: 'auto',
-                textAlign: 'center',
+              '@media (max-width:600px)': {
+                display: 'none',
               },
             },
             display: 'flex',
@@ -119,15 +119,15 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
             marginTop: { xs: 0, md: 0 }, //  xs:'2rem'
             justifyContent: 'center',
             alignItems: 'center',
-            position: 'absolute',
             width: '80%',
-            right: '5%',
+            // position: 'absolute',
+            // right: '5%',
             maxWidth: '475px',
             gap: { xs: '.75rem', md: '.25rem' },
-            '@media (max-width:560px)': {
-              flexWrap: 'wrap',
-              marginTop: '3rem',
-              gap: '0',
+            '@media (max-width:600px)': {
+              width: 'auto',
+              background: 'transparent',
+              border: 0,
             },
           }}
         >
@@ -185,7 +185,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
           height: 1,
           px: { lg: 5 },
           backgroundColor: isOnboarding ? '#3E3E3E' : theme.palette.background.brandPrimary,
-          justifyContent: isOnboarding ? 'space-between' : 'flex-end',
+          justifyContent: isOnboarding || !lgUp ? 'space-between' : 'flex-end',
         }}
       >
         {renderContent}
