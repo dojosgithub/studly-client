@@ -27,7 +27,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 //
 import {
   createNewProject,
-  getAllSubcontractorList,
   getCompanySubcontractorList,
   getProjectList,
   resetCreateProject,

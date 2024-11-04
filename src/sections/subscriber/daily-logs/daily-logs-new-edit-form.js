@@ -52,7 +52,7 @@ const ResponsiveButton = styled(Button)(({ theme }) => ({
     padding: theme.spacing(1),
   },
   [theme.breakpoints.up('md')]: {
-    width: '15%',
+    width: '20%',
     padding: theme.spacing(1.5),
   },
 }));
@@ -63,7 +63,7 @@ const ResponsiveLoadingButton = styled(LoadingButton)(({ theme }) => ({
     padding: theme.spacing(1),
   },
   [theme.breakpoints.up('md')]: {
-    width: '15%',
+    width: '20%',
     padding: theme.spacing(1.5),
   },
 }));
@@ -518,7 +518,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="secondary"
               onClick={() => appendDistribution({ name: '', email: '' })}
-              sx={{ marginRight: 2, margin: 1 }}
+              sx={{ marginRight: 2, margin: 1, width: '20%' }}
             >
               Add Another
             </ResponsiveButton>
@@ -565,7 +565,7 @@ const DailyLogsNewEditForm = ({ isEdit }) => {
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="secondary"
               onClick={() => appendSubcontractor({ companyName: '', headCount: null })}
-              sx={{ marginRight: 2, margin: 1 }}
+              sx={{ marginRight: 2, margin: 1, width: '20%' }}
             >
               Add Another
             </ResponsiveButton>

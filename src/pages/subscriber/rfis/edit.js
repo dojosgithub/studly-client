@@ -18,7 +18,6 @@ export default function SubmittalsEditPage() {
 
   // getting users list of project
   useEffect(() => {
-    // dispatch(getProjectUsersList());
     dispatch(getProjectRfiUsersList());
     dispatch(getProjectAssigneeUsers());
     async function getDetails() {

@@ -12,9 +12,9 @@ export default function MeetingMinutesCreatePage() {
   const projectId = useSelector((state) => state?.project?.current?._id);
 
   // getting users list of project
-  useEffect(() => {
-    dispatch(getExistingPlanRoomList());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getExistingPlanRoomList());
+  // }, [dispatch]);
   return (
     <>
       <Helmet>

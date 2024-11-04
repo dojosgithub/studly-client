@@ -87,7 +87,7 @@ export const getCompanySubcontractorList = createAsyncThunk(
     }
   }
 );
-// get subcontractor list in db
+// get subcontractor list in db (NOT IN USE)
 export const getAllSubcontractorList = createAsyncThunk('subcontractor/dbList', async () => {
   try {
     const response = await axiosInstance.get(endpoints.user.subcontractorList);

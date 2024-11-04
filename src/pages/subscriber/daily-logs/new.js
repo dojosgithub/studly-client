@@ -11,9 +11,9 @@ export default function DailyLogsCreatePage() {
   const dispatch = useDispatch();
 
   // getting users list of project
-  useEffect(() => {
-    dispatch(getExistingPlanRoomList());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getExistingPlanRoomList());
+  // }, [dispatch]);
   return (
     <>
       <Helmet>
