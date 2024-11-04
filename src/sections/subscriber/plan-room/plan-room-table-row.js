@@ -27,7 +27,7 @@ import CustomImage from 'src/components/image';
 
 const PlanRoomTableRow = memo(
   ({ row, selected, onEditRow, onSelectRow, onDeleteRow, onViewRow }) => {
-    const { sheetTitle, thumbnail, planName, issueDate, creator, category } = row;
+    const { sheetTitle, sheetNumber, thumbnail, planName, issueDate, creator, category } = row;
     const role = useSelector((state) => state?.user?.user?.role?.shortName);
     const confirm = useBoolean();
     const popover = usePopover();
@@ -60,15 +60,14 @@ const PlanRoomTableRow = memo(
               />
               <Iconify icon="lucide:external-link" color="black" height={12} width={12} />
               <Box sx={{ flexGrow: 1 }}>
-                <span>{sheetTitle}</span>
-              </Box>
-
-              <Box sx={{ flexGrow: 1 }}>
-                <span>{45}</span>
+                <span> {truncate(sheetTitle, { length: 30, omission: '...' })}</span>
               </Box>
             </Box>
           </TableCell>
 
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+            {truncate(sheetNumber, { length: 20, omission: '...' })}
+          </TableCell>
           <TableCell sx={{ whiteSpace: 'nowrap' }}>
             {truncate(planName, { length: 20, omission: '...' })}
           </TableCell>

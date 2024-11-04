@@ -42,10 +42,11 @@ import PlanRoomTableToolbar from '../plan-room-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Sheet Title', width: '20%' },
+  { id: 'sheetNumber', label: 'Sheet Number', width: '20%', minWidth: 140 },
   { id: 'description', label: 'Plan set', width: '30%' },
   { id: 'tags', label: 'Tags', width: '30%' },
   { id: 'createdDate', label: 'Issue date', width: '20%' },
-  { id: 'creator', label: 'Uploaded by', width: '20%' },
+  { id: 'creator', label: 'Uploaded by', width: '15%', minWidth: 120 },
   { id: '', width: '5%' },
 ];
 
