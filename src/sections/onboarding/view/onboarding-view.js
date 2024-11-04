@@ -1,27 +1,21 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { startCase } from 'lodash';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 // auth
 import { useAuthContext } from 'src/auth/hooks';
 // routes
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
 import { bgGradient } from 'src/theme/css';
 // components
-import Logo from 'src/components/logo';
 import { getProjectList } from 'src/redux/slices/projectSlice';
 import SearchIllustration from 'src/assets/illustrations/search-illustration.svg';
 import OnboardingProjects from '../onboarding-projects';
@@ -29,7 +23,6 @@ import OnboardingWithoutProjects from '../onboarding-without-project';
 
 // ----------------------------------------------------------------------
 
-// const projects = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5',]
 export default function OnboardingView() {
   const { method, user } = useAuthContext();
   const projects = useSelector((state) => state.project.list);
@@ -44,8 +37,6 @@ export default function OnboardingView() {
   const renderContent = (
     <Box
       sx={{
-        // width: 1,
-        // maxWidth: 800,
         flexGrow: 1,
         mx: 'auto',
         px: { xs: 2, md: 4 },
@@ -109,24 +100,12 @@ export default function OnboardingView() {
         Hi {startCase(user?.firstName)}! Which project would you <br /> like to start working on
         today?
       </Typography>
-      {/* <Stack
-        component="div"
-        direction="row"
-        flexWrap="wrap"
-      > */}
-      {/* {renderLogo} */}
+
       <Grid container alignItems="center" justifyContent="center" columnGap={4}>
         {upMd && <Grid>{renderSection}</Grid>}
 
         <Grid>{renderContent}</Grid>
       </Grid>
-      {/* </Stack> */}
     </Stack>
   );
 }
-
-// OnboardingView.propTypes = {
-//     children: PropTypes.node,
-//     image: PropTypes.string,
-//     title: PropTypes.string,
-// };

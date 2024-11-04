@@ -70,10 +70,14 @@ export default function NavVertical({ openNav, onCloseNav }) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            my: 3, // You can keep the vertical margin if needed
+            marginY: 3, // shorthand alternative for my: 3
           }}
         >
-          <Logo sx={{ p: { xs: '.5rem .5rem', lg: '1rem .5rem' } }} />
+          <Logo
+            sx={{
+              padding: lgUp ? '1rem .5rem' : '.5rem',
+            }}
+          />
         </Box>
 
         {user?.userType === 'Subscriber' && (
