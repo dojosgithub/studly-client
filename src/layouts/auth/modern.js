@@ -24,8 +24,8 @@ export default function AuthModernLayout({ children, image }) {
     >
       <Logo
         sx={{
-          mt: { xs: 2, md: 8 },
-          mb: { xs: 10, md: 8 },
+          marginTop: { xs: 2, md: 8 },
+          marginBottom: { xs: 10, md: 8 },
         }}
       />
 

@@ -60,7 +60,7 @@ export default function Footer() {
       }}
     >
       <Container>
-        <Logo sx={{ padding: '1rem .5rem' }} />
+        <Logo sx={{ padding: '1rem .5rem', width: 'auto' }} />
 
         <Typography variant="caption" component="div">
           © All rights reserved
@@ -88,7 +88,7 @@ export default function Footer() {
           textAlign: { xs: 'center', md: 'unset' },
         }}
       >
-        <Logo sx={{ marginBottom: 3 }} />
+        <Logo sx={{ marginBottom: 3, width: 'auto' }} />
 
         <Grid
           container

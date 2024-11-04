@@ -82,7 +82,7 @@ export default function Header() {
               </Link>
             }
           >
-            <Logo />
+            <Logo sx={{ width: 'auto' }} />
           </Badge>
 
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>

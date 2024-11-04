@@ -68,14 +68,14 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   const renderContent = (
     <>
-      {lgUp && isOnboarding && <Logo sx={{ padding: '1rem .5rem' }} />}
+      {lgUp && isOnboarding && <Logo sx={{ padding: '1rem .5rem', width: 'auto' }} />}
 
       {!lgUp && (
         <IconButton onClick={onOpenNav}>
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
-      {!lgUp && isOnboarding && <Logo sx={{ padding: '.75rem .5rem' }} />}
+      {!lgUp && isOnboarding && <Logo sx={{ padding: '.75rem .5rem', width: 'auto' }} />}
 
       {isViewAs ? (
         <Alert

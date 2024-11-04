@@ -76,6 +76,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
           <Logo
             sx={{
               padding: lgUp ? '1rem .5rem' : '.5rem',
+              width: 'auto',
             }}
           />
         </Box>

@@ -22,7 +22,8 @@ export default function AuthClassicLayout({ children, image, title }) {
       sx={{
         zIndex: 9,
         position: 'absolute',
-        m: { xs: 2, md: 5 },
+        margin: { xs: 2, md: 5 },
+        width: 'auto',
       }}
     />
   );

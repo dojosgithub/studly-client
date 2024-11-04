@@ -57,7 +57,7 @@ export default function InviteNewUserView() {
           alignItems: 'center',
         }}
       >
-        <Logo style={{ marginBottom: '5rem', height: '2.5rem', width: 'auto' }} />
+        <Logo sx={{ marginBottom: '5rem', height: '2.5rem', width: 'auto' }} />
         <Typography sx={{ mb: 4 }} textAlign="center" fontSize="2rem" fontWeight="bold">
           You have been Invited to Studly
         </Typography>
