@@ -27,6 +27,7 @@ import { paths } from 'src/routes/paths';
 import {
   createMeetingMinutes,
   getMeetingMinutesDetails,
+  getSubmittalAndRfiList,
   setCreateMeetingMinutes,
   setMeetingMinutesDescription,
   setMeetingMinutesInviteAttendee,
@@ -37,6 +38,7 @@ import {
 } from 'src/redux/slices/meetingMinutesSlice';
 //
 import { useResponsive } from 'src/hooks/use-responsive';
+import { getReferenceUrl, sanitizeLink } from 'src/utils/get-reference-url';
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
 import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog';
@@ -87,6 +89,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const dispatch = useDispatch();
 
+  const listData = useSelector((state) => state?.meetingMinutes?.referedTo);
+
   const isStepOptional = (step) => step === 3 || step === 4;
 
   const isStepSkipped = (step) => skipped?.has(step);
@@ -123,6 +127,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               status: 'Open',
               priority: 'Low',
               description: '',
+              referedTo: '',
             },
           ],
         },
@@ -163,6 +168,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
 
+
   useEffect(() => {
     if (isEdit) {
       dispatch(getMeetingMinutesDetails(id));
@@ -179,6 +185,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         topics: note.topics?.map((topic) => ({
           ...topic,
           date: new Date(topic.date),
+          referedTo: sanitizeLink(topic.referedTo),
         })),
       }));
       meeting.permit = meeting.permit?.map((perm) => ({
@@ -195,7 +202,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       dispatch(setCreateMeetingMinutes(meeting));
       reset(meeting);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentMeeting, dispatch, reset]);
+
+  useEffect(() => {
+    dispatch(getSubmittalAndRfiList({ sortDir: 'asc', status: [] }));
+  }, [dispatch]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -306,7 +318,14 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               timeInString: formattedTime,
             },
             inviteAttendee,
-            notes,
+            notes: notes?.map((note) => ({
+              ...note,
+              topics: note.topics?.map((topic) => ({
+                ...topic,
+                date: new Date(topic.date),
+                referedTo: getReferenceUrl(topic.referedTo, listData),
+              })),
+            })),
             permit,
             plan: clonedPlan,
             ...(status && { status }),
@@ -322,7 +341,14 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
             timeInString: formattedTime,
           },
           inviteAttendee,
-          notes,
+          notes: notes?.map((note) => ({
+            ...note,
+            topics: note.topics?.map((topic) => ({
+              ...topic,
+              date: new Date(topic.date),
+              referedTo: getReferenceUrl(topic.referedTo, listData),
+            })),
+          })),
           permit,
           plan: clonedPlan,
         })
@@ -350,7 +376,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         break;
 
       case 2:
-        component = <MeetingMinutesNotes />;
+        component = <MeetingMinutesNotes listData={listData} />;
         break;
       case 3:
         component = <MeetingMinutesPermitFields />;

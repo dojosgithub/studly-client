@@ -16,12 +16,17 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Autocomplete,
+  TextField,
+  lighten,
+  darken,
 } from '@mui/material';
 
 // hook-form
 import { RHFEditor, RHFSelect, RHFTextField } from 'src/components/hook-form';
 //
 import Iconify from 'src/components/iconify';
+
 
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
@@ -39,7 +44,7 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   zIndex: 10,
 }));
 
-const MeetingMinutesNotes = () => {
+const MeetingMinutesNotes = (listData) => {
   const { control } = useFormContext();
 
   const {
@@ -55,13 +60,17 @@ const MeetingMinutesNotes = () => {
   const handleAddNote = useCallback(() => {
     appendNote({
       subject: '',
-      topics: [{ topic: '', date: null, description: '', status: 'Open', priority: 'Low' }],
+      topics: [
+        { topic: '', date: null, description: '', status: 'Open', priority: 'Low', referedTo: '' },
+      ],
     });
   }, [appendNote]);
 
   const handleRemoveNote = (index) => {
     removeNote(index);
   };
+
+  
 
   return (
     <Box sx={{ marginBottom: '2rem', position: 'relative' }}>
@@ -86,7 +95,12 @@ const MeetingMinutesNotes = () => {
                       label="Section"
                       InputLabelProps={{ shrink: true }}
                     />
-                    <NestedTopicFieldArray control={control} noteIndex={noteIndex} note={note} />
+                    <NestedTopicFieldArray
+                      control={control}
+                      noteIndex={noteIndex}
+                      note={note}
+                      submittalAndRfiList={listData}
+                    />
                   </Stack>
                 </Box>
               </Card>
@@ -109,7 +123,23 @@ const MeetingMinutesNotes = () => {
 
 export default MeetingMinutesNotes;
 
-const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
+
+const GroupHeader = styled('div')(({ theme }) => ({
+  position: 'sticky',
+  top: '-8px',
+  padding: '4px 10px',
+  color: theme.palette.primary.main,
+  backgroundColor: lighten(theme.palette.primary.light, 0.85),
+  ...theme.applyStyles('dark', {
+    backgroundColor: darken(theme.palette.primary.main, 0.8),
+  }),
+}));
+
+const GroupItems = styled('ul')({
+  padding: 0,
+});
+
+const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }) => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
   const dropdownOptions1 = inviteAttendee.map((attendee) => ({
@@ -130,6 +160,12 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
     { value: 'High', label: 'High' },
   ];
 
+  const options = Object.entries(submittalAndRfiList?.listData).flatMap(([group, items]) =>
+    Array.isArray(items)
+      ? items.map((item) => ({ ...item, group }))
+      : []
+  );
+
   const {
     fields: topicFields,
     append: appendTopic,
@@ -137,6 +173,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
   } = useFieldArray({
     control,
     name: `notes[${noteIndex}].topics`,
+    
   });
   const handleAddTopic = () => {
     appendTopic({
@@ -146,6 +183,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
       status: 'Open',
       priority: 'Low',
       description: '',
+      referedTo: '',
     });
   };
 
@@ -239,6 +277,31 @@ const NestedTopicFieldArray = ({ control, noteIndex, note }) => {
                   )}
                 />
               </FormControl>
+              <FormControl>
+                {/* <InputLabel>Refered To</InputLabel> */}
+                <Controller
+                  name={`notes[${noteIndex}].topics[${topicIndex}].referedTo`}
+                  control={control}
+                  defaultValue={null}
+                  render={({ field }) => (
+                    <Autocomplete
+                      options={options || ''}
+                      groupBy={(option) => option?.group}
+                      getOptionLabel={(option) => option?.name || ''}
+                      isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                      onChange={(_, value) => field.onChange(value?._id || null)}
+                      value={options.find((opt) => opt?._id === field?.value) || null}
+                      renderInput={(params) => <TextField {...params} label="Refered To" />}
+                      renderGroup={(params) => (
+                        <li key={params?.key}>
+                          <GroupHeader>{params?.group}</GroupHeader>
+                          <GroupItems>{params?.children}</GroupItems>
+                        </li>
+                      )}
+                    />
+                  )}
+                />
+              </FormControl>
             </Box>
             <RHFEditor
               simple
@@ -268,4 +331,5 @@ NestedTopicFieldArray.propTypes = {
   control: PropTypes.func,
   note: PropTypes.object,
   noteIndex: PropTypes.number,
+  submittalAndRfiList: PropTypes.object,
 };

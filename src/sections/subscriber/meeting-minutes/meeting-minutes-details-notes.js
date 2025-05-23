@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -7,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import { Chip, Stack, Grid } from '@mui/material';
+import { paths } from 'src/routes/paths';
 
 // Styled Components
 const TopicContainer = styled('div')(({ theme }) => ({
@@ -19,9 +21,14 @@ const TopicContainer = styled('div')(({ theme }) => ({
 
 const MeetingMinutesDetailsNotes = ({ data }) => {
   const [expanded, setExpanded] = useState(false);
+   const navigate = useNavigate();
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+  };
+
+  const handleNavigate = (link) => {
+    navigate(paths.subscriber.meetingMinutes.referedTo(link));
   };
 
   return (
@@ -92,6 +99,21 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
                       </Typography>
                       <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {topic?.status}
+                      </Typography>
+                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
+                        Refered to:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: '14px',
+                          cursor: 'pointer',
+                          color: 'blue',
+                          textDecoration: 'underline',
+                        }}
+                        marginBottom={2}
+                        onClick={() => handleNavigate(topic?.referedTo)}
+                      >
+                        {`${process.env.REACT_APP_FRONTEND_URL}/subscriber/${topic?.referedTo}`}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>

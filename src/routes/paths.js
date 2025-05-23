@@ -79,6 +79,7 @@ export const paths = {
       edit: (id) => `${ROOTS.SUBSCRIBER}/meeting-minutes/${id}/edit`,
       details: (id) => `${ROOTS.SUBSCRIBER}/meeting-minutes/${id}`,
       response: (id) => `${ROOTS.SUBSCRIBER}/meeting-minutes/${id}/response`,
+      referedTo : (id) => `${ROOTS.SUBSCRIBER}/${id}`,
     },
     planRoom: {
       new: `${ROOTS.SUBSCRIBER}/plan-room/new`,

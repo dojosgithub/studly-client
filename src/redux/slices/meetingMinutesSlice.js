@@ -201,6 +201,32 @@ export const getMeetingMinutesPDF = createAsyncThunk('meetingMinutes/pdf', async
   }
 });
 
+export const getSubmittalAndRfiList = createAsyncThunk(
+  'meetingMinutes/submittalAndRfiList',
+  async (listOptions, { getState }) => {
+    try {
+      const projectId = getState().project?.current?._id;
+
+      const { status, ...data } = listOptions;
+      const response = await axiosInstance.post(
+        endpoints.meetingMinutes.submittalAndRfiList(projectId),
+        { status },
+        {
+          params: data,
+        }
+      );
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
+
 const inviteAttendeeInitialState = {
   name: '',
   company: '',
@@ -214,6 +240,7 @@ const topicInitialState = {
   assignee: null,
   status: 'Open',
   priority: 'Low',
+  referedTo : ''
 };
 const noteInitialState = {
   subject: '',
@@ -253,6 +280,7 @@ const meetingMinutesInitialState = {
 const initialState = {
   notes: '',
   list: [],
+  referedTo: {},
   create: { ...meetingMinutesInitialState },
   current: {},
   isLoading: false,
@@ -312,6 +340,21 @@ const meetingMinutes = createSlice({
       state.error = null;
     });
     builder.addCase(getMeetingMinutesList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+
+    // * Get Submittal And Rfi List
+    builder.addCase(getSubmittalAndRfiList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalAndRfiList.fulfilled, (state, action) => {
+      state.referedTo = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalAndRfiList.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

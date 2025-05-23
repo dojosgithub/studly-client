@@ -152,6 +152,7 @@ export const endpoints = {
     followup: (id) => `/api/meeting-minute/follow-up/${id}`,
     sendToAttendees: (id) => `/api/meeting-minute/send/${id}`,
     toMinutes: (id) => `/api/meeting-minute/to-minute/${id}`,
+    submittalAndRfiList: (id) => `/api/meeting-minute/submittalandrfi/${id}`,
   },
   dailyLogs: {
     // submit: (id) => `/api/daily-log/${id}/submit`,
