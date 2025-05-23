@@ -178,7 +178,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
   const handleAddTopic = () => {
     appendTopic({
       topic: '',
-      date: null,
+      date: new Date(),
       assignee: null,
       status: 'Open',
       priority: 'Low',
