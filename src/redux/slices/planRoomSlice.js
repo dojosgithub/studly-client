@@ -44,6 +44,32 @@ export const getPlanRoomList = createAsyncThunk(
   }
 );
 
+export const getPlanRoomListSameProj = createAsyncThunk(
+  'planRoomSameProj/list',
+  async (listOptions, { getState }) => {
+    try {
+      const projectId = getState().project?.current?._id;
+
+      const { status, ...data } = listOptions;
+      const response = await axiosInstance.post(
+        endpoints.planRoom.sameProjlist(projectId),
+        { status },
+        {
+          params: data,
+        }
+      );
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
+
 export const getPlanRoomPDFSThumbnails = createAsyncThunk(
   'split-pdf',
   async (listOptions, { getState }) => {
@@ -238,6 +264,7 @@ export const getPlanRoomDetails = createAsyncThunk('planRoom/details', async (id
 const initialState = {
   list: [],
   existingList: [],
+  sameProjlist: [],
   create: {},
   current: {},
   sheets: [],
@@ -307,6 +334,20 @@ const planRoom = createSlice({
       state.error = null;
     });
     builder.addCase(getPlanRoomList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+     // * Get PlanRoom Same Proj List
+    builder.addCase(getPlanRoomListSameProj.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getPlanRoomListSameProj.fulfilled, (state, action) => {
+      state.sameProjlist = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getPlanRoomListSameProj.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
     });

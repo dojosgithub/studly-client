@@ -61,7 +61,7 @@ const MeetingMinutesNotes = (listData) => {
     appendNote({
       subject: '',
       topics: [
-        { topic: '', date: null, description: '', status: 'Open', priority: 'Low', referedTo: '' },
+        { topic: '', date: null, description: '', status: 'Open', priority: 'Low', referedTo: '', dueDate: null },
       ],
     });
   }, [appendNote]);
@@ -179,6 +179,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
     appendTopic({
       topic: '',
       date: new Date(),
+      dueDate : null,
       assignee: null,
       status: 'Open',
       priority: 'Low',
@@ -302,6 +303,11 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                   )}
                 />
               </FormControl>
+
+               <MeetingMinutesDatePicker
+                name={`notes[${noteIndex}].topics[${topicIndex}].dueDate`}
+                label="Due Date"
+              />
             </Box>
             <RHFEditor
               simple
