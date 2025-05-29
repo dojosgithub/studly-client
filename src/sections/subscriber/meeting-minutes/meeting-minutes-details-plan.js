@@ -31,13 +31,13 @@ const MeetingMinutesDetailsPlan = ({ data }) => {
           {data.map((plan, index) => (
             <TableRow key={index}>
               <TableCell component="th" scope="row">
-                {plan.planTracking}
+                {plan.planName}
               </TableCell>
               <TableCell>
-                {plan.stampDate ? new Date(plan.stampDate).toLocaleDateString() : 'N/A'}
+                {plan.issueDate ? new Date(plan.issueDate).toLocaleDateString() : 'N/A'}
               </TableCell>
               <TableCell>
-                {plan.dateRecieved ? new Date(plan.dateRecieved).toLocaleDateString() : 'N/A'}
+                {plan?.dateRecieved ? new Date(plan?.dateRecieved).toLocaleDateString() : 'N/A'}
               </TableCell>
             </TableRow>
           ))}
