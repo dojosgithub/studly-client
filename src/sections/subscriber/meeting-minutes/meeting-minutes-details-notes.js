@@ -7,8 +7,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
-import { Chip, Stack, Grid } from '@mui/material';
+import { Chip, Stack, Grid, Button } from '@mui/material';
 import { paths } from 'src/routes/paths';
+import Iconify from 'src/components/iconify';
 
 // Styled Components
 const TopicContainer = styled('div')(({ theme }) => ({
@@ -74,9 +75,17 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
               <TopicContainer key={topicIndex}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
+                    <Stack direction="row" justifyContent="space-between"> 
                     <Typography sx={{ fontSize: '16px' }} fontWeight="bold" marginBottom={3}>
                       {topic.topic}
                     </Typography>
+                    <Button variant="contained"
+                    onClick={() => handleNavigate(topic?.referedTo)}
+                    sx={{color: "#F2F3F5", background:"#3E3E3E", borderRadius:"8px"}}
+                    >View Related Item &nbsp;
+                    <Iconify icon="lucide:external-link" color="#F2F3F5" sx={{}} height={14} width={14} />
+                    </Button>
+                    </Stack>
                     <Typography sx={{ fontSize: '16px' }} fontWeight="bold" marginBottom={1}>
                       Description:
                     </Typography>
@@ -100,21 +109,7 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
                       <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         {topic?.status}
                       </Typography>
-                      <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>
-                        Refered to:
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: '14px',
-                          cursor: 'pointer',
-                          color: 'blue',
-                          textDecoration: 'underline',
-                        }}
-                        marginBottom={2}
-                        onClick={() => handleNavigate(topic?.referedTo)}
-                      >
-                        {`${process.env.REACT_APP_FRONTEND_URL}/subscriber/${topic?.referedTo}`}
-                      </Typography>
+                     
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography sx={{ fontSize: '14px' }} fontWeight="bold" marginBottom={1}>

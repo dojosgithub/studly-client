@@ -110,11 +110,11 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       dateRecieved: null,
     }));
 
-    plans.push({
-      planTracking: '',
-      stampDate: null,
-      dateRecieved: null,
-    });
+    // plans.push({
+    //   planTracking: '',
+    //   stampDate: null,
+    //   dateRecieved: null,
+    // });
 
     return plans;
   }, [sameProjListData]);
@@ -139,12 +139,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
           email: currentCompany.companyId.email,
           attended: false,
         },
-        {
-          name: '',
-          company: '',
-          email: '',
-          attended: false,
-        },
+        // {
+        //   name: '',
+        //   company: '',
+        //   email: '',
+        //   attended: false,
+        // },
       ],
       notes: [
         {

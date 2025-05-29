@@ -61,7 +61,7 @@ const MeetingMinutesNotes = (listData) => {
     appendNote({
       subject: '',
       topics: [
-        { topic: '', date: null, description: '', status: 'Open', priority: 'Low', referedTo: '', dueDate: null },
+        { topic: '', date: new Date(), description: '', status: 'Open', priority: 'Low', referedTo: '', dueDate: null },
       ],
     });
   }, [appendNote]);
@@ -278,6 +278,12 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                   )}
                 />
               </FormControl>
+              
+
+               <MeetingMinutesDatePicker
+                name={`notes[${noteIndex}].topics[${topicIndex}].dueDate`}
+                label="Due Date"
+              />
               <FormControl>
                 {/* <InputLabel>Refered To</InputLabel> */}
                 <Controller
@@ -292,7 +298,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                       isOptionEqualToValue={(option, value) => option?._id === value?._id}
                       onChange={(_, value) => field.onChange(value?._id || null)}
                       value={options.find((opt) => opt?._id === field?.value) || null}
-                      renderInput={(params) => <TextField {...params} label="Refered To" />}
+                      renderInput={(params) => <TextField {...params} label="Referred To" />}
                       renderGroup={(params) => (
                         <li key={params?.key}>
                           <GroupHeader>{params?.group}</GroupHeader>
@@ -303,11 +309,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                   )}
                 />
               </FormControl>
-
-               <MeetingMinutesDatePicker
-                name={`notes[${noteIndex}].topics[${topicIndex}].dueDate`}
-                label="Due Date"
-              />
             </Box>
             <RHFEditor
               simple
