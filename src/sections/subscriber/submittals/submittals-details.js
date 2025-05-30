@@ -50,6 +50,7 @@ import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
 import { isIncluded } from 'src/utils/functions';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { getStatusStyle } from 'src/utils/chips-color';
 import SubmittalSendAllDialog from './submittal-send-all-dialog';
 
 const StyledCard = styled(Card, {
@@ -315,84 +316,116 @@ const SubmittalsDetails = ({ id }) => {
         borderBottom="1px solid #D9D9D9"
       >
         <Typography
-          sx={{ fontSize: '26px', fontWeight: 'bold', lineHeight: '36px', color: '#000000' }}
+          sx={{ fontSize: '26px', fontWeight: '700', lineHeight: '36px', color: '#000000' }}
         >
           Submittal History
         </Typography>
         <IconButton onClick={closeDrawer}>
-          <Iconify icon="gg:close-o" color="black" height={18} width={20} />
+          <Iconify icon="gg:close-o" color="black" height={22} width={24} />
         </IconButton>
       </Stack>
       <Box>
         <Timeline
           sx={{
+            m:0,
+            p:0,
             [`& .${timelineOppositeContentClasses.root}`]: {
               flex: 0.2,
             },
           }}
         >
-          {currentSubmittal.history?.map((item, index) => (
-            <TimelineItem key={index}>
-              <TimelineOppositeContent sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
-                {/* {item.dateTime} */}
-                <Typography
+          {currentSubmittal.history?.map((item, index) => {
+            const dateObj = new Date(item.dateTime);
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+
+            const formattedTime = dateObj.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+            });
+
+            return (
+              <TimelineItem key={index}>
+                <TimelineOppositeContent
                   sx={{
-                    fontSize: '16px',
-                    fontWeight: 'medium',
-                    lineHeight: '18px',
-                    color: '#0F172A',
+                    color: 'text.secondary',
+                    whiteSpace: 'pre-line',
+                    pl: 0,
+                    textAlign: 'right',
                   }}
                 >
-                  time \n
-                  time
-                </Typography>
-              </TimelineOppositeContent>
-              <TimelineSeparator
-               sx={{
-                '& .MuiTimelineDot-root': {
-                  backgroundColor: '#28D0B0', // custom dot color
-                },
-                '& .MuiTimelineConnector-root': {
-                  backgroundColor: '#D9D9D9', // custom connector color
-                  width: '0.5px',
-                  // minHeight: 60, 
-                },
-              }}
-              >
-                <TimelineDot sx={{color:"#28D0B0"}} />
-                {index !== currentSubmittal.history - 1 && <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography sx={{ fontSize: '18px', fontWeight: 'medium', color: '#0F172A' }}>
-                  {item.description}
-                </Typography>
-                {item.status && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: 'medium',
-                        lineHeight: '18px',
-                        color: '#0F172A',
-                      }}
-                    >
-                      Status:
-                    </Typography>
-                    <Chip label={item.status} size="small" />
-                  </Box>
-                )}
-                {item.nextActionBy.length > 0 && (
                   <Typography
-                    variant="body2"
-                    sx={{ fontSize: '18px', fontWeight: 'medium', color: '#0F172A' }}
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      lineHeight: '18px',
+                      color: '#0F172A',
+                      whiteSpace: 'pre-line',
+                    }}
                   >
-                    Next Action By: {item.nextActionBy.map((next) => next)}
+                    {`${formattedDate}\n   ${formattedTime}`}
                   </Typography>
-                )}
-                <Box sx={{height:20}}/>
-              </TimelineContent>
-            </TimelineItem>
-          ))}
+                </TimelineOppositeContent>
+
+                <TimelineSeparator
+                  sx={{
+                    '& .MuiTimelineDot-root': {
+                      backgroundColor: '#28D0B0',
+                    },
+                    '& .MuiTimelineConnector-root': {
+                      backgroundColor: '#D9D9D9',
+                      width: '0.5px',
+                    },
+                  }}
+                >
+                  <TimelineDot sx={{ color: '#28D0B0' }} />
+                  {index !== currentSubmittal.history.length - 1 && <TimelineConnector />}
+                </TimelineSeparator>
+
+                <TimelineContent>
+                  <Typography sx={{ fontSize: '18px', fontWeight: '500', color: '#0F172A' }}>
+                    {item.description}
+                  </Typography>
+
+                  {item.status && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5, }}>
+                      <Typography
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: '500',
+                          lineHeight: '18px',
+                          color: '#0F172A',
+                        }}
+                      >
+                        Status:
+                      </Typography>
+                      <Chip sx={{ml:"1rem", ...getStatusStyle(item.status) }} label={item.status} size="small" />
+                    </Box>
+                  )}
+
+                  {item.nextActionBy?.length > 0 && (
+                    <Typography
+                      variant="body2"
+                      sx={{ fontSize: '18px', fontWeight: '500', color: '#0F172A' }}
+                    >
+                      Next Action By:{' '}
+                      {item.nextActionBy.map((next, i) => (
+                        <span key={i}>
+                          {next}
+                          {i < item.nextActionBy.length - 1 ? ', ' : ''}
+                        </span>
+                      ))}
+                    </Typography>
+                  )}
+
+                  <Box sx={{ height: 20 }} />
+                </TimelineContent>
+              </TimelineItem>
+            );
+          })}
         </Timeline>
       </Box>
     </Box>
