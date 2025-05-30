@@ -273,7 +273,8 @@ const SubmittalsDetails = ({ id }) => {
   };
   const isSmallScreen = useResponsive((theme) => theme.breakpoints.down('sm'));
 
-  const openDrawer = () => {
+  const openDrawer = async () => {
+    await dispatch(getSubmittalDetails(id));
     setHistoryOpen(true);
   };
   const closeDrawer = () => {
@@ -411,10 +412,11 @@ const SubmittalsDetails = ({ id }) => {
         </Box>
       ) : (
         <Stack direction="row" alignItems="center" justifyContent="center" mt={8}>
-        <Typography sx={{textAlign:"center"}} variant='h4'>No history present at the moment</Typography>
-      </Stack>
+          <Typography sx={{ textAlign: 'center' }} variant="h4">
+            No history present at the moment
+          </Typography>
+        </Stack>
       )}
-      
     </Box>
   );
   return (
