@@ -1,15 +1,20 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-restricted-syntax */
   
-  export function getReferenceUrl(id, data) {
-   if (data?.rfi?.some(item => item._id === id)) {
-      return `rfi/${id}`;
-    }
-    if (data?.submittals?.some(item => item._id === id)) {
-      return `submittals/${id}`;
-    }
-    return null; 
+export function getReferenceUrl(id, data) {
+
+  const rfiItem = data?.RFI?.find(item => item._id == id);
+  if (rfiItem) {
+    return `rfi/${id}`;
   }
 
+  const submittalItem = data?.Submittals?.find(item => item._id == id);
+  if (submittalItem) {
+    return `submittals/${id}`;
+  }
+
+  return null;
+}
 
   export function sanitizeLink(data) {
   if (data) {

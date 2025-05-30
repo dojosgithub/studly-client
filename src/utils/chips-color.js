@@ -20,7 +20,7 @@ export const getStatusStyle = (status) => {
           color: '#118D57',
         },
       };
-    case 'Reviewed for Record':
+    case 'Reviewed for record':
     case 'Approved (APR)':
     case 'Reviewed':
       return {
