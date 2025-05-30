@@ -80,7 +80,6 @@ const SubmittalsDetails = ({ id }) => {
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentSubmittal = useSelector((state) => state.submittal.current);
-  console.log('currentSubmittal', currentSubmittal.history);
   const sentToAllModal = useBoolean();
 
   const [historyOpen, setHistoryOpen] = useState(false);
