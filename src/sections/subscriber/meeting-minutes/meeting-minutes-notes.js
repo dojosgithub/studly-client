@@ -43,7 +43,7 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   zIndex: 10,
 }));
 
-const MeetingMinutesNotes = (listData,inviteAttendee) => {
+const MeetingMinutesNotes = (listData, inviteAttendee) => {
   const { control } = useFormContext();
 
   const {
@@ -66,7 +66,7 @@ const MeetingMinutesNotes = (listData,inviteAttendee) => {
           description: '',
           status: 'Open',
           priority: 'Low',
-          referedTo: '',
+          referedTo: [],
           // dueDate: null,
         },
       ],
@@ -105,7 +105,7 @@ const MeetingMinutesNotes = (listData,inviteAttendee) => {
                       noteIndex={noteIndex}
                       note={note}
                       submittalAndRfiList={listData}
-                      inviteAttendee ={inviteAttendee}
+                      inviteAttendee={inviteAttendee}
                     />
                   </Stack>
                 </Box>
@@ -169,7 +169,6 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
     Array.isArray(items) ? items.map((item) => ({ ...item, group })) : []
   );
 
-
   const {
     fields: topicFields,
     append: appendTopic,
@@ -187,7 +186,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
       status: 'Open',
       priority: 'Low',
       description: '',
-      referedTo: '',
+      referedTo: [],
     });
   };
 
@@ -286,8 +285,8 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                 name={`notes[${noteIndex}].topics[${topicIndex}].dueDate`}
                 label="Due Date"
               /> */}
-              <FormControl>
-                {/* <InputLabel>Refered To</InputLabel> */}
+              {/* <FormControl>
+                
                 <Controller
                   name={`notes[${noteIndex}].topics[${topicIndex}].referedTo`}
                   control={control}
@@ -308,6 +307,40 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                       renderGroup={(params) => (
                         <li key={params?.key}>
                           <GroupHeader sx={{color:"black"}}>{params?.group}</GroupHeader>
+                          <GroupItems>{params?.children}</GroupItems>
+                        </li>
+                      )}
+                    />
+                  )}
+                />
+              </FormControl> */}
+
+              <FormControl>
+                <Controller
+                  name={`notes[${noteIndex}].topics[${topicIndex}].referedTo`}
+                  control={control}
+                  defaultValue={[]} // For multiple selection
+                  render={({ field }) => (
+                    <Autocomplete
+                      multiple
+                      options={options || []}
+                      groupBy={(option) => option?.group}
+                      getOptionLabel={(option) => {
+                        if (!option) return '';
+                        const id = option.submittalId || option.rfiId || 'No ID';
+                        return `[${id}] - ${option.name}`;
+                      }}
+                      isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                      onChange={(_, selectedOptions) =>
+                        field.onChange(selectedOptions.map((opt) => opt._id))
+                      }
+                      value={options.filter((opt) => field?.value?.includes(opt._id)) || []}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Related Submittals/RFIs" />
+                      )}
+                      renderGroup={(params) => (
+                        <li key={params?.key}>
+                          <GroupHeader sx={{ color: 'black' }}>{params?.group}</GroupHeader>
                           <GroupItems>{params?.children}</GroupItems>
                         </li>
                       )}
@@ -345,5 +378,5 @@ NestedTopicFieldArray.propTypes = {
   note: PropTypes.object,
   noteIndex: PropTypes.number,
   submittalAndRfiList: PropTypes.object,
-  inviteAttendee : PropTypes.array
+  inviteAttendee: PropTypes.array,
 };

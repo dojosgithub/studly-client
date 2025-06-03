@@ -157,7 +157,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               status: 'Open',
               priority: 'Low',
               description: '',
-              referedTo: '',
+              referedTo: [],
               // dueDate:  null,
             },
           ],
