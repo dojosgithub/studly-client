@@ -27,7 +27,6 @@ import { RHFEditor, RHFSelect, RHFTextField } from 'src/components/hook-form';
 //
 import Iconify from 'src/components/iconify';
 
-
 import MeetingMinutesDatePicker from './meeting-minutes-date-picker';
 
 const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
@@ -44,7 +43,7 @@ const StyledIconButton = styled(IconButton)(({ theme, top }) => ({
   zIndex: 10,
 }));
 
-const MeetingMinutesNotes = (listData) => {
+const MeetingMinutesNotes = (listData,inviteAttendee) => {
   const { control } = useFormContext();
 
   const {
@@ -61,7 +60,15 @@ const MeetingMinutesNotes = (listData) => {
     appendNote({
       subject: '',
       topics: [
-        { topic: '', date: new Date(), description: '', status: 'Open', priority: 'Low', referedTo: '', dueDate: null },
+        {
+          topic: '',
+          date: new Date(),
+          description: '',
+          status: 'Open',
+          priority: 'Low',
+          referedTo: '',
+          // dueDate: null,
+        },
       ],
     });
   }, [appendNote]);
@@ -69,8 +76,6 @@ const MeetingMinutesNotes = (listData) => {
   const handleRemoveNote = (index) => {
     removeNote(index);
   };
-
-  
 
   return (
     <Box sx={{ marginBottom: '2rem', position: 'relative' }}>
@@ -100,6 +105,7 @@ const MeetingMinutesNotes = (listData) => {
                       noteIndex={noteIndex}
                       note={note}
                       submittalAndRfiList={listData}
+                      inviteAttendee ={inviteAttendee}
                     />
                   </Stack>
                 </Box>
@@ -123,7 +129,6 @@ const MeetingMinutesNotes = (listData) => {
 
 export default MeetingMinutesNotes;
 
-
 const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   top: '-8px',
@@ -142,7 +147,7 @@ const GroupItems = styled('ul')({
 const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }) => {
   const inviteAttendee = useSelector((state) => state.meetingMinutes.create.inviteAttendee);
 
-  const dropdownOptions1 = inviteAttendee.map((attendee) => ({
+  const dropdownOptions1 = (inviteAttendee ?? [])?.map((attendee) => ({
     ...attendee, // Keep the full object for later use
     value: attendee.email, // Use a unique identifier for comparison
     label: attendee.name,
@@ -161,10 +166,9 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
   ];
 
   const options = Object.entries(submittalAndRfiList?.listData).flatMap(([group, items]) =>
-    Array.isArray(items)
-      ? items.map((item) => ({ ...item, group }))
-      : []
+    Array.isArray(items) ? items.map((item) => ({ ...item, group })) : []
   );
+
 
   const {
     fields: topicFields,
@@ -173,13 +177,12 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
   } = useFieldArray({
     control,
     name: `notes[${noteIndex}].topics`,
-    
   });
   const handleAddTopic = () => {
     appendTopic({
       topic: '',
       date: new Date(),
-      dueDate : null,
+      // dueDate: null,
       assignee: null,
       status: 'Open',
       priority: 'Low',
@@ -215,7 +218,7 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
 
               <MeetingMinutesDatePicker
                 name={`notes[${noteIndex}].topics[${topicIndex}].date`}
-                label="Date"
+                label="Due Date"
               />
 
               {/* Dropdown 1 */}
@@ -278,12 +281,11 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                   )}
                 />
               </FormControl>
-              
 
-               <MeetingMinutesDatePicker
+              {/* <MeetingMinutesDatePicker
                 name={`notes[${noteIndex}].topics[${topicIndex}].dueDate`}
                 label="Due Date"
-              />
+              /> */}
               <FormControl>
                 {/* <InputLabel>Refered To</InputLabel> */}
                 <Controller
@@ -294,14 +296,18 @@ const NestedTopicFieldArray = ({ control, noteIndex, note, submittalAndRfiList }
                     <Autocomplete
                       options={options || ''}
                       groupBy={(option) => option?.group}
-                      getOptionLabel={(option) => option?.name || ''}
+                      getOptionLabel={(option) => {
+                        if (!option) return '';
+                        const id = option.submittalId || option.rfiId || 'No ID';
+                        return `[${id}] - ${option.name}`;
+                      }}
                       isOptionEqualToValue={(option, value) => option?._id === value?._id}
                       onChange={(_, value) => field.onChange(value?._id || null)}
                       value={options.find((opt) => opt?._id === field?.value) || null}
-                      renderInput={(params) => <TextField {...params} label="Referred To" />}
+                      renderInput={(params) => <TextField {...params} label="Related Submittals/RFIs" />}
                       renderGroup={(params) => (
                         <li key={params?.key}>
-                          <GroupHeader>{params?.group}</GroupHeader>
+                          <GroupHeader sx={{color:"black"}}>{params?.group}</GroupHeader>
                           <GroupItems>{params?.children}</GroupItems>
                         </li>
                       )}
@@ -339,4 +345,5 @@ NestedTopicFieldArray.propTypes = {
   note: PropTypes.object,
   noteIndex: PropTypes.number,
   submittalAndRfiList: PropTypes.object,
+  inviteAttendee : PropTypes.array
 };

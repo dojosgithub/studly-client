@@ -158,7 +158,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               priority: 'Low',
               description: '',
               referedTo: '',
-              dueDate:  null,
+              // dueDate:  null,
             },
           ],
         },
@@ -215,7 +215,6 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         topics: note.topics?.map((topic) => ({
           ...topic,
           date: new Date(topic.date),
-          dueDate: new Date(topic.dueDate),
           referedTo: sanitizeLink(topic.referedTo),
         })),
       }));
@@ -270,6 +269,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
+    const values = getValues();
+
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
@@ -277,7 +278,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
           dispatch(setMeetingMinutesDescription(cloneDeep(description)));
           break;
         case 'inviteAttendee':
-          dispatch(setMeetingMinutesInviteAttendee(cloneDeep(inviteAttendee)));
+          dispatch(setMeetingMinutesInviteAttendee(cloneDeep(values.inviteAttendee)));
           break;
         case 'notes':
           dispatch(setMeetingMinutesNotes(cloneDeep(notes)));
@@ -407,7 +408,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         break;
 
       case 2:
-        component = <MeetingMinutesNotes listData={listData} />;
+        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
         break;
       case 3:
         component = <MeetingMinutesPermitFields />;

@@ -17,8 +17,10 @@ export function getReferenceUrl(id, data) {
 }
 
   export function sanitizeLink(data) {
+    console.log('data', data);
   if (data) {
     const parts = data.split('/');
+    console.log('parts.length - 1', parts.length - 1);
   return parts[parts.length - 1];
   }
     return null; 
