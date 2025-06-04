@@ -16,7 +16,7 @@ axiosInstance.interceptors.response.use(
       error.response.data &&
       error.response.data.message === 'Forbidden'
     ) {
-      sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('accessToken');
 
       delete axios.defaults.headers.common.Authorization;
       window.location.replace(window.location.origin);

@@ -3,14 +3,13 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
-import { Chip, Stack, Grid} from '@mui/material';
+import { Chip, Stack, Grid } from '@mui/material';
 import { paths } from 'src/routes/paths';
 import { getRfiDetails, getSubmittalsDetails } from 'src/redux/slices/meetingMinutesSlice';
 
@@ -26,7 +25,6 @@ const TopicContainer = styled('div')(({ theme }) => ({
 const MeetingMinutesDetailsNotes = ({ data }) => {
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (data?.length) {
@@ -61,15 +59,16 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
 
   const handleNavigateRfi = (link) => {
     const url = `${paths.subscriber.meetingMinutes.referedItem}/rfi/${link}`;
-    //  window.open(url, '_blank');
-    navigate(url);
+     window.open(url, '_blank');
   };
 
   const handleNavigateSubmittal = (link) => {
+    console.log(link);
     const url = `${paths.subscriber.meetingMinutes.referedItem}/submittals/${link}`;
-    //  window.open(url, '_blank');
-    navigate(url);
+     window.open(url, '_blank');
   };
+
+ 
   return (
     <div>
       {data.map((note, noteIndex) => (
@@ -165,7 +164,10 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
                         </strong>
                         <ul>
                           {submittalDetailList?.map((item, index) => (
-                            <li key={index} onClick={() => handleNavigateSubmittal(item?._id)}>
+                            <li
+                              key={index}
+                              onClick={() => handleNavigateSubmittal(item?._id)}
+                            >
                               <p
                                 style={{
                                   color: '#1976d2',
@@ -182,7 +184,7 @@ const MeetingMinutesDetailsNotes = ({ data }) => {
 
                       <Typography sx={{ fontSize: '14px' }} marginBottom={2}>
                         <strong>
-                          <u>RFI</u>
+                          <u>RFIs</u>
                         </strong>
                         <ul>
                           {rfiDetailList?.map((item, index) => (

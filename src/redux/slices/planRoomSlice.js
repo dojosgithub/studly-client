@@ -140,7 +140,7 @@ export const getExtractedSheetsText = createAsyncThunk(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.sessionStorage.accessToken}`,
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
         },
         body: JSON.stringify(data),
       });
