@@ -62,7 +62,7 @@ const MeetingMinutesPlanTrackingFields = () => {
     <>
       <Box sx={{ marginBottom: '2rem' }}>
         <Typography sx={{ mt: 2, mb: 4 }} fontSize="1.5rem" fontWeight="bold">
-          Plan/Ask Tracking
+          Plans & Revisions
         </Typography>
         <Stack gap="1.5rem">
           {fields.map(({ id }, index) => (

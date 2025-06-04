@@ -141,7 +141,7 @@ export default function ProjectStepperForm() {
           ? [
               {
                 name: '',
-                tradeId: '',
+                tradeId: '1',
                 _id: uuidv4(),
               },
             ]

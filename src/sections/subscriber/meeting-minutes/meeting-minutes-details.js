@@ -18,6 +18,7 @@ import {
   getMeetingMinutesPDF,
   sendToAttendees,
 } from 'src/redux/slices/meetingMinutesSlice';
+import { getPlanRoomListSameProj } from 'src/redux/slices/planRoomSlice';
 import MeetingMinutesDetailsDescription from './meeting-minutes-details-description';
 import MeetingMinutesDetailsInviteAttendee from './meeting-minutes-details-inviteAttendee';
 import MeetingMinutesDetailsNotes from './meeting-minutes-details-notes';
@@ -66,6 +67,12 @@ const MeetingMinutesDetails = ({ id }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    dispatch(getPlanRoomListSameProj({ status: [] }));
+  }, [dispatch]);
+
+  const sameProjListData = useSelector((state) => state?.planRoom?.sameProjlist);
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
@@ -250,7 +257,7 @@ const MeetingMinutesDetails = ({ id }) => {
       )}
       {currentTab === 'agenda' && <MeetingMinutesDetailsNotes data={currentMeeting?.notes} />}
       {currentTab === 'permit' && <MeetingMinutesDetailsPermit data={currentMeeting?.permit} />}
-      {currentTab === 'plan' && <MeetingMinutesDetailsPlan data={currentMeeting?.plan} />}
+      {currentTab === 'plan' && <MeetingMinutesDetailsPlan data={sameProjListData} />}
     </>
   );
 };

@@ -16,7 +16,7 @@ axiosInstance.interceptors.response.use(
       error.response.data &&
       error.response.data.message === 'Forbidden'
     ) {
-      sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('accessToken');
 
       delete axios.defaults.headers.common.Authorization;
       window.location.replace(window.location.origin);
@@ -127,6 +127,7 @@ export const endpoints = {
   },
   planRoom: {
     list: (id) => `/api/plan-room/${id}`,
+    sameProjlist: (id) => `/api/plan-room/get-plan-room/${id}`,
     existinglist: (id) => `/api/plan-room/existing-plan-room/${id}`,
     create: '/api/plan-room',
     submit: (id) => `/api/plan-room/${id}/submit`,
@@ -152,6 +153,9 @@ export const endpoints = {
     followup: (id) => `/api/meeting-minute/follow-up/${id}`,
     sendToAttendees: (id) => `/api/meeting-minute/send/${id}`,
     toMinutes: (id) => `/api/meeting-minute/to-minute/${id}`,
+    submittalAndRfiList: (id) => `/api/meeting-minute/submittalandrfi/${id}`,
+    submittalsDetails : '/api/meeting-minute/submittals/details',
+    rfisDetails : '/api/meeting-minute/rfi/details',
   },
   dailyLogs: {
     // submit: (id) => `/api/daily-log/${id}/submit`,

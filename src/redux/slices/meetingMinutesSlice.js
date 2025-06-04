@@ -201,6 +201,61 @@ export const getMeetingMinutesPDF = createAsyncThunk('meetingMinutes/pdf', async
   }
 });
 
+export const getSubmittalAndRfiList = createAsyncThunk(
+  'meetingMinutes/submittalAndRfiList',
+  async (listOptions, { getState }) => {
+    try {
+      const projectId = getState().project?.current?._id;
+
+      const { status, ...data } = listOptions;
+      const response = await axiosInstance.post(
+        endpoints.meetingMinutes.submittalAndRfiList(projectId),
+        { status },
+        {
+          params: data,
+        }
+      );
+
+      return response.data.data;
+    } catch (err) {
+      console.error('errSlice', err);
+      if (err && err.message) {
+        throw Error(err.message);
+      }
+      throw Error('An error occurred while fetching rfi list.');
+    }
+  }
+);
+
+
+export const getSubmittalsDetails = createAsyncThunk('submittals/details', async (submittalIds) => {
+  try {
+    const response = await axiosInstance.post(endpoints.meetingMinutes.submittalsDetails, {"submittalIds":submittalIds});
+
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
+    }
+    throw Error('An error occurred while creating the submittal.');
+  }
+});
+
+export const getRfiDetails = createAsyncThunk('rfi/details', async (rfiIds) => {
+  try {
+    const response = await axiosInstance.post(endpoints.meetingMinutes.rfisDetails, {"rfiIds":rfiIds});
+
+    return response.data.data;
+  } catch (err) {
+    console.error('errSlice', err);
+    if (err && err.message) {
+      throw Error(err.message);
+    }
+    throw Error('An error occurred while creating the submittal.');
+  }
+});
+
 const inviteAttendeeInitialState = {
   name: '',
   company: '',
@@ -214,6 +269,9 @@ const topicInitialState = {
   assignee: null,
   status: 'Open',
   priority: 'Low',
+  referedTo : '',
+  detailsList : [],
+  rfiDetailsList: []
 };
 const noteInitialState = {
   subject: '',
@@ -253,6 +311,9 @@ const meetingMinutesInitialState = {
 const initialState = {
   notes: '',
   list: [],
+  referedTo: {},
+  detailsList : [],
+  rfiDetailsList: [],
   create: { ...meetingMinutesInitialState },
   current: {},
   isLoading: false,
@@ -316,6 +377,51 @@ const meetingMinutes = createSlice({
       state.error = action.error.message;
     });
 
+    // * Get Submittal And Rfi List
+    builder.addCase(getSubmittalAndRfiList.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalAndRfiList.fulfilled, (state, action) => {
+      state.referedTo = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalAndRfiList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+
+
+     // * Get Submittal details
+    builder.addCase(getSubmittalsDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalsDetails.fulfilled, (state, action) => {
+      state.detailsList = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getSubmittalsDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+
+      // * Get RFI details
+    builder.addCase(getRfiDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getRfiDetails.fulfilled, (state, action) => {
+      state.rfiDetailsList = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(getRfiDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
     // * Delete Meeting Minutes
     builder.addCase(deleteMeetingMinutes.pending, (state) => {
       state.isLoading = true;

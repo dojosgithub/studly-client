@@ -45,7 +45,7 @@ export default function Header({ onOpenNav, isOnboarding = false }) {
 
   const offsetTop = offset && !isNavHorizontal;
 
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
 
   useEffect(() => {
     const decodedToken = jwtDecode(accessToken);

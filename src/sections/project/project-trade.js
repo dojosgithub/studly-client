@@ -34,7 +34,7 @@ export default function ProjectTrade() {
   );
   const defaultObj = {
     name: '',
-    tradeId: '',
+    tradeId: "",
     _id: uuidv4(),
   };
 

@@ -27,6 +27,7 @@ import { paths } from 'src/routes/paths';
 import {
   createMeetingMinutes,
   getMeetingMinutesDetails,
+  getSubmittalAndRfiList,
   setCreateMeetingMinutes,
   setMeetingMinutesDescription,
   setMeetingMinutesInviteAttendee,
@@ -35,8 +36,10 @@ import {
   setMeetingMinutesPlanTracking,
   updateMeetingMinutes,
 } from 'src/redux/slices/meetingMinutesSlice';
+import { getPlanRoomListSameProj } from 'src/redux/slices/planRoomSlice';
 //
 import { useResponsive } from 'src/hooks/use-responsive';
+import { getReferenceUrl, sanitizeLink } from 'src/utils/get-reference-url';
 import MeetingMinutesDescription from './meeting-minutes-description';
 import MeetingMinutesPermitFields from './meeting-minutes-permit-fields';
 import MeetingMinutesInviteAttendeeView from './meeting-minutes-invite-attendee-dialog';
@@ -70,11 +73,18 @@ const steps = [
 ];
 
 export default function MeetingMinutesStepperForm({ isEdit }) {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const currentCompany = user?.companies?.find((c) => c.companyId._id === user?.lastActiveCompany);
   const params = useParams();
   const { id } = params;
   const mdDown = useResponsive('down', 'md');
   const currentMeeting = useSelector((state) => state?.meetingMinutes?.current);
   const currentProject = useSelector((state) => state?.project?.current);
+
+  useEffect(() => {
+    dispatch(getPlanRoomListSameProj({ status: [] }));
+  }, [dispatch]);
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -85,11 +95,29 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const dispatch = useDispatch();
+  const listData = useSelector((state) => state?.meetingMinutes?.referedTo);
+
+  const sameProjListData = useSelector((state) => state?.planRoom?.sameProjlist);
 
   const isStepOptional = (step) => step === 3 || step === 4;
 
   const isStepSkipped = (step) => skipped?.has(step);
+
+  const transformedPlans = useMemo(() => {
+    const plans = sameProjListData.map((item) => ({
+      planTracking: item.planName ?? '',
+      stampDate: item.issueDate ? new Date(item.issueDate) : null,
+      dateRecieved: null,
+    }));
+
+    // plans.push({
+    //   planTracking: '',
+    //   stampDate: null,
+    //   dateRecieved: null,
+    // });
+
+    return plans;
+  }, [sameProjListData]);
 
   const defaultValues = useMemo(
     () => ({
@@ -106,11 +134,17 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       },
       inviteAttendee: [
         {
-          name: '',
-          company: '',
-          email: '',
+          name: `${user.firstName} ${user.lastName}`,
+          company: currentCompany.companyId.name,
+          email: currentCompany.companyId.email,
           attended: false,
         },
+        // {
+        //   name: '',
+        //   company: '',
+        //   email: '',
+        //   attended: false,
+        // },
       ],
       notes: [
         {
@@ -123,6 +157,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               status: 'Open',
               priority: 'Low',
               description: '',
+              referedTo: [],
+              // dueDate:  null,
             },
           ],
         },
@@ -134,17 +170,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
           permitNumber: '',
         },
       ],
-      plan: [
-        {
-          planTracking: '',
-          stampDate: null,
-          dateRecieved: null,
-        },
-      ],
+      plan: transformedPlans,
       projectId: '', // Assuming you want a unique ID
       company: '', // Assuming you want a unique ID
     }),
-    [currentProject]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentProject, transformedPlans]
   );
 
   const methods = useForm({
@@ -154,14 +185,19 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
   const {
     reset,
-
+    setValue,
     getValues,
     handleSubmit,
     formState: { isSubmitting },
     trigger,
   } = methods;
 
+    useEffect(() => {
+    setValue('plan', transformedPlans);
+  }, [transformedPlans, setValue]);
+
   const { description, inviteAttendee, notes, permit, plan } = getValues();
+
 
   useEffect(() => {
     if (isEdit) {
@@ -179,6 +215,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         topics: note.topics?.map((topic) => ({
           ...topic,
           date: new Date(topic.date),
+          referedTo: sanitizeLink(topic.referedTo),
         })),
       }));
       meeting.permit = meeting.permit?.map((perm) => ({
@@ -195,7 +232,12 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
       dispatch(setCreateMeetingMinutes(meeting));
       reset(meeting);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentMeeting, dispatch, reset]);
+
+  useEffect(() => {
+    dispatch(getSubmittalAndRfiList({ sortDir: 'asc', status: [] }));
+  }, [dispatch]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -227,6 +269,8 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
 
     const { isFormValid, currentStepValue } = await getFormValidation();
 
+    const values = getValues();
+
     // Dispatch form data or perform other actions based on current step value
     if (isFormValid) {
       switch (currentStepValue) {
@@ -234,7 +278,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
           dispatch(setMeetingMinutesDescription(cloneDeep(description)));
           break;
         case 'inviteAttendee':
-          dispatch(setMeetingMinutesInviteAttendee(cloneDeep(inviteAttendee)));
+          dispatch(setMeetingMinutesInviteAttendee(cloneDeep(values.inviteAttendee)));
           break;
         case 'notes':
           dispatch(setMeetingMinutesNotes(cloneDeep(notes)));
@@ -306,7 +350,14 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
               timeInString: formattedTime,
             },
             inviteAttendee,
-            notes,
+            notes: notes?.map((note) => ({
+              ...note,
+              topics: note.topics?.map((topic) => ({
+                ...topic,
+                date: new Date(topic.date),
+                referedTo: getReferenceUrl(topic.referedTo, listData),
+              })),
+            })),
             permit,
             plan: clonedPlan,
             ...(status && { status }),
@@ -322,7 +373,14 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
             timeInString: formattedTime,
           },
           inviteAttendee,
-          notes,
+          notes: notes?.map((note) => ({
+            ...note,
+            topics: note.topics?.map((topic) => ({
+              ...topic,
+              date: new Date(topic.date),
+              referedTo: getReferenceUrl(topic.referedTo, listData),
+            })),
+          })),
           permit,
           plan: clonedPlan,
         })
@@ -350,7 +408,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         break;
 
       case 2:
-        component = <MeetingMinutesNotes />;
+        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
         break;
       case 3:
         component = <MeetingMinutesPermitFields />;

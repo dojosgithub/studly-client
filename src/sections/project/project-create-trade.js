@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 // @mui
@@ -26,7 +26,6 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 const ProjectCreateTrade = () => {
   const { control, setValue, getValues, watch, resetField } = useFormContext();
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'trades',
@@ -41,13 +40,25 @@ const ProjectCreateTrade = () => {
   //     // }
   // }, [currentTrades, setValue])
 
+  const getNextTradeId = () => {
+    const trades = getValues('trades') || [];
+    const maxId = trades.reduce((max, trade) => {
+      const id = parseInt(trade.tradeId, 10);
+      return Number(id) && id > max ? id : max;
+    }, 0);
+    return String(maxId + 1);
+  };
+
+
   const handleAdd = useCallback(() => {
+   const nextId = getNextTradeId();
     append({
       name: '',
-      tradeId: '',
+      tradeId:  nextId,
       _id: uuidv4(),
     });
-  }, [append]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [append, getValues]);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -70,9 +81,10 @@ const ProjectCreateTrade = () => {
   //         _id: uuidv4(),
   //     });
   // };
-  const values = watch();
+
 
   const handleRemove = (index) => {
+    console.log('index', index);
     remove(index);
   };
 
@@ -137,6 +149,8 @@ const ProjectCreateTrade = () => {
                 <RHFTextField
                   name={`trades[${index}].tradeId`}
                   label="Trade Id"
+                  initialValue="1"
+                  defaultValue="1"
                   InputLabelProps={{ shrink: true }}
                 />
                 <RHFTextField

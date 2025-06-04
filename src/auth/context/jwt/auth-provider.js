@@ -71,7 +71,7 @@ export function AuthProvider({ children }) {
 
   const initialize = useCallback(async () => {
     try {
-      const accessToken = sessionStorage.getItem(STORAGE_KEY);
+      const accessToken = localStorage.getItem(STORAGE_KEY);
 
       // TODO: handle token (save session) based on new profile data
       if (accessToken && isValidToken(accessToken)) {
@@ -153,7 +153,7 @@ export function AuthProvider({ children }) {
 
     const { accessToken, user } = response.data;
 
-    sessionStorage.setItem(STORAGE_KEY, accessToken);
+    localStorage.setItem(STORAGE_KEY, accessToken);
 
     dispatch({
       type: 'REGISTER',
