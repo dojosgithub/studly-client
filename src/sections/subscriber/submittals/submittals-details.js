@@ -388,7 +388,7 @@ const SubmittalsDetails = ({ id }) => {
                       </Box>
                     )}
 
-                    {item.nextActionBy?.length > 0 && (
+                    {item.nextActionBy?.length > 0 && index === currentSubmittal.history.length -1 &&  (
                       <Typography
                         variant="body2"
                         sx={{ fontSize: '18px', fontWeight: '500', color: '#0F172A' }}
