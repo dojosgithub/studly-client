@@ -34,7 +34,7 @@ export default function Router() {
   const [dynamicRoutes, setDynamicRoutes] = useState([]);
   const userType = useSelector((state) => state.user?.user?.userType);
   const projects = useSelector((state) => state.project?.list);
-  const currentprojects = useSelector((state) => state.project?.current);
+  // const currentprojects = useSelector((state) => state.project?.current);
 
   // console.log('currentprojects', currentprojects);
 
@@ -123,15 +123,12 @@ export default function Router() {
     }
   }
 
-  if (userType === 'Subscriber' && !isTempPassword && (!projects || projects.length === 0)) {
-    routes.push({
-      path: '*',
-      element: <Navigate to="/onboarding" replace />,
-    });
-  }
-
-
-
+  // if (userType === 'Subscriber' && !isTempPassword && (!projects || projects.length === 0)) {
+  //   routes.push({
+  //     path: '*',
+  //     element: <Navigate to="/onboarding" replace />,
+  //   });
+  // }
 
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE

@@ -12,7 +12,7 @@ const loginPaths = {
 
 export default function AuthGuard({ children }) {
   const router = useRouter();
-  const currentprojects = useSelector((state) => state.project?.current);
+  // const currentprojects = useSelector((state) => state.project?.current);
   const { authenticated, method } = useAuthContext();
 
   const [checked, setChecked] = useState(false);
@@ -36,12 +36,11 @@ export default function AuthGuard({ children }) {
     check();
   }, [check]);
 
-  
-  useEffect(() => {
-    if (checked && isEmpty(currentprojects)) {
-      router.push('/onboarding');
-    }
-  }, [checked, currentprojects, router]);
+  // useEffect(() => {
+  //   if (checked && isEmpty(currentprojects)) {
+  //     router.push('/onboarding');
+  //   }
+  // }, [checked, currentprojects, router]);
 
   if (!checked) {
     return null;
