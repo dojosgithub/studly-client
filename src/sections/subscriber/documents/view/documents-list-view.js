@@ -128,6 +128,7 @@ export default function DocumentsListView() {
   );
 
   const handleClick = (event) => {
+    console.log('open');
     setAnchorEl(event.currentTarget);
   };
 
