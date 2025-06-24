@@ -84,6 +84,8 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
   const handleClick = () => {
     if (_type === 'folder') {
       fetchData({ parentId: _id });
+    } else {
+      details.onTrue();
     }
   };
 
@@ -260,15 +262,17 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
       >
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem
-          onClick={() => {
-            handleOpenInfoDrawer(); // Open the Drawer
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:info-circle-bold" />
-          Info
-        </MenuItem>
+        {_type === 'folder' && (
+          <MenuItem
+            onClick={() => {
+              handleOpenInfoDrawer(); // Open the Drawer
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="solar:info-circle-bold" />
+            Info
+          </MenuItem>
+        )}
 
         <MenuItem
           onClick={() => {
