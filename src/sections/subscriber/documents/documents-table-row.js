@@ -70,16 +70,28 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
     setInviteEmail(event.target.value);
   }, []);
 
-  const handleClick = useDoubleClick({
-    click: () => {
+  // const handleClick = useDoubleClick({
+  //   click: () => {
+  //     details.onTrue();
+  //   },
+  //   doubleClick: () => {
+  //     if (_type === 'folder') {
+  //       fetchData({ parentId: _id });
+  //     }
+  //   },
+  // });
+
+  const handleClick = () => {
+    if (_type === 'folder') {
+      fetchData({ parentId: _id });
+    } else {
       details.onTrue();
-    },
-    doubleClick: () => {
-      if (_type === 'folder') {
-        fetchData({ parentId: _id });
-      }
-    },
-  });
+    }
+  };
+
+  const handleOpenInfoDrawer = () => {
+    details.onTrue();
+  };
 
   const handleCopy = useCallback(() => {
     enqueueSnackbar('Copied!');
@@ -249,6 +261,18 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
         sx={{ width: 160 }}
       >
         <Divider sx={{ borderStyle: 'dashed' }} />
+
+        {_type === 'folder' && (
+          <MenuItem
+            onClick={() => {
+              handleOpenInfoDrawer(); // Open the Drawer
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="solar:info-circle-bold" />
+            Info
+          </MenuItem>
+        )}
 
         <MenuItem
           onClick={() => {

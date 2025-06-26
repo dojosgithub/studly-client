@@ -25,7 +25,7 @@ import * as Yup from 'yup';
 const inviteAttendeeSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   company: Yup.string().required('Company is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  email: Yup.string().email('Invalid email'),
   _id: Yup.string(),
 });
 

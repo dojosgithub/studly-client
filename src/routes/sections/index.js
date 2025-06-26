@@ -34,6 +34,10 @@ export default function Router() {
   const [dynamicRoutes, setDynamicRoutes] = useState([]);
   const userType = useSelector((state) => state.user?.user?.userType);
   const projects = useSelector((state) => state.project?.list);
+  // const currentprojects = useSelector((state) => state.project?.current);
+
+  // console.log('currentprojects', currentprojects);
+
   const isTempPassword = useSelector((state) => state.user?.user?.isTempPassword);
   const user = useSelector((state) => state.user?.user);
   //
@@ -118,6 +122,14 @@ export default function Router() {
       }
     }
   }
+
+  // if (userType === 'Subscriber' && !isTempPassword && (!projects || projects.length === 0)) {
+  //   routes.push({
+  //     path: '*',
+  //     element: <Navigate to="/onboarding" replace />,
+  //   });
+  // }
+
   return useRoutes([
     // SET INDEX PAGE WITH SKIP HOME PAGE
     {
@@ -144,6 +156,14 @@ export default function Router() {
     ...dynamicRoutes,
 
     // No match 404
-    { path: '*', element: <Navigate to="/404" replace /> },
+    // { path: '*', element: <Navigate to="/404" replace /> },
+    {
+      path: '*',
+      element: isEmpty(user) ? (
+        <Navigate to={`${PATH_LOGIN_PAGE}`} replace />
+      ) : (
+        <Navigate to="/404" replace />
+      ),
+    },
   ]);
 }

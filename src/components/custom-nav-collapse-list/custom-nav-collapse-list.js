@@ -89,7 +89,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
 
   React.useEffect(() => {
     const updatedCurrentProject = projects.findIndex(
-      (project) => project._id === currentProject._id
+      (project) => project?._id === currentProject?._id
     );
     if (updatedCurrentProject !== -1) {
       handleProject(projects[updatedCurrentProject], false);
@@ -195,7 +195,7 @@ export default function CustomNavCollapseList({ onOpen, isShirinked = false }) {
             projects.map((project) => (
               <MenuItem
                 sx={{ justifyContent: 'center', border: '1px solid grey' }}
-                key={project._id}
+                key={project?._id}
                 onClick={() => handleProject(project, true)}
               >
                 {project?.name}
