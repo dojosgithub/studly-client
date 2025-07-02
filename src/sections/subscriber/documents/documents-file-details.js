@@ -67,10 +67,13 @@ export default function DocumentsFileDetails({
     setInviteEmail(event.target.value);
   }, []);
 
-  useEffect(() => {
-    console.log('Running');
-    return () => dispatch(updateDocument(item._id, tags));
-  }, [tags, dispatch, item._id]);
+  // useEffect(() => {
+  //   console.log('Running');
+  //   return () => {
+  //     console.log('Cleanup');
+  //     dispatch(updateDocument(item._id, tags));
+  //   };
+  // }, [tags, dispatch, item._id]);
 
   const handleDeleteItems = useCallback(async () => {
     await dispatch(deleteDocument(item._id));
