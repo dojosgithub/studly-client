@@ -11,6 +11,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Typography from '@mui/material/Typography';
 import { LoadingButton } from '@mui/lab';
 import Dialog from '@mui/material/Dialog';
+import { useSnackbar } from 'notistack';
 import { uploadDocument } from 'src/redux/slices/documentsSlice';
 // components
 import Iconify from 'src/components/iconify';
@@ -28,6 +29,7 @@ export default function DocumentsNewFileDialog({
   const [errorMsg, setErrorMsg] = useState(null);
   const currentProject = useSelector((state) => state?.project?.current);
   const listData = useSelector((state) => state?.documents?.list);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!open) {
@@ -37,27 +39,47 @@ export default function DocumentsNewFileDialog({
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
-  const handleDrop = useCallback((acceptedFiles) => {
-    const newFiles = acceptedFiles.map((file) =>
-      Object.assign(file, { preview: URL.createObjectURL(file) })
-    );
-    // if (files.length + newFiles.length > 10) {
-    //   setErrorMsg('You can upload a maximum of 10 files.');
-    //   // alert('You can upload a maximum of 10 files.');
-    //   return;
-    // }
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    // setFiles((prevFiles) => {
-    //   if (prevFiles.length + newFiles.length > 10) {
-    //     setErrorMsg('You can upload a maximum of 10 files.');
-    //     console.log('You can upload a maximum of 10 files.');
 
-    //     return prevFiles; // Don't update state
-    //   }
-    //   setErrorMsg(null); // Clear any previous error
-    //   return [...prevFiles, ...newFiles];
-    // });
-  }, []);
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const DISALLOWED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.sh', '.msi'];
+
+      const newFiles = acceptedFiles.map((file) =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      );
+      const safeFiles = acceptedFiles.filter((file) => {
+        const ext = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+        return !DISALLOWED_EXTENSIONS.includes(ext);
+      });
+
+      const rejected = acceptedFiles.filter((file) => !safeFiles.includes(file));
+
+      if (rejected.length > 0) {
+        enqueueSnackbar(
+          'Some files were rejected due to unsupported or unsafe formats like .exe, .bat, .sh',
+          { variant: 'error' }
+        );
+        return;
+      }
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+      // if (files.length + newFiles.length > 10) {
+      //   setErrorMsg('You can upload a maximum of 10 files.');
+      //   // alert('You can upload a maximum of 10 files.');
+      //   return;
+      // }
+      // setFiles((prevFiles) => {
+      //   if (prevFiles.length + newFiles.length > 10) {
+      //     setErrorMsg('You can upload a maximum of 10 files.');
+      //     console.log('You can upload a maximum of 10 files.');
+
+      //     return prevFiles; // Don't update state
+      //   }
+      //   setErrorMsg(null); // Clear any previous error
+      //   return [...prevFiles, ...newFiles];
+      // });
+    },
+    [enqueueSnackbar]
+  );
 
   const handleUpload = async () => {
     setLoading(true);
@@ -131,7 +153,24 @@ export default function DocumentsNewFileDialog({
           onDrop={handleDrop}
           onRemove={handleRemoveFile}
           maxFiles={10}
-          maxSize={500 * 1024 * 1024}
+          maxSize={1000 * 1024 * 1024}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.svg', '.heic'],
+            'application/msword': ['.doc'],
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+            'application/vnd.ms-excel': ['.xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+            'application/vnd.ms-powerpoint': ['.ppt'],
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+            'application/zip': ['.zip'],
+            'application/x-rar-compressed': ['.rar'],
+            'video/mp4': ['.mp4'],
+            'video/quicktime': ['.mov'],
+            'application/octet-stream': ['.dwg', '.dxf'], // AutoCAD
+            'application/postscript': ['.ai'], // Illustrator
+            'image/vnd.adobe.photoshop': ['.psd'], // Photoshop
+          }}
         />
       </DialogContent>
 
