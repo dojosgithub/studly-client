@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import Typography from '@mui/material/Typography';
 import { LoadingButton } from '@mui/lab';
 import Dialog from '@mui/material/Dialog';
 import { uploadDocument } from 'src/redux/slices/documentsSlice';
@@ -116,6 +117,11 @@ export default function DocumentsNewFileDialog({
         {!!errorMsg && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {errorMsg}
+          </Alert>
+        )}
+        {!errorMsg && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            <Typography variant="subtitle2">You can upload a maximum of 10 files.</Typography>
           </Alert>
         )}
         <Upload
