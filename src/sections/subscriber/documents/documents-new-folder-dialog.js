@@ -11,6 +11,10 @@ import { LoadingButton } from '@mui/lab';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
+
 import { uploadDocument } from 'src/redux/slices/documentsSlice';
 // components
 import { Upload } from 'src/components/upload';
@@ -29,10 +33,12 @@ export default function DocumentsNewFolderDialog({
   fetchData,
   ...other
 }) {
+  const [errorMsg, setErrorMsg] = useState(null);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const currentProject = useSelector((state) => state?.project?.current);
   const listData = useSelector((state) => state?.documents?.list);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!open) {
@@ -40,12 +46,33 @@ export default function DocumentsNewFolderDialog({
     }
   }, [open]);
   const dispatch = useDispatch();
-  const handleDrop = useCallback((acceptedFiles) => {
-    const newFiles = acceptedFiles.map((file) =>
-      Object.assign(file, { preview: URL.createObjectURL(file) })
-    );
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-  }, []);
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const DISALLOWED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.sh', '.msi'];
+
+      const newFiles = acceptedFiles.map((file) =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      );
+
+      const safeFiles = acceptedFiles.filter((file) => {
+        const ext = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+        return !DISALLOWED_EXTENSIONS.includes(ext);
+      });
+
+      const rejected = acceptedFiles.filter((file) => !safeFiles.includes(file));
+
+      if (rejected.length > 0) {
+        enqueueSnackbar(
+          'Some files were rejected due to unsupported or unsafe formats like .exe, .bat, .sh',
+          { variant: 'error' }
+        );
+        return;
+      }
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    },
+    [enqueueSnackbar]
+  );
+
   const handleUpload = async () => {
     setLoading(true);
     try {
@@ -71,6 +98,7 @@ export default function DocumentsNewFolderDialog({
 
       await dispatch(uploadDocument(formData));
       onChangeFolderName('');
+      console.log('DocumentsNewFolderDialog (fetchData)');
       fetchData();
       onClose();
     } catch (error) {
@@ -89,11 +117,29 @@ export default function DocumentsNewFolderDialog({
     setFiles([]);
   };
 
+  useEffect(() => {
+    if (files.length > 10) {
+      setErrorMsg('You can upload a maximum of 10 files.');
+    } else {
+      setErrorMsg(null);
+    }
+  }, [files]);
+
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
       <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}> {title} </DialogTitle>
 
       <DialogContent dividers sx={{ pt: 1, pb: 0, border: 'none' }}>
+        {!!errorMsg && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMsg}
+          </Alert>
+        )}
+        {!errorMsg && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            <Typography variant="subtitle2">You can upload a maximum of 10 files.</Typography>
+          </Alert>
+        )}
         {onCreate && (
           <TextField
             fullWidth
@@ -111,7 +157,24 @@ export default function DocumentsNewFolderDialog({
           onDrop={handleDrop}
           onRemove={handleRemoveFile}
           maxFiles={10}
-          maxSize={500 * 1024 * 1024}
+          maxSize={1000 * 1024 * 1024}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.svg', '.heic'],
+            'application/msword': ['.doc'],
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+            'application/vnd.ms-excel': ['.xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+            'application/vnd.ms-powerpoint': ['.ppt'],
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+            'application/zip': ['.zip'],
+            'application/x-rar-compressed': ['.rar'],
+            'video/mp4': ['.mp4'],
+            'video/quicktime': ['.mov'],
+            'application/octet-stream': ['.dwg', '.dxf'], // AutoCAD
+            'application/postscript': ['.ai'], // Illustrator
+            'image/vnd.adobe.photoshop': ['.psd'], // Photoshop
+          }}
         />
       </DialogContent>
 
@@ -125,7 +188,7 @@ export default function DocumentsNewFolderDialog({
         <Stack direction="row" justifyContent="flex-end" flexGrow={1}>
           <LoadingButton
             variant="contained"
-            disabled={!folderName}
+            disabled={!folderName || files.length === 0 || !!errorMsg}
             onClick={handleUpload}
             loading={loading} // Pass loading state to show spinner in button
           >
