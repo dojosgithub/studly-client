@@ -29,8 +29,8 @@ export default function PlanRoomAttachments({
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const totalFiles = acceptedFiles.length + files.length;
-      if (totalFiles > 10) {
-        enqueueSnackbar('You can upload maximum of 10 files', { variant: 'error' });
+      if (totalFiles > 5) {
+        enqueueSnackbar('You can upload maximum of 5 files', { variant: 'error' });
         return;
       }
       const newFiles = acceptedFiles.slice(0, 10 - files.length).map((file) =>
