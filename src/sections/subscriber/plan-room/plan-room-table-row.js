@@ -107,7 +107,7 @@ const PlanRoomTableRow = memo(
           arrow="right-top"
           sx={{ width: 140 }}
         >
-          {(role === 'CAD' || role === 'PWU') && (
+          {role === 'CAD' && (
             <MenuItem
               onClick={() => {
                 confirm.onTrue();

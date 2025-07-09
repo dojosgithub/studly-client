@@ -27,16 +27,16 @@ import MeetingMinutesDetailsPlan from './meeting-minutes-details-plan';
 
 const TABS = [
   {
+    value: 'agenda',
+    label: 'Agenda',
+  },
+  {
     value: 'description',
     label: 'Description',
   },
   {
     value: 'attendees',
     label: 'Attendees',
-  },
-  {
-    value: 'agenda',
-    label: 'Agenda',
   },
   {
     value: 'permit',

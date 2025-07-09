@@ -32,6 +32,7 @@ const SubmittalsReviewPage = lazy(() => import('src/pages/subscriber/submittals/
 
 export default function Router() {
   const [dynamicRoutes, setDynamicRoutes] = useState([]);
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const userType = useSelector((state) => state.user?.user?.userType);
   const projects = useSelector((state) => state.project?.list);
   // const currentprojects = useSelector((state) => state.project?.current);
@@ -47,7 +48,8 @@ export default function Router() {
   useEffect(() => {
     if (currentSubmittal && currentUser) {
       const isNotEmpty = isIncluded(currentSubmittal?.owner, currentUser?._id);
-      if (isNotEmpty) {
+
+      if (role === 'CAD' || role === 'PWU' || isNotEmpty) {
         setDynamicRoutes([
           {
             path: '/subscriber/submittals/:id/review',
@@ -66,7 +68,7 @@ export default function Router() {
         setDynamicRoutes([]);
       }
     }
-  }, [currentSubmittal, currentUser]);
+  }, [role, currentSubmittal, currentUser]);
 
   let destinationPath;
 

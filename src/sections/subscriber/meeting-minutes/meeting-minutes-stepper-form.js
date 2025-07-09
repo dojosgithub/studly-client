@@ -51,16 +51,16 @@ import meetingMinutesSchema from './meeting-minutes-schema';
 
 const steps = [
   {
+    label: 'Meeting Agenda',
+    value: 'notes',
+  },
+  {
     label: 'Meeting Description',
     value: 'description',
   },
   {
     label: 'Meeting Attendees',
     value: 'inviteAttendee',
-  },
-  {
-    label: 'Meeting Agenda',
-    value: 'notes',
   },
   {
     label: 'Permit',
@@ -192,12 +192,11 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     trigger,
   } = methods;
 
-    useEffect(() => {
+  useEffect(() => {
     setValue('plan', transformedPlans);
   }, [transformedPlans, setValue]);
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
-
 
   useEffect(() => {
     if (isEdit) {
@@ -401,21 +400,21 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     let component;
     switch (activeStep) {
       case 0:
-        component = <MeetingMinutesDescription />;
+        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
         break;
       case 1:
+        component = <MeetingMinutesDescription />;
+        break;
+      case 2:
         component = <MeetingMinutesInviteAttendeeView isEdit={isEdit} />;
         break;
 
-      case 2:
-        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
-        break;
       case 3:
         component = <MeetingMinutesPermitFields />;
         break;
 
       default:
-        component = <MeetingMinutesDescription />;
+        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
     }
     return component;
   }
