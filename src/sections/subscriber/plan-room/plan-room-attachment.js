@@ -9,7 +9,7 @@ import { useSnackbar } from 'src/components/snackbar';
 // components
 import { Upload } from 'src/components/upload';
 
-// ----------------------------------------------------------------------
+// ---------------------------------------------------------------------
 
 export default function PlanRoomAttachments({
   //
