@@ -11,7 +11,7 @@ export const STUDLY_ROLES = {
   company: ['SSA'],
   submittals: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'SCO', 'COM', 'ASC'],
   rfis: ['CAD', 'PWU', 'FIU', 'ARC', 'ENG', 'COM', 'ASC'],
-  planRoom: ['CAD', 'PWU', 'FIU'],
+  planRoom: ['CAD', 'PWU', 'FIU', 'SCO'],
   meetingMinutes: ['CAD', 'PWU'],
   logs: ['CAD', 'PWU', 'FIU'],
   documents: ['CAD', 'PWU', 'FIU'], // TODO: add routing
@@ -45647,7 +45647,7 @@ export const STUDLY_ACCESS_ROLES = {
   },
   PWU: {
     // Power User
-    submittals: ['view', 'create', 'edit', 'delete'],
+    submittals: ['view', 'create', 'edit', 'delete', 'respond'],
     rfis: ['view', 'create', 'edit', 'delete'],
     planRoom: ['view', 'create', 'edit', 'delete'],
     meetingMinutes: ['view', 'create', 'edit', 'delete'],
@@ -45669,7 +45669,7 @@ export const STUDLY_ACCESS_ROLES = {
     // Sub Contractor
     submittals: ['view'],
     rfis: [],
-    planRoom: [],
+    planRoom: ['view'],
     meetingMinutes: [],
     dailyLogs: [],
     documents: [],
@@ -45677,7 +45677,7 @@ export const STUDLY_ACCESS_ROLES = {
   },
   ARC: {
     // Architect
-    submittals: ['view', 'respond'],
+    submittals: ['view'],
     rfis: ['view', 'respond'],
     planRoom: [],
     meetingMinutes: [],
