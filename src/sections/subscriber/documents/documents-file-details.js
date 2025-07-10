@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -55,6 +55,8 @@ export default function DocumentsFileDetails({
 
   const [filters, setFilters] = useState(defaultFilters);
   const { enqueueSnackbar } = useSnackbar();
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
+
   const share = useBoolean();
 
   const properties = useBoolean(true);
@@ -168,18 +170,20 @@ export default function DocumentsFileDetails({
         </Scrollbar>
 
         <RoleAccessWrapper allowedRoles={STUDLY_ROLES_ACTION.documents.delete}>
-          <Box sx={{ p: 2.5 }}>
-            <Button
-              fullWidth
-              variant="soft"
-              color="error"
-              size="large"
-              startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-              onClick={confirm.onTrue}
-            >
-              Delete
-            </Button>
-          </Box>
+          {role === 'CAD' && (
+            <Box sx={{ p: 2.5 }}>
+              <Button
+                fullWidth
+                variant="soft"
+                color="error"
+                size="large"
+                startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                onClick={confirm.onTrue}
+              >
+                Delete
+              </Button>
+            </Box>
+          )}
         </RoleAccessWrapper>
 
         <ConfirmDialog

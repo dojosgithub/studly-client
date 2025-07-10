@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -44,6 +44,7 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
   const { name, _type, updatedAt, createdBy, shared, isFavorited, preview, _id } = row;
 
   const { enqueueSnackbar } = useSnackbar();
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
 
   const { copy } = useCopyToClipboard();
 
@@ -292,16 +293,18 @@ export default function DocumentsTableRow({ row, selected, onDeleteRow, fetchDat
           <Iconify icon="solar:download-minimalistic-bold" />
           Download
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            confirm.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
+        {role === 'CAD' && (
+          <MenuItem
+            onClick={() => {
+              confirm.onTrue();
+              popover.onClose();
+            }}
+            sx={{ color: 'error.main' }}
+          >
+            <Iconify icon="solar:trash-bin-trash-bold" />
+            Delete
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
             setMoveDialogOpen(true);
