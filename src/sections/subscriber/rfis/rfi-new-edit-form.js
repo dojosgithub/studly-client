@@ -44,12 +44,15 @@ export default function RfiNewEditForm({ currentRfi, id }) {
   );
   const [files, setFiles] = useState(existingAttachments);
   useEffect(() => {
+    console.log('ownerList', ownerList);
+    console.log('id', projectId);
+
     if (pathname.includes('revision')) {
       setFiles([]);
     } else {
       setFiles(existingAttachments);
     }
-  }, [pathname, existingAttachments]);
+  }, [pathname, existingAttachments, ownerList, projectId]);
 
   const { enqueueSnackbar } = useSnackbar();
 
