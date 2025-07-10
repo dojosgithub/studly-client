@@ -14,13 +14,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { isTomorrow } from 'date-fns';
 
 // @mui
+// import { Checkbox, FormControlLabel } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 // components
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 //
 import { createPlanRoom } from 'src/redux/slices/planRoomSlice';
@@ -52,6 +53,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   const NewPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date().required('Issue Date is required'),
+    isLatest: Yup.boolean(),
     creator: Yup.object().shape({
       _id: Yup.string(),
       firstName: Yup.string(),
@@ -225,10 +227,12 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
               <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="flex-end"
+                justifyContent="space-between "
                 gap="2rem"
                 sx={{ my: 3 }}
               >
+                <RHFCheckbox name="isLatest" label="Latest" />
+
                 {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (

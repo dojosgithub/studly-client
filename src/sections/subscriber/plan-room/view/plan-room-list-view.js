@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { useSnackbar } from 'notistack';
 // routes
@@ -31,7 +33,11 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import { deletePlanRoomSheet, getPlanRoomList } from 'src/redux/slices/planRoomSlice';
+import {
+  deletePlanRoomSheet,
+  getPlanRoomList,
+  toggleIsLatestSheet,
+} from 'src/redux/slices/planRoomSlice';
 import { CustomDrawerPlanRoom } from 'src/components/custom-drawer-planroom';
 import { useResponsive } from 'src/hooks/use-responsive';
 //
@@ -62,6 +68,7 @@ const defaultFilters = {
 export default function PlanRoomListView() {
   const table = useTable();
   const listData = useSelector((state) => state?.planRoom?.list);
+  const isLatest = useSelector((state) => state?.planRoom?.isLatest);
   const role = useSelector((state) => state?.user?.user?.role?.shortName);
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
@@ -145,15 +152,57 @@ export default function PlanRoomListView() {
           ]}
           action={
             (role === 'CAD' || role === 'PWU') && (
-              <Button
-                component={RouterLink}
-                href={paths.subscriber.planRoom.new}
-                variant="outlined"
-                startIcon={<Iconify icon="mingcute:add-line" />}
-                fullWidth={smDown} // responsive behavior added here
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  gap: 10,
+                  paddingTop: 10,
+                }}
               >
-                Upload Plans
-              </Button>
+                <Button
+                  component={RouterLink}
+                  href={paths.subscriber.planRoom.new}
+                  variant="outlined"
+                  startIcon={<Iconify icon="mingcute:add-line" />}
+                  fullWidth={smDown}
+                >
+                  Upload Plans
+                </Button>
+                <ToggleButtonGroup
+                  value={isLatest ? 'latest' : 'all'}
+                  exclusive // <--- This is important
+                  fullWidth={smDown}
+                  size="small"
+                  onChange={(_, value) => {
+                    if (value !== null) {
+                      dispatch(toggleIsLatestSheet());
+                      dispatch(
+                        getPlanRoomList({
+                          search: filters.query,
+                          page,
+                          sortDir,
+                          status: filters.status,
+                          isLatest: value === 'latest',
+                        })
+                      );
+                    }
+                  }}
+                  sx={{
+                    mb: 1,
+                    width: 'fit-content',
+                    border: '1.5px solid',
+                  }}
+                >
+                  <ToggleButton value="all" sx={{ minWidth: 60 }}>
+                    All
+                  </ToggleButton>
+                  <ToggleButton value="latest" sx={{ minWidth: 60 }}>
+                    Latest
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </div>
             )
           }
           sx={{
@@ -192,17 +241,19 @@ export default function PlanRoomListView() {
 
                 <TableBody>
                   {listData?.docs &&
-                    listData?.docs?.map((row) => (
-                      <PlanRoomTableRow
-                        key={row._id}
-                        row={row}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
-                        onEditRow={() => handleEditRow(row?._id)}
-                        onViewRow={() => handleViewRow(row)}
-                      />
-                    ))}
+                    listData.docs
+                      ?.filter((row) => (isLatest ? row.isLatest === true : true))
+                      ?.map((row) => (
+                        <PlanRoomTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={(onDelete) => handleDeleteRow(row, onDelete)}
+                          onEditRow={() => handleEditRow(row?._id)}
+                          onViewRow={() => handleViewRow(row)}
+                        />
+                      ))}
 
                   <TableEmptyRows
                     height={denseHeight}

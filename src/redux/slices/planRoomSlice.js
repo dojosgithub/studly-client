@@ -271,13 +271,19 @@ const initialState = {
   sheetsLoaded: 0,
   isLoading: false,
   error: null,
+  isLatest: false,
 };
 
 const planRoom = createSlice({
   name: 'planRoom',
   initialState,
+
   reducers: {
     resetPlanRoomState: () => initialState,
+    toggleIsLatestSheet: (state) => {
+      state.isLatest = !state.isLatest;
+    },
+
     resetSheets: (state) => {
       state.sheets = [];
       state.sheetsLoaded = 0;
@@ -337,7 +343,7 @@ const planRoom = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
-     // * Get PlanRoom Same Proj List
+    // * Get PlanRoom Same Proj List
     builder.addCase(getPlanRoomListSameProj.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -410,6 +416,12 @@ const planRoom = createSlice({
   },
 });
 
-export const { resetPlanRoomState, resetSheets, resetSheetsLoaded, newSheets, appendToSheets } =
-  planRoom.actions;
+export const {
+  resetPlanRoomState,
+  resetSheets,
+  resetSheetsLoaded,
+  newSheets,
+  appendToSheets,
+  toggleIsLatestSheet,
+} = planRoom.actions;
 export default planRoom.reducer;
