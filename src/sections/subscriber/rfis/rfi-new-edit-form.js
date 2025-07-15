@@ -118,7 +118,7 @@ export default function RfiNewEditForm({ currentRfi, id }) {
       if (val === 'review') isSubmittingRef.current = true;
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
-        .map((item) => item.user);
+        .map((item) => (item.user ? item.user : item._id));
       if (val === 'review' && owner.length === 0) {
         isSubmittingRef.current = false;
         enqueueSnackbar('Rfi can not be submitted without owner', { variant: 'error' });

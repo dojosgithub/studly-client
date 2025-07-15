@@ -184,6 +184,7 @@ export const submitSubmittalToArchitect = createAsyncThunk(
   async (id) => {
     try {
       const response = await axiosInstance.post(endpoints.submittal.submit(id));
+      console.log('response.data.data', response.data.data);
 
       return response.data.data;
     } catch (err) {

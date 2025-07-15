@@ -168,7 +168,7 @@ export default function SubmittalsNewEditForm({ currentSubmittal, id }) {
     try {
       const owner = ownerList
         .filter((item) => data?.owner?.includes(item.email)) // Filter based on matching emails
-        .map((item) => item.user);
+        .map((item) => (item.user ? item.user : item._id));
       if (val === 'review' && owner.length === 0) {
         enqueueSnackbar('Submittal can not be submitted without owner', { variant: 'error' });
         return;
