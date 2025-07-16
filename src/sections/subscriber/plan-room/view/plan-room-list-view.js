@@ -151,16 +151,17 @@ export default function PlanRoomListView() {
             { name: 'Logs' },
           ]}
           action={
-            (role === 'CAD' || role === 'PWU') && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  gap: 10,
-                  paddingTop: 10,
-                }}
-              >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: 10,
+                paddingTop: 10,
+              }}
+            >
+              {/* Upload Plans: only for CAD and PWU */}
+              {(role === 'CAD' || role === 'PWU') && (
                 <Button
                   component={RouterLink}
                   href={paths.subscriber.planRoom.new}
@@ -170,9 +171,13 @@ export default function PlanRoomListView() {
                 >
                   Upload Plans
                 </Button>
+              )}
+
+              {/* Toggle Group: for CAD, PWU, SCO, FIU */}
+              {(role === 'CAD' || role === 'PWU' || role === 'SCO' || role === 'FIU') && (
                 <ToggleButtonGroup
                   value={isLatest ? 'latest' : 'all'}
-                  exclusive // <--- This is important
+                  exclusive
                   fullWidth={smDown}
                   size="small"
                   onChange={(_, value) => {
@@ -202,8 +207,8 @@ export default function PlanRoomListView() {
                     Latest
                   </ToggleButton>
                 </ToggleButtonGroup>
-              </div>
-            )
+              )}
+            </div>
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -242,7 +247,7 @@ export default function PlanRoomListView() {
                 <TableBody>
                   {listData?.docs &&
                     listData.docs
-                      ?.filter((row) => (isLatest ? row.isLatest === true : true))
+                      // ?.filter((row) => (isLatest ? row.isLatest === true : true))
                       ?.map((row) => (
                         <PlanRoomTableRow
                           key={row._id}

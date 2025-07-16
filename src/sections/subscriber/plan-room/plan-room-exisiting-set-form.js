@@ -18,7 +18,7 @@ import { paths } from 'src/routes/paths';
 import { useParams, useRouter } from 'src/routes/hooks';
 // components
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSelect } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFSelect } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 //
 import { createPlanRoom } from 'src/redux/slices/planRoomSlice';
@@ -53,6 +53,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   const ExistingPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date().required('Issue Date is required'),
+    isLatest: Yup.boolean(),
     existingVersionSet: Yup.string().required('Existing Version is required'),
   });
 
@@ -190,10 +191,11 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
               <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="flex-end"
+                justifyContent="space-between "
                 gap="2rem"
                 sx={{ my: 3 }}
               >
+                <RHFCheckbox name="isLatest" label="Latest" />
                 {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
