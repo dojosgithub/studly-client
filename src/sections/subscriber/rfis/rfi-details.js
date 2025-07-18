@@ -200,7 +200,8 @@ const RfiDetails = ({ id }) => {
                     sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
                     /> */}
                   <Typography>
-                    Reviewed By {creator.firstName} {creator.lastName} on{' '}
+                    {/* {console.log('currentUser', currentUser)} */}
+                    Reviewed By {currentUser.firstName} {currentUser.lastName} on{' '}
                     {createdDate && fDateISO(createdDate)}
                   </Typography>
                 </Stack>

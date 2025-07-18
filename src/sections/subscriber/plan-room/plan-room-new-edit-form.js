@@ -167,6 +167,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
+              <RHFCheckbox name="isLatest" label={<strong>Tag as latest set of drawings</strong>} />
               <Box rowGap={4} my={3} display="flex" flexDirection="column">
                 <Box
                   rowGap={3}
@@ -231,8 +232,6 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
-                <RHFCheckbox name="isLatest" label="Latest" />
-
                 {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (
