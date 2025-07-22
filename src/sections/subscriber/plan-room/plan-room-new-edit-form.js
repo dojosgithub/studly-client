@@ -228,7 +228,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
               <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="space-between "
+                justifyContent="flex-end"
                 gap="2rem"
                 sx={{ my: 3 }}
               >
