@@ -75,6 +75,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       creator,
+      isLatest: true,
     };
   }, [currentPlanSet, currentUser]);
 
