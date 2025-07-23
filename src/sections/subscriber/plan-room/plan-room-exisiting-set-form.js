@@ -66,6 +66,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       existingVersionSet,
+      isLatest: true,
     };
   }, [currentPlanSet]);
 
