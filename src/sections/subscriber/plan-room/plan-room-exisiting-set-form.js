@@ -18,7 +18,7 @@ import { paths } from 'src/routes/paths';
 import { useParams, useRouter } from 'src/routes/hooks';
 // components
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSelect } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFSelect } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 //
 import { createPlanRoom } from 'src/redux/slices/planRoomSlice';
@@ -53,6 +53,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
   const ExistingPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date().required('Issue Date is required'),
+    isLatest: Yup.boolean(),
     existingVersionSet: Yup.string().required('Existing Version is required'),
   });
 
@@ -65,6 +66,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       existingVersionSet,
+      isLatest: true,
     };
   }, [currentPlanSet]);
 
@@ -165,6 +167,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
+              <RHFCheckbox name="isLatest" label={<strong>Tag as latest set of drawings</strong>} />
               <Box rowGap={4} my={3} display="flex" flexDirection="column">
                 <Box display="flex" sx={{ maxWidth: { xs: '100%', md: '40%' } }}>
                   <RHFSelect name="planName" label="Choose Existing Version Set">
@@ -194,6 +197,7 @@ export default function PlanRoomExistingSetForm({ currentPlanSet, id }) {
                 gap="2rem"
                 sx={{ my: 3 }}
               >
+                {/* <RHFCheckbox name="isLatest" label="Latest" /> */}
                 {!currentPlanSet &&
                   (currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.CAD ||
                     currentUser?.role?.name === SUBSCRIBER_USER_ROLE_STUDLY.PWU) && (

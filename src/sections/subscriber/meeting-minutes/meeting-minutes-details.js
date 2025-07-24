@@ -27,16 +27,16 @@ import MeetingMinutesDetailsPlan from './meeting-minutes-details-plan';
 
 const TABS = [
   {
+    value: 'agenda',
+    label: 'Agenda',
+  },
+  {
     value: 'description',
     label: 'Description',
   },
   {
     value: 'attendees',
     label: 'Attendees',
-  },
-  {
-    value: 'agenda',
-    label: 'Agenda',
   },
   {
     value: 'permit',
@@ -51,7 +51,7 @@ const TABS = [
 const MeetingMinutesDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [currentTab, setCurrentTab] = useState('description');
+  const [currentTab, setCurrentTab] = useState(() => TABS?.[0]?.value);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -255,7 +255,7 @@ const MeetingMinutesDetails = ({ id }) => {
       {currentTab === 'attendees' && (
         <MeetingMinutesDetailsInviteAttendee data={currentMeeting?.inviteAttendee} />
       )}
-      {currentTab === 'agenda' && <MeetingMinutesDetailsNotes data={currentMeeting?.notes} />}
+      {currentTab === 'agenda' && <MeetingMinutesDetailsNotes data={currentMeeting?.notes || []} />}
       {currentTab === 'permit' && <MeetingMinutesDetailsPermit data={currentMeeting?.permit} />}
       {currentTab === 'plan' && <MeetingMinutesDetailsPlan data={sameProjListData} />}
     </>

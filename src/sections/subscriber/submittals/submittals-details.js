@@ -77,6 +77,8 @@ const SubmittalsDetails = ({ id }) => {
   const params = useParams();
   const { id: parentSubmittalId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
+
   const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state) => state.user?.user);
   const currentSubmittal = useSelector((state) => state.submittal.current);
@@ -201,27 +203,30 @@ const SubmittalsDetails = ({ id }) => {
         </MenuItem>
       );
     }
-    if (isResponseSubmitted && isIncluded(currentSubmittal?.owner, currentUser?._id)) {
-      optionsArray.push(
-        <MenuItem onClick={handleEditResponse}>
-          <Button fullWidth variant="outlined">
-            Edit Response
-          </Button>
-        </MenuItem>
-      );
+    if (status !== 'Draft' && status !== 'Submitted' && isResponseSubmitted) {
+      if (
+        role === 'CAD' ||
+        role === 'PWU' ||
+        isIncluded(currentSubmittal?.owner, currentUser?._id)
+      ) {
+        optionsArray.push(
+          <MenuItem onClick={handleEditResponse}>
+            <Button fullWidth variant="outlined">
+              Edit Response
+            </Button>
+          </MenuItem>
+        );
+      }
     }
-    if (
-      !isResponseSubmitted &&
-      status === 'Submitted' &&
-      isIncluded(currentSubmittal?.owner, currentUser?._id)
-    ) {
-      optionsArray.push(
-        <MenuItem onClick={handleSubmittalResponse}>
-          <Button fullWidth variant="outlined" onClick={handleSubmittalResponse}>
-            Add Submittal Response
-          </Button>
-        </MenuItem>
-      );
+    if (!isResponseSubmitted && status === 'Submitted') {
+      if (role === 'CAD' || role === 'PWU' || isIncluded(currentSubmittal?.owner, currentUser?._id))
+        optionsArray.push(
+          <MenuItem onClick={handleSubmittalResponse}>
+            <Button fullWidth variant="outlined" onClick={handleSubmittalResponse}>
+              Add Submittal Response
+            </Button>
+          </MenuItem>
+        );
     }
     setMenuItems(optionsArray);
   };
@@ -388,20 +393,21 @@ const SubmittalsDetails = ({ id }) => {
                       </Box>
                     )}
 
-                    {item.nextActionBy?.length > 0 && index === currentSubmittal.history.length -1 &&  (
-                      <Typography
-                        variant="body2"
-                        sx={{ fontSize: '18px', fontWeight: '500', color: '#0F172A' }}
-                      >
-                        Next Action By:{' '}
-                        {item.nextActionBy.map((next, i) => (
-                          <span key={i}>
-                            {next}
-                            {i < item.nextActionBy.length - 1 ? ', ' : ''}
-                          </span>
-                        ))}
-                      </Typography>
-                    )}
+                    {item.nextActionBy?.length > 0 &&
+                      index === currentSubmittal.history.length - 1 && (
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: '18px', fontWeight: '500', color: '#0F172A' }}
+                        >
+                          Next Action By:{' '}
+                          {item.nextActionBy.map((next, i) => (
+                            <span key={i}>
+                              {next}
+                              {i < item.nextActionBy.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
+                        </Typography>
+                      )}
 
                     <Box sx={{ height: 20 }} />
                   </TimelineContent>

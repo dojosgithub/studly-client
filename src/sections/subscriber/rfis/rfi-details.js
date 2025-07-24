@@ -52,6 +52,8 @@ const StyledCard = styled(Card, {
 const RfiDetails = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const role = useSelector((state) => state?.user?.user?.role?.shortName);
+
   const confirm = useBoolean();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -79,6 +81,7 @@ const RfiDetails = ({ id }) => {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log('currentRfi', currentRfi);
   }, [currentRfi, id, currentUser, isSubmitting]);
 
   const handleSubmitToArchitect = async () => {
@@ -125,7 +128,7 @@ const RfiDetails = ({ id }) => {
           )}
         {status === 'Submitted' &&
           !isResponseSubmitted &&
-          isIncluded(currentRfi?.owner, currentUser?._id) && (
+          (isIncluded(currentRfi?.owner, currentUser?._id) || role === 'CAD' || role === 'PWU') && (
             <LoadingButton
               loading={isSubmitting}
               variant="contained"
@@ -188,16 +191,25 @@ const RfiDetails = ({ id }) => {
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, flex: 0.75, px: 2 }}>
                 <Stack direction="column">
-                  <Chip
+                  <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+                  {/* <Chip
                     size="small"
                     color="secondary"
                     variant="outlined"
                     label={response?.date && fDateISO(response?.date)}
                     sx={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  />
-                  <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+                    /> */}
+                  <Typography>
+                    {/* {console.log('currentUser', currentUser)} */}
+                    Reviewed By {currentUser.firstName} {currentUser.lastName} on{' '}
+                    {createdDate && fDateISO(createdDate)}
+                  </Typography>
                 </Stack>
               </Box>
+              {/* 
+              <Typography sx={{ color: (theme) => theme.palette.primary, flex: 0.75, px: 2 }}>
+                <Box dangerouslySetInnerHTML={{ __html: response?.text }} />
+              </Typography> */}
             </StyledCard>
           )}
         </Grid>

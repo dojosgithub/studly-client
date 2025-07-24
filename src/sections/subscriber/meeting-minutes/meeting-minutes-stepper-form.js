@@ -192,12 +192,11 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
     trigger,
   } = methods;
 
-    useEffect(() => {
+  useEffect(() => {
     setValue('plan', transformedPlans);
   }, [transformedPlans, setValue]);
 
   const { description, inviteAttendee, notes, permit, plan } = getValues();
-
 
   useEffect(() => {
     if (isEdit) {
@@ -415,7 +414,7 @@ export default function MeetingMinutesStepperForm({ isEdit }) {
         break;
 
       default:
-        component = <MeetingMinutesDescription />;
+        component = <MeetingMinutesNotes listData={listData} inviteAttendee={inviteAttendee} />;
     }
     return component;
   }

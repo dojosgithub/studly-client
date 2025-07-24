@@ -14,13 +14,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { isTomorrow } from 'date-fns';
 
 // @mui
+// import { Checkbox, FormControlLabel } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 // components
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { SUBSCRIBER_USER_ROLE_STUDLY } from 'src/_mock';
 //
 import { createPlanRoom } from 'src/redux/slices/planRoomSlice';
@@ -52,6 +53,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
   const NewPlanRoomSchema = Yup.object().shape({
     planName: Yup.string().required('Plan Name is required'),
     issueDate: Yup.date().required('Issue Date is required'),
+    isLatest: Yup.boolean(),
     creator: Yup.object().shape({
       _id: Yup.string(),
       firstName: Yup.string(),
@@ -73,6 +75,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
       planName,
       issueDate,
       creator,
+      isLatest: true,
     };
   }, [currentPlanSet, currentUser]);
 
@@ -165,6 +168,7 @@ export default function PlanRoomNewEditForm({ currentPlanSet, id }) {
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
             <Card sx={{ p: 3 }}>
+              <RHFCheckbox name="isLatest" label={<strong>Tag as latest set of drawings</strong>} />
               <Box rowGap={4} my={3} display="flex" flexDirection="column">
                 <Box
                   rowGap={3}
