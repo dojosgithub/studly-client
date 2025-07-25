@@ -91,8 +91,16 @@ export default function PlanRoomListView() {
   const confirm = useBoolean();
 
   useEffect(() => {
-    dispatch(getPlanRoomList({ search: filters.query, page, sortDir, status: filters.status }));
-  }, [dispatch, filters.query, filters.status, page, sortDir]);
+    dispatch(
+      getPlanRoomList({
+        search: filters.query,
+        page,
+        sortDir,
+        status: filters.status,
+        isLatest,
+      })
+    );
+  }, [dispatch, filters.query, filters.status, page, sortDir, isLatest]);
 
   const denseHeight = table.dense ? 52 : 72;
 
